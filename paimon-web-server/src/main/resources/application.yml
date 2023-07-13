@@ -1,0 +1,50 @@
+#################################################################################################################
+################################################# Common Config #################################################
+#################################################################################################################
+# Paimon Manager Service Port
+server:
+  port: 10088
+
+spring:
+  # Paimon Manager Service Name
+  application:
+    name: PaimonManager
+  profiles:
+    active:  dev
+
+  # mvc config
+  mvc:
+    pathmatch:
+      # Path matching strategy, default ant_path_matcher, support ant_path_matcher and path_pattern_parser
+      matching-strategy: ant_path_matcher
+    format:
+      date: yyyy-MM-dd HH:mm:ss # date format
+      time: HH:mm:ss # time format
+      date-time: yyyy-MM-dd HH:mm:ss # date-time format
+
+  # json format global configuration
+  jackson:
+    time-zone: GMT+8 # Time zone, default is GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss # Date format, the default is yyyy-MM-dd HH:mm:ss
+
+
+#################################################################################################################
+################################################# Mybatis Config ################################################
+######### Please note: that the following configurations are not recommended to be modified #####################
+#################################################################################################################
+#mybatis-plus:
+#  mapper-locations: classpath:/mapper/*Mapper.xml
+#  # Entity scanning, multiple packages are separated by commas or semicolons
+#  typeAliasesPackage: org.apache.paimon.entity
+#  global-config:
+#    db-config:
+#      id-type: auto
+#      # Logic delete configuration : 0: false(Not deleted), 1: true(deleted)
+#      logic-delete-field: is_delete
+#      logic-delete-value: 1
+#      logic-not-delete-value: 0
+#    banner: false
+#  configuration:
+#    ##### mybatis-plus prints complete sql (only for development environment)
+#    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
