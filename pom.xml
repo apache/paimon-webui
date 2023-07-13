@@ -80,7 +80,7 @@ under the License.
         <junit5.version>5.8.1</junit5.version>
         <slf4j.version>1.7.25</slf4j.version>
         <log4j.version>2.17.1</log4j.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <maven.checkstyle.version>3.1.2</maven.checkstyle.version>
         <maven.compiler.version>3.10.1</maven.compiler.version>
         <spotless.version>2.13.0</spotless.version>
