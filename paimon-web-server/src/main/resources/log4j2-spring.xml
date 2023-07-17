@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF" monitorInterval="600">
+  <Properties>
+    <property name="LOG_PATH">./logs/</property>
+    <property name="LOG_FILE">paimon</property>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss z} %-5level %class{36}#%M:%L - %msg%xEx%n"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%6p} %style{%5pid}{bright,magenta} --- [%15.15t] %style{%c{20}}{bright,cyan}: %m%n"/>
+  </Properties>
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="ACCEPT"/>
+      <PatternLayout>
+        <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+      </PatternLayout>
+    </Console>
+
+    <RollingFile name="RollingFile" fileName="${LOG_PATH}/${LOG_FILE}.log"
+                 filePattern="${LOG_PATH}/$${date:yyyy-MM}/${LOG_FILE}-%d{yyyy-MM-dd}-%i.log">
+      <PatternLayout>
+        <Pattern>${FILE_LOG_PATTERN}</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="100MB"/>
+      </Policies>
+    </RollingFile>
+  </appenders>
+
+  <loggers>
+    <root level="info">
+      <appender-ref ref="Console"/>
+      <!--<appender-ref ref="File"/>-->
+      <appender-ref ref="RollingFile"/>
+    </root>
+
+  </loggers>
+</configuration>
