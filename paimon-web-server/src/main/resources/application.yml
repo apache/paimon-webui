@@ -27,24 +27,11 @@ spring:
     time-zone: GMT+8 # Time zone, default is GMT+8
     date-format: yyyy-MM-dd HH:mm:ss # Date format, the default is yyyy-MM-dd HH:mm:ss
 
-
-#################################################################################################################
-################################################# Mybatis Config ################################################
-######### Please note: that the following configurations are not recommended to be modified #####################
-#################################################################################################################
-#mybatis-plus:
-#  mapper-locations: classpath:/mapper/*Mapper.xml
-#  # Entity scanning, multiple packages are separated by commas or semicolons
-#  typeAliasesPackage: org.apache.paimon.entity
-#  global-config:
-#    db-config:
-#      id-type: auto
-#      # Logic delete configuration : 0: false(Not deleted), 1: true(deleted)
-#      logic-delete-field: is_delete
-#      logic-delete-value: 1
-#      logic-not-delete-value: 0
-#    banner: false
-#  configuration:
-#    ##### mybatis-plus prints complete sql (only for development environment)
-#    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+mybatis-plus:
+  global-config:
+    banner: false
+    db-config:
+      logic-delete-field: is_delete
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

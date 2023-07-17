@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web;
+package org.apache.paimon.web.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
