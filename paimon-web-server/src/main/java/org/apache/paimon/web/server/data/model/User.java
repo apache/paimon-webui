@@ -41,9 +41,6 @@ public class User extends BaseModel {
     /** nickname. */
     private String nickname;
 
-    /** worknum. */
-    private String worknum;
-
     /** login type (0:LOCAL,1:LDAP). */
     private Integer userType;
 
@@ -59,6 +56,6 @@ public class User extends BaseModel {
     /** is delete. */
     @TableLogic private Boolean isDelete;
 
-    /** avatar. */
-    private byte[] avatar;
+    /** avatar url. */
+    private String url;
 }
