@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:5.7
+    restart: always
+    container_name: paimon-mysql
+    command:
+      --lower_case_table_names=1
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      - MYSQL_HOST=0.0.0.0
+      - MYSQL_ROOT_PASSWORD=paimon@123
+      - MYSQL_DATABASE=paimon
+    networks:
+      dev:
+        ipv4_address: 172.21.0.17
+
+volumes:
+  mysql:
+
+networks:
+  dev:
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24

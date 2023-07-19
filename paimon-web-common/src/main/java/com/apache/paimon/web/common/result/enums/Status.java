@@ -16,21 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web;
+package com.apache.paimon.web.common.result.enums;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+/**
+ * Status enum.
+ *
+ * <p><b>NOTE:</b> This enumeration is used to define status codes and internationalization messages
+ * for response data. <br>
+ * This is mainly responsible for the internationalization information returned by the interface
+ */
+public enum Status {
+    /** response data msg */
+    SUCCESS(200, "Successfully"),
+    FAILED(400, "Failed"),
 
-/** Paimon Manager Server Application . */
-@SpringBootApplication
-public class PaimonWebServerApplication {
+    USER_NOT_EXIST(10001, "User Not Exist"),
+    ;
 
-    /**
-     * Main .
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(PaimonWebServerApplication.class, args);
+    private final int code;
+    private final String msg;
+
+    Status(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
+    public int getCode() {
+        return this.code;
+    }
+
+    public String getMsg() {
+        return this.msg;
     }
 }
