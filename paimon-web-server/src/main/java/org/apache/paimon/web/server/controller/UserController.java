@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.apache.paimon.web.common.result.enums.Status.USER_NOT_EXIST;
+import static com.apache.paimon.web.common.enums.Status.USER_NOT_EXIST;
 
 /** User api controller. */
 @Slf4j

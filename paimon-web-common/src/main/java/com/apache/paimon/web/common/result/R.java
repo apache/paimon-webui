@@ -18,7 +18,7 @@
 
 package com.apache.paimon.web.common.result;
 
-import com.apache.paimon.web.common.result.enums.Status;
+import com.apache.paimon.web.common.enums.Status;
 import lombok.Data;
 
 /**
