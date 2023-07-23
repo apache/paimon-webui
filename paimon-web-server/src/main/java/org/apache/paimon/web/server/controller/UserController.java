@@ -18,10 +18,10 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.common.result.R;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.service.UserService;
 
-import com.apache.paimon.web.common.result.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.apache.paimon.web.common.enums.Status.USER_NOT_EXIST;
+import static org.apache.paimon.web.common.enums.Status.USER_NOT_EXIST;
 
 /** User api controller. */
 @Slf4j

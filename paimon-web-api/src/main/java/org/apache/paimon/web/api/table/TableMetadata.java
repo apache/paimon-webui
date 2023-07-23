@@ -19,9 +19,9 @@
 package org.apache.paimon.web.api.table;
 
 import com.google.common.base.Preconditions;
-import org.apache.paimon.types.DataField;
 
 import javax.annotation.Nullable;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,11 +38,12 @@ public class TableMetadata {
 
     private final String comment;
 
-    public TableMetadata(List<ColumnMetadata> columns,
-                         List<String> partitionKeys,
-                         List<String> primaryKeys,
-                         Map<String, String> options,
-                         String comment) {
+    public TableMetadata(
+            List<ColumnMetadata> columns,
+            List<String> partitionKeys,
+            List<String> primaryKeys,
+            Map<String, String> options,
+            String comment) {
         this.columns = normalizeFields(columns, primaryKeys, partitionKeys);
         this.partitionKeys = partitionKeys;
         this.primaryKeys = primaryKeys;
@@ -72,7 +73,8 @@ public class TableMetadata {
 
     private static List<ColumnMetadata> normalizeFields(
             List<ColumnMetadata> columns, List<String> primaryKeys, List<String> partitionKeys) {
-        List<String> fieldNames = columns.stream().map(ColumnMetadata::name).collect(Collectors.toList());
+        List<String> fieldNames =
+                columns.stream().map(ColumnMetadata::name).collect(Collectors.toList());
 
         Set<String> duplicateColumns = duplicate(fieldNames);
         Preconditions.checkState(
@@ -122,9 +124,7 @@ public class TableMetadata {
             if (pkSet.contains(field.name()) && field.type().isNullable()) {
                 newFields.add(
                         new ColumnMetadata(
-                                field.name(),
-                                field.type().copy(false),
-                                field.description()));
+                                field.name(), field.type().copy(false), field.description()));
             } else {
                 newFields.add(field);
             }
@@ -151,8 +151,7 @@ public class TableMetadata {
 
         private Map<String, String> options = new HashMap<>();
 
-        @Nullable
-        private String comment;
+        @Nullable private String comment;
 
         public Builder columns(List<ColumnMetadata> columns) {
             this.columns = new ArrayList<>(columns);
@@ -183,5 +182,4 @@ public class TableMetadata {
             return new TableMetadata(columns, partitionKeys, primaryKeys, options, comment);
         }
     }
-
 }

@@ -20,15 +20,16 @@ package org.apache.paimon.web.api.catalog;
 
 import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.catalog.FileSystemCatalog;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /** The test class of catalog creator in {@link CatalogCreator}. */
 public class CatalogCreatorTest {
 
-    @TempDir
-    java.nio.file.Path tempFile;
+    @TempDir java.nio.file.Path tempFile;
 
     @Test
     public void testCreateFileSystemCatalog() {

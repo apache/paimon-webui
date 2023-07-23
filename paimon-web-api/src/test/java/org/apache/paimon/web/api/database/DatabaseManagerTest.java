@@ -20,6 +20,7 @@ package org.apache.paimon.web.api.database;
 
 import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.web.api.catalog.CatalogCreator;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,8 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 /** The test class of database manager in {@link DatabaseManager}. */
 public class DatabaseManagerTest {
 
-    @TempDir
-    java.nio.file.Path tempFile;
+    @TempDir java.nio.file.Path tempFile;
     Catalog catalog;
 
     @BeforeEach
@@ -53,7 +53,7 @@ public class DatabaseManagerTest {
     @Test
     public void testDatabaseExists() throws Catalog.DatabaseAlreadyExistException {
         DatabaseManager.createDatabase(catalog, "db_01");
-        boolean exists = DatabaseManager.databaseExists(catalog,"db_01");
+        boolean exists = DatabaseManager.databaseExists(catalog, "db_01");
         assertThat(exists).isTrue();
     }
 
@@ -63,6 +63,7 @@ public class DatabaseManagerTest {
         boolean exists = catalog.databaseExists("db_01");
         assertThat(exists).isTrue();
 
+        //  Create database throws DatabaseAlreadyExistException when database already exists
         assertThatExceptionOfType(Catalog.DatabaseAlreadyExistException.class)
                 .isThrownBy(() -> catalog.createDatabase("db_01", false))
                 .withMessage("Database db_01 already exists.");
@@ -74,6 +75,11 @@ public class DatabaseManagerTest {
         DatabaseManager.dropDatabase(catalog, "db_01");
         boolean exists = catalog.databaseExists("db_01");
         assertThat(exists).isFalse();
+
+        // Drop database throws DatabaseNotExistException when database does not exist
+        assertThatExceptionOfType(Catalog.DatabaseNotExistException.class)
+                .isThrownBy(() -> DatabaseManager.dropDatabase(catalog, "db_04"))
+                .withMessage("Database db_04 does not exist.");
     }
 
     @Test

@@ -33,7 +33,8 @@ public class CatalogCreator {
         return CatalogFactory.createCatalog(context);
     }
 
-    public static Catalog createHiveCatalog(String warehouse, String metastore, String uri, String hiveConfDir) {
+    public static Catalog createHiveCatalog(
+            String warehouse, String metastore, String uri, String hiveConfDir) {
         Options options = new Options();
         options.set(CatalogProperties.WAREHOUSE_LOCATION, warehouse);
         options.set(CatalogProperties.METASTORE_TYPE, metastore);

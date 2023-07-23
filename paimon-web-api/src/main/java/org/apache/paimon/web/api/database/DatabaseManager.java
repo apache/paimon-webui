@@ -25,7 +25,8 @@ import java.util.List;
 /** paimon database manager. */
 public class DatabaseManager {
 
-    public static void createDatabase(Catalog catalog, String name) throws Catalog.DatabaseAlreadyExistException {
+    public static void createDatabase(Catalog catalog, String name)
+            throws Catalog.DatabaseAlreadyExistException {
         catalog.createDatabase(name, false);
     }
 

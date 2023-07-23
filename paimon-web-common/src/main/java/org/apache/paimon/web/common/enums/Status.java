@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.apache.paimon.web.common.enums;
+package org.apache.paimon.web.common.enums;
 
 /**
  * Status enum.
