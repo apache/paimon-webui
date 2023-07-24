@@ -27,6 +27,7 @@ under the License.
         <module>paimon-web-server</module>
         <module>paimon-web-common</module>
         <module>paimon-web-gateway</module>
+        <module>paimon-web-api</module>
     </modules>
 
     <parent>
@@ -61,7 +62,7 @@ under the License.
     </scm>
 
     <properties>
-        <paimon.version>0.1-SNAPSHOT</paimon.version>
+        <project.version>0.1-SNAPSHOT</project.version>
         <java.version>8</java.version>
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
@@ -80,6 +81,7 @@ under the License.
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit5.version>5.8.1</junit5.version>
+        <assertj.version>3.23.1</assertj.version>
         <slf4j.version>1.7.25</slf4j.version>
         <log4j.version>2.17.1</log4j.version>
         <guava.version>31.1-jre</guava.version>
@@ -126,6 +128,13 @@ under the License.
             </dependency>
 
             <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
@@ -167,7 +176,6 @@ under the License.
                 <version>${mysql-connector-java.version}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -185,7 +193,6 @@ under the License.
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
