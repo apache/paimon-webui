@@ -22,6 +22,7 @@ import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.catalog.CatalogContext;
 import org.apache.paimon.catalog.FileSystemCatalog;
 import org.apache.paimon.catalog.Identifier;
+import org.apache.paimon.data.GenericRow;
 import org.apache.paimon.data.InternalRow;
 import org.apache.paimon.fs.FileIO;
 import org.apache.paimon.fs.Path;
@@ -30,6 +31,7 @@ import org.apache.paimon.options.Options;
 import org.apache.paimon.reader.RecordReader;
 import org.apache.paimon.schema.Schema;
 import org.apache.paimon.table.Table;
+import org.apache.paimon.table.sink.*;
 import org.apache.paimon.table.source.ReadBuilder;
 import org.apache.paimon.table.source.Split;
 import org.apache.paimon.table.source.TableRead;
@@ -37,8 +39,12 @@ import org.apache.paimon.utils.SnapshotManager;
 import org.apache.paimon.web.api.common.CatalogEntity;
 import org.apache.paimon.web.api.common.CatalogProperties;
 import org.apache.paimon.web.api.common.MetastoreType;
+import org.apache.paimon.web.api.common.WriteMode;
+import org.apache.paimon.web.common.annotation.VisibleForTesting;
 
 import com.google.common.collect.ImmutableList;
+
+import javax.annotation.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +59,9 @@ public class TableManager {
     private static final String SCHEMAS = "schemas";
     private static final String OPTIONS = "options";
     private static final String MANIFESTS = "manifests";
+    private static final String FILES = "files";
+    private static final String CONSUMER = "consumers";
+    private static final String TAGS = "tags";
 
     public static void createTable(
             Catalog catalog, String dbName, String tableName, TableMetadata tableMetadata)
@@ -114,10 +123,13 @@ public class TableManager {
             Catalog catalog, CatalogEntity catalogEntity, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
         List<SnapshotTableMetadata> snapshots = new ArrayList<>();
+
         Table table = GetTable(catalog, dbName, "`" + tableName + "$" + SNAPSHOTS + "`");
-        RecordReader<InternalRow> reader = getReader(table);
+
         SnapshotManager snapshotManager =
                 getSnapshotManager(catalog, catalogEntity, dbName, tableName);
+
+        RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
                 row -> {
                     SnapshotTableMetadata snapshotTableMetadata =
@@ -137,6 +149,7 @@ public class TableManager {
                                     .build();
                     snapshots.add(snapshotTableMetadata);
                 });
+
         return snapshots;
     }
 
@@ -144,7 +157,9 @@ public class TableManager {
             Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
         List<SchemaTableMetadata> schemas = new ArrayList<>();
+
         Table table = GetTable(catalog, dbName, "`" + tableName + "$" + SCHEMAS + "`");
+
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
                 row -> {
@@ -159,6 +174,7 @@ public class TableManager {
                                     .build();
                     schemas.add(schemaTableMetadata);
                 });
+
         return schemas;
     }
 
@@ -166,7 +182,9 @@ public class TableManager {
             Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
         List<OptionTableMetadata> options = new ArrayList<>();
+
         Table table = GetTable(catalog, dbName, "`" + tableName + "$" + OPTIONS + "`");
+
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
                 row -> {
@@ -175,6 +193,7 @@ public class TableManager {
                                     row.getString(1).toString(), row.getString(2).toString());
                     options.add(optionsTableMetadata);
                 });
+
         return options;
     }
 
@@ -182,7 +201,9 @@ public class TableManager {
             Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
         List<ManifestTableMetadata> manifests = new ArrayList<>();
+
         Table table = GetTable(catalog, dbName, "`" + tableName + "$" + MANIFESTS + "`");
+
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
                 row -> {
@@ -196,17 +217,94 @@ public class TableManager {
                                     .build();
                     manifests.add(manifestTableMetadata);
                 });
+
         return manifests;
     }
 
+    public static List<FileTableMetadata> listFiles(
+            Catalog catalog, String dbName, String tableName)
+            throws Catalog.TableNotExistException, IOException {
+        List<FileTableMetadata> files = new ArrayList<>();
+
+        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + FILES + "`");
+
+        RecordReader<InternalRow> reader = getReader(table);
+        reader.forEachRemaining(
+                row -> {
+                    FileTableMetadata fileTableMetadata =
+                            FileTableMetadata.builder()
+                                    .partition(row.getString(1).toString())
+                                    .bucket(row.getInt(2))
+                                    .filePath(row.getString(3).toString())
+                                    .fileFormat(row.getString(4).toString())
+                                    .schemaId(row.getLong(5))
+                                    .level(row.getInt(6))
+                                    .fileSizeInBytes(row.getLong(7))
+                                    .minKey(row.getString(8).toString())
+                                    .maxKey(row.getString(9).toString())
+                                    .nullValueCounts(row.getString(10).toString())
+                                    .minValueStats(row.getString(11).toString())
+                                    .maxValueStats(row.getString(12).toString())
+                                    .creationTime(row.getTimestamp(13, 6).toLocalDateTime())
+                                    .build();
+                    files.add(fileTableMetadata);
+                });
+
+        return files;
+    }
+
+    public static List<ConsumerTableMetadata> listConsumers(
+            Catalog catalog, String dbName, String tableName)
+            throws Catalog.TableNotExistException, IOException {
+        List<ConsumerTableMetadata> consumers = new ArrayList<>();
+
+        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + CONSUMER + "`");
+
+        RecordReader<InternalRow> reader = getReader(table);
+
+        reader.forEachRemaining(
+                row -> {
+                    ConsumerTableMetadata consumerTableMetadata =
+                            new ConsumerTableMetadata(row.getString(1).toString(), row.getLong(2));
+                    consumers.add(consumerTableMetadata);
+                });
+        return consumers;
+    }
+
+    public static List<TagTableMetadata> listTags(Catalog catalog, String dbName, String tableName)
+            throws Catalog.TableNotExistException, IOException {
+        List<TagTableMetadata> tags = new ArrayList<>();
+
+        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + TAGS + "`");
+
+        RecordReader<InternalRow> reader = getReader(table);
+        reader.forEachRemaining(
+                row -> {
+                    TagTableMetadata tagTableMetadata =
+                            TagTableMetadata.builder()
+                                    .tagName(row.getString(1).toString())
+                                    .snapshotId(row.getLong(2))
+                                    .schemaId(row.getLong(3))
+                                    .createTime(row.getTimestamp(4, 3).toLocalDateTime())
+                                    .recordCount(row.getLong(5))
+                                    .build();
+                    tags.add(tagTableMetadata);
+                });
+
+        return tags;
+    }
+
+    @VisibleForTesting
     private static SnapshotManager getSnapshotManager(
             Catalog catalog, CatalogEntity catalogEntity, String dbName, String tableName)
             throws IOException {
         String warehouse = catalogEntity.getWarehouse();
+
         FileIO fileIO =
                 FileIO.get(
                         new Path(warehouse),
                         CatalogContext.create(buildOptions(catalog, catalogEntity)));
+
         String tablePath = warehouse + "/" + dbName + ".db" + "/" + tableName;
         return new SnapshotManager(fileIO, new Path(tablePath));
     }
@@ -224,6 +322,7 @@ public class TableManager {
         return options;
     }
 
+    @VisibleForTesting
     private static RecordReader<InternalRow> getReader(Table table) {
         ReadBuilder readBuilder = table.newReadBuilder();
         List<Split> splits = readBuilder.newScan().plan().splits();
@@ -232,6 +331,59 @@ public class TableManager {
             return tableRead.createReader(splits);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @VisibleForTesting
+    private static WriteBuilder getWriteBuilder(
+            Table table, String writeMode, @Nullable Map<String, String> staticPartition) {
+        if (writeMode.equals(WriteMode.BATCH.getValue())) {
+            return table.newBatchWriteBuilder().withOverwrite(staticPartition);
+        } else {
+            return table.newStreamWriteBuilder();
+        }
+    }
+
+    public static TableWrite getBatchTableWriter(
+            Table table, @Nullable Map<String, String> staticPartition) {
+        BatchWriteBuilder writeBuilder =
+                (BatchWriteBuilder)
+                        getWriteBuilder(table, WriteMode.BATCH.getValue(), staticPartition);
+        return writeBuilder.newWrite();
+    }
+
+    public static TableWrite getStreamTableWriter(Table table) {
+        StreamWriteBuilder writeBuilder =
+                (StreamWriteBuilder) getWriteBuilder(table, WriteMode.STREAM.getValue(), null);
+        return writeBuilder.newWrite();
+    }
+
+    public static void batchWrite(
+            List<GenericRow> records,
+            Catalog catalog,
+            String dbName,
+            String tableName,
+            @Nullable Map<String, String> staticPartition)
+            throws Exception {
+        BatchWriteBuilder writeBuilder =
+                (BatchWriteBuilder)
+                        getWriteBuilder(
+                                GetTable(catalog, dbName, tableName),
+                                WriteMode.BATCH.getValue(),
+                                staticPartition);
+
+        List<CommitMessage> commitMessages;
+        try (BatchTableWrite writer = writeBuilder.newWrite()) {
+
+            for (GenericRow record : records) {
+                writer.write(record);
+            }
+
+            commitMessages = writer.prepareCommit();
+        }
+
+        try (BatchTableCommit commit = writeBuilder.newCommit()) {
+            commit.commit(commitMessages);
         }
     }
 

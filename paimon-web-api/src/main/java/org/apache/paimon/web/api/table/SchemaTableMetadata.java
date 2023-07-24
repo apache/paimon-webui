@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.api.table;
 
+import javax.annotation.Nullable;
+
 /** schema table metadata. */
 public class SchemaTableMetadata {
 
@@ -77,7 +79,7 @@ public class SchemaTableMetadata {
         private String partitionKeys;
         private String primaryKeys;
         private String options;
-        private String comment;
+        @Nullable private String comment;
 
         public Builder schemaId(Long schemaId) {
             this.schemaId = schemaId;

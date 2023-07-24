@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.api.table;
 
+import javax.annotation.Nullable;
+
 import java.time.LocalDateTime;
 
 /** snapshot table metadata. */
@@ -116,10 +118,10 @@ public class SnapshotTableMetadata {
         private Long commitIdentifier;
         private String commitKind;
         private LocalDateTime commitTime;
-        private Long totalRecordCount;
-        private Long deltaRecordCount;
-        private Long changelogRecordCount;
-        private Long watermark;
+        @Nullable private Long totalRecordCount;
+        @Nullable private Long deltaRecordCount;
+        @Nullable private Long changelogRecordCount;
+        @Nullable private Long watermark;
 
         public Builder snapshotId(Long snapshotId) {
             this.snapshotId = snapshotId;
