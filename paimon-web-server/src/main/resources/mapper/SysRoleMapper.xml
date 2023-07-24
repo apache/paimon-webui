@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.paimon.web.server.mapper.SysRoleMapper">
+
+	<resultMap type="org.apache.paimon.web.server.data.model.SysRole" id="SysRoleResult">
+		<id     property="id"             	  column="id"               />
+		<result property="roleName"           column="role_name"             />
+		<result property="roleKey"            column="role_key"              />
+		<result property="sort"           column="sort"             />
+		<result property="enabled"             column="enabled"                />
+		<result property="isDelete"            column="is_delete"              />
+		<result property="createTime"         column="create_time"           />
+		<result property="updateTime"         column="update_time"           />
+		<result property="remark"             column="remark"                />
+	</resultMap>
+	
+	<sql id="selectRoleVo">
+	    select distinct r.id, r.role_name, r.role_key, r.sort,
+            r.enabled, r.is_delete, r.create_time, r.remark
+        from sys_role r
+	        left join user_role urole on urole.role_id = r.id
+	        left join user u on u.id = urole.user_id
+    </sql>
+    
+    <select id="selectRoleList" parameterType="org.apache.paimon.web.server.data.model.SysRole" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		where r.is_delete = '0'
+		<if test="role.id != null and role.id != 0">
+			AND r.id = #{role.id}
+		</if>
+		<if test="role.roleName != null and role.roleName != ''">
+			AND r.role_name like concat('%', #{role.roleName}, '%')
+		</if>
+		<if test="role.enabled != null and role.enabled != ''">
+			AND r.enabled = #{role.enabled}
+		</if>
+		<if test="role.roleKey != null and role.roleKey != ''">
+			AND r.role_key like concat('%', #{role.roleKey}, '%')
+		</if>
+		<if test="role.params.beginTime != null and role.params.beginTime != ''"><!-- 开始时间检索 -->
+			and date_format(r.create_time,'%y%m%d') &gt;= date_format(#{role.params.beginTime},'%y%m%d')
+		</if>
+		<if test="role.params.endTime != null and role.params.endTime != ''"><!-- 结束时间检索 -->
+			and date_format(r.create_time,'%y%m%d') &lt;= date_format(#{role.params.endTime},'%y%m%d')
+		</if>
+		order by r.sort
+	</select>
+    
+	<select id="selectRolePermissionByUserId" parameterType="Integer" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		WHERE r.is_delete = '0' and ur.user_id = #{userId}
+	</select>
+	
+	<select id="selectRoleAll" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+	</select>
+	
+	<select id="selectRoleListByUserId" parameterType="Integer" resultType="Integer">
+		select r.id from sys_role r left join user_role urole on urole.role_id = r.id left join user u on u.id = urole.user_id where u.id = #{userId}
+	</select>
+	
+	<select id="selectRoleById" parameterType="Integer" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		where r.id = #{id}
+	</select>
+	
+	<select id="selectRolesByUserName" parameterType="String" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		WHERE r.is_delete = '0' and u.user_name = #{userName}
+	</select>
+ 	
+</mapper> 

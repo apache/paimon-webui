@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.enums;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+/** menu type enum. */
+public enum MenuType {
+    /** directory */
+    DIR("M"),
+    /** menu */
+    MENU("C"),
+    /** button */
+    BUTTON("F"),
+    ;
 
-/** tenant use to isolate data. */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class Tenant extends BaseModel {
+    private final String type;
 
-    private static final long serialVersionUID = 1L;
+    MenuType(String type) {
+        this.type = type;
+    }
 
-    /** tenant name. */
-    private String name;
-
-    /** tenant description. */
-    private String description;
-
-    /** is delete. */
-    @TableLogic private Boolean isDelete;
+    public String getType() {
+        return this.type;
+    }
 }

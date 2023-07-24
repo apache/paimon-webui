@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.vo;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import org.apache.paimon.web.server.data.tree.TreeSelect;
 
-/** tenant use to isolate data. */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class Tenant extends BaseModel {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
-    private static final long serialVersionUID = 1L;
+import java.util.List;
 
-    /** tenant name. */
-    private String name;
+/** Role Menu List Tree Vo. */
+@Getter
+public class RoleMenuTreeselectVo {
+    private final List<Integer> checkedKeys;
+    private final List<TreeSelect> menus;
 
-    /** tenant description. */
-    private String description;
-
-    /** is delete. */
-    @TableLogic private Boolean isDelete;
+    public RoleMenuTreeselectVo(
+            @JsonProperty("checkedKeys") List<Integer> checkedKeys,
+            @JsonProperty("menus") List<TreeSelect> menus) {
+        this.checkedKeys = checkedKeys;
+        this.menus = menus;
+    }
 }

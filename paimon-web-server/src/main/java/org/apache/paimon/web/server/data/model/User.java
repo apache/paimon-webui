@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.server.data.model;
 
+import org.apache.paimon.web.server.constant.Constants;
+
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,9 +30,6 @@ import lombok.EqualsAndHashCode;
 public class User extends BaseModel {
 
     private static final long serialVersionUID = 1L;
-
-    /** ID. */
-    private Integer id;
 
     /** username. */
     private String username;
@@ -58,4 +57,12 @@ public class User extends BaseModel {
 
     /** avatar url. */
     private String url;
+
+    public boolean isAdmin() {
+        return isAdmin(this.getId());
+    }
+
+    public static boolean isAdmin(Integer userId) {
+        return userId != null && Constants.ADMIN_ID == userId;
+    }
 }

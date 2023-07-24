@@ -29,9 +29,6 @@ public class UserTenant extends BaseModel {
 
     private static final long serialVersionUID = 1L;
 
-    /** ID. */
-    private Integer id;
-
     /** user id. */
     private Integer userId;
 

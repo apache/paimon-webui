@@ -18,53 +18,53 @@
 
 package org.apache.paimon.web.server.mapper;
 
-import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.model.RoleMenu;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-/** User table mapper. */
+/** role-menu mapper. */
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
     /**
-     * Query user list.
+     * Query menu usage quantity.
      *
-     * @param user query params
-     * @return user list
+     * @param menuId menu ID
+     * @return result
      */
-    List<User> selectUserList(User user);
+    int checkMenuExistRole(Integer menuId);
 
     /**
-     * Query user list by role ID.
+     * Delete roles and menu associations through role ID.
      *
-     * @param user query params
-     * @return user list
+     * @param roleId role ID
+     * @return result
      */
-    List<User> selectAllocatedList(User user);
+    int deleteRoleMenuByRoleId(Integer roleId);
 
     /**
-     * Query the list of unassigned user roles.
+     * Batch delete role menu association information.
      *
-     * @param user query params
-     * @return user list
+     * @param roleIds roleIds
+     * @return result
      */
-    List<User> selectUnallocatedList(User user);
+    int deleteRoleMenu(Integer[] roleIds);
 
     /**
-     * Query user info by username.
+     * Batch Add Role Menu Information.
      *
-     * @param username username
-     * @return user info
+     * @param roleMenuList role-menu List
+     * @return result
      */
-    User selectUserByUserName(String username);
+    int batchRoleMenu(List<RoleMenu> roleMenuList);
 
     /**
-     * Query user info by user ID.
+     * Query the menu permissions that users have.
      *
      * @param userId user ID
-     * @return user info
+     * @return result
      */
-    User selectUserById(Integer userId);
+    List<RoleMenu> queryRoleMenuByUser(Integer userId);
 }

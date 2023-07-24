@@ -19,15 +19,24 @@
 package org.apache.paimon.web.server.data.model;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /** base model of table. */
 @Data
 public abstract class BaseModel implements Serializable {
+
+    /** id */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
     /** create time. */
     @TableField(fill = FieldFill.INSERT)
@@ -36,4 +45,15 @@ public abstract class BaseModel implements Serializable {
     /** update time. */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
+    @TableField(exist = false)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Map<String, Object> params;
+
+    public Map<String, Object> getParams() {
+        if (params == null) {
+            params = new HashMap<>(8);
+        }
+        return params;
+    }
 }

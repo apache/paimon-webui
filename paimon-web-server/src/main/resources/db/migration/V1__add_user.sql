@@ -18,3 +18,5 @@ CREATE TABLE `user`
 
 INSERT INTO `user` (id, username, password, nickname, mobile, email, enabled, is_delete)
 VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', 0, 'admin@paimon.com', 1, 0);
+INSERT INTO `user` (id, username, password, nickname, mobile, email, enabled, is_delete)
+VALUES (2, 'common', '21232f297a57a5a743894a0e4a801fc3', 'common', 0, 'common@paimon.com', 1, 0);

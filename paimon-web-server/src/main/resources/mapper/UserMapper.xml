@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.paimon.web.server.mapper.UserMapper">
+
+    <resultMap type="org.apache.paimon.web.server.data.model.User" id="SysUserResult">
+        <id     property="id"       column="id"      />
+        <result property="username"     column="user_name"    />
+        <result property="nickname"     column="nick_name"    />
+        <result property="email"        column="email"        />
+        <result property="mobile"  column="mobile"  />
+        <result property="url"          column="url"          />
+        <result property="enabled"     column="enabled"     />
+        <result property="password"     column="password"     />
+        <result property="isDelete"       column="is_delete"       />
+        <result property="createTime"   column="create_time"  />
+        <result property="updateTime"   column="update_time"  />
+        <collection  property="roles"   javaType="java.util.List"           resultMap="RoleResult" />
+    </resultMap>
+	
+    <resultMap id="RoleResult" type="org.apache.paimon.web.server.data.model.SysRole">
+        <id     property="id"       column="role_id"        />
+        <result property="roleName"     column="role_name"      />
+        <result property="roleKey"      column="role_key"       />
+        <result property="sort"     column="sort"      />
+        <result property="enabled"       column="enabled"    />
+    </resultMap>
+	
+	<sql id="selectUserVo">
+        select u.id, u.username, u.nickname, u.email, u.url, u.mobile, u.password, u.is_delete, u.enabled, u.create_time,
+        r.id, r.role_name, r.role_key, r.sort, r.enabled as role_status
+        from user u
+		    left join user_role urole on u.id = urole.user_id
+		    left join sys_role r on r.id = urole.role_id
+    </sql>
+    
+    <select id="selectUserList" parameterType="org.apache.paimon.web.server.data.model.User" resultMap="SysUserResult">
+		select u.id, u.nickname, u.username, u.email, u.url, u.mobile, u.enabled, u.is_delete, u.create_time from user u
+		where u.is_delete = '0'
+		<if test="id != null and id != 0">
+			AND u.id = #{userId}
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username like concat('%', #{userName}, '%')
+		</if>
+		<if test="enabled != null and enabled != ''">
+			AND u.enabled = #{enabled}
+		</if>
+		<if test="mobile != null and mobile != ''">
+			AND u.mobile like concat('%', #{mobile}, '%')
+		</if>
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+		</if>
+	</select>
+	
+	<select id="selectAllocatedList" parameterType="org.apache.paimon.web.server.data.model.User" resultMap="SysUserResult">
+	    select distinct u.id, u.username, u.nickname, u.email, u.mobile, u.enabled, u.create_time
+	    from user u
+			 left join user_role urole on u.id = urole.user_id
+			 left join sys_role r on r.id = urole.role_id
+	    where u.is_delete = '0' and r.id = #{roleId}
+	    <if test="username != null and username != ''">
+			AND u.username like concat('%', #{username}, '%')
+		</if>
+		<if test="mobile != null and mobile != ''">
+			AND u.mobile like concat('%', #{mobile}, '%')
+		</if>
+	</select>
+	
+	<select id="selectUnallocatedList" parameterType="org.apache.paimon.web.server.data.model.User" resultMap="SysUserResult">
+	    select distinct u.id u.username, u.nickname, u.email, u.mobile, u.enabled, u.create_time
+	    from user u
+			 left join user_role urole on u.id = urole.user_id
+			 left join sys_role r on r.id = urole.role_id
+	    where u.is_delete = '0' and (r.id != #{roleId} or r.id IS NULL)
+	    and u.id not in (select u.id from user u inner join user_role urole on u.id = urole.user_id and urole.role_id = #{roleId})
+	    <if test="username != null and username != ''">
+			AND u.username like concat('%', #{username}, '%')
+		</if>
+		<if test="mobile != null and mobile != ''">
+			AND u.mobile like concat('%', #{mobile}, '%')
+		</if>
+	</select>
+	
+	<select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
+	    <include refid="selectUserVo"/>
+		where u.username = #{username} and u.is_delete = '0'
+	</select>
+	
+	<select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where u.id = #{id}
+	</select>
+	
+</mapper> 
