@@ -24,10 +24,12 @@ import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.tree.TreeSelect;
 import org.apache.paimon.web.server.data.vo.RoleMenuTreeselectVo;
+import org.apache.paimon.web.server.data.vo.RouterVo;
 import org.apache.paimon.web.server.service.SysMenuService;
 import org.apache.paimon.web.server.util.StringUtils;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -113,5 +115,13 @@ public class SysMenuController {
             return R.failed(Status.MENU_IN_USED);
         }
         return menuService.deleteMenuById(menuId) ? R.succeed() : R.failed();
+    }
+
+    /** Get router list. */
+    @GetMapping("/getRouters")
+    public R<List<RouterVo>> getRouters() {
+        int userId = StpUtil.getLoginIdAsInt();
+        List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
+        return R.succeed(menuService.buildMenus(menus));
     }
 }

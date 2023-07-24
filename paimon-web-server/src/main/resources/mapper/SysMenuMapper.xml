@@ -47,7 +47,7 @@
 	
 	<select id="selectMenuTreeAll" resultMap="SysMenuResult">
 		select distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.visible, m.enabled, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.type, m.icon, m.sort, m.create_time
-		from sys_menu m where m.type in ('M', 'C') and m.enabled = 0
+		from sys_menu m where m.type in ('M', 'C') and m.enabled = 1
 		order by m.parent_id, m.sort
 	</select>
 	
@@ -77,7 +77,7 @@
 			 left join user_role urole on rm.role_id = urole.role_id
 			 left join sys_role ro on urole.role_id = ro.id
 			 left join user u on urole.user_id = u.id
-		where u.id = #{userId} and m.type in ('M', 'C') and m.enabled = 0  AND ro.enabled = 0
+		where u.id = #{userId} and m.type in ('M', 'C') and m.enabled = 1  AND ro.enabled = 1
 		order by m.parent_id, m.sort
 	</select>
 	
@@ -102,14 +102,14 @@
 			 left join role_menu rm on m.id = rm.menu_id
 			 left join user_role urole on rm.role_id = urole.role_id
 			 left join sys_role r on r.id = urole.role_id
-		where m.enabled = '0' and r.enabled = '0' and urole.user_id = #{userId}
+		where m.enabled = 1 and r.enabled = 1 and urole.user_id = #{userId}
 	</select>
 	
 	<select id="selectMenuPermsByRoleId" parameterType="Integer" resultType="String">
 		select distinct m.perms
 		from sys_menu m
 			 left join role_menu rm on m.id = rm.menu_id
-		where m.enabled = '0' and rm.role_id = #{roleId}
+		where m.enabled = 1 and rm.role_id = #{roleId}
 	</select>
 	
 	<select id="selectMenuById" parameterType="Integer" resultMap="SysMenuResult">

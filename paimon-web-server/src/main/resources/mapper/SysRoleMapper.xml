@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectRolesByUserName" parameterType="String" resultMap="SysRoleResult">
 		<include refid="selectRoleVo"/>
-		WHERE r.is_delete = '0' and u.user_name = #{userName}
+		WHERE r.is_delete = 0 and u.user_name = #{userName}
 	</select>
  	
 </mapper> 
