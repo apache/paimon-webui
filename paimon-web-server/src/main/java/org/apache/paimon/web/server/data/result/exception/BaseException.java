@@ -16,36 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.enums;
+package org.apache.paimon.web.server.data.result.exception;
 
-/**
- * Status enum.
- *
- * <p><b>NOTE:</b> This enumeration is used to define status codes and internationalization messages
- * for response data. <br>
- * This is mainly responsible for the internationalization information returned by the interface
- */
-public enum Status {
-    /** response data msg */
-    SUCCESS(200, "Successfully"),
-    FAILED(400, "Failed"),
+import org.apache.paimon.web.server.data.result.enums.Status;
 
-    USER_NOT_EXIST(10001, "User Not Exist"),
-    ;
+/** base exception. */
+public abstract class BaseException extends RuntimeException {
+    /** status */
+    private final Status status;
 
-    private final int code;
-    private final String msg;
+    /** msg args */
+    private final Object[] args;
 
-    Status(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
+    public BaseException(Status status, Object[] args) {
+        this.status = status;
+        this.args = args;
     }
 
-    public int getCode() {
-        return this.code;
+    public BaseException(Status status) {
+        this(status, null);
     }
 
-    public String getMsg() {
-        return this.msg;
+    public Status getStatus() {
+        return status;
+    }
+
+    public Object[] getArgs() {
+        return args;
     }
 }

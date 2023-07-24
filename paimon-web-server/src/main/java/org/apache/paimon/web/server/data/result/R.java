@@ -16,10 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.result;
+package org.apache.paimon.web.server.data.result;
 
-import org.apache.paimon.web.common.enums.Status;
+import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.util.MessageUtils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /** result */
@@ -32,7 +34,10 @@ public class R<T> {
     /** result data */
     private final T data;
 
-    public R(int code, String msg, T data) {
+    public R(
+            @JsonProperty("code") int code,
+            @JsonProperty("msg") String msg,
+            @JsonProperty("data") T data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
@@ -47,11 +52,11 @@ public class R<T> {
     }
 
     public static <T> R<T> succeed() {
-        return of(null, Status.SUCCESS.getCode(), Status.SUCCESS.getMsg());
+        return of(null, Status.SUCCESS.getCode(), MessageUtils.getMsg(Status.SUCCESS.getMsg()));
     }
 
     public static <T> R<T> succeed(T data) {
-        return of(data, Status.SUCCESS.getCode(), Status.SUCCESS.getMsg());
+        return of(data, Status.SUCCESS.getCode(), MessageUtils.getMsg(Status.SUCCESS.getMsg()));
     }
 
     public static <T> R<T> failed() {
@@ -59,10 +64,14 @@ public class R<T> {
     }
 
     public static <T> R<T> failed(Status status) {
-        return of(null, status.getCode(), status.getMsg());
+        return of(null, status.getCode(), MessageUtils.getMsg(status.getMsg()));
+    }
+
+    public static <T> R<T> failed(Status status, Object... args) {
+        return of(null, status.getCode(), MessageUtils.getMsg(status.getMsg(), args));
     }
 
     public static <T> R<T> failed(T data) {
-        return of(data, Status.FAILED.getCode(), Status.FAILED.getMsg());
+        return of(data, Status.FAILED.getCode(), MessageUtils.getMsg(Status.FAILED.getMsg()));
     }
 }
