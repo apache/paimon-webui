@@ -24,6 +24,7 @@ import org.apache.paimon.catalog.CatalogFactory;
 import org.apache.paimon.fs.Path;
 import org.apache.paimon.options.Options;
 import org.apache.paimon.web.api.common.CatalogProperties;
+import org.apache.paimon.web.api.common.MetastoreType;
 
 /** paimon catalog creator. */
 public class CatalogCreator {
@@ -33,11 +34,10 @@ public class CatalogCreator {
         return CatalogFactory.createCatalog(context);
     }
 
-    public static Catalog createHiveCatalog(
-            String warehouse, String metastore, String uri, String hiveConfDir) {
+    public static Catalog createHiveCatalog(String warehouse, String uri, String hiveConfDir) {
         Options options = new Options();
-        options.set(CatalogProperties.WAREHOUSE_LOCATION, warehouse);
-        options.set(CatalogProperties.METASTORE_TYPE, metastore);
+        options.set(CatalogProperties.WAREHOUSE, warehouse);
+        options.set(CatalogProperties.METASTORE, MetastoreType.HIVE.toString());
         options.set(CatalogProperties.URI, uri);
         options.set(CatalogProperties.HIVE_CONF_DIR, hiveConfDir);
         CatalogContext context = CatalogContext.create(options);
