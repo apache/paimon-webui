@@ -31,4 +31,14 @@ values (1, 'all', 0, 1, 'system', null, 1, 'M', 'system', 'admin', 'system root 
        (1001, 'user add', 100, 2, '', '', 1, 'F', 'system:user:add', '#', ''),
        (1002, 'user edit', 100, 3, '', '', 1, 'F', 'system:user:edit', '#', ''),
        (1003, 'user del', 100, 4, '', '', 1, 'F', 'system:user:remove', '#', ''),
-       (1004, 'user reset', 100, 5, '', '', 1, 'F', 'system:user:resetPwd', '#', '');
+       (1004, 'user reset', 100, 5, '', '', 1, 'F', 'system:user:resetPwd', '#', ''),
+       (200, 'role manager', 1, 1, 'role', 'role/index', 1, 'C', 'system:role:list', 'role', 'role manager'),
+       (2000, 'role query', 200, 1, '', '', 1, 'F', 'system:role:query', '#', ''),
+       (2001, 'role add', 200, 2, '', '', 1, 'F', 'system:role:add', '#', ''),
+       (2002, 'role edit', 200, 3, '', '', 1, 'F', 'system:role:edit', '#', ''),
+       (2003, 'role del', 200, 4, '', '', 1, 'F', 'system:role:remove', '#', ''),
+       (300, 'menu manager', 1, 1, 'menu', 'menu/index', 1, 'C', 'system:menu:list', 'menu', 'menu manager'),
+       (3000, 'menu query', 300, 1, '', '', 1, 'F', 'system:menu:query', '#', ''),
+       (3001, 'menu add', 300, 2, '', '', 1, 'F', 'system:menu:add', '#', ''),
+       (3002, 'menu edit', 300, 3, '', '', 1, 'F', 'system:menu:edit', '#', ''),
+       (3003, 'menu del', 300, 4, '', '', 1, 'F', 'system:menu:remove', '#', '');
