@@ -22,7 +22,7 @@ package org.apache.paimon.web.server;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-/** Paimon Manager Server Application Tests . */
+/** Paimon Manager Server Application Tests. */
 @SpringBootTest
 class PaimonWebServerApplicationTests {
 
