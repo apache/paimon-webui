@@ -16,14 +16,13 @@
  * limitations under the License.
  */
 
-package com.apache.paimon.web.common.result;
+package org.apache.paimon.web.common.result;
 
-import com.apache.paimon.web.common.result.enums.Status;
+import org.apache.paimon.web.common.enums.Status;
+
 import lombok.Data;
 
-/**
- * result
- */
+/** result */
 @Data
 public class R<T> {
     /** result code */

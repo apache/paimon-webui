@@ -15,13 +15,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import MonacoEditor from 'react-monaco-editor'
+import {Editor as MonacoEditor} from "@monaco-editor/react";
+
+import React from "react";
 import useThemeSwitcher from "@utils/mode.ts";
 
-const Editor  = () => {
-    const { dark } = useThemeSwitcher();
+export type EditorProps = {
+    value?: string;
+    theme?: string;
+}
+const Editor:React.FC<EditorProps> = (props) => {
+    const {dark} = useThemeSwitcher();
 
-    console.log(dark)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const handleEditorChange = (value, event) => {
@@ -35,10 +40,11 @@ const Editor  = () => {
     return (
         <div>
             <MonacoEditor
+                value={props.value}
                 width="auto"
                 height="500px"
                 language="java"
-                theme={dark ? 'hc-black' : 'hc-light'}
+                theme={dark ? 'vs-dark' : 'light'}
                 options={editorOptions}
                 onChange={handleEditorChange}
             />
@@ -46,5 +52,5 @@ const Editor  = () => {
     );
 };
 
-export default Editor ;
+export default Editor;
 

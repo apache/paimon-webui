@@ -16,36 +16,40 @@
  * limitations under the License.
  */
 
-package com.apache.paimon.web.common.result.enums;
+package org.apache.paimon.web.api.table;
 
-/**
- * Status enum.
- *
- * <p><b>NOTE:</b> This enumeration is used to define status codes and internationalization messages
- * for response data. <br>
- * This is mainly responsible for the internationalization information returned by the interface
- */
-public enum Status {
-    /** response data msg */
-    SUCCESS(200, "Successfully"),
-    FAILED(400, "Failed"),
+import org.apache.paimon.types.DataType;
 
-    USER_NOT_EXIST(10001, "User Not Exist"),
-    ;
+import javax.annotation.Nullable;
 
-    private final int code;
-    private final String msg;
+/** table metadata. */
+public class ColumnMetadata {
 
-    Status(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
+    private final String name;
+
+    private final DataType type;
+
+    private final @Nullable String description;
+
+    public ColumnMetadata(String name, DataType type) {
+        this(name, type, null);
     }
 
-    public int getCode() {
-        return this.code;
+    public ColumnMetadata(String name, DataType type, String description) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
     }
 
-    public String getMsg() {
-        return this.msg;
+    public String name() {
+        return this.name;
+    }
+
+    public DataType type() {
+        return this.type;
+    }
+
+    public String description() {
+        return this.description;
     }
 }

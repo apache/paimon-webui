@@ -15,20 +15,23 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { useState } from 'react';
+import {useState} from 'react';
 import {TabPane, Tabs} from '@douyinfe/semi-ui';
 import {IconCode} from "@douyinfe/semi-icons";
 import Editor from "@components/Editor";
 
 const Index = () => {
+    const genContent = (value:string) => {
+      return <Editor value={value}/>
+    }
     const [tabList, setTabList] = useState([
-        { tab: 'user', itemKey: '1', content: <Editor/>, closable: true },
-        { tab: 'student', itemKey: '2', content: <Editor/>, closable: true }
+        { tab: 'user', itemKey: '1', content: genContent(""), closable: true },
+        { tab: 'student', itemKey: '2', content: genContent("12"), closable: true }
     ]);
 
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const close = (key) => {
+    const close = (key:string) => {
         const newTabList = tabList.filter((t) => t.itemKey !== key);
         setTabList(newTabList);
     };
