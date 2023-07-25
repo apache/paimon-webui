@@ -73,6 +73,7 @@ public class SchemaTableMetadata {
         return new Builder();
     }
 
+    /** The builder for SchemaTableMetadata. */
     public static final class Builder {
         private Long schemaId;
         private String fields;

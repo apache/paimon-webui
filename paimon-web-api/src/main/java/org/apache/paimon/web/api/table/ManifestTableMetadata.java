@@ -64,6 +64,7 @@ public class ManifestTableMetadata {
         return new Builder();
     }
 
+    /** The builder for ManifestTableMetadata. */
     public static final class Builder {
         private String fileName;
         private Long fileSize;

@@ -110,6 +110,7 @@ public class SnapshotTableMetadata {
         return new Builder();
     }
 
+    /** The builder for SnapshotTableMetadata. */
     public static final class Builder {
         private Long snapshotId;
         private String snapshotPath;

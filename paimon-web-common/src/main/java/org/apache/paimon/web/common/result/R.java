@@ -22,14 +22,14 @@ import org.apache.paimon.web.common.enums.Status;
 
 import lombok.Data;
 
-/** result */
+/** result. */
 @Data
 public class R<T> {
-    /** result code */
+    /** result code. */
     private final int code;
-    /** result msg */
+    /** result msg. */
     private final String msg;
-    /** result data */
+    /** result data. */
     private final T data;
 
     public R(int code, String msg, T data) {

@@ -68,6 +68,7 @@ public class TagTableMetadata {
         return new Builder();
     }
 
+    /** The builder for TagTableMetadata. */
     public static final class Builder {
         private String tagName;
         private Long snapshotId;

@@ -30,8 +30,15 @@ import org.apache.paimon.hive.HiveCatalog;
 import org.apache.paimon.options.Options;
 import org.apache.paimon.reader.RecordReader;
 import org.apache.paimon.schema.Schema;
+import org.apache.paimon.schema.SchemaChange;
 import org.apache.paimon.table.Table;
-import org.apache.paimon.table.sink.*;
+import org.apache.paimon.table.sink.BatchTableCommit;
+import org.apache.paimon.table.sink.BatchTableWrite;
+import org.apache.paimon.table.sink.BatchWriteBuilder;
+import org.apache.paimon.table.sink.CommitMessage;
+import org.apache.paimon.table.sink.StreamWriteBuilder;
+import org.apache.paimon.table.sink.TableWrite;
+import org.apache.paimon.table.sink.WriteBuilder;
 import org.apache.paimon.table.source.ReadBuilder;
 import org.apache.paimon.table.source.Split;
 import org.apache.paimon.table.source.TableRead;
@@ -39,15 +46,18 @@ import org.apache.paimon.utils.SnapshotManager;
 import org.apache.paimon.web.api.common.CatalogEntity;
 import org.apache.paimon.web.api.common.CatalogProperties;
 import org.apache.paimon.web.api.common.MetastoreType;
+import org.apache.paimon.web.api.common.OperatorKind;
 import org.apache.paimon.web.api.common.WriteMode;
 import org.apache.paimon.web.common.annotation.VisibleForTesting;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +105,7 @@ public class TableManager {
         return catalog.tableExists(identifier);
     }
 
-    public static Table GetTable(Catalog catalog, String dbName, String tableName)
+    public static Table getTable(Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException {
         Identifier identifier = Identifier.create(dbName, tableName);
         return catalog.getTable(identifier);
@@ -119,12 +129,160 @@ public class TableManager {
         catalog.renameTable(fromTableIdentifier, toTableIdentifier, false);
     }
 
+    public static void setOptions(
+            Catalog catalog, String dbName, String tableName, Map<String, String> options)
+            throws Catalog.ColumnAlreadyExistException, Catalog.TableNotExistException,
+                    Catalog.ColumnNotExistException {
+        Identifier identifier = Identifier.create(dbName, tableName);
+
+        List<SchemaChange> schemaChanges = new ArrayList<>();
+
+        Map<String, String> filteredOptions = handleOptions(options);
+        for (String key : filteredOptions.keySet()) {
+            SchemaChange addOption = SchemaChange.setOption(key, filteredOptions.get(key));
+            schemaChanges.add(addOption);
+        }
+
+        catalog.alterTable(identifier, schemaChanges, false);
+    }
+
+    public static void removeOptions(
+            Catalog catalog, String dbName, String tableName, Map<String, String> options)
+            throws Catalog.ColumnAlreadyExistException, Catalog.TableNotExistException,
+                    Catalog.ColumnNotExistException {
+        Identifier identifier = Identifier.create(dbName, tableName);
+
+        List<SchemaChange> schemaChanges = new ArrayList<>();
+
+        Map<String, String> filteredOptions = handleOptions(options);
+        for (String key : filteredOptions.keySet()) {
+            SchemaChange addOption = SchemaChange.removeOption(key);
+            schemaChanges.add(addOption);
+        }
+
+        catalog.alterTable(identifier, schemaChanges, false);
+    }
+
+    private static SchemaChange addColumn(AlterTableEntity entity) {
+        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
+        Preconditions.checkNotNull(entity.getType(), "Column type can not be null.");
+        return SchemaChange.addColumn(
+                entity.getColumnName(), entity.getType(), entity.getComment());
+    }
+
+    private static SchemaChange renameColumn(
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
+            throws Catalog.TableNotExistException, IOException {
+        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
+        Preconditions.checkNotNull(entity.getNewColumn(), "New column name can not be null.");
+        validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
+        return SchemaChange.renameColumn(entity.getColumnName(), entity.getNewColumn());
+    }
+
+    private static SchemaChange dropColumn(
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
+            throws Catalog.TableNotExistException, IOException {
+        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
+        validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
+        return SchemaChange.dropColumn(entity.getColumnName());
+    }
+
+    private static SchemaChange updateColumnComment(
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
+            throws Catalog.TableNotExistException, IOException {
+        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
+        validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
+        return SchemaChange.updateColumnComment(entity.getColumnName(), entity.getComment());
+    }
+
+    private static SchemaChange updateColumnType(
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
+            throws Catalog.TableNotExistException, IOException {
+        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
+        Preconditions.checkNotNull(entity.getType(), "Column type can not be null.");
+        validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
+        return SchemaChange.updateColumnType(entity.getColumnName(), entity.getType());
+    }
+
+    private static SchemaChange updateColumnPosition(AlterTableEntity entity) {
+        Preconditions.checkNotNull(entity.getMove(), "Move can not be null.");
+        return SchemaChange.updateColumnPosition(entity.getMove());
+    }
+
+    private static SchemaChange updateColumnNullability(
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
+            throws Catalog.TableNotExistException, IOException {
+        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
+        validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
+        return SchemaChange.updateColumnNullability(entity.getColumnName(), entity.isNullable());
+    }
+
+    private static SchemaChange performAlterTableAction(
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
+            throws Catalog.TableNotExistException, IOException {
+        OperatorKind kind = entity.getKind();
+
+        switch (kind) {
+            case ADD_COLUMN:
+                return addColumn(entity);
+            case RENAME_COLUMN:
+                return renameColumn(catalog, dbName, tableName, entity);
+            case DROP_COLUMN:
+                return dropColumn(catalog, dbName, tableName, entity);
+            case UPDATE_COLUMN_COMMENT:
+                return updateColumnComment(catalog, dbName, tableName, entity);
+            case UPDATE_COLUMN_TYPE:
+                return updateColumnType(catalog, dbName, tableName, entity);
+            case UPDATE_COLUMN_POSITION:
+                return updateColumnPosition(entity);
+            case UPDATE_COLUMN_NULLABILITY:
+                return updateColumnNullability(catalog, dbName, tableName, entity);
+            default:
+                return null;
+        }
+    }
+
+    public static void alterTable(
+            Catalog catalog, String dbName, String tableName, List<AlterTableEntity> entities)
+            throws Catalog.TableNotExistException, IOException, Catalog.ColumnAlreadyExistException,
+                    Catalog.ColumnNotExistException {
+        Identifier identifier = Identifier.create(dbName, tableName);
+
+        List<SchemaChange> schemaChanges = new ArrayList<>();
+
+        for (AlterTableEntity entity : entities) {
+            SchemaChange schemaChange = performAlterTableAction(catalog, dbName, tableName, entity);
+            schemaChanges.add(schemaChange);
+        }
+
+        catalog.alterTable(identifier, schemaChanges, false);
+    }
+
+    private static void validateColumnExistence(
+            Catalog catalog, String dbName, String tableName, String columnName)
+            throws Catalog.TableNotExistException, IOException {
+        SchemaTableMetadata latestSchema = getLatestSchema(catalog, dbName, tableName);
+        if (!latestSchema.getFields().contains(columnName)) {
+            throw new RuntimeException("Column not found: " + columnName);
+        }
+    }
+
+    @VisibleForTesting
+    private static SchemaTableMetadata getLatestSchema(
+            Catalog catalog, String dbName, String tableName)
+            throws Catalog.TableNotExistException, IOException {
+        List<SchemaTableMetadata> schemas = listSchemas(catalog, dbName, tableName);
+        return schemas.stream()
+                .max(Comparator.comparingLong(SchemaTableMetadata::getSchemaId))
+                .orElse(null);
+    }
+
     public static List<SnapshotTableMetadata> listSnapshots(
             Catalog catalog, CatalogEntity catalogEntity, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
         List<SnapshotTableMetadata> snapshots = new ArrayList<>();
 
-        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + SNAPSHOTS + "`");
+        Table table = getTable(catalog, dbName, "`" + tableName + "$" + SNAPSHOTS + "`");
 
         SnapshotManager snapshotManager =
                 getSnapshotManager(catalog, catalogEntity, dbName, tableName);
@@ -158,7 +316,7 @@ public class TableManager {
             throws Catalog.TableNotExistException, IOException {
         List<SchemaTableMetadata> schemas = new ArrayList<>();
 
-        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + SCHEMAS + "`");
+        Table table = getTable(catalog, dbName, "`" + tableName + "$" + SCHEMAS + "`");
 
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
@@ -183,7 +341,7 @@ public class TableManager {
             throws Catalog.TableNotExistException, IOException {
         List<OptionTableMetadata> options = new ArrayList<>();
 
-        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + OPTIONS + "`");
+        Table table = getTable(catalog, dbName, "`" + tableName + "$" + OPTIONS + "`");
 
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
@@ -202,7 +360,7 @@ public class TableManager {
             throws Catalog.TableNotExistException, IOException {
         List<ManifestTableMetadata> manifests = new ArrayList<>();
 
-        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + MANIFESTS + "`");
+        Table table = getTable(catalog, dbName, "`" + tableName + "$" + MANIFESTS + "`");
 
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
@@ -226,7 +384,7 @@ public class TableManager {
             throws Catalog.TableNotExistException, IOException {
         List<FileTableMetadata> files = new ArrayList<>();
 
-        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + FILES + "`");
+        Table table = getTable(catalog, dbName, "`" + tableName + "$" + FILES + "`");
 
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
@@ -258,7 +416,7 @@ public class TableManager {
             throws Catalog.TableNotExistException, IOException {
         List<ConsumerTableMetadata> consumers = new ArrayList<>();
 
-        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + CONSUMER + "`");
+        Table table = getTable(catalog, dbName, "`" + tableName + "$" + CONSUMER + "`");
 
         RecordReader<InternalRow> reader = getReader(table);
 
@@ -275,7 +433,7 @@ public class TableManager {
             throws Catalog.TableNotExistException, IOException {
         List<TagTableMetadata> tags = new ArrayList<>();
 
-        Table table = GetTable(catalog, dbName, "`" + tableName + "$" + TAGS + "`");
+        Table table = getTable(catalog, dbName, "`" + tableName + "$" + TAGS + "`");
 
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
@@ -368,7 +526,7 @@ public class TableManager {
         BatchWriteBuilder writeBuilder =
                 (BatchWriteBuilder)
                         getWriteBuilder(
-                                GetTable(catalog, dbName, tableName),
+                                getTable(catalog, dbName, tableName),
                                 WriteMode.BATCH.getValue(),
                                 staticPartition);
 

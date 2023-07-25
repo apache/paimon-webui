@@ -70,6 +70,7 @@ public class CatalogEntity {
         return new Builder();
     }
 
+    /** The builder for CatalogEntity. */
     public static final class Builder {
         private Long catalogId;
         private String warehouse;

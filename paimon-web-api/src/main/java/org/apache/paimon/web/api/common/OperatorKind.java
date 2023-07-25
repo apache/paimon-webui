@@ -16,36 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.enums;
+package org.apache.paimon.web.api.common;
 
-/**
- * Status enum.
- *
- * <p><b>NOTE:</b> This enumeration is used to define status codes and internationalization messages
- * for response data. <br>
- * This is mainly responsible for the internationalization information returned by the interface.
- */
-public enum Status {
-    /** response data msg. */
-    SUCCESS(200, "Successfully"),
-    FAILED(400, "Failed"),
+/** Enum of operator kind. */
+public enum OperatorKind {
+    ADD_COLUMN("add"),
+    RENAME_COLUMN("rename"),
+    DROP_COLUMN("drop"),
+    UPDATE_COLUMN_COMMENT("update_comment"),
+    UPDATE_COLUMN_TYPE("update_type"),
+    UPDATE_COLUMN_POSITION("update_position"),
+    UPDATE_COLUMN_NULLABILITY("update_nullability");
 
-    USER_NOT_EXIST(10001, "User Not Exist"),
-    ;
+    private final String value;
 
-    private final int code;
-    private final String msg;
-
-    Status(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
+    OperatorKind(String value) {
+        this.value = value;
     }
 
-    public int getCode() {
-        return this.code;
-    }
-
-    public String getMsg() {
-        return this.msg;
+    public String value() {
+        return value;
     }
 }

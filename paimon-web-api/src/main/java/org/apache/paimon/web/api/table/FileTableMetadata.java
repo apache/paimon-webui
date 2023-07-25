@@ -131,6 +131,7 @@ public class FileTableMetadata {
         return new Builder();
     }
 
+    /** The builder for FileTableMetadata. */
     public static final class Builder {
         @Nullable private String partition;
         private Integer bucket;
