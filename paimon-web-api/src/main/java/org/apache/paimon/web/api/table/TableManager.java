@@ -52,15 +52,18 @@ import org.apache.paimon.web.common.annotation.VisibleForTesting;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import org.apache.paimon.web.common.utils.ParameterValidationUtil;
 
 import javax.annotation.Nullable;
 
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.AbstractMap.SimpleEntry;
 
 /** paimon table manager. */
 public class TableManager {
@@ -76,6 +79,8 @@ public class TableManager {
     public static void createTable(
             Catalog catalog, String dbName, String tableName, TableMetadata tableMetadata)
             throws Catalog.TableAlreadyExistException, Catalog.DatabaseNotExistException {
+        checkNotNull(catalog, dbName, tableName);
+
         Schema.Builder schemaBuilder =
                 Schema.newBuilder()
                         .partitionKeys(
@@ -101,29 +106,46 @@ public class TableManager {
     }
 
     public static boolean tableExists(Catalog catalog, String dbName, String tableName) {
+        checkNotNull(catalog, dbName, tableName);
+
         Identifier identifier = Identifier.create(dbName, tableName);
         return catalog.tableExists(identifier);
     }
 
     public static Table getTable(Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException {
+        checkNotNull(catalog, dbName, tableName);
+
         Identifier identifier = Identifier.create(dbName, tableName);
         return catalog.getTable(identifier);
     }
 
     public static List<String> listTables(Catalog catalog, String dbName)
             throws Catalog.DatabaseNotExistException {
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(catalog, () -> "Catalog"),
+                new SimpleEntry<>(dbName, () -> "Database name")
+        );
         return catalog.listTables(dbName);
     }
 
     public static void dropTable(Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException {
+        checkNotNull(catalog, dbName, tableName);
+
         Identifier identifier = Identifier.create(dbName, tableName);
         catalog.dropTable(identifier, false);
     }
 
     public static void renameTable(Catalog catalog, String dbName, String fromTable, String toTable)
             throws Catalog.TableAlreadyExistException, Catalog.TableNotExistException {
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(catalog, () -> "Catalog"),
+                new SimpleEntry<>(dbName, () -> "Database name"),
+                new SimpleEntry<>(fromTable, () -> "From table name"),
+                new SimpleEntry<>(toTable, () -> "To table name")
+        );
+
         Identifier fromTableIdentifier = Identifier.create(dbName, fromTable);
         Identifier toTableIdentifier = Identifier.create(dbName, toTable);
         catalog.renameTable(fromTableIdentifier, toTableIdentifier, false);
@@ -133,6 +155,8 @@ public class TableManager {
             Catalog catalog, String dbName, String tableName, Map<String, String> options)
             throws Catalog.ColumnAlreadyExistException, Catalog.TableNotExistException,
                     Catalog.ColumnNotExistException {
+        checkNotNull(catalog, dbName, tableName);
+
         Identifier identifier = Identifier.create(dbName, tableName);
 
         List<SchemaChange> schemaChanges = new ArrayList<>();
@@ -150,6 +174,8 @@ public class TableManager {
             Catalog catalog, String dbName, String tableName, Map<String, String> options)
             throws Catalog.ColumnAlreadyExistException, Catalog.TableNotExistException,
                     Catalog.ColumnNotExistException {
+        checkNotNull(catalog, dbName, tableName);
+
         Identifier identifier = Identifier.create(dbName, tableName);
 
         List<SchemaChange> schemaChanges = new ArrayList<>();
@@ -164,8 +190,10 @@ public class TableManager {
     }
 
     private static SchemaChange addColumn(AlterTableEntity entity) {
-        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
-        Preconditions.checkNotNull(entity.getType(), "Column type can not be null.");
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
+                new SimpleEntry<>(entity.getType(), () -> "Column type")
+        );
         return SchemaChange.addColumn(
                 entity.getColumnName(), entity.getType(), entity.getComment());
     }
@@ -173,8 +201,13 @@ public class TableManager {
     private static SchemaChange renameColumn(
             Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
             throws Catalog.TableNotExistException, IOException {
-        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
-        Preconditions.checkNotNull(entity.getNewColumn(), "New column name can not be null.");
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
+                new SimpleEntry<>(entity.getNewColumn(), () -> "New column name"),
+                new SimpleEntry<>(catalog, () -> "Catalog"),
+                new SimpleEntry<>(dbName, () -> "Database name"),
+                new SimpleEntry<>(tableName, () -> "Table name")
+        );
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.renameColumn(entity.getColumnName(), entity.getNewColumn());
     }
@@ -182,7 +215,12 @@ public class TableManager {
     private static SchemaChange dropColumn(
             Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
             throws Catalog.TableNotExistException, IOException {
-        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
+                new SimpleEntry<>(catalog, () -> "Catalog"),
+                new SimpleEntry<>(dbName, () -> "Database name"),
+                new SimpleEntry<>(tableName, () -> "Table name")
+        );
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.dropColumn(entity.getColumnName());
     }
@@ -190,7 +228,12 @@ public class TableManager {
     private static SchemaChange updateColumnComment(
             Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
             throws Catalog.TableNotExistException, IOException {
-        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
+                new SimpleEntry<>(catalog, () -> "Catalog"),
+                new SimpleEntry<>(dbName, () -> "Database name"),
+                new SimpleEntry<>(tableName, () -> "Table name")
+        );
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.updateColumnComment(entity.getColumnName(), entity.getComment());
     }
@@ -198,21 +241,33 @@ public class TableManager {
     private static SchemaChange updateColumnType(
             Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
             throws Catalog.TableNotExistException, IOException {
-        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
-        Preconditions.checkNotNull(entity.getType(), "Column type can not be null.");
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
+                new SimpleEntry<>(entity.getType(), () -> "Column type"),
+                new SimpleEntry<>(catalog, () -> "Catalog"),
+                new SimpleEntry<>(dbName, () -> "Database name"),
+                new SimpleEntry<>(tableName, () -> "Table name")
+        );
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.updateColumnType(entity.getColumnName(), entity.getType());
     }
 
     private static SchemaChange updateColumnPosition(AlterTableEntity entity) {
-        Preconditions.checkNotNull(entity.getMove(), "Move can not be null.");
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(entity.getMove(), () -> "Move")
+        );
         return SchemaChange.updateColumnPosition(entity.getMove());
     }
 
     private static SchemaChange updateColumnNullability(
             Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
             throws Catalog.TableNotExistException, IOException {
-        Preconditions.checkNotNull(entity.getColumnName(), "Column name can not be null.");
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
+                new SimpleEntry<>(catalog, () -> "Catalog"),
+                new SimpleEntry<>(dbName, () -> "Database name"),
+                new SimpleEntry<>(tableName, () -> "Table name")
+        );
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.updateColumnNullability(entity.getColumnName(), entity.isNullable());
     }
@@ -246,6 +301,8 @@ public class TableManager {
             Catalog catalog, String dbName, String tableName, List<AlterTableEntity> entities)
             throws Catalog.TableNotExistException, IOException, Catalog.ColumnAlreadyExistException,
                     Catalog.ColumnNotExistException {
+        checkNotNull(catalog, dbName, tableName);
+
         Identifier identifier = Identifier.create(dbName, tableName);
 
         List<SchemaChange> schemaChanges = new ArrayList<>();
@@ -256,15 +313,6 @@ public class TableManager {
         }
 
         catalog.alterTable(identifier, schemaChanges, false);
-    }
-
-    private static void validateColumnExistence(
-            Catalog catalog, String dbName, String tableName, String columnName)
-            throws Catalog.TableNotExistException, IOException {
-        SchemaTableMetadata latestSchema = getLatestSchema(catalog, dbName, tableName);
-        if (!latestSchema.getFields().contains(columnName)) {
-            throw new RuntimeException("Column not found: " + columnName);
-        }
     }
 
     @VisibleForTesting
@@ -280,6 +328,8 @@ public class TableManager {
     public static List<SnapshotTableMetadata> listSnapshots(
             Catalog catalog, CatalogEntity catalogEntity, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
+        checkNotNull(catalog, dbName, tableName);
+
         List<SnapshotTableMetadata> snapshots = new ArrayList<>();
 
         Table table = getTable(catalog, dbName, "`" + tableName + "$" + SNAPSHOTS + "`");
@@ -314,6 +364,8 @@ public class TableManager {
     public static List<SchemaTableMetadata> listSchemas(
             Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
+        checkNotNull(catalog, dbName, tableName);
+
         List<SchemaTableMetadata> schemas = new ArrayList<>();
 
         Table table = getTable(catalog, dbName, "`" + tableName + "$" + SCHEMAS + "`");
@@ -339,6 +391,8 @@ public class TableManager {
     public static List<OptionTableMetadata> listOptions(
             Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
+        checkNotNull(catalog, dbName, tableName);
+
         List<OptionTableMetadata> options = new ArrayList<>();
 
         Table table = getTable(catalog, dbName, "`" + tableName + "$" + OPTIONS + "`");
@@ -358,6 +412,8 @@ public class TableManager {
     public static List<ManifestTableMetadata> listManifests(
             Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
+        checkNotNull(catalog, dbName, tableName);
+
         List<ManifestTableMetadata> manifests = new ArrayList<>();
 
         Table table = getTable(catalog, dbName, "`" + tableName + "$" + MANIFESTS + "`");
@@ -382,6 +438,8 @@ public class TableManager {
     public static List<FileTableMetadata> listFiles(
             Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
+        checkNotNull(catalog, dbName, tableName);
+
         List<FileTableMetadata> files = new ArrayList<>();
 
         Table table = getTable(catalog, dbName, "`" + tableName + "$" + FILES + "`");
@@ -414,6 +472,8 @@ public class TableManager {
     public static List<ConsumerTableMetadata> listConsumers(
             Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
+        checkNotNull(catalog, dbName, tableName);
+
         List<ConsumerTableMetadata> consumers = new ArrayList<>();
 
         Table table = getTable(catalog, dbName, "`" + tableName + "$" + CONSUMER + "`");
@@ -431,6 +491,8 @@ public class TableManager {
 
     public static List<TagTableMetadata> listTags(Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException, IOException {
+        checkNotNull(catalog, dbName, tableName);
+
         List<TagTableMetadata> tags = new ArrayList<>();
 
         Table table = getTable(catalog, dbName, "`" + tableName + "$" + TAGS + "`");
@@ -523,6 +585,8 @@ public class TableManager {
             String tableName,
             @Nullable Map<String, String> staticPartition)
             throws Exception {
+        checkNotNull(catalog, dbName, tableName);
+
         BatchWriteBuilder writeBuilder =
                 (BatchWriteBuilder)
                         getWriteBuilder(
@@ -542,6 +606,24 @@ public class TableManager {
 
         try (BatchTableCommit commit = writeBuilder.newCommit()) {
             commit.commit(commitMessages);
+        }
+    }
+
+
+    private static void checkNotNull(Catalog catalog, String dbName, String tableName) {
+        ParameterValidationUtil.checkNotNull(
+                new SimpleEntry<>(catalog, () -> "Catalog"),
+                new SimpleEntry<>(dbName, () -> "Database name"),
+                new SimpleEntry<>(tableName, () -> "Table name")
+        );
+    }
+
+    private static void validateColumnExistence(
+            Catalog catalog, String dbName, String tableName, String columnName)
+            throws Catalog.TableNotExistException, IOException {
+        SchemaTableMetadata latestSchema = getLatestSchema(catalog, dbName, tableName);
+        if (!latestSchema.getFields().contains(columnName)) {
+            throw new RuntimeException("Column not found: " + columnName);
         }
     }
 
