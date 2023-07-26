@@ -64,7 +64,7 @@ public class TableManager {
         return catalog.tableExists(identifier);
     }
 
-    public static Table GetTable(Catalog catalog, String dbName, String tableName)
+    public static Table getTable(Catalog catalog, String dbName, String tableName)
             throws Catalog.TableNotExistException {
         Identifier identifier = Identifier.create(dbName, tableName);
         return catalog.getTable(identifier);

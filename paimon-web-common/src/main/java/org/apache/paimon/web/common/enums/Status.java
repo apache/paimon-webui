@@ -23,10 +23,10 @@ package org.apache.paimon.web.common.enums;
  *
  * <p><b>NOTE:</b> This enumeration is used to define status codes and internationalization messages
  * for response data. <br>
- * This is mainly responsible for the internationalization information returned by the interface
+ * This is mainly responsible for the internationalization information returned by the interface.
  */
 public enum Status {
-    /** response data msg */
+    /** response data msg. */
     SUCCESS(200, "Successfully"),
     FAILED(400, "Failed"),
 
