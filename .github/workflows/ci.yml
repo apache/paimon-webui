@@ -24,9 +24,6 @@ jobs:
       MVN_COMMON_OPTIONS: -U -B --no-transfer-progress
       MVN_BUILD_OUTPUT_FILE: "/tmp/mvn_build_output.out"
       MVN_VALIDATION_DIR: "/tmp/paimon-web-validation-deployment"
-    secrets:
-      RootPassword: paimon@123
-      DatabasePassword: paimon@123
 
     steps:
       - name: Checkout code
@@ -36,18 +33,6 @@ jobs:
         with:
           java-version: 8
           distribution: 'adopt'
-      - name: Setup MySQL
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          host port: 3306
-          container port: 3306
-          character set server: 'utf8'
-          collation server: 'utf8_general_ci'
-          mysql version: '5.7'
-          mysql database: 'paimon'
-          mysql root password: ${{ secrets.RootPassword }}
-          mysql user: 'root'
-          mysql password: ${{ secrets.DatabasePassword }}
       - name: Build
         run: |
           mvn clean install
