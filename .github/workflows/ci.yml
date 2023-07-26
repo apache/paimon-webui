@@ -20,10 +20,16 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
     env:
       MVN_COMMON_OPTIONS: -U -B --no-transfer-progress
       MVN_BUILD_OUTPUT_FILE: "/tmp/mvn_build_output.out"
       MVN_VALIDATION_DIR: "/tmp/paimon-web-validation-deployment"
+      MYSQL_ROOT_PASSWORD: paimon@123
 
     steps:
       - name: Checkout code
@@ -33,6 +39,9 @@ jobs:
         with:
           java-version: 8
           distribution: 'adopt'
+      - name: Init MySQL
+        run: |
+          mysql -h127.0.0.1 -P3306 -uroot -p${{env.MYSQL_ROOT_PASSWORD}} -e "create database paimon"
       - name: Build
         run: |
           mvn clean install
