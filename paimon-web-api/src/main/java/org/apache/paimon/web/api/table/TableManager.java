@@ -49,21 +49,19 @@ import org.apache.paimon.web.api.common.MetastoreType;
 import org.apache.paimon.web.api.common.OperatorKind;
 import org.apache.paimon.web.api.common.WriteMode;
 import org.apache.paimon.web.common.annotation.VisibleForTesting;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import org.apache.paimon.web.common.utils.ParameterValidationUtil;
+
+import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nullable;
 
 import java.io.IOException;
-import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.AbstractMap.SimpleEntry;
 
 /** paimon table manager. */
 public class TableManager {
@@ -124,8 +122,7 @@ public class TableManager {
             throws Catalog.DatabaseNotExistException {
         ParameterValidationUtil.checkNotNull(
                 new SimpleEntry<>(catalog, () -> "Catalog"),
-                new SimpleEntry<>(dbName, () -> "Database name")
-        );
+                new SimpleEntry<>(dbName, () -> "Database name"));
         return catalog.listTables(dbName);
     }
 
@@ -143,8 +140,7 @@ public class TableManager {
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
                 new SimpleEntry<>(fromTable, () -> "From table name"),
-                new SimpleEntry<>(toTable, () -> "To table name")
-        );
+                new SimpleEntry<>(toTable, () -> "To table name"));
 
         Identifier fromTableIdentifier = Identifier.create(dbName, fromTable);
         Identifier toTableIdentifier = Identifier.create(dbName, toTable);
@@ -192,8 +188,7 @@ public class TableManager {
     private static SchemaChange addColumn(AlterTableEntity entity) {
         ParameterValidationUtil.checkNotNull(
                 new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
-                new SimpleEntry<>(entity.getType(), () -> "Column type")
-        );
+                new SimpleEntry<>(entity.getType(), () -> "Column type"));
         return SchemaChange.addColumn(
                 entity.getColumnName(), entity.getType(), entity.getComment());
     }
@@ -206,8 +201,7 @@ public class TableManager {
                 new SimpleEntry<>(entity.getNewColumn(), () -> "New column name"),
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
-                new SimpleEntry<>(tableName, () -> "Table name")
-        );
+                new SimpleEntry<>(tableName, () -> "Table name"));
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.renameColumn(entity.getColumnName(), entity.getNewColumn());
     }
@@ -219,8 +213,7 @@ public class TableManager {
                 new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
-                new SimpleEntry<>(tableName, () -> "Table name")
-        );
+                new SimpleEntry<>(tableName, () -> "Table name"));
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.dropColumn(entity.getColumnName());
     }
@@ -232,8 +225,7 @@ public class TableManager {
                 new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
-                new SimpleEntry<>(tableName, () -> "Table name")
-        );
+                new SimpleEntry<>(tableName, () -> "Table name"));
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.updateColumnComment(entity.getColumnName(), entity.getComment());
     }
@@ -246,16 +238,13 @@ public class TableManager {
                 new SimpleEntry<>(entity.getType(), () -> "Column type"),
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
-                new SimpleEntry<>(tableName, () -> "Table name")
-        );
+                new SimpleEntry<>(tableName, () -> "Table name"));
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.updateColumnType(entity.getColumnName(), entity.getType());
     }
 
     private static SchemaChange updateColumnPosition(AlterTableEntity entity) {
-        ParameterValidationUtil.checkNotNull(
-                new SimpleEntry<>(entity.getMove(), () -> "Move")
-        );
+        ParameterValidationUtil.checkNotNull(new SimpleEntry<>(entity.getMove(), () -> "Move"));
         return SchemaChange.updateColumnPosition(entity.getMove());
     }
 
@@ -266,8 +255,7 @@ public class TableManager {
                 new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
-                new SimpleEntry<>(tableName, () -> "Table name")
-        );
+                new SimpleEntry<>(tableName, () -> "Table name"));
         validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.updateColumnNullability(entity.getColumnName(), entity.isNullable());
     }
@@ -609,13 +597,11 @@ public class TableManager {
         }
     }
 
-
     private static void checkNotNull(Catalog catalog, String dbName, String tableName) {
         ParameterValidationUtil.checkNotNull(
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
-                new SimpleEntry<>(tableName, () -> "Table name")
-        );
+                new SimpleEntry<>(tableName, () -> "Table name"));
     }
 
     private static void validateColumnExistence(
