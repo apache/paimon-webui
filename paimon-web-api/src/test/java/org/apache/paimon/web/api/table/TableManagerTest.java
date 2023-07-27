@@ -135,12 +135,12 @@ public class TableManagerTest {
 
     @Test
     public void testGetTable() throws Catalog.TableNotExistException {
-        Table table = TableManager.GetTable(catalog, DB_NAME, DEFAULT_TABLE);
+        Table table = TableManager.getTable(catalog, DB_NAME, DEFAULT_TABLE);
         assertThat(table).isInstanceOf(Table.class);
 
         // Get table throws TableNotExistException when table does not exist
         assertThatExceptionOfType(Catalog.TableNotExistException.class)
-                .isThrownBy(() -> TableManager.GetTable(catalog, DB_NAME, TABLE_NAME))
+                .isThrownBy(() -> TableManager.getTable(catalog, DB_NAME, TABLE_NAME))
                 .withMessage("Table test_db.test_table does not exist.");
     }
 

@@ -24,14 +24,14 @@ import org.apache.paimon.web.server.util.MessageUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-/** result */
+/** result. */
 @Data
 public class R<T> {
-    /** result code */
+    /** result code. */
     private final int code;
-    /** result msg */
+    /** result msg. */
     private final String msg;
-    /** result data */
+    /** result data. */
     private final T data;
 
     public R(

@@ -18,14 +18,23 @@
 
 package org.apache.paimon.web.api.common;
 
-/** paimon catalog properties. */
-public class CatalogProperties {
+/** Enum of operator kind. */
+public enum OperatorKind {
+    ADD_COLUMN("add"),
+    RENAME_COLUMN("rename"),
+    DROP_COLUMN("drop"),
+    UPDATE_COLUMN_COMMENT("update_comment"),
+    UPDATE_COLUMN_TYPE("update_type"),
+    UPDATE_COLUMN_POSITION("update_position"),
+    UPDATE_COLUMN_NULLABILITY("update_nullability");
 
-    public static final String METASTORE = "metastore";
+    private final String value;
 
-    public static final String WAREHOUSE = "warehouse";
+    OperatorKind(String value) {
+        this.value = value;
+    }
 
-    public static final String URI = "uri";
-
-    public static final String HIVE_CONF_DIR = "hive-conf-dir";
+    public String value() {
+        return value;
+    }
 }

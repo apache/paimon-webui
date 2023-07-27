@@ -64,6 +64,7 @@ under the License.
     <properties>
         <project.version>0.1-SNAPSHOT</project.version>
         <java.version>8</java.version>
+        <paimon.shade.version>0.4.0-incubating</paimon.shade.version>
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
@@ -243,6 +244,35 @@ under the License.
             </plugin>
 
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>check-license</id>
+                        <!-- manually called -->
+                        <phase>none</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.apache.paimon.tools.ci.licensecheck.LicenseChecker</mainClass>
+                    <includePluginDependencies>true</includePluginDependencies>
+                    <includeProjectDependencies>false</includeProjectDependencies>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.paimon</groupId>
+                        <artifactId>paimon-ci-tools</artifactId>
+                        <version>${paimon.shade.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
                 <version>0.15</version>
@@ -312,15 +342,15 @@ under the License.
                         <exclude>docs/static/js/anchor.min.js</exclude>
                         <exclude>docs/layouts/shortcodes/generated/**</exclude>
                         <exclude>**/*.svg</exclude>
+                        <exclude>**/*.cjs</exclude>
+                        <exclude>**/*.json</exclude>
+                        <exclude>**/*.sql</exclude>
                         <exclude>*/dependency-reduced-pom.xml</exclude>
                         <!-- Bundled license files -->
                         <exclude>**/LICENSE*</exclude>
                         <!-- artifacts created during release process -->
                         <exclude>release/**</exclude>
-                        <!-- antlr grammar files -->
-                        <exclude>paimon-common/src/main/antlr4/**</exclude>
-                        <!-- Test files -->
-                        <exclude>paimon-common/src/test/resources/codesplit/**</exclude>
+                        <exclude>paimon-web-ui/node_modules/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>

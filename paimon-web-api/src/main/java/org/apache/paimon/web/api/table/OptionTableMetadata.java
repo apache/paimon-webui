@@ -16,16 +16,33 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.common;
+package org.apache.paimon.web.api.table;
 
-/** paimon catalog properties. */
-public class CatalogProperties {
+/** options table metadata. */
+public class OptionTableMetadata {
 
-    public static final String METASTORE = "metastore";
+    private String key;
 
-    public static final String WAREHOUSE = "warehouse";
+    private String value;
 
-    public static final String URI = "uri";
+    public OptionTableMetadata(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
 
-    public static final String HIVE_CONF_DIR = "hive-conf-dir";
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }
