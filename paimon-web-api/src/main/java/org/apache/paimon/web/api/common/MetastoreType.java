@@ -18,14 +18,18 @@
 
 package org.apache.paimon.web.api.common;
 
-/** paimon catalog properties. */
-public class CatalogProperties {
+/** Enum of catalog metastore type. */
+public enum MetastoreType {
+    FILE_SYSTEM("filesystem"),
+    HIVE("hive");
 
-    public static final String METASTORE = "metastore";
+    private final String value;
 
-    public static final String WAREHOUSE = "warehouse";
+    MetastoreType(String value) {
+        this.value = value;
+    }
 
-    public static final String URI = "uri";
-
-    public static final String HIVE_CONF_DIR = "hive-conf-dir";
+    public String toString() {
+        return value;
+    }
 }

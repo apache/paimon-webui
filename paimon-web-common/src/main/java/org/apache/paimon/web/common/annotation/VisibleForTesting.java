@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,16 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.common;
+package org.apache.paimon.web.common.annotation;
 
-/** paimon catalog properties. */
-public class CatalogProperties {
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
-    public static final String METASTORE = "metastore";
-
-    public static final String WAREHOUSE = "warehouse";
-
-    public static final String URI = "uri";
-
-    public static final String HIVE_CONF_DIR = "hive-conf-dir";
-}
+/**
+ * This annotations declares that a function, field, constructor, or entire type, is only visible
+ * for testing purposes.
+ *
+ * <p>This annotation is typically attached when for example a method should be {@code private}
+ * (because it is not intended to be called externally), but cannot be declared private, because
+ * some tests need to have access to it.
+ */
+@Documented
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR})
+public @interface VisibleForTesting {}

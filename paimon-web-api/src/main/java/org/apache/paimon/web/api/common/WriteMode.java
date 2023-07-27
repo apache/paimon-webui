@@ -18,14 +18,18 @@
 
 package org.apache.paimon.web.api.common;
 
-/** paimon catalog properties. */
-public class CatalogProperties {
+/** Enum of write mode. */
+public enum WriteMode {
+    STREAM("stream"),
+    BATCH("batch");
 
-    public static final String METASTORE = "metastore";
+    private final String value;
 
-    public static final String WAREHOUSE = "warehouse";
+    WriteMode(String value) {
+        this.value = value;
+    }
 
-    public static final String URI = "uri";
-
-    public static final String HIVE_CONF_DIR = "hive-conf-dir";
+    public String getValue() {
+        return value;
+    }
 }

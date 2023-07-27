@@ -16,16 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.common;
+package org.apache.paimon.web.common.utils;
 
-/** paimon catalog properties. */
-public class CatalogProperties {
+import java.util.Map;
+import java.util.function.Supplier;
 
-    public static final String METASTORE = "metastore";
+/** parameter validation util. */
+public class ParameterValidationUtil {
 
-    public static final String WAREHOUSE = "warehouse";
-
-    public static final String URI = "uri";
-
-    public static final String HIVE_CONF_DIR = "hive-conf-dir";
+    @SafeVarargs
+    public static void checkNotNull(Map.Entry<Object, Supplier<String>>... entries) {
+        for (Map.Entry<Object, Supplier<String>> entry : entries) {
+            if (entry.getKey() == null) {
+                throw new IllegalArgumentException(entry.getValue().get() + " can not be null.");
+            }
+        }
+    }
 }

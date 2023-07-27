@@ -16,16 +16,33 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.common;
+package org.apache.paimon.web.api.table;
 
-/** paimon catalog properties. */
-public class CatalogProperties {
+/** file table metadata. */
+public class ConsumerTableMetadata {
 
-    public static final String METASTORE = "metastore";
+    private String consumerId;
 
-    public static final String WAREHOUSE = "warehouse";
+    private Long nextSnapshotId;
 
-    public static final String URI = "uri";
+    public ConsumerTableMetadata(String consumerId, Long nextSnapshotId) {
+        this.consumerId = consumerId;
+        this.nextSnapshotId = nextSnapshotId;
+    }
 
-    public static final String HIVE_CONF_DIR = "hive-conf-dir";
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public void setConsumerId(String consumerId) {
+        this.consumerId = consumerId;
+    }
+
+    public Long getNextSnapshotId() {
+        return nextSnapshotId;
+    }
+
+    public void setNextSnapshotId(Long nextSnapshotId) {
+        this.nextSnapshotId = nextSnapshotId;
+    }
 }
