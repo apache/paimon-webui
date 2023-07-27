@@ -34,10 +34,14 @@ under the License.
         Paimon Web Server is a server for the [Apache Paimon](https://paimon.apache.org/) project.
     </description>
 
+    <properties>
+    </properties>
     <dependencies>
+
         <dependency>
             <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-web-common</artifactId>
+            <version>${paimon.version}</version>
             <version>${project.version}</version>
         </dependency>
 
@@ -69,10 +73,6 @@ under the License.
             <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                    <groupId>org.springframework.boot</groupId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
@@ -95,10 +95,7 @@ under the License.
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -125,6 +122,7 @@ under the License.
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
+
         <!-- h2 -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -226,6 +224,7 @@ under the License.
                 <configuration>
                     <classesDirectory>target/classes/</classesDirectory>
                     <excludes>
+                        <!--注意这玩意默认从编译结果目录开始算目录结构-->
                         <exclude>/application*.yml</exclude>
                         <exclude>/mybatis*.xml</exclude>
                         <exclude>/DinkyFlinkDockerfile</exclude>
@@ -245,3 +244,4 @@ under the License.
     </build>
 
 </project>
+
