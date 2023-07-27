@@ -25,10 +25,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class RoleMenu extends BaseModel {
-    /** role id */
+    /** role id. */
     private Integer roleId;
 
-    /** menu id */
+    /** menu id. */
     private Integer menuId;
 
     private static final long serialVersionUID = 1L;

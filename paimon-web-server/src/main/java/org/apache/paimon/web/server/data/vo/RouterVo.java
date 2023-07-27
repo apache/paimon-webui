@@ -46,19 +46,19 @@ public class RouterVo {
     /** component path. */
     private String component;
 
-    /** route query params：eg. {"id": 1, "name": "xx"} */
+    /** route query params：eg. {"id": 1, "name": "xx"}. */
     private String query;
 
     /**
-     * When there are more than one routes declared by children under a route, it will automatically
-     * become nested mode - such as component pages
+     * When there are more than one routes declared by children under a route, it will
+     * automatically. become nested mode - such as component pages
      */
     private Boolean alwaysShow;
 
-    /** other meta info */
+    /** other meta info. */
     private MetaVo meta;
 
-    /** children route */
+    /** children route. */
     private List<RouterVo> children;
 
     public String getName() {

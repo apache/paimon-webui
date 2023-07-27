@@ -34,7 +34,7 @@ import java.util.Map;
 @Data
 public abstract class BaseModel implements Serializable {
 
-    /** id */
+    /** id. */
     @TableId(type = IdType.AUTO)
     private Integer id;
 

@@ -32,11 +32,11 @@ import java.util.List;
 public class PageR<T> implements Serializable {
 
     private static final long serialVersionUID = -5143774412936881374L;
-    /** total */
+    /** total. */
     private final long total;
-    /** is success */
+    /** is success. */
     private final boolean success;
-    /** result data */
+    /** result data. */
     private final List<T> data;
 
     public PageR(

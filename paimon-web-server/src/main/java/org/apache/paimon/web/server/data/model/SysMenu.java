@@ -28,52 +28,52 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SysMenu extends BaseModel {
-    /** menu name */
+    /** menu name. */
     private String menuName;
 
-    /** parent id */
+    /** parent id. */
     private Integer parentId;
 
-    /** sort */
+    /** sort. */
     private Integer sort;
 
-    /** route path */
+    /** route path. */
     private String path;
 
-    /** route params */
+    /** route params. */
     private String query;
 
-    /** is cache（0:cache 1:no_cache） */
+    /** is cache（0:cache 1:no_cache）. */
     private Integer isCache;
 
-    /** menu type（M:directory C:menu F:button） */
+    /** menu type（M:directory C:menu F:button）. */
     private String type;
 
-    /** is visible（0:display 1:hide） */
+    /** is visible（0:display 1:hide）. */
     private String visible;
 
-    /** component path */
+    /** component path. */
     private String component;
 
-    /** is frame */
+    /** is frame. */
     private Integer isFrame;
 
-    /** is enable */
+    /** is enable. */
     private Boolean enabled;
 
-    /** is delete */
+    /** is delete. */
     private Boolean isDelete;
 
-    /** menu perms */
+    /** menu perms. */
     private String perms;
 
-    /** menu icon */
+    /** menu icon. */
     private String icon;
 
-    /** remark */
+    /** remark. */
     private String remark;
 
-    /** children menu */
+    /** children menu. */
     private List<SysMenu> children = new ArrayList<SysMenu>();
 
     private static final long serialVersionUID = 1L;

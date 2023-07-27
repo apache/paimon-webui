@@ -20,11 +20,11 @@ package org.apache.paimon.web.server.data.enums;
 
 /** menu type enum. */
 public enum MenuType {
-    /** directory */
+    /** directory. */
     DIR("M"),
-    /** menu */
+    /** menu. */
     MENU("C"),
-    /** button */
+    /** button. */
     BUTTON("F"),
     ;
 

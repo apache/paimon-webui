@@ -21,30 +21,30 @@ package org.apache.paimon.web.server.constant;
 
 /** Constants. */
 public class Constants {
-    /** admin id */
+    /** admin id. */
     public static final int ADMIN_ID = 1;
-    /** all permission */
+    /** all permission. */
     public static final String ALL_PERMISSION = "*:*:*";
-    /** http url prefix */
+    /** http url prefix. */
     public static final String HTTP = "http://";
 
-    /** https url prefix */
+    /** https url prefix. */
     public static final String HTTPS = "https://";
-    /** WWW */
+    /** WWW. */
     public static final String WWW = "www";
 
-    /** Layout component flag */
+    /** Layout component flag. */
     public static final String LAYOUT = "Layout";
 
-    /** ParentView component flag */
+    /** ParentView component flag. */
     public static final String PARENT_VIEW = "ParentView";
 
-    /** InnerLink component flag */
+    /** InnerLink component flag. */
     public static final String INNER_LINK = "InnerLink";
 
-    /** Is frame: Yes */
+    /** Is frame: Yes. */
     public static final int YES_FRAME = 0;
 
-    /** Is frame: No */
+    /** Is frame: No. */
     public static final int NO_FRAME = 1;
 }

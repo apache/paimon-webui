@@ -25,41 +25,37 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Set;
 
-/**
- * sys_role
- *
- * @author
- */
+/** sys_role. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SysRole extends BaseModel {
-    /** role name */
+    /** role name. */
     private String roleName;
 
-    /** role key */
+    /** role key. */
     private String roleKey;
 
-    /** sort */
+    /** sort. */
     private Integer sort;
 
-    /** is enable */
+    /** is enable. */
     private Boolean enabled;
 
-    /** is delete */
+    /** is delete. */
     @TableLogic private Boolean isDelete;
 
-    /** remark */
+    /** remark. */
     private String remark;
 
     /** Does the user have this role identity. Default false. */
     @TableField(exist = false)
     private boolean flag = false;
 
-    /** menu ids */
+    /** menu ids. */
     @TableField(exist = false)
     private Integer[] menuIds;
 
-    /** Role menu permissions */
+    /** Role menu permissions. */
     @TableField(exist = false)
     private Set<String> permissions;
 

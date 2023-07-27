@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 /** spring utils. */
 @Component
 public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationContextAware {
-    /** Spring beanFactory */
+    /** Spring beanFactory. */
     private static ConfigurableListableBeanFactory beanFactory;
 
     private static ApplicationContext applicationContext;

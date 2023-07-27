@@ -30,7 +30,7 @@ import java.util.List;
 @Mapper
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
     /**
-     * Query system menu list
+     * Query system menu list.
      *
      * @param menu query params
      * @return result
@@ -93,7 +93,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
     List<Integer> selectMenuListByRoleId(Integer roleId);
 
     /**
-     * Query information by menu ID
+     * Query information by menu ID.
      *
      * @param menuId menu ID
      * @return menu info

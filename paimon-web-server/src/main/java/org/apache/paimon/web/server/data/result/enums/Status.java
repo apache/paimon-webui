@@ -26,7 +26,7 @@ package org.apache.paimon.web.server.data.result.enums;
  * This is mainly responsible for the internationalization information returned by the interface
  */
 public enum Status {
-    /** response data msg */
+    /** response data msg. */
     SUCCESS(200, "successfully"),
     FAILED(400, "failed"),
     UNAUTHORIZED(401, "unauthorized"),
@@ -41,11 +41,11 @@ public enum Status {
 
     USER_NOT_EXIST(10001, "user.not.exist"),
     USER_PASSWORD_ERROR(10002, "user.password.error"),
-    /** ------------role----------------- */
+    /** ------------role-----------------. */
     ROLE_IN_USED(10101, "role.in.used"),
     ROLE_NAME_IS_EXIST(10102, "role.name.exist"),
     ROLE_KEY_IS_EXIST(10103, "role.key.exist"),
-    /** ------------menu----------------- */
+    /** ------------menu-----------------. */
     MENU_IN_USED(10201, "menu.in.used"),
     MENU_NAME_IS_EXIST(10202, "menu.name.exist"),
     MENU_PATH_INVALID(10203, "menu.path.invalid"),

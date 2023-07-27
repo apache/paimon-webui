@@ -26,10 +26,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class UserRole extends BaseModel {
 
-    /** user id */
+    /** user id. */
     private Integer userId;
 
-    /** role id */
+    /** role id. */
     private Integer roleId;
 
     private static final long serialVersionUID = 1L;

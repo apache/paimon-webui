@@ -26,19 +26,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 public class PageSupport {
 
     private static final char SEPARATOR = '_';
-    /** pageNum */
+    /** pageNum. */
     public static final String PAGE_NUM = "pageNum";
 
-    /** pageSize */
+    /** pageSize. */
     public static final String PAGE_SIZE = "pageSize";
 
-    /** order column */
+    /** order column. */
     public static final String ORDER_BY_COLUMN = "orderByColumn";
 
-    /** desc or asc */
+    /** desc or asc. */
     public static final String IS_ASC = "isAsc";
 
-    /** page params reasonable */
+    /** page params reasonable. */
     public static final String REASONABLE = "reasonable";
 
     public static <T> IPage<T> startPage() {

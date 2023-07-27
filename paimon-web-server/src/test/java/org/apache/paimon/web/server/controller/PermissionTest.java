@@ -48,7 +48,7 @@ public class PermissionTest {
     private static final String loginPath = "/api/login";
     private static final String logoutPath = "/api/logout";
 
-    public static final String getUserPath = "/api/user";
+    private static final String getUserPath = "/api/user";
 
     @Value("${spring.application.name}")
     private String tokenName;

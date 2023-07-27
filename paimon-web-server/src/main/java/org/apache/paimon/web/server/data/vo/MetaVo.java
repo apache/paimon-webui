@@ -22,16 +22,16 @@ import org.apache.paimon.web.server.util.StringUtils;
 
 /** Route display information. */
 public class MetaVo {
-    /** Set the name of the route displayed in the sidebar and Bread crumbs */
+    /** Set the name of the route displayed in the sidebar and Bread crumbs. */
     private String title;
 
-    /** Set the icon for this route */
+    /** Set the icon for this route. */
     private String icon;
 
-    /** cache or no */
+    /** cache or no. */
     private boolean noCache;
 
-    /** link path */
+    /** link path. */
     private String link;
 
     public MetaVo() {}

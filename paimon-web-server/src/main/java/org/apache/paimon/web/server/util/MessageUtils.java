@@ -25,7 +25,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import java.util.Arrays;
 import java.util.Objects;
 
-/** i18n util */
+/** i18n util. */
 public class MessageUtils {
 
     private static final MessageSource MESSAGE_SOURCE = SpringUtils.getBean(MessageSource.class);
@@ -33,7 +33,7 @@ public class MessageUtils {
     public MessageUtils() {}
 
     /**
-     * According to messageKey and parameters, get the message and delegate to spring messageSource
+     * According to messageKey and parameters, get the message and delegate to spring messageSource.
      *
      * @param code msg key
      * @return {@link String} internationalization information
@@ -44,7 +44,7 @@ public class MessageUtils {
     }
 
     /**
-     * According to messageKey and parameters, get the message and delegate to spring messageSource
+     * According to messageKey and parameters, get the message and delegate to spring messageSource.
      *
      * @param code msg key
      * @param messageArgs msg parameters

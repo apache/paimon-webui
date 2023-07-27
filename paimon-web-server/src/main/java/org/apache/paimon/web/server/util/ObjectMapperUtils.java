@@ -45,7 +45,7 @@ import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNESCAPED_CO
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.type.TypeFactory.defaultInstance;
 
-/** jackson common object mapper */
+/** jackson common object mapper. */
 public class ObjectMapperUtils {
     private static final String EMPTY_JSON = "{}";
     private static final String EMPTY_ARRAY_JSON = "[]";
@@ -198,7 +198,7 @@ public class ObjectMapperUtils {
         }
     }
 
-    /** use {@link #fromJson(String)} instead */
+    /** use {@link #fromJson(String)} instead. */
     public static <K, V, T extends Map<K, V>> T fromJSON(
             String json, Class<? extends Map> mapType, Class<K> keyType, Class<V> valueType) {
         if (StringUtils.isEmpty(json)) {
@@ -255,7 +255,7 @@ public class ObjectMapperUtils {
         return fromJSON(bytes, Map.class, String.class, Object.class);
     }
 
-    /** use {@link #fromJson(byte[])} instead */
+    /** use {@link #fromJson(byte[])} instead. */
     public static <K, V, T extends Map<K, V>> T fromJSON(
             byte[] bytes, Class<? extends Map> mapType, Class<K> keyType, Class<V> valueType) {
         try {
@@ -266,7 +266,7 @@ public class ObjectMapperUtils {
         }
     }
 
-    /** use {@link #fromJson(InputStream)} instead */
+    /** use {@link #fromJson(InputStream)} instead. */
     public static <K, V, T extends Map<K, V>> T fromJSON(
             InputStream inputStream,
             Class<? extends Map> mapType,

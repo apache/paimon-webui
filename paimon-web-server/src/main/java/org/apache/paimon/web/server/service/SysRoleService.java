@@ -27,15 +27,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 import java.util.Set;
 
-/**
- * TODO
- *
- * @author gxd
- * @date 2023/7/21 23:09
- */
+/** Role service. */
 public interface SysRoleService extends IService<SysRole> {
     /**
-     * Paging and querying role data based on conditions
+     * Paging and querying role data based on conditions.
      *
      * @param page page params
      * @param role query params
@@ -115,7 +110,7 @@ public interface SysRoleService extends IService<SysRole> {
     int updateRole(SysRole role);
 
     /**
-     * Delete role through role ID
+     * Delete role through role ID.
      *
      * @param roleId role ID
      * @return result

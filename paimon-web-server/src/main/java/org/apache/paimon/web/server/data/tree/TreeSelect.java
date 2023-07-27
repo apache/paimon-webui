@@ -30,13 +30,13 @@ import java.util.stream.Collectors;
 public class TreeSelect implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** node ID */
+    /** node ID. */
     private Integer id;
 
-    /** node name */
+    /** node name. */
     private String label;
 
-    /** children node */
+    /** children node. */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TreeSelect> children;
 

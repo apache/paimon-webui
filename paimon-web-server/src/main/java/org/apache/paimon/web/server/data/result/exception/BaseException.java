@@ -22,10 +22,10 @@ import org.apache.paimon.web.server.data.result.enums.Status;
 
 /** base exception. */
 public abstract class BaseException extends RuntimeException {
-    /** status */
+    /** status. */
     private final Status status;
 
-    /** msg args */
+    /** msg args. */
     private final Object[] args;
 
     public BaseException(Status status, Object[] args) {
