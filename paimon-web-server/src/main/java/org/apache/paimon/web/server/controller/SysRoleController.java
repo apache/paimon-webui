@@ -91,7 +91,7 @@ public class SysRoleController {
         }
 
         if (roleService.updateRole(role) > 0) {
-            // TODO 更新缓存用户权限
+            // TODO update user permissions cache
             return R.succeed();
         }
         return R.failed();
