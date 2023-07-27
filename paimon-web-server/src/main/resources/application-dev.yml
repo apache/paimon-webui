@@ -15,7 +15,14 @@
 
 spring:
   datasource:
-    url: jdbc:mysql://${MYSQL_ADDR:localhost:3306}/${MYSQL_DATABASE:paimon}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:paimon;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;INIT=runscript from 'classpath:db/ddl-h2.sql'
+    username: root
+    password: root
+  sql:
+    init:
+      data-locations: classpath:db/dml-h2.sql
+      continue-on-error: true
+      username: root
+      password: root
+      mode: always
