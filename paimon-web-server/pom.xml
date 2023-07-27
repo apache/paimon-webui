@@ -34,10 +34,7 @@ under the License.
         Paimon Web Server is a server for the [Apache Paimon](https://paimon.apache.org/) project.
     </description>
 
-    <properties>
-    </properties>
     <dependencies>
-
         <dependency>
             <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-web-common</artifactId>
