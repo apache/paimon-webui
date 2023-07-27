@@ -22,7 +22,13 @@ import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /** table metadata. */
@@ -142,6 +148,7 @@ public class TableMetadata {
         return new Builder();
     }
 
+    /** The builder for TableMetadata. */
     public static final class Builder {
         private List<ColumnMetadata> columns = new ArrayList<>();
 

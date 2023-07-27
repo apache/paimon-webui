@@ -21,12 +21,12 @@ package org.apache.paimon.web.server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/** Paimon Manager Server Application . */
+/** Paimon Manager Server Application. */
 @SpringBootApplication
 public class PaimonWebServerApplication {
 
     /**
-     * Main .
+     * Main.
      *
      * @param args args
      */
