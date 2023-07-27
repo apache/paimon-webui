@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Paimon Manager Service Port
+# Paimon Web Service Port
 server:
   port: 10088
 
 spring:
-  # Paimon Manager Service Name
+  # Paimon Web Service Name
   application:
     name: PaimonManager
   profiles:
