@@ -18,51 +18,63 @@
 
 package org.apache.paimon.web.server.data.model;
 
-import org.apache.paimon.web.server.constant.Constants;
-
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/** user table model. */
+import java.util.ArrayList;
+import java.util.List;
+
+/** sys_menu table. */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class User extends BaseModel {
+public class SysMenu extends BaseModel {
+    /** menu name. */
+    private String menuName;
 
-    private static final long serialVersionUID = 1L;
+    /** parent id. */
+    private Integer parentId;
 
-    /** username. */
-    private String username;
+    /** sort. */
+    private Integer sort;
 
-    /** password. */
-    private String password;
+    /** route path. */
+    private String path;
 
-    /** nickname. */
-    private String nickname;
+    /** route params. */
+    private String query;
 
-    /** login type (0:LOCAL,1:LDAP). */
-    private Integer userType;
+    /** is cache（0:cache 1:no_cache）. */
+    private Integer isCache;
 
-    /** mobile phone. */
-    private String mobile;
+    /** menu type（M:directory C:menu F:button）. */
+    private String type;
 
-    /** email. */
-    private String email;
+    /** is visible（0:display 1:hide）. */
+    private String visible;
+
+    /** component path. */
+    private String component;
+
+    /** is frame. */
+    private Integer isFrame;
 
     /** is enable. */
     private Boolean enabled;
 
     /** is delete. */
-    @TableLogic private Boolean isDelete;
+    private Boolean isDelete;
 
-    /** avatar url. */
-    private String url;
+    /** menu perms. */
+    private String perms;
 
-    public boolean isAdmin() {
-        return isAdmin(this.getId());
-    }
+    /** menu icon. */
+    private String icon;
 
-    public static boolean isAdmin(Integer userId) {
-        return userId != null && Constants.ADMIN_ID == userId;
-    }
+    /** remark. */
+    private String remark;
+
+    /** children menu. */
+    private List<SysMenu> children = new ArrayList<SysMenu>();
+
+    private static final long serialVersionUID = 1L;
 }

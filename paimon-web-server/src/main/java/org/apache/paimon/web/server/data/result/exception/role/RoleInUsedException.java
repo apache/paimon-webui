@@ -16,25 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.result.exception.role;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.data.result.exception.BaseException;
 
-/** tenant use to isolate data. */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class Tenant extends BaseModel {
-
-    private static final long serialVersionUID = 1L;
-
-    /** tenant name. */
-    private String name;
-
-    /** tenant description. */
-    private String description;
-
-    /** is delete. */
-    @TableLogic private Boolean isDelete;
+/** Exception to role in used. */
+public class RoleInUsedException extends BaseException {
+    public RoleInUsedException(Object... args) {
+        super(Status.ROLE_IN_USED, args);
+    }
 }

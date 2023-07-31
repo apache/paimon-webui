@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.paimon.web.server.mapper.UserRoleMapper">
+
+	<resultMap type="org.apache.paimon.web.server.data.model.UserRole" id="SysUserRoleResult">
+		<result property="id"     	  column="id"      		/>
+		<result property="userId"     column="user_id"      />
+		<result property="roleId"     column="role_id"      />
+	</resultMap>
+
+	<delete id="deleteUserRoleByUserId" parameterType="Integer">
+		delete from user_role where user_id=#{userId}
+	</delete>
+	
+	<select id="countUserRoleByRoleId" resultType="Integer">
+	    select count(1) from user_role where role_id=#{roleId}
+	</select>
+	
+	<delete id="deleteUserRole" parameterType="Integer">
+ 		delete from user_role where user_id in
+ 		<foreach collection="array" item="userId" open="(" separator="," close=")">
+ 			#{userId}
+        </foreach> 
+ 	</delete>
+	
+	<insert id="batchUserRole">
+		insert into user_role(user_id, role_id) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.userId},#{item.roleId})
+		</foreach>
+	</insert>
+	
+	<delete id="deleteUserRoleInfo" parameterType="org.apache.paimon.web.server.data.model.UserRole">
+		delete from user_role where user_id=#{userId} and role_id=#{roleId}
+	</delete>
+	
+	<delete id="deleteUserRoleInfos">
+	    delete from user_role where role_id=#{roleId} and user_id in
+ 	    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+ 	        #{userId}
+            </foreach> 
+	</delete>
+</mapper> 

@@ -16,25 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.result.exception;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import org.apache.paimon.web.server.data.result.enums.Status;
 
-/** tenant use to isolate data. */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class Tenant extends BaseModel {
+/** base exception. */
+public abstract class BaseException extends RuntimeException {
+    /** status. */
+    private final Status status;
 
-    private static final long serialVersionUID = 1L;
+    /** msg args. */
+    private final Object[] args;
 
-    /** tenant name. */
-    private String name;
+    public BaseException(Status status, Object[] args) {
+        this.status = status;
+        this.args = args;
+    }
 
-    /** tenant description. */
-    private String description;
+    public BaseException(Status status) {
+        this(status, null);
+    }
 
-    /** is delete. */
-    @TableLogic private Boolean isDelete;
+    public Status getStatus() {
+        return status;
+    }
+
+    public Object[] getArgs() {
+        return args;
+    }
 }

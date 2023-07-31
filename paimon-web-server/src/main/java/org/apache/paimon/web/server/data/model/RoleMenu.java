@@ -18,23 +18,18 @@
 
 package org.apache.paimon.web.server.data.model;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/** tenant use to isolate data. */
+/** role_menu table. */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Tenant extends BaseModel {
+public class RoleMenu extends BaseModel {
+    /** role id. */
+    private Integer roleId;
+
+    /** menu id. */
+    private Integer menuId;
 
     private static final long serialVersionUID = 1L;
-
-    /** tenant name. */
-    private String name;
-
-    /** tenant description. */
-    private String description;
-
-    /** is delete. */
-    @TableLogic private Boolean isDelete;
 }

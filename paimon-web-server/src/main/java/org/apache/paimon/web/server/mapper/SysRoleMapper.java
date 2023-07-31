@@ -18,53 +18,57 @@
 
 package org.apache.paimon.web.server.mapper;
 
-import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.model.SysRole;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/** User table mapper. */
+/** Role Mapper. */
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
-    /**
-     * Query user list.
-     *
-     * @param user query params
-     * @return user list
-     */
-    List<User> selectUserList(User user);
+public interface SysRoleMapper extends BaseMapper<SysRole> {
+
+    List<SysRole> selectRoleList(IPage<SysRole> page, @Param("role") SysRole role);
 
     /**
-     * Query user list by role ID.
-     *
-     * @param user query params
-     * @return user list
-     */
-    List<User> selectAllocatedList(User user);
-
-    /**
-     * Query the list of unassigned user roles.
-     *
-     * @param user query params
-     * @return user list
-     */
-    List<User> selectUnallocatedList(User user);
-
-    /**
-     * Query user info by username.
-     *
-     * @param username username
-     * @return user info
-     */
-    User selectUserByUserName(String username);
-
-    /**
-     * Query user info by user ID.
+     * Query roles by user ID.
      *
      * @param userId user ID
-     * @return user info
+     * @return role list
      */
-    User selectUserById(Integer userId);
+    List<SysRole> selectRolePermissionByUserId(Integer userId);
+
+    /**
+     * Query all roles.
+     *
+     * @return role list
+     */
+    List<SysRole> selectRoleAll();
+
+    /**
+     * Obtain a list of role selection boxes by user ID.
+     *
+     * @param userId user ID
+     * @return result
+     */
+    List<Integer> selectRoleListByUserId(Integer userId);
+
+    /**
+     * Query role info by role ID.
+     *
+     * @param roleId role ID
+     * @return role info
+     */
+    SysRole selectRoleById(Integer roleId);
+
+    /**
+     * Query role info by user.
+     *
+     * @param userName user name
+     * @return role list
+     */
+    List<SysRole> selectRolesByUserName(String userName);
 }

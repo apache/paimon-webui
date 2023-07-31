@@ -16,36 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.enums;
+package org.apache.paimon.web.server.data.vo;
 
-/**
- * Status enum.
- *
- * <p><b>NOTE:</b> This enumeration is used to define status codes and internationalization messages
- * for response data. <br>
- * This is mainly responsible for the internationalization information returned by the interface.
- */
-public enum Status {
-    /** response data msg. */
-    SUCCESS(200, "Successfully"),
-    FAILED(400, "Failed"),
+import org.apache.paimon.web.server.data.tree.TreeSelect;
 
-    USER_NOT_EXIST(10001, "User Not Exist"),
-    ;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
-    private final int code;
-    private final String msg;
+import java.util.List;
 
-    Status(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
+/** Role Menu List Tree Vo. */
+@Getter
+public class RoleMenuTreeselectVo {
+    private final List<Integer> checkedKeys;
+    private final List<TreeSelect> menus;
 
-    public int getCode() {
-        return this.code;
-    }
-
-    public String getMsg() {
-        return this.msg;
+    public RoleMenuTreeselectVo(
+            @JsonProperty("checkedKeys") List<Integer> checkedKeys,
+            @JsonProperty("menus") List<TreeSelect> menus) {
+        this.checkedKeys = checkedKeys;
+        this.menus = menus;
     }
 }

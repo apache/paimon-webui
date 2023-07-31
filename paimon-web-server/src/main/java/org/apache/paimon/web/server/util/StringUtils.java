@@ -16,25 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.util;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import org.apache.paimon.web.server.constant.Constants;
 
-/** tenant use to isolate data. */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class Tenant extends BaseModel {
+/** common string utils. */
+public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
-    private static final long serialVersionUID = 1L;
-
-    /** tenant name. */
-    private String name;
-
-    /** tenant description. */
-    private String description;
-
-    /** is delete. */
-    @TableLogic private Boolean isDelete;
+    public static boolean isHttp(String link) {
+        return StringUtils.startsWithAny(link, Constants.HTTP, Constants.HTTPS);
+    }
 }

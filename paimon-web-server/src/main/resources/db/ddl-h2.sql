@@ -48,3 +48,57 @@ CREATE TABLE if not exists `user_tenant`
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB;
 
+CREATE TABLE if not exists `sys_role`
+(
+    `id`          int(11)      not null auto_increment primary key comment 'id',
+    `role_name`   varchar(30)  not null comment 'role name',
+    `role_key`    varchar(100) not null comment 'role key',
+    `sort`        int(4)       not null comment 'sort',
+    `enabled`     tinyint(1)   NOT NULL DEFAULT 1 COMMENT 'is enable',
+    `is_delete`   tinyint(1)   NOT NULL DEFAULT 0 COMMENT 'is delete',
+    `remark`      varchar(500)          default null comment 'remark',
+    `create_time` datetime(0)  NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0)  NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+) engine = innodb;
+
+CREATE TABLE if not exists `sys_menu`
+(
+    `id`          int(11)  not null auto_increment primary key comment 'id',
+    `menu_name`   varchar(50) not null comment 'menu name',
+    `parent_id`   int(11)           default 0 comment 'parent id',
+    `sort`        int(4)               default 0 comment 'sort',
+    `path`        varchar(200)         default '' comment 'route path',
+    `query`       varchar(255)         default null comment 'route params',
+    `is_cache`    int(1)               default 0 comment 'is cache（0:cache 1:no_cache）',
+    `type`        char(1)              default '' comment 'menu type（M:directory C:menu F:button）',
+    `visible`     char(1)              default 0 comment 'is visible（0:display 1:hide）',
+    `component`   varchar(255)         default null comment 'component path',
+    `is_frame`    int(1)               default 0 comment 'is frame',
+    `enabled`     tinyint(1)  NOT NULL DEFAULT 1 COMMENT 'is enable',
+    `is_delete`   tinyint(1)  NOT NULL DEFAULT 0 COMMENT 'is delete',
+    `perms`       varchar(100)         default null comment 'menu perms',
+    `icon`        varchar(100)         default '#' comment 'menu icon',
+    `remark`      varchar(500)         default '' comment 'remark',
+    `create_time` datetime(0) NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+) engine = innodb;
+
+CREATE TABLE if not exists `user_role`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `user_id`     int(11)     not null comment 'user id',
+    `role_id`     int(11)     not null comment 'role id',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+    unique key `idx_user_role` (`user_id`, `role_id`)
+) engine = innodb;
+
+CREATE TABLE if not exists `role_menu`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `role_id`     int(11)     not null comment 'role id',
+    `menu_id`     int(11)     not null comment 'menu id',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+    unique key `idx_role_menu` (`role_id`, `menu_id`)
+) engine = innodb;

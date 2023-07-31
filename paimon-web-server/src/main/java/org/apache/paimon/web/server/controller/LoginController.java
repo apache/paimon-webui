@@ -18,42 +18,52 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.service.UserService;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.apache.paimon.web.server.data.result.enums.Status.USER_NOT_EXIST;
-
-/** User api controller. */
+/** Login api controller. */
 @Slf4j
 @RestController
-@RequestMapping("/api/user")
-public class UserController {
+@RequestMapping("/api")
+public class LoginController {
 
     @Autowired private UserService userService;
 
     /**
-     * get user by id.
+     * login by username and password.
      *
-     * @param id user-id
-     * @return {@link R} with {@link User}
+     * @param username username
+     * @param password password
+     * @return token string
      */
-    @SaCheckPermission("system:user:query")
-    @GetMapping("/{id}")
-    public R<User> getUserById(@PathVariable("id") Long id) {
-        User user = userService.getById(id);
-        if (user == null) {
-            return R.failed(USER_NOT_EXIST);
-        }
-        user.setPassword(null);
-        return R.succeed(user);
+    @PostMapping("/login")
+    public R<String> login(String username, String password) {
+        return R.succeed(userService.login(username, password));
+    }
+
+    /**
+     * get token info.
+     *
+     * @return token info
+     */
+    @GetMapping("/tokenInfo")
+    public R<SaTokenInfo> tokenInfo() {
+        return R.succeed(StpUtil.getTokenInfo());
+    }
+
+    /** logout. */
+    @PostMapping("/logout")
+    public R<Void> logout() {
+        StpUtil.logout();
+        return R.succeed();
     }
 }

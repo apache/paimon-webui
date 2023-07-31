@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.paimon.web.server.mapper.SysMenuMapper">
+
+	<resultMap type="org.apache.paimon.web.server.data.model.SysMenu" id="SysMenuResult">
+		<id     property="id"         column="id"        />
+		<result property="menuName"       column="menu_name"      />
+		<result property="parentId"       column="parent_id"      />
+		<result property="sort"       column="sort"      />
+		<result property="path"           column="path"           />
+		<result property="component"      column="component"      />
+		<result property="query"          column="query"          />
+		<result property="isFrame"        column="is_frame"       />
+		<result property="isCache"        column="is_cache"       />
+		<result property="type"       column="type"      />
+		<result property="visible"        column="visible"        />
+		<result property="enabled"         column="enabled"         />
+		<result property="perms"          column="perms"          />
+		<result property="icon"           column="icon"           />
+		<result property="createTime"     column="create_time"    />
+		<result property="updateTime"     column="update_time"    />
+		<result property="remark"         column="remark"         />
+	</resultMap>
+
+	<sql id="selectMenuVo">
+        select id, menu_name, parent_id, sort, path, component, `query`, is_frame, is_cache, type, visible, enabled, ifnull(perms,'') as perms, icon, create_time
+		from sys_menu
+    </sql>
+    
+    <select id="selectMenuList" parameterType="org.apache.paimon.web.server.data.model.SysMenu" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		<where>
+			<if test="menu.menuName != null and menu.menuName != ''">
+				AND menu_name like concat('%', #{menu.menuName}, '%')
+			</if>
+			<if test="menu.visible != null and menu.visible != ''">
+				AND visible = #{menu.visible}
+			</if>
+			<if test="menu.enabled != null and menu.enabled != ''">
+				AND enabled = #{menu.enabled}
+			</if>
+		</where>
+		order by parent_id, sort
+	</select>
+	
+	<select id="selectMenuTreeAll" resultMap="SysMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.visible, m.enabled, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.type, m.icon, m.sort, m.create_time
+		from sys_menu m where m.type in ('M', 'C') and m.enabled = 1
+		order by m.parent_id, m.sort
+	</select>
+	
+	<select id="selectMenuListByUserId" resultMap="SysMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.visible, m.enabled, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.type, m.icon, m.sort, m.create_time
+		from sys_menu m
+		left join role_menu rm on m.id = rm.menu_id
+		left join user_role urole on rm.role_id = urole.role_id
+		left join sys_role ro on urole.role_id = ro.id
+		where urole.user_id = #{userId}
+		<if test="menu.menuName != null and menu.menuName != ''">
+            AND m.menu_name like concat('%', #{menu.menuName}, '%')
+		</if>
+		<if test="menu.visible != null and menu.visible != ''">
+            AND m.visible = #{visible}
+		</if>
+		<if test="menu.enabled != null and menu.enabled != ''">
+            AND m.enabled = #{enabled}
+		</if>
+		order by m.parent_id, m.sort
+	</select>
+    
+    <select id="selectMenuTreeByUserId" parameterType="Integer" resultMap="SysMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.visible, m.enabled, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.type, m.icon, m.sort, m.create_time
+		from sys_menu m
+			 left join role_menu rm on m.id = rm.menu_id
+			 left join user_role urole on rm.role_id = urole.role_id
+			 left join sys_role ro on urole.role_id = ro.id
+			 left join user u on urole.user_id = u.id
+		where u.id = #{userId} and m.type in ('M', 'C') and m.enabled = 1  AND ro.enabled = 1
+		order by m.parent_id, m.sort
+	</select>
+	
+	<select id="selectMenuListByRoleId" resultType="Integer">
+		select m.id
+		from sys_menu m
+            left join role_menu rm on m.id = rm.menu_id
+        where rm.role_id = #{roleId}
+		order by m.parent_id, m.sort
+	</select>
+	
+	<select id="selectMenuPerms" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join role_menu rm on m.id = rm.menu_id
+			 left join user_role urole on rm.role_id = urole.role_id
+	</select>
+
+	<select id="selectMenuPermsByUserId" parameterType="Integer" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join role_menu rm on m.id = rm.menu_id
+			 left join user_role urole on rm.role_id = urole.role_id
+			 left join sys_role r on r.id = urole.role_id
+		where m.enabled = 1 and r.enabled = 1 and urole.user_id = #{userId}
+	</select>
+	
+	<select id="selectMenuPermsByRoleId" parameterType="Integer" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join role_menu rm on m.id = rm.menu_id
+		where m.enabled = 1 and rm.role_id = #{roleId}
+	</select>
+	
+	<select id="selectMenuById" parameterType="Integer" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where id = #{menuId}
+	</select>
+	
+	<select id="hasChildByMenuId" resultType="Integer">
+	    select count(1) from sys_menu where parent_id = #{menuId} limit 1
+	</select>
+	
+	<select id="checkMenuNameUnique" parameterType="org.apache.paimon.web.server.data.model.SysMenu" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where menu_name=#{menuName} and parent_id = #{parentId} limit 1
+	</select>
+
+</mapper> 

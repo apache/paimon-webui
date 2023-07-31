@@ -18,42 +18,46 @@
 
 package org.apache.paimon.web.server.data.model;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
-/** base model of table. */
+/** sys_role. */
 @Data
-public abstract class BaseModel implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class SysRole extends BaseModel {
+    /** role name. */
+    private String roleName;
 
-    /** id. */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+    /** role key. */
+    private String roleKey;
 
-    /** create time. */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    /** sort. */
+    private Integer sort;
 
-    /** update time. */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    /** is enable. */
+    private Boolean enabled;
 
+    /** is delete. */
+    @TableLogic private Boolean isDelete;
+
+    /** remark. */
+    private String remark;
+
+    /** Does the user have this role identity. Default false. */
     @TableField(exist = false)
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Map<String, Object> params;
+    private boolean flag = false;
 
-    public Map<String, Object> getParams() {
-        if (params == null) {
-            params = new HashMap<>(8);
-        }
-        return params;
-    }
+    /** menu ids. */
+    @TableField(exist = false)
+    private Integer[] menuIds;
+
+    /** Role menu permissions. */
+    @TableField(exist = false)
+    private Set<String> permissions;
+
+    private static final long serialVersionUID = 1L;
 }

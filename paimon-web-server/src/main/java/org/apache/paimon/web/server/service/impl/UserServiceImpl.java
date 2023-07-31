@@ -19,12 +19,65 @@
 package org.apache.paimon.web.server.service.impl;
 
 import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.result.exception.BaseException;
+import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
+import org.apache.paimon.web.server.data.result.exception.user.UserPasswordNotMatchException;
 import org.apache.paimon.web.server.mapper.UserMapper;
 import org.apache.paimon.web.server.service.UserService;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /** UserServiceImpl. */
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {}
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
+    @Autowired private UserMapper userMapper;
+
+    /**
+     * login by username and password.
+     *
+     * @param username username
+     * @param password pwd
+     * @return {@link String}
+     */
+    @Override
+    public String login(String username, String password) throws BaseException {
+        User user = this.lambdaQuery().eq(User::getUsername, username).one();
+        if (user == null) {
+            throw new UserNotExistsException();
+        }
+        if (!user.getPassword().equals(password)) {
+            throw new UserPasswordNotMatchException();
+        }
+        StpUtil.login(user.getId());
+
+        return StpUtil.getTokenValue();
+    }
+
+    /**
+     * Query the list of assigned user roles.
+     *
+     * @param user query params
+     * @return user list
+     */
+    @Override
+    public List<User> selectAllocatedList(User user) {
+        return userMapper.selectAllocatedList(user);
+    }
+
+    /**
+     * Query the list of unassigned user roles.
+     *
+     * @param user query params
+     * @return user list
+     */
+    @Override
+    public List<User> selectUnallocatedList(User user) {
+        return userMapper.selectUnallocatedList(user);
+    }
+}
