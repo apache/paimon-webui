@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.service;
 
+import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 
@@ -31,11 +32,10 @@ public interface UserService extends IService<User> {
     /**
      * login by username and password.
      *
-     * @param username username
-     * @param password pwd
+     * @param loginDto login info
      * @return {@link String}
      */
-    String login(String username, String password) throws BaseException;
+    String login(LoginDto loginDto) throws BaseException;
 
     /**
      * Query the list of assigned user roles.

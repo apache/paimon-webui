@@ -36,8 +36,9 @@ public enum Status {
     // TODO
     UNKNOWN_ERROR(500, "unknown.error"),
     INTERNAL_SERVER_ERROR_ARGS(501, "internal.server.error"),
-    REQUEST_PARAMS_NOT_VALID_ERROR(7002, "invalid.request.parameter"),
-    REQUEST_PARAMS_ERROR(7003, "request.parameter.error"),
+
+    REQUEST_PARAMS_NOT_VALID_ERROR(4001, "invalid.request.parameter"),
+    REQUEST_PARAMS_ERROR(4002, "request.parameter.error"),
 
     USER_NOT_EXIST(10001, "user.not.exist"),
     USER_PASSWORD_ERROR(10002, "user.password.error"),

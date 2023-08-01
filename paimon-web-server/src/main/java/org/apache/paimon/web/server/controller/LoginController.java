@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.service.UserService;
 
@@ -25,8 +26,10 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,13 +44,12 @@ public class LoginController {
     /**
      * login by username and password.
      *
-     * @param username username
-     * @param password password
+     * @param loginDto login info
      * @return token string
      */
     @PostMapping("/login")
-    public R<String> login(String username, String password) {
-        return R.succeed(userService.login(username, password));
+    public R<String> login(@Validated @RequestBody LoginDto loginDto) {
+        return R.succeed(userService.login(loginDto));
     }
 
     /**

@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.service.impl;
 
+import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
@@ -41,12 +42,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * login by username and password.
      *
-     * @param username username
-     * @param password pwd
+     * @param loginDto login info
      * @return {@link String}
      */
     @Override
-    public String login(String username, String password) throws BaseException {
+    public String login(LoginDto loginDto) throws BaseException {
+        String username = loginDto.getUsername();
+        String password = loginDto.getPassword();
+
         User user = this.lambdaQuery().eq(User::getUsername, username).one();
         if (user == null) {
             throw new UserNotExistsException();
@@ -54,7 +57,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!user.getPassword().equals(password)) {
             throw new UserPasswordNotMatchException();
         }
-        StpUtil.login(user.getId());
+        StpUtil.login(user.getId(), loginDto.isRememberMe());
 
         return StpUtil.getTokenValue();
     }
