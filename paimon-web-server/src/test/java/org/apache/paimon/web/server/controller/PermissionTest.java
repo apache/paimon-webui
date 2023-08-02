@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
@@ -59,11 +60,14 @@ public class PermissionTest {
 
     @BeforeEach
     public void before() throws Exception {
+        LoginDto login = new LoginDto();
+        login.setUsername("common");
+        login.setPassword("21232f297a57a5a743894a0e4a801fc3");
+
         String result =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(loginPath)
-                                        .queryParam("username", "common")
-                                        .queryParam("password", "21232f297a57a5a743894a0e4a801fc3")
+                                        .content(ObjectMapperUtils.toJSON(login))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())

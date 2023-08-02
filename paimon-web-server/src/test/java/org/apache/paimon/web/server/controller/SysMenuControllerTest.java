@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.model.SysMenu;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.tree.TreeSelect;
@@ -63,11 +64,14 @@ public class SysMenuControllerTest {
 
     @BeforeEach
     public void before() throws Exception {
+        LoginDto login = new LoginDto();
+        login.setUsername("admin");
+        login.setPassword("21232f297a57a5a743894a0e4a801fc3");
+
         String result =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(loginPath)
-                                        .queryParam("username", "admin")
-                                        .queryParam("password", "21232f297a57a5a743894a0e4a801fc3")
+                                        .content(ObjectMapperUtils.toJSON(login))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
