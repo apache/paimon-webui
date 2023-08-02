@@ -15,54 +15,52 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Tree } from '@douyinfe/semi-ui';
-import { Input } from '@douyinfe/semi-ui';
-import { IconFilter } from '@douyinfe/semi-icons';
-import { IconFile } from '@douyinfe/semi-icons';
+import {Input, Tree} from '@douyinfe/semi-ui';
+import { IconSearch } from "@douyinfe/semi-icons";
+import styles from "./catalog-tree.module.less"
 
-const TreeNode = () => {
+const CatalogTree = () => {
     const treeData = [
         {
-            label: 'paimon',
-            value: 'paimon',
+            label: 'paimon_catalog_01',
+            value: 'catalog01',
             key: '0',
             children: [
                 {
-                    label: 'paimon_table_01',
-                    value: 'paimon_table_01',
+                    label: 'paimon_db_01',
+                    value: 'db01',
                     key: '0-0',
-                    icon: <IconFile/>,
                     children: [
                         {
-                            label: 'id',
-                            value: 'id',
+                            label: 'paimon_table_01',
+                            value: 'paimon_table_01',
                             key: '0-0-0',
                         },
                         {
-                            label: 'name',
-                            value: 'name',
+                            label: 'paimon_table_02',
+                            value: 'paimon_table_02',
                             key: '0-1-0',
                         },
                         {
-                            label: 'age',
-                            value: 'age',
+                            label: 'paimon_table_03',
+                            value: 'paimon_table_03',
                             key: '0-2-0',
                         },
                         {
-                            label: 'gender',
-                            value: 'gender',
+                            label: 'paimon_table_04',
+                            value: 'paimon_table_04',
                             key: '0-3-0',
                         },
                         {
-                            label: 'address',
-                            value: 'address',
+                            label: 'paimon_table_05',
+                            value: 'paimon_table_05',
                             key: '0-4-0',
                         },
                     ],
                 },
                 {
-                    label: 'paimon_table_02',
-                    value: 'paimon_table_02',
+                    label: 'paimon_db_02',
+                    value: 'paimon_db_02',
                     key: '0-1',
                     children: [
                         {
@@ -73,8 +71,8 @@ const TreeNode = () => {
                     ]
                 },
                 {
-                    label: 'paimon_table_03',
-                    value: 'paimon_table_03',
+                    label: 'paimon_db_03',
+                    value: 'paimon_db_03',
                     key: '0-2',
                     children: [
                         {
@@ -85,8 +83,8 @@ const TreeNode = () => {
                     ],
                 },
                 {
-                    label: 'paimon_table_04',
-                    value: 'paimon_table_04',
+                    label: 'paimon_db_04',
+                    value: 'paimon_db_04',
                     key: '0-3',
                     children: [
                         {
@@ -97,8 +95,8 @@ const TreeNode = () => {
                     ],
                 },
                 {
-                    label: 'paimon_table_05',
-                    value: 'paimon_table_05',
+                    label: 'paimon_db_05',
+                    value: 'paimon_db_05',
                     key: '0-4',
                     children: [
                         {
@@ -111,8 +109,8 @@ const TreeNode = () => {
             ],
         },
         {
-            label: 'iceberg',
-            value: 'iceberg',
+            label: 'paimon_catalog_02',
+            value: 'paimon_catalog_02',
             key: '1',
             children: [
                 {
@@ -128,21 +126,6 @@ const TreeNode = () => {
             ]
         }
     ];
-
-    const style = {
-        width: '18vw',
-        height: '100%',
-    };
-
-    /**
-     * 渲染树节点 使用自定义方式 ,可以直接点击节点 展开
-     * @param className
-     * @param onExpand
-     * @param onClick
-     * @param data
-     * @param expandIcon
-     * @returns {JSX.Element}
-     */
 
     const renderLabel = (x: any) => {
         const className = x.className;
@@ -164,18 +147,18 @@ const TreeNode = () => {
         );
     };
 
+
     return(
         <Tree
             filterTreeNode
             treeData={treeData}
             searchPlaceholder={"Filter"}
             searchRender={({ prefix, ...restProps }) => (
-                <Input suffix={<IconFilter />} {...restProps} style={{ width: '18vw', marginLeft: '-12px'}}></Input>
+                <Input suffix={<IconSearch className={styles['catalog-tree-input-icon']}/>} {...restProps} className={styles['catalog-tree-input']}></Input>
             )}
             renderFullLabel={renderLabel}
-            style={style}
         />
     )
 }
 
-export default TreeNode;
+export default CatalogTree;

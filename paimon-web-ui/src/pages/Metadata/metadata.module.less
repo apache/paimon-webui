@@ -15,15 +15,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import TableTab from "@pages/Metadata/RightContent/Tabs/Table";
-
-const MetadataRightContent = () => {
-    return(
-        <div style={{flex: 1}}>
-            <span style={{color: "var(--semi-color-text-0)"}}>paimon_table_01</span>
-            <TableTab/>
-        </div>
-    )
+.container {
+  display: flex;
+  flex-direction: row;
 }
 
-export default MetadataRightContent;
+.divider {
+  height: 100%;
+  position: fixed;
+}

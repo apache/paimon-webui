@@ -15,31 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import BottomPanel from "@pages/Playground/RightContent/BottomPanel";
-import TopPanel from "@pages/Playground/RightContent/TopPanel";
-import { Divider } from '@douyinfe/semi-ui';
+import PlaygroundRightHeaderTab from "@pages/Playground/components/RightContent/components/TopPanel/Tab";
 
-const PageContent = () => {
+const TopPanel = () => {
     return(
-        <div style={{
-            position: 'fixed',
-            width: '1507px',
-            height: '400px',
-            marginTop: '-24px',
-            right: '0',
-            backgroundColor: 'var(--semi-color-bg-0)'
-        }}>
+        <div>
             <span>
-                <TopPanel/>
-            </span>
-
-            <span><Divider margin='-4px'/></span>
-
-            <span>
-                <BottomPanel/>
+                <PlaygroundRightHeaderTab/>
             </span>
         </div>
     )
 }
 
-export default PageContent;
+export default TopPanel;

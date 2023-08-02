@@ -15,24 +15,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Layout } from "@douyinfe/semi-ui";
-import Header from "@pages/Layout/Header";
-import { Outlet } from 'react-router-dom';
-import styles from "./layout.module.less";
-
-const { Content } = Layout
-
-const LayoutRoot = () => {
-    return (
-        <Layout className="layout-page">
-            <Header/>
-            <Layout>
-                {/*<Sider/>*/}
-                <Content className={styles.content}>
-                    <Outlet />
-                </Content>
-            </Layout>
-        </Layout>
-    )
+.tree-search-wrapper {
+  padding: 10px 0 2px 0;
 }
-export default LayoutRoot
+
+.catalog-tree-input {
+  background-color: var(--semi-color-bg-0);
+}
