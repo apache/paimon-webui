@@ -32,6 +32,10 @@ public enum UserType {
         return this.code;
     }
 
+    public String getType() {
+        return this.type;
+    }
+
     UserType(int code, String type) {
         this.code = code;
         this.type = type;

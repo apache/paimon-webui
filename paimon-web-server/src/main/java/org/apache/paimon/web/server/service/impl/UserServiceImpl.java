@@ -22,7 +22,7 @@ import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
-import org.apache.paimon.web.server.data.result.exception.user.UserDisabledNotMatchException;
+import org.apache.paimon.web.server.data.result.exception.user.UserDisabledException;
 import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
 import org.apache.paimon.web.server.data.result.exception.user.UserPasswordNotMatchException;
 import org.apache.paimon.web.server.mapper.UserMapper;
@@ -60,7 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                         ? ldapLogin(username, password)
                         : localLogin(username, password);
         if (!user.getEnabled()) {
-            throw new UserDisabledNotMatchException();
+            throw new UserDisabledException();
         }
 
         StpUtil.login(user.getId(), loginDto.isRememberMe());

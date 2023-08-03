@@ -22,10 +22,10 @@ import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 
 /** Exception to user disabled. */
-public class UserDisabledNotMatchException extends BaseException {
+public class UserDisabledException extends BaseException {
     private static final long serialVersionUID = 1L;
 
-    public UserDisabledNotMatchException() {
+    public UserDisabledException() {
         super(Status.USER_DISABLED_ERROR);
     }
 }
