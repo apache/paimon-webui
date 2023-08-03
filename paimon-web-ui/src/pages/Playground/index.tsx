@@ -15,20 +15,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import TabMenuSidebar from "@src/pages/Playground/TabMenuSidebar";
-import RightContent from "@pages/Playground/RightContent";
+import TabMenuSidebar from "@pages/Playground/components/TabMenuSidebar";
+import RightContent from "@pages/Playground/components/RightContent";
 import {Divider} from "@douyinfe/semi-ui";
+import styles from "./playground.module.less"
 
 export default function  Index() {
     return(
-        <div style={{height: 'auto'}}>
-            <span>
-                 <TabMenuSidebar/>
-            </span>
-            <span><Divider layout="vertical" margin='388px' style={{position: 'fixed', height: '100%', marginTop: '-25px'}}/></span>
-            <span>
-               <RightContent/>
-            </span>
+        <div className={styles.container}>
+            <TabMenuSidebar/>
+            <Divider layout="vertical" margin='415px' className={styles.divider}/>
+            <RightContent/>
         </div>
     )
 }

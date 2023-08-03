@@ -18,8 +18,9 @@ under the License. */
 import {TabPane, Tabs} from '@douyinfe/semi-ui';
 import {IconCode, IconListView, IconHistory} from '@douyinfe/semi-icons';
 import CatalogDropdown from "@components/Dropdown/CatalogDropdown.tsx";
-import TreeNode from '@src/pages/Playground/TabMenuSidebar/TreeComponent';
+import TreeNode from '@pages/Playground/components/TabMenuSidebar/components/TreeComponent';
 import {useCallback, useEffect, useState} from "react";
+import styles from "./siderbar.module.less";
 
 
 const TMP_CATALOG_LIST = [
@@ -109,26 +110,21 @@ const SiderTab = () => {
     }
 
     return (
-        <Tabs tabPosition={"left"} type={"button"} tabPaneMotion={false}>
+        <Tabs tabPosition={"left"} type={"button"} tabPaneMotion={false} className={styles.container}>
             <TabPane
+                className={styles['tab-panel-container']}
                 tab={
                     <span>
                         <IconListView size={"extra-large"} title={"Catalog"}/>
                     </span>
                 } itemKey={'1'}>
-                <div style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-                    <span style={{marginTop: '6px'}}>
-                         <CatalogDropdown
-                             reloadCatalogListCallBack={() => handleReloadCatalog()}
-                             reLoadCatalog={reLoadCatalog}
-                             catalogChange={handleCatalogChange}
-                             catalogList={catalogList}
-                         />
-                    </span>
-                    <span style={{marginTop: '0px'}}>
-                         <TreeNode/>
-                    </span>
-                </div>
+                <CatalogDropdown
+                    reloadCatalogListCallBack={() => handleReloadCatalog()}
+                    reLoadCatalog={reLoadCatalog}
+                    catalogChange={handleCatalogChange}
+                    catalogList={catalogList}
+                />
+                <TreeNode/>
             </TabPane>
             <TabPane
                 tab={

@@ -20,7 +20,7 @@ import { RouteObject } from 'react-router';
 import { useRoutes } from 'react-router-dom';
 import LayoutPage from '@src/pages/Layout';
 import PlaygroundPage from '@src/pages/Playground';
-import MetaDataPage from '@src/pages/Metadata';
+import MetaDataPage from '@pages/Metadata';
 import DevStatus from "@pages/Abnormal/Dev";
 
 /*const Editor = lazy(() => import('@src/pages/Playground'))

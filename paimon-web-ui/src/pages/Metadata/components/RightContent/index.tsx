@@ -15,24 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Layout } from "@douyinfe/semi-ui";
-import Header from "@pages/Layout/Header";
-import { Outlet } from 'react-router-dom';
-import styles from "./layout.module.less";
+import TableTab from "@pages/Metadata/components/RightContent/components/MainContent/Table";
+import styles from "./right-content.module.less"
 
-const { Content } = Layout
-
-const LayoutRoot = () => {
-    return (
-        <Layout className="layout-page">
-            <Header/>
-            <Layout>
-                {/*<Sider/>*/}
-                <Content className={styles.content}>
-                    <Outlet />
-                </Content>
-            </Layout>
-        </Layout>
+const MetadataRightContent = () => {
+    return(
+        <div className={styles.container}>
+            <span style={{color: "var(--semi-color-text-0)"}}>paimon_table_01</span>
+            <TableTab/>
+        </div>
     )
 }
-export default LayoutRoot
+
+export default MetadataRightContent;
