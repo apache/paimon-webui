@@ -36,7 +36,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param role query params
      * @return role list
      */
-    public List<SysRole> selectRoleList(IPage<SysRole> page, SysRole role);
+    List<SysRole> selectRoleList(IPage<SysRole> page, SysRole role);
 
     /**
      * Query role list based on user ID.
@@ -44,7 +44,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param userId user ID
      * @return role list
      */
-    public List<SysRole> selectRolesByUserId(Integer userId);
+    List<SysRole> selectRolesByUserId(Integer userId);
 
     /**
      * Query role permissions based on user ID.
@@ -52,7 +52,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param userId user ID
      * @return permissions
      */
-    public Set<String> selectRolePermissionByUserId(Integer userId);
+    Set<String> selectRolePermissionByUserId(Integer userId);
 
     /**
      * Query user role list by user ID.
