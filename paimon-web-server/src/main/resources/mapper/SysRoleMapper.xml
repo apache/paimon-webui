@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
 	<select id="selectRolePermissionByUserId" parameterType="Integer" resultMap="SysRoleResult">
 		<include refid="selectRoleVo"/>
-		WHERE r.is_delete = '0' and ur.user_id = #{userId}
+		WHERE r.is_delete = '0' and urole.user_id = #{userId}
 	</select>
 	
 	<select id="selectRoleAll" resultMap="SysRoleResult">
