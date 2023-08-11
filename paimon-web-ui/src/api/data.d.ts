@@ -1,5 +1,4 @@
-<!--
-Licensed to the Apache Software Foundation (ASF) under one
+/* Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
 regarding copyright ownership.  The ASF licenses this file
@@ -14,19 +13,29 @@ software distributed under the License is distributed on an
 "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
-under the License.
--->
+under the License. */
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon_blue.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>巴别实时计算平台</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+declare namespace API {
+    export interface Result<T> {
+        code: number;
+        msg: string;
+        data: T;
+    }
+
+    export interface PageData<T> {
+        records: T[];
+        page: number;
+        size: number;
+        total: number;
+    }
+
+    export type PageResult<T> = Result<PageData<T>>
+}
+
+declare namespace Prop {
+    export interface FileSystemCatalogProp {
+        catalogName: string,
+        catalogType: string,
+        path: string
+    }
+}

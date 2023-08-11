@@ -65,7 +65,7 @@ const CatalogDropdown: React.FC<CatalogDropdownProps> = (props) => {
             placeholder="Select Catalog"
             optionList={renderCatalogList()}
             showClear
-            style={{display: "flex", flexGrow: 1, backgroundColor: "var(--semi-color-bg-0)"}}
+            style={{display: "flex", flexGrow: 1}}
         />
     </>
 }
