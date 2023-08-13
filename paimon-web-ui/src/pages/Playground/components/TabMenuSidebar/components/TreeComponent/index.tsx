@@ -20,8 +20,10 @@ import { Input } from '@douyinfe/semi-ui';
 import { IconFilter } from '@douyinfe/semi-icons';
 import { IconFile } from '@douyinfe/semi-icons';
 import styles from "./tree-component.module.less";
+import { useTranslation } from 'react-i18next';
 
 const TreeNode = () => {
+    const { t } = useTranslation()
     const treeData = [
         {
             label: 'paimon',
@@ -164,7 +166,7 @@ const TreeNode = () => {
         <Tree
             filterTreeNode
             treeData={treeData}
-            searchPlaceholder={"Filter"}
+            searchPlaceholder={t('common.filter')}
             searchRender={({ prefix, ...restProps }) => (
                 <Input suffix={<IconFilter/>} {...restProps}></Input>
             )}

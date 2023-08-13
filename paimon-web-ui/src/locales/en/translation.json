@@ -1,0 +1,20 @@
+{
+  "common": {
+    "filter": "Filter"
+  },
+  "header": {
+    "playground": "Playground",
+    "metadata": "Metadata",
+    "cdcingestion": "CDC Ingestion",
+    "system": "System"
+  },
+  "playground": {
+    "selectCatalog": "Select Catalog"
+  },
+  "metadata": {
+    "catalog": "Catalog",
+    "tableInfo": "TableInfo",
+    "details": "Details",
+    "files": "Files"
+  }
+}

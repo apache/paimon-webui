@@ -16,13 +16,16 @@ specific language governing permissions and limitations
 under the License. */
 
 import {Avatar, Button, Layout, Nav} from '@douyinfe/semi-ui';
-import { IconMoon, IconGithubLogo, IconLanguage, IconSun } from '@douyinfe/semi-icons';
+import { IconMoon, IconGithubLogo, IconSun } from '@douyinfe/semi-icons';
 import useThemeSwitcher from '@src/utils/mode'
 import paimonLogo from '@src/assets/logo/favicon_blue.svg'
 import paimonWhiteLogo from '@src/assets/logo/favicon_white.svg'
 import {useNavigate} from "react-router";
 import {useMemo, useState} from "react";
 import menuList from "@config/menu.tsx";
+import ChangeI18nBtn from "@components/ChangeI18nBtn";
+import {useTranslation} from "react-i18next";
+import {Link} from "react-router-dom";
 
 const { Header } = Layout
 
@@ -47,6 +50,7 @@ const HeaderRoot = ()=> {
             }
         })
     }, [menuList])
+    console.log('navlist...', navList)
 
     const onSelect = (data: any) => {
         setSelectedKeys([...data.selectedKeys])
@@ -56,6 +60,8 @@ const HeaderRoot = ()=> {
     const onOpenChange = (data: any) => {
         setOpenKeys([...data.openKeys])
     }
+
+    const { t } = useTranslation()
 
     return(
         <Header style={{ backgroundColor: 'var(--semi-color-bg-1)'}}>
@@ -72,7 +78,7 @@ const HeaderRoot = ()=> {
                     selectedKeys={selectedKeys}
                     onSelect={onSelect}
                     onOpenChange={onOpenChange}
-                    items={navList}
+                    // items={navList}
                     footer={
                         <div>
                             <Button
@@ -92,14 +98,7 @@ const HeaderRoot = ()=> {
                                     marginRight: '12px',
                                 }}
                             />
-                            <Button
-                                theme="borderless"
-                                icon={<IconLanguage size="extra-large" />}
-                                style={{
-                                    color: 'var(--semi-color-text-2)',
-                                    marginRight: '12px',
-                                }}
-                            />
+                            <ChangeI18nBtn />
                             <Avatar
                                 color="orange"
                                 size="small"
@@ -108,7 +107,21 @@ const HeaderRoot = ()=> {
                             </Avatar>
                         </div>
                     }
-                />
+                 >
+                     {
+                         navList.map( nav => {
+                         return (
+                             <Link
+                                 key={nav.name}
+                                 style={{ textDecoration: "none" }}
+                                 to={nav.path}
+                             >
+                                <Nav.Item itemKey={nav.name} text={t('header.' + nav.name)} />
+                             </Link>
+                         )
+                        })
+                     }
+                 </Nav>
             </div>
         </Header>
     )

@@ -15,13 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import React from 'react'
+// import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './app/App.tsx'
 import './index.less'
 
+import '@src/locales/i18n.ts'
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )

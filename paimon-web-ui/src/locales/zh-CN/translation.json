@@ -1,0 +1,20 @@
+{
+  "common": {
+    "filter": "过滤"
+  },
+  "header": {
+    "playground": "运行信息",
+    "metadata": "元数据",
+    "cdcingestion": "CDC集成",
+    "system": "系统"
+  },
+  "playground": {
+    "selectCatalog": "选择Catalog"
+  },
+  "metadata": {
+    "catalog": "元数据",
+    "tableInfo": "表信息",
+    "details": "详细",
+    "files": "文件"
+  }
+}

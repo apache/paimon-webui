@@ -18,12 +18,15 @@ under the License. */
 import { IconPlus } from "@douyinfe/semi-icons";
 import CatalogTree from "@pages/Metadata/components/LeftContent/components/CatalogTree";
 import styles from "./left-content.module.less";
+import { useTranslation } from 'react-i18next';
+
 
 const MetadataSidebar = () => {
+    const { t } = useTranslation()
     return(
         <div className={styles.container}>
             <div className={styles['add-catalog-container']}>
-                <span>Catalog</span>
+                <span>{t('metadata.catalog')}</span>
                 <IconPlus/>
             </div>
             <CatalogTree/>

@@ -18,8 +18,10 @@ under the License. */
 import {Input, Tree} from '@douyinfe/semi-ui';
 import { IconSearch } from "@douyinfe/semi-icons";
 import styles from "./catalog-tree.module.less"
+import { useTranslation } from 'react-i18next';
 
 const CatalogTree = () => {
+    const { t } = useTranslation()
     const treeData = [
         {
             label: 'paimon_catalog_01',
@@ -152,7 +154,7 @@ const CatalogTree = () => {
         <Tree
             filterTreeNode
             treeData={treeData}
-            searchPlaceholder={"Filter"}
+            searchPlaceholder={t('common.filter')}
             searchRender={({ prefix, ...restProps }) => (
                 <Input suffix={<IconSearch className={styles['catalog-tree-input-icon']}/>} {...restProps} className={styles['catalog-tree-input']}></Input>
             )}
