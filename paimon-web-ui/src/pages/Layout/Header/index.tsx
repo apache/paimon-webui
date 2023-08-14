@@ -50,7 +50,6 @@ const HeaderRoot = ()=> {
             }
         })
     }, [menuList])
-    console.log('navlist...', navList)
 
     const onSelect = (data: any) => {
         setSelectedKeys([...data.selectedKeys])
