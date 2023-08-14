@@ -19,4 +19,5 @@ export const API_ENDPOINTS = {
     // catalog
     CREATE_FILE_SYSTEM_CATALOG: '/catalog/createFilesystemCatalog',
     CREATE_HIVE_CATALOG: '/catalog/createHiveCatalog',
+    GET_ALL_CATALOGS: '/catalog/getAllCatalogs',
 };

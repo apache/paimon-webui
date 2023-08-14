@@ -15,31 +15,29 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-declare namespace API {
-    export interface Result<T> {
-        code: number;
-        msg: string;
-        data: T;
-    }
+/**
+ * Responsible for creating Store method and Action method
+ */
+import {create} from 'zustand';
+import {persist} from "zustand/middleware";
+import type {State} from './initialState';
+import {initialState} from './initialState';
 
-    export interface PageData<T> {
-        records: T[];
-        page: number;
-        size: number;
-        total: number;
-    }
-
-    export type PageResult<T> = Result<PageData<T>>
+interface Action {
+    resetUser: () => void;
 }
 
-declare namespace Prop {
-    // Catalog
-    export interface CatalogProp {
-        catalogName: string,
-        catalogType: string,
-        warehouse: string,
-        hiveUri: string,
-        hiveConfDir: string,
-        isDelete: boolean
+export type Store = State & Action;
+
+export const useStore = create<Store>()(persist(
+    (set) => ({
+        ...initialState,
+
+        resetUser: () => {
+            set({});
+        },
+
+    }), {
+        name: 'app-storage'
     }
-}
+))

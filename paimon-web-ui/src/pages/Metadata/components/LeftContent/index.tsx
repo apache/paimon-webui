@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import { IconPlus } from "@douyinfe/semi-icons";
+import { Toast } from '@douyinfe/semi-ui';
 import CatalogTree from "@pages/Metadata/components/LeftContent/components/CatalogTree";
 import {useState} from "react";
 import CatalogModalForm from "@pages/Metadata/components/LeftContent/components/CatalogModalForm";
@@ -42,22 +43,55 @@ const MetadataSidebar = () => {
                     // Assuming values contains the form data
                     const formData = values;
 
-                    if (formData.catalog === 'filesystem') {
-                        const catalogProp: Prop.FileSystemCatalogProp = {
-                            catalogName: formData.catalog,
-                            catalogType: 'filesystem',
-                            path: formData.path
-                        };
-                        let catalog = Api.createFileSystemCatalog(catalogProp);
-                        console.log(catalog);
-                    } else {
+                    const catalogProp: Prop.CatalogProp = {
+                        catalogName: formData.catalogName,
+                        catalogType: formData.catalogType,
+                        warehouse: formData.warehouse,
+                        hiveUri: formData.hiveUri,
+                        hiveConfDir: formData.hiveConfDir,
+                        isDelete: false
+                    };
 
+                    if (formData.catalogType === 'filesystem') {
+                        Api.createFileSystemCatalog(catalogProp)
+                            .then((response: any) => {
+                                if (response.code === 200) {
+                                    Toast.success('Catalog created successfully!');
+                                    resolve(); // Resolve the promise when done
+                                } else {
+                                    console.error('Failed to create catalog:', response.msg);
+                                    Toast.error('Failed to create catalog:' +  response.msg);
+                                    reject(response.message); // Reject the promise on error
+                                }
+                            })
+                            .catch((error: any) => {
+                                console.error('Failed to create catalog:', error);
+                                Toast.error('Failed to create catalog:' + error);
+                                reject(error); // Reject the promise on error
+                            })
+                    } else {
+                        Api.createHiveCatalog(catalogProp)
+                            .then((response: any) => {
+                                if (response.code === 200) {
+                                    Toast.success('Catalog created successfully!');
+                                    resolve(); // Resolve the promise when done
+                                } else {
+                                    console.error('Failed to create catalog:', response.msg);
+                                    Toast.error('Failed to create catalog:' +  response.msg);
+                                    reject(response.message); // Reject the promise on error
+                                }
+                            })
+                            .catch((error: any) => {
+                                console.error('Failed to create catalog:', error);
+                                Toast.error('Failed to create catalog:' + error);
+                                reject(error); // Reject the promise on error
+                            })
                     }
-                    resolve(); // Resolve the promise when done
+                    resolve();
                 })
                 .catch((errors: any) => {
                     console.log(errors);
-                    reject(errors); // Reject the promise on error
+                    reject(errors);
                 });
         });
     };

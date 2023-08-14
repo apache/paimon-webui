@@ -42,7 +42,7 @@ const CatalogForm = ({ getFormApi }) => {
                                style={{ width: "100%" }}/>
 
                            <Form.Select
-                               field="catalog"
+                               field="catalogType"
                                label='Catalog Type'
                                placeholder={"please select catalog"}
                                rules={[
@@ -53,9 +53,9 @@ const CatalogForm = ({ getFormApi }) => {
                                <Form.Select.Option value="hive">Hive</Form.Select.Option>
                            </Form.Select>
 
-                           {formState.values.catalog === 'filesystem' ? (
+                           {formState.values.catalogType === 'filesystem' ? (
                                <Form.Input
-                                   field="path"
+                                   field="warehouse"
                                    label='Warehouse'
                                    trigger='blur'
                                    rules={[

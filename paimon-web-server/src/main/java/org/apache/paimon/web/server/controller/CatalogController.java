@@ -19,28 +19,48 @@
 package org.apache.paimon.web.server.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.web.api.catalog.CatalogCreator;
+import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.service.CatalogService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+/** Catalog api controller. */
 @Slf4j
 @RestController
 @RequestMapping("/api/catalog")
 public class CatalogController {
 
+    @Autowired
+    private CatalogService catalogService;
+
     /**
      * Create a filesystem catalog.
      *
-     * @param fileSystemCatalogInfo The fileSystemCatalogInfo for the filesystem catalog.
+     * @param catalogInfo The catalogInfo for the filesystem catalog.
      * @return The created catalog.
      */
     @PostMapping("/createFilesystemCatalog")
-    public R<Catalog> createFilesystemCatalog(@RequestBody FileSystemCatalogInfo fileSystemCatalogInfo) {
-        return R.succeed(CatalogCreator.createFilesystemCatalog(fileSystemCatalogInfo.path));
+    public R<Void> createFilesystemCatalog(@RequestBody CatalogInfo catalogInfo) {
+        if (!catalogService.checkCatalogNameUnique(catalogInfo)) {
+            return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogInfo.getCatalogName());
+        }
+
+        try {
+            CatalogCreator.createFilesystemCatalog(catalogInfo.getWarehouse());
+            return catalogService.save(catalogInfo) ? R.succeed() : R.failed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.CATALOG_CREATE_ERROR);
+        }
     }
 
     /**
@@ -50,49 +70,32 @@ public class CatalogController {
      * @return The created catalog.
      */
     @PostMapping("/createHiveCatalog")
-    public Catalog createHiveCatalog(@RequestBody HiveCatalogInfo catalogInfo) {
-        return CatalogCreator.createHiveCatalog(catalogInfo.getWarehouse(), catalogInfo.getUri(), catalogInfo.getHiveConfDir());
+    public R<Void> createHiveCatalog(@RequestBody CatalogInfo catalogInfo) {
+        if (!catalogService.checkCatalogNameUnique(catalogInfo)) {
+            return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogInfo.getCatalogName());
+        }
+
+        try {
+            CatalogCreator.createHiveCatalog(
+                    catalogInfo.getWarehouse(),
+                    catalogInfo.getHiveUri(),
+                    catalogInfo.getHiveConfDir());
+            return catalogService.save(catalogInfo) ? R.succeed() : R.failed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.CATALOG_CREATE_ERROR);
+        }
     }
 
     /**
-     * A class to hold the information for the filesystem catalog.
+     * Get all catalog information.
+     *
+     * @return The list of all catalogs.
      */
-    public static class FileSystemCatalogInfo {
-        private String catalogName;
-        private String catalogType;
-        private String path;
+    @GetMapping("/getAllCatalogs")
+    public R<List<CatalogInfo>> getCatalog() {
+        List<CatalogInfo> catalogs = catalogService.list();
+        return R.succeed(catalogs);
     }
 
-    /**
-     * A class to hold the information for the hive catalog.
-     */
-    public static class HiveCatalogInfo {
-        private String warehouse;
-        private String uri;
-        private String hiveConfDir;
-
-        public String getWarehouse() {
-            return warehouse;
-        }
-
-        public void setWarehouse(String warehouse) {
-            this.warehouse = warehouse;
-        }
-
-        public String getUri() {
-            return uri;
-        }
-
-        public void setUri(String uri) {
-            this.uri = uri;
-        }
-
-        public String getHiveConfDir() {
-            return hiveConfDir;
-        }
-
-        public void setHiveConfDir(String hiveConfDir) {
-            this.hiveConfDir = hiveConfDir;
-        }
-    }
 }

@@ -16,26 +16,38 @@ specific language governing permissions and limitations
 under the License. */
 
 import http from '@api/http'
-import { API_ENDPOINTS } from '@api/endpoints';
+import {API_ENDPOINTS} from '@api/endpoints';
+import Result = API.Result;
+import {CatalogItemList} from "@src/types/Catalog/data";
 
-export const createFileSystemCatalog = async (catalogProp: Prop.FileSystemCatalogProp) => {
+export const createFileSystemCatalog = async (catalogProp: Prop.CatalogProp) => {
     try {
-        const response: API.Result<any> =
-            await http.httpPost<API.Result<any>, Prop.FileSystemCatalogProp>(API_ENDPOINTS.CREATE_FILE_SYSTEM_CATALOG, catalogProp);
-        console.log(response)
-        if (response.code === 200) {
-            console.log('Catalog was successfully created');
-            return response.data;
-        } else {
-            console.log('There was a problem creating the catalog:', response.msg);
-        }
+        return await http.httpPost<Result<any>, Prop.CatalogProp>(API_ENDPOINTS.CREATE_FILE_SYSTEM_CATALOG, catalogProp);
     } catch (error) {
         console.error('Failed to create catalog:', error);
     }
 };
 
+export const createHiveCatalog = async (catalogProp: Prop.CatalogProp) => {
+    try {
+        return await http.httpPost<Result<any>, Prop.CatalogProp>(API_ENDPOINTS.CREATE_HIVE_CATALOG, catalogProp);
+    } catch (error) {
+        console.error('Failed to create catalog:', error);
+    }
+};
+
+export const getAllCatalogs = async () => {
+    try {
+        return await http.httpGet<Result<CatalogItemList>, null>(API_ENDPOINTS.GET_ALL_CATALOGS)
+    } catch (error) {
+        console.error('Failed to get catalogs:', error);
+    }
+}
+
 const Api = {
-    createFileSystemCatalog
+    createFileSystemCatalog,
+    createHiveCatalog,
+    getAllCatalogs
 }
 
 export default Api;

@@ -147,7 +147,6 @@ const CatalogTree = () => {
         );
     };
 
-
     return(
         <Tree
             filterTreeNode

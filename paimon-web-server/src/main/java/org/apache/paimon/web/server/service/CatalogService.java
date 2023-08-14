@@ -16,26 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.catalog;
+package org.apache.paimon.web.server.service;
 
-import org.apache.paimon.catalog.Catalog;
-import org.apache.paimon.catalog.FileSystemCatalog;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.paimon.web.server.data.model.CatalogInfo;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+/** Catalog Service. */
+public interface CatalogService extends IService<CatalogInfo> {
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/** The test class of catalog creator in {@link CatalogCreator}. */
-public class CatalogCreatorTest {
-
-    @TempDir java.nio.file.Path tempFile;
-
-    @Test
-    public void testCreateFileSystemCatalog() {
-        //String warehouse = tempFile.toUri().toString();
-        String warehouse = "file://D:/path/";
-        Catalog catalog = CatalogCreator.createFilesystemCatalog(warehouse);
-        assertThat(catalog).isInstanceOf(FileSystemCatalog.class);
-    }
+    /**
+     * Verify if the catalog name is unique.
+     *
+     * @param catalog catalog info
+     * @return result
+     */
+    boolean checkCatalogNameUnique(CatalogInfo catalog);
 }

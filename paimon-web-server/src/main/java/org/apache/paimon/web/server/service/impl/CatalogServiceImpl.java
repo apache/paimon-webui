@@ -16,26 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.catalog;
+package org.apache.paimon.web.server.service.impl;
 
-import org.apache.paimon.catalog.Catalog;
-import org.apache.paimon.catalog.FileSystemCatalog;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.paimon.web.server.data.model.CatalogInfo;
+import org.apache.paimon.web.server.mapper.CatalogMapper;
+import org.apache.paimon.web.server.service.CatalogService;
+import org.springframework.stereotype.Service;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+/** CatalogServiceImpl. */
+@Service
+public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo> implements CatalogService {
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/** The test class of catalog creator in {@link CatalogCreator}. */
-public class CatalogCreatorTest {
-
-    @TempDir java.nio.file.Path tempFile;
-
-    @Test
-    public void testCreateFileSystemCatalog() {
-        //String warehouse = tempFile.toUri().toString();
-        String warehouse = "file://D:/path/";
-        Catalog catalog = CatalogCreator.createFilesystemCatalog(warehouse);
-        assertThat(catalog).isInstanceOf(FileSystemCatalog.class);
+    @Override
+    public boolean checkCatalogNameUnique(CatalogInfo catalog) {
+        int catalogId = catalog.getId() == null ? -1 : catalog.getId();
+        CatalogInfo info = this.lambdaQuery().eq(CatalogInfo::getCatalogName, catalog.getCatalogName()).one();
+        return info == null || info.getId() == catalogId;
     }
 }

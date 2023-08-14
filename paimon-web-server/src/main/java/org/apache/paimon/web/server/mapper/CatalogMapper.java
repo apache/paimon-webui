@@ -16,26 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.catalog;
+package org.apache.paimon.web.server.mapper;
 
-import org.apache.paimon.catalog.Catalog;
-import org.apache.paimon.catalog.FileSystemCatalog;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.paimon.web.server.data.model.CatalogInfo;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-/** The test class of catalog creator in {@link CatalogCreator}. */
-public class CatalogCreatorTest {
-
-    @TempDir java.nio.file.Path tempFile;
-
-    @Test
-    public void testCreateFileSystemCatalog() {
-        //String warehouse = tempFile.toUri().toString();
-        String warehouse = "file://D:/path/";
-        Catalog catalog = CatalogCreator.createFilesystemCatalog(warehouse);
-        assertThat(catalog).isInstanceOf(FileSystemCatalog.class);
-    }
+/** Catalog table mapper. */
+@Mapper
+public interface CatalogMapper extends BaseMapper<CatalogInfo> {
 }

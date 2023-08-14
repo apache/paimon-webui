@@ -16,26 +16,35 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.catalog;
+package org.apache.paimon.web.server.data.model;
 
-import org.apache.paimon.catalog.Catalog;
-import org.apache.paimon.catalog.FileSystemCatalog;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+/** Catalog table model. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@TableName("catalog")
+public class CatalogInfo extends BaseModel{
 
-import static org.assertj.core.api.Assertions.assertThat;
+    private String catalogType;
 
-/** The test class of catalog creator in {@link CatalogCreator}. */
-public class CatalogCreatorTest {
+    private String catalogName;
 
-    @TempDir java.nio.file.Path tempFile;
+    private String warehouse;
 
-    @Test
-    public void testCreateFileSystemCatalog() {
-        //String warehouse = tempFile.toUri().toString();
-        String warehouse = "file://D:/path/";
-        Catalog catalog = CatalogCreator.createFilesystemCatalog(warehouse);
-        assertThat(catalog).isInstanceOf(FileSystemCatalog.class);
-    }
+    private String hiveUri;
+
+    private String hiveConfDir;
+
+    @TableLogic
+    private boolean isDelete;
 }
