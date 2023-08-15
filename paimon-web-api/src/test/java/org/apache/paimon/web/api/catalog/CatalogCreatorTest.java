@@ -33,8 +33,7 @@ public class CatalogCreatorTest {
 
     @Test
     public void testCreateFileSystemCatalog() {
-        // String warehouse = tempFile.toUri().toString();
-        String warehouse = "file://D:/path/";
+        String warehouse = tempFile.toUri().toString();
         Catalog catalog = CatalogCreator.createFilesystemCatalog(warehouse);
         assertThat(catalog).isInstanceOf(FileSystemCatalog.class);
     }
