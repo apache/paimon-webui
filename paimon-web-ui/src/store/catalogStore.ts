@@ -17,15 +17,15 @@ under the License. */
 
 import {create} from 'zustand';
 import {persist} from "zustand/middleware";
-import Result = API.Result;
 import {CatalogItemList} from "@src/types/Catalog/data";
 import Api from "@api/api.ts";
 import {Toast} from "@douyinfe/semi-ui";
 
 type Store = {
-    catalogItemList: CatalogItemList[];
+    catalogItemList: CatalogItemList;
     createFileSystemCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
     createHiveCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
+    fetchCatalogData: () => Promise<void>;
 };
 
 export const useCatalogStore = create<Store>()(persist(
@@ -56,7 +56,6 @@ export const useCatalogStore = create<Store>()(persist(
                 }
                 if (response.code === 200) {
                     Toast.success('Catalog created successfully!');
-                    //set((state) => state.fetchTreeData());
                 } else {
                     console.error('Failed to create catalog:', response.msg);
                     Toast.error('Failed to create catalog:' +  response.msg);
@@ -64,6 +63,29 @@ export const useCatalogStore = create<Store>()(persist(
             } catch (error) {
                 console.error('Failed to create catalog:', error);
                 Toast.error('Failed to create catalog:' + error);
+            }
+        },
+        fetchCatalogData: async () => {
+            try {
+                const result = await Api.getAllCatalogs();
+                if (result && result.data) {
+                    const newCatalogItemList = result.data.map((item) => {
+                        return {
+                            id: item.id,
+                            catalogName: item.catalogName,
+                            catalogType: item.catalogType,
+                            warehouse: item.warehouse,
+                            hiveUri: item.hiveUri,
+                            hiveConfDir: item.hiveConfDir,
+                            isDelete: item.isDelete,
+                            createTime: item.createTime,
+                            updateTime: item.updateTime
+                        };
+                    });
+                    set((state) => ({ ...state, catalogItemList: newCatalogItemList }));
+                }
+            } catch (error) {
+                console.error('Failed to get catalogs:', error);
             }
         },
     }),{

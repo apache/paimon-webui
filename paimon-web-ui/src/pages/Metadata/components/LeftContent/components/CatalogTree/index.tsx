@@ -17,9 +17,9 @@ under the License. */
 
 import {Input, Tree} from '@douyinfe/semi-ui';
 import { IconSearch, IconFile } from "@douyinfe/semi-icons";
-import Api from "@api/api.ts";
 import {useEffect, useState} from "react";
 import styles from "./catalog-tree.module.less"
+import { useCatalogStore } from "@src/store/catalogStore.ts";
 
 const CatalogTree = () => {
 
@@ -31,26 +31,23 @@ const CatalogTree = () => {
     };
 
     const [treeData, setTreeData] = useState<TreeDataItem[]>([]);
+    const fetchCatalogData = useCatalogStore(state => state.fetchCatalogData);
+    const catalogItemList = useCatalogStore(state => state.catalogItemList);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const result = await Api.getAllCatalogs();
-                if (result && result.data) {
-                    const transformedData = result.data.map(item => ({
-                        label: item.catalogName,
-                        value: item.catalogName,
-                        key: item.id.toString(),
-                    }));
-                    setTreeData(transformedData);
-                }
-            } catch (error) {
-                console.error('Failed to get catalogs:', error);
-            }
-        };
+        // Fetch the catalog data when the component mounts
+        fetchCatalogData();
+    }, [fetchCatalogData]);
 
-        fetchData();
-    }, []);
+    useEffect(() => {
+        // Update treeData when catalogItemList changes
+        const transformedData = catalogItemList.map(item => ({
+            label: item.catalogName,
+            value: item.catalogName,
+            key: item.id.toString(),
+        }));
+        setTreeData(transformedData);
+    }, [catalogItemList]);
 
     const renderLabel = (x: any) => {
         const className = x.className;
