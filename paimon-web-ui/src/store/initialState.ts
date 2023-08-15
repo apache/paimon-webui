@@ -18,21 +18,11 @@ under the License. */
 /**
  * Responsible for State - adding state types and initializing state values.
  */
-import {CatalogItem} from "@src/types/Catalog/data";
+import {CatalogItemList} from "@src/types/Catalog/data";
 
-export const initCatalogItem: CatalogItem = {
-    id: 0,
-    catalogName: '',
-    catalogType: '',
-    warehouse: '',
-    hiveUri: '',
-    hiveConfDir: '',
-    isDelete: false,
-    createTime: new Date(),
-    updateTime: new Date(),
-}
+export const initCatalogItem: CatalogItemList =  [];
 
-export type State = CatalogItem
+export type State = CatalogItemList;
 
 export const initialState: State = {
     ...initCatalogItem

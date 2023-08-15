@@ -18,11 +18,11 @@
 
 package org.apache.paimon.web.server.mapper;
 
+import org.apache.paimon.web.server.data.model.CatalogInfo;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.paimon.web.server.data.model.CatalogInfo;
 
 /** Catalog table mapper. */
 @Mapper
-public interface CatalogMapper extends BaseMapper<CatalogInfo> {
-}
+public interface CatalogMapper extends BaseMapper<CatalogInfo> {}

@@ -21,13 +21,13 @@ package org.apache.paimon.web.server.configrue;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+/** CorsConfig. */
 @Slf4j
-//@Configuration
+// @Configuration
 public class CorsConfig {
 
     @Bean
@@ -42,6 +42,4 @@ public class CorsConfig {
         source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(source);
     }
-
-
 }

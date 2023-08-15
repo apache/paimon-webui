@@ -18,12 +18,13 @@
 
 package org.apache.paimon.web.server.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.paimon.web.api.catalog.CatalogCreator;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,8 +40,7 @@ import java.util.List;
 @RequestMapping("/api/catalog")
 public class CatalogController {
 
-    @Autowired
-    private CatalogService catalogService;
+    @Autowired private CatalogService catalogService;
 
     /**
      * Create a filesystem catalog.
@@ -97,5 +97,4 @@ public class CatalogController {
         List<CatalogInfo> catalogs = catalogService.list();
         return R.succeed(catalogs);
     }
-
 }

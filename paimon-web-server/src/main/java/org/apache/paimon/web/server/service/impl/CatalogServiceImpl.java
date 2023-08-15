@@ -18,20 +18,23 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.mapper.CatalogMapper;
 import org.apache.paimon.web.server.service.CatalogService;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /** CatalogServiceImpl. */
 @Service
-public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo> implements CatalogService {
+public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo>
+        implements CatalogService {
 
     @Override
     public boolean checkCatalogNameUnique(CatalogInfo catalog) {
         int catalogId = catalog.getId() == null ? -1 : catalog.getId();
-        CatalogInfo info = this.lambdaQuery().eq(CatalogInfo::getCatalogName, catalog.getCatalogName()).one();
+        CatalogInfo info =
+                this.lambdaQuery().eq(CatalogInfo::getCatalogName, catalog.getCatalogName()).one();
         return info == null || info.getId() == catalogId;
     }
 }

@@ -39,7 +39,7 @@ export const createHiveCatalog = async (catalogProp: Prop.CatalogProp) => {
 export const getAllCatalogs = async () => {
     try {
         return await http.httpGet<Result<CatalogItemList>, null>(API_ENDPOINTS.GET_ALL_CATALOGS)
-    } catch (error) {
+    } catch (error: any) {
         console.error('Failed to get catalogs:', error);
     }
 }

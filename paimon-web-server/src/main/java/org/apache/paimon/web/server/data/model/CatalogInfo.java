@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @TableName("catalog")
-public class CatalogInfo extends BaseModel{
+public class CatalogInfo extends BaseModel {
 
     private String catalogType;
 
@@ -45,6 +45,5 @@ public class CatalogInfo extends BaseModel{
 
     private String hiveConfDir;
 
-    @TableLogic
-    private boolean isDelete;
+    @TableLogic private boolean isDelete;
 }

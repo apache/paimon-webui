@@ -15,27 +15,22 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-/**
- * Responsible for creating Store method and Action method
- */
 import {create} from 'zustand';
 import {persist} from "zustand/middleware";
-import type {State} from './initialState';
-import {initialState} from './initialState';
+import Result = API.Result;
+import {CatalogItemList} from "@src/types/Catalog/data";
 import Api from "@api/api.ts";
 import {Toast} from "@douyinfe/semi-ui";
 
-interface Action {
+type Store = {
+    catalogItemList: CatalogItemList[];
     createFileSystemCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
     createHiveCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
-}
+};
 
-export type Store = State & Action;
-
-export const useStore = create<Store>()(persist(
+export const useCatalogStore = create<Store>()(persist(
     (set) => ({
-        ...initialState,
-
+        catalogItemList: [],
         createFileSystemCatalog: async (catalogProp) => {
             try {
                 const response = await Api.createFileSystemCatalog(catalogProp);
@@ -44,7 +39,6 @@ export const useStore = create<Store>()(persist(
                 }
                 if (response.code === 200) {
                     Toast.success('Catalog created successfully!');
-                    //set((state) => state.fetchTreeData());
                 } else {
                     console.error('Failed to create catalog:', response.msg);
                     Toast.error('Failed to create catalog:' +  response.msg);
@@ -72,8 +66,7 @@ export const useStore = create<Store>()(persist(
                 Toast.error('Failed to create catalog:' + error);
             }
         },
-
-    }), {
-        name: 'app-storage'
+    }),{
+        name: 'catalog-storage'
     }
 ))

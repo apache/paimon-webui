@@ -60,3 +60,8 @@ values (1, 1),
        (1, 1002),
        (1, 1003),
        (1, 1004);
+
+insert into `catalog` (catalog_type, catalog_name, warehouse)
+values ('filesystem', 'paimon', 'file:///D:/path/'),
+       ('filesystem', 'fts', 'file:///D:/path/'),
+       ('filesystem', 'streaming_warehouse', 'file:///D:/path/')

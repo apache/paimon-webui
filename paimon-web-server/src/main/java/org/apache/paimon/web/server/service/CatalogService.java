@@ -18,8 +18,9 @@
 
 package org.apache.paimon.web.server.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /** Catalog Service. */
 public interface CatalogService extends IService<CatalogInfo> {
