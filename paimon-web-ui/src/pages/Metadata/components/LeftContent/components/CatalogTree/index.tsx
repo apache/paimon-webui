@@ -16,116 +16,38 @@ specific language governing permissions and limitations
 under the License. */
 
 import {Input, Tree} from '@douyinfe/semi-ui';
-import { IconSearch } from "@douyinfe/semi-icons";
+import { IconSearch, IconFile } from "@douyinfe/semi-icons";
+import {useEffect, useState} from "react";
 import styles from "./catalog-tree.module.less"
+import { useCatalogStore } from "@src/store/catalogStore.ts";
 
 const CatalogTree = () => {
-    const treeData = [
-        {
-            label: 'paimon_catalog_01',
-            value: 'catalog01',
-            key: '0',
-            children: [
-                {
-                    label: 'paimon_db_01',
-                    value: 'db01',
-                    key: '0-0',
-                    children: [
-                        {
-                            label: 'paimon_table_01',
-                            value: 'paimon_table_01',
-                            key: '0-0-0',
-                        },
-                        {
-                            label: 'paimon_table_02',
-                            value: 'paimon_table_02',
-                            key: '0-1-0',
-                        },
-                        {
-                            label: 'paimon_table_03',
-                            value: 'paimon_table_03',
-                            key: '0-2-0',
-                        },
-                        {
-                            label: 'paimon_table_04',
-                            value: 'paimon_table_04',
-                            key: '0-3-0',
-                        },
-                        {
-                            label: 'paimon_table_05',
-                            value: 'paimon_table_05',
-                            key: '0-4-0',
-                        },
-                    ],
-                },
-                {
-                    label: 'paimon_db_02',
-                    value: 'paimon_db_02',
-                    key: '0-1',
-                    children: [
-                        {
-                            label: 'Osaka',
-                            value: 'Osaka',
-                            key: '0-1-0'
-                        }
-                    ]
-                },
-                {
-                    label: 'paimon_db_03',
-                    value: 'paimon_db_03',
-                    key: '0-2',
-                    children: [
-                        {
-                            label: 'Beijing',
-                            value: 'Beijing',
-                            key: '0-2-0',
-                        },
-                    ],
-                },
-                {
-                    label: 'paimon_db_04',
-                    value: 'paimon_db_04',
-                    key: '0-3',
-                    children: [
-                        {
-                            label: 'Beijing',
-                            value: 'Beijing',
-                            key: '0-3-0',
-                        },
-                    ],
-                },
-                {
-                    label: 'paimon_db_05',
-                    value: 'paimon_db_05',
-                    key: '0-4',
-                    children: [
-                        {
-                            label: 'Beijing',
-                            value: 'Beijing',
-                            key: '0-4-0',
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            label: 'paimon_catalog_02',
-            value: 'paimon_catalog_02',
-            key: '1',
-            children: [
-                {
-                    label: 'United States',
-                    value: 'United States',
-                    key: '1-0'
-                },
-                {
-                    label: 'Canada',
-                    value: 'Canada',
-                    key: '1-1'
-                }
-            ]
-        }
-    ];
+
+    type TreeDataItem = {
+        label: string;
+        value: string;
+        key: string;
+        children?: TreeDataItem[];
+    };
+
+    const [treeData, setTreeData] = useState<TreeDataItem[]>([]);
+    const fetchCatalogData = useCatalogStore(state => state.fetchCatalogData);
+    const catalogItemList = useCatalogStore(state => state.catalogItemList);
+
+    useEffect(() => {
+        // Fetch the catalog data when the component mounts
+        fetchCatalogData();
+    }, [fetchCatalogData]);
+
+    useEffect(() => {
+        // Update treeData when catalogItemList changes
+        const transformedData = catalogItemList.map(item => ({
+            label: item.catalogName,
+            value: item.catalogName,
+            key: item.id.toString(),
+        }));
+        setTreeData(transformedData);
+    }, [catalogItemList]);
 
     const renderLabel = (x: any) => {
         const className = x.className;
@@ -141,12 +63,11 @@ const CatalogTree = () => {
                 role="treeitem"
                 onClick={isLeaf ? onClick : onExpand}
             >
-                {isLeaf ? null : expandIcon}
+                {isLeaf ? <IconFile style={{marginRight: "8px", color: "var(--semi-color-text-2)"}}/> : expandIcon}
                 <span>{label}</span>
             </li>
         );
     };
-
 
     return(
         <Tree

@@ -15,8 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.catalog-tree-input {
-  //background-color: var(--semi-color-bg-0);
-  width: 347px;
-  margin-left: -12px;
+export type CatalogItem = {
+    id: number,
+    catalogName: string,
+    catalogType: string,
+    warehouse: string,
+    hiveUri: string,
+    hiveConfDir: string,
+    isDelete: boolean,
+    createTime: Date,
+    updateTime: Date
 }
+
+export type CatalogItemList = CatalogItem[];

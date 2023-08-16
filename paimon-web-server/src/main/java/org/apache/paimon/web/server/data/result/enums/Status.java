@@ -49,6 +49,10 @@ public enum Status {
     MENU_IN_USED(10201, "menu.in.used"),
     MENU_NAME_IS_EXIST(10202, "menu.name.exist"),
     MENU_PATH_INVALID(10203, "menu.path.invalid"),
+
+    /** ------------catalog-----------------. */
+    CATALOG_NAME_IS_EXIST(10301, "catalog.name.exist"),
+    CATALOG_CREATE_ERROR(10302, "catalog.create.error"),
     ;
 
     private final int code;
