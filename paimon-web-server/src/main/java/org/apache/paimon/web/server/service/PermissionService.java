@@ -50,7 +50,6 @@ public class PermissionService implements StpInterface {
         Preconditions.checkArgument(userId != null);
         int userIdNum = Integer.parseInt(userId.toString());
         Set<String> perms = new HashSet<String>();
-        // 管理员拥有所有权限
         if (userIdNum == Constants.ADMIN_ID) {
             perms.add(Constants.ALL_PERMISSION);
         } else {

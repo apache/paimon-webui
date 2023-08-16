@@ -26,13 +26,26 @@ import org.apache.paimon.web.server.data.result.exception.BaseException;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /** GlobalExceptionHandler. */
 @Slf4j
@@ -71,6 +84,39 @@ public class GlobalExceptionHandler {
     public R<Void> notLoginException(DataAccessException e) {
         log.error("SQLException", e);
         return R.failed(Status.UNKNOWN_ERROR, "sql error");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BindException.class)
+    public R<Void> bindExceptionHandler(BindException e) {
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        Optional<String> msg =
+                fieldErrors.stream()
+                        .filter(Objects::nonNull)
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .filter(StringUtils::isNotBlank)
+                        .findFirst();
+        return msg.<R<Void>>map(s -> R.failed(Status.REQUEST_PARAMS_ERROR, s))
+                .orElseGet(() -> R.failed(Status.REQUEST_PARAMS_ERROR));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public R<Void> constraintViolationExceptionHandler(ConstraintViolationException e) {
+        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+        Optional<String> msg =
+                constraintViolations.stream()
+                        .filter(Objects::nonNull)
+                        .map(ConstraintViolation::getMessage)
+                        .findFirst();
+        return msg.<R<Void>>map(s -> R.failed(Status.REQUEST_PARAMS_ERROR, s))
+                .orElseGet(() -> R.failed(Status.REQUEST_PARAMS_ERROR));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public R<Void> constraintViolationExceptionHandler(HttpMessageNotReadableException e) {
+        return R.failed(Status.REQUEST_PARAMS_ERROR, "Required request body is missing");
     }
 
     @ExceptionHandler

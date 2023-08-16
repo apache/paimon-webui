@@ -18,11 +18,15 @@
 
 package org.apache.paimon.web.server.service.impl;
 
+import org.apache.paimon.web.server.data.dto.LoginDto;
+import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
+import org.apache.paimon.web.server.data.result.exception.user.UserDisabledException;
 import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
 import org.apache.paimon.web.server.data.result.exception.user.UserPasswordNotMatchException;
 import org.apache.paimon.web.server.mapper.UserMapper;
+import org.apache.paimon.web.server.service.LdapService;
 import org.apache.paimon.web.server.service.UserService;
 
 import cn.dev33.satoken.stp.StpUtil;
@@ -31,32 +35,71 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /** UserServiceImpl. */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    @Autowired private LdapService ldapService;
     @Autowired private UserMapper userMapper;
 
     /**
      * login by username and password.
      *
-     * @param username username
-     * @param password pwd
+     * @param loginDto login info
      * @return {@link String}
      */
     @Override
-    public String login(String username, String password) throws BaseException {
-        User user = this.lambdaQuery().eq(User::getUsername, username).one();
+    public String login(LoginDto loginDto) throws BaseException {
+        String username = loginDto.getUsername();
+        String password = loginDto.getPassword();
+
+        User user =
+                loginDto.isLdapLogin()
+                        ? ldapLogin(username, password)
+                        : localLogin(username, password);
+        if (!user.getEnabled()) {
+            throw new UserDisabledException();
+        }
+
+        StpUtil.login(user.getId(), loginDto.isRememberMe());
+
+        return StpUtil.getTokenValue();
+    }
+
+    private User localLogin(String username, String password) throws BaseException {
+        User user =
+                this.lambdaQuery()
+                        .eq(User::getUsername, username)
+                        .eq(User::getUserType, UserType.LOCAL.getCode())
+                        .one();
         if (user == null) {
             throw new UserNotExistsException();
         }
         if (!user.getPassword().equals(password)) {
             throw new UserPasswordNotMatchException();
         }
-        StpUtil.login(user.getId());
+        return user;
+    }
 
-        return StpUtil.getTokenValue();
+    private User ldapLogin(String username, String password) throws BaseException {
+        Optional<User> authenticate = ldapService.authenticate(username, password);
+        if (!authenticate.isPresent()) {
+            throw new UserPasswordNotMatchException();
+        }
+
+        User user =
+                this.lambdaQuery()
+                        .eq(User::getUsername, username)
+                        .eq(User::getUserType, UserType.LDAP.getCode())
+                        .one();
+        if (user == null) {
+            user = authenticate.get();
+            this.save(user);
+            // TODO assign default roles and tenants
+        }
+        return user;
     }
 
     /**

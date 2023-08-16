@@ -18,38 +18,28 @@
 
 package org.apache.paimon.web.server.service;
 
-import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.model.User;
-import org.apache.paimon.web.server.data.result.exception.BaseException;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.Optional;
 
-import java.util.List;
-
-/** User Service. */
-public interface UserService extends IService<User> {
+/** ldap service. */
+public interface LdapService {
+    /**
+     * get user info by ldap user identification.
+     *
+     * @param uid login name of ldap user
+     * @return {@link Optional} of {@link User} when user not exist then return {@link
+     *     Optional#empty()}
+     */
+    Optional<User> getUser(String uid);
 
     /**
-     * login by username and password.
+     * authenticate by ldap.
      *
-     * @param loginDto login info
-     * @return {@link String}
+     * @param name login name of ldap user
+     * @param password login password of ldap user
+     * @return {@link Optional} of {@link User} when user authenticate failed then return {@link
+     *     Optional#empty()}
      */
-    String login(LoginDto loginDto) throws BaseException;
-
-    /**
-     * Query the list of assigned user roles.
-     *
-     * @param user query params
-     * @return user list
-     */
-    List<User> selectAllocatedList(User user);
-
-    /**
-     * Query the list of unassigned user roles.
-     *
-     * @param user query params
-     * @return user list
-     */
-    List<User> selectUnallocatedList(User user);
+    Optional<User> authenticate(String name, String password);
 }

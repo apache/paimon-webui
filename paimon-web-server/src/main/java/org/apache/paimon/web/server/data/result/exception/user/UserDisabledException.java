@@ -16,40 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.server.data.result.exception.user;
 
-import org.apache.paimon.web.server.data.dto.LoginDto;
-import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+/** Exception to user disabled. */
+public class UserDisabledException extends BaseException {
+    private static final long serialVersionUID = 1L;
 
-import java.util.List;
-
-/** User Service. */
-public interface UserService extends IService<User> {
-
-    /**
-     * login by username and password.
-     *
-     * @param loginDto login info
-     * @return {@link String}
-     */
-    String login(LoginDto loginDto) throws BaseException;
-
-    /**
-     * Query the list of assigned user roles.
-     *
-     * @param user query params
-     * @return user list
-     */
-    List<User> selectAllocatedList(User user);
-
-    /**
-     * Query the list of unassigned user roles.
-     *
-     * @param user query params
-     * @return user list
-     */
-    List<User> selectUnallocatedList(User user);
+    public UserDisabledException() {
+        super(Status.USER_DISABLED_ERROR);
+    }
 }
