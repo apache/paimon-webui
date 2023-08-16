@@ -17,10 +17,12 @@ under the License. */
 
 import { Input } from '@douyinfe/semi-ui';
 import { IconFilter } from '@douyinfe/semi-icons';
+import { useTranslation } from 'react-i18next';
 
 const Search = () => {
+    const { t } = useTranslation()
     return(
-        <Input  placeholder='Filter' suffix={<IconFilter />}></Input>
+        <Input  placeholder={t('playground.filter')} suffix={<IconFilter />}></Input>
     )
 }
 

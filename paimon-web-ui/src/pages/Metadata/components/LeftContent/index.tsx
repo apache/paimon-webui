@@ -21,6 +21,8 @@ import { useState } from "react";
 import CatalogModalForm from "@pages/Metadata/components/LeftContent/components/CatalogModalForm";
 import {useCatalogStore} from "@src/store/catalogStore.ts";
 import styles from "./left-content.module.less";
+import { useTranslation } from 'react-i18next';
+
 
 const MetadataSidebar = () => {
 
@@ -76,10 +78,11 @@ const MetadataSidebar = () => {
         });
     };
 
+    const { t } = useTranslation()
     return(
         <div className={styles.container}>
             <div className={styles['add-catalog-container']}>
-                <span>Catalog</span>
+                <span>{t('metadata.catalog')}</span>
                 <IconPlus className={styles.iconPlus}  onClick={handleOpenModal}/>
             </div>
             <CatalogTree/>

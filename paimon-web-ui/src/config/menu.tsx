@@ -18,8 +18,9 @@ under the License. */
 export interface MenuItem {
     itemKey: string
     text: string
+    name: string
     icon?: React.ReactNode
-    path?: string
+    path: string
     items?: MenuItem[]
     component?: React.ComponentType<any>
 }
@@ -28,21 +29,25 @@ const MENU_CONFIG: MenuItem[] = [
     {
         itemKey: '1',
         text: 'Playground',
+        name: 'playground',
         path: '/playground'
     },
     {
         itemKey: '2',
         text: 'Metadata',
+        name: 'metadata',
         path: '/metadata'
     },
     {
         itemKey: '3',
         text: 'CDC Ingestion',
+        name: 'cdcingestion',
         path: '/system'
     },
     {
         itemKey: '4',
         text: 'System',
+        name: 'system',
         path: '/system'
     }
 ]

@@ -17,12 +17,15 @@ under the License. */
 
 import { useState } from 'react';
 import {TabPane, Tabs} from '@douyinfe/semi-ui';
+import { useTranslation } from 'react-i18next';
 
 const TableTab = () => {
+    const { t } = useTranslation()
+
     const [tabList, setTabList] = useState([
-        { tab: 'TableInfo', itemKey: '1', content: "info", closable: true },
-        { tab: 'Details', itemKey: '2', content: "info", closable: true },
-        { tab: 'Files', itemKey: '3', content: "info", closable: true }
+        { tab: 'TableInfo', name: 'tableInfo', itemKey: '1', content: "info", closable: true },
+        { tab: 'Details', name: 'details', itemKey: '2', content: "info", closable: true },
+        { tab: 'Files', name: 'files', itemKey: '3', content: "info", closable: true }
     ]);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -35,9 +38,12 @@ const TableTab = () => {
 
     return (
         <Tabs type="line" defaultActiveKey="1" onTabClose={close}>
-            {tabList.map((t) => (
-                <TabPane closable={t.closable} tab={<span>{t.tab}</span>} itemKey={t.itemKey} key={t.itemKey}>
-                    {t.content}
+            {tabList.map((tab) => (
+                <TabPane closable={tab.closable}
+                         tab={<span>{t(`metadata.${tab.name}`)}</span>}
+                         itemKey={tab.itemKey}
+                         key={tab.itemKey}>
+                    {tab.content}
                 </TabPane>
             ))}
         </Tabs>

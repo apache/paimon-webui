@@ -19,9 +19,11 @@ import {Input, Tree} from '@douyinfe/semi-ui';
 import { IconSearch, IconFile } from "@douyinfe/semi-icons";
 import {useEffect, useState} from "react";
 import styles from "./catalog-tree.module.less"
+import { useTranslation } from 'react-i18next';
 import { useCatalogStore } from "@src/store/catalogStore.ts";
 
 const CatalogTree = () => {
+    const { t } = useTranslation()
 
     type TreeDataItem = {
         label: string;
@@ -73,7 +75,7 @@ const CatalogTree = () => {
         <Tree
             filterTreeNode
             treeData={treeData}
-            searchPlaceholder={"Filter"}
+            searchPlaceholder={t('common.filter')}
             searchRender={({ prefix, ...restProps }) => (
                 <Input suffix={<IconSearch className={styles['catalog-tree-input-icon']}/>} {...restProps} className={styles['catalog-tree-input']}></Input>
             )}

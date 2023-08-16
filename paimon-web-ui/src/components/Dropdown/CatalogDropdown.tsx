@@ -19,6 +19,7 @@ import {Select} from '@douyinfe/semi-ui';
 import React from "react";
 import {CataLog} from "@pages/Playground/components/TabMenuSidebar/components/SiderTab";
 import {IconRefresh} from "@douyinfe/semi-icons";
+import { useTranslation } from 'react-i18next';
 
 /**
  * 下拉菜单组件props
@@ -31,6 +32,8 @@ type CatalogDropdownProps = {
 }
 
 const CatalogDropdown: React.FC<CatalogDropdownProps> = (props) => {
+
+    const { t } = useTranslation()
 
     const {catalogList, catalogChange, reLoadCatalog,reloadCatalogListCallBack} = props;
 
@@ -62,7 +65,7 @@ const CatalogDropdown: React.FC<CatalogDropdownProps> = (props) => {
         <Select
             suffix={<IconRefresh onClick={reloadCatalogListCallBack}  title={"Refresh"} spin={reLoadCatalog}/>}
             loading={reLoadCatalog} onChange={handleCatalogChange}
-            placeholder="Select Catalog"
+            placeholder={t('playground.selectCatalog')}
             optionList={renderCatalogList()}
             showClear
             style={{display: "flex", flexGrow: 1}}
