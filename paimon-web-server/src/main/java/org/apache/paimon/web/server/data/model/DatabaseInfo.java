@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @TableName("database")
-public class DatabaseInfo extends BaseModel{
+public class DatabaseInfo extends BaseModel {
 
     private String databaseName;
 
@@ -41,6 +41,5 @@ public class DatabaseInfo extends BaseModel{
 
     private Integer catalogId;
 
-    @TableLogic
-    private boolean isDelete;
+    @TableLogic private boolean isDelete;
 }

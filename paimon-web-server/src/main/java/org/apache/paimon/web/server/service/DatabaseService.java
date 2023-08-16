@@ -18,8 +18,9 @@
 
 package org.apache.paimon.web.server.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.paimon.web.server.data.model.DatabaseInfo;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /** Database Service. */
 public interface DatabaseService extends IService<DatabaseInfo> {

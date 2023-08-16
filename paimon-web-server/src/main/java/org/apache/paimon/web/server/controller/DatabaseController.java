@@ -18,8 +18,6 @@
 
 package org.apache.paimon.web.server.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.web.api.catalog.CatalogCreator;
 import org.apache.paimon.web.api.database.DatabaseManager;
@@ -29,6 +27,9 @@ import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
 import org.apache.paimon.web.server.service.DatabaseService;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,11 +42,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/database")
 public class DatabaseController {
 
-    @Autowired
-    private DatabaseService databaseService;
+    @Autowired private DatabaseService databaseService;
 
-    @Autowired
-    private CatalogService catalogService;
+    @Autowired private CatalogService catalogService;
 
     @PostMapping("/createDatabase")
     public R<Void> createFilesystemCatalog(@RequestBody DatabaseInfo databaseInfo) {
@@ -68,9 +67,11 @@ public class DatabaseController {
     private Catalog getCatalog(CatalogInfo catalogInfo) {
         if ("filesystem".equals(catalogInfo.getCatalogType())) {
             return CatalogCreator.createFilesystemCatalog(catalogInfo.getWarehouse());
-        }else {
-            return CatalogCreator.createHiveCatalog(catalogInfo.getWarehouse(), catalogInfo.getHiveUri(), catalogInfo.getHiveConfDir());
+        } else {
+            return CatalogCreator.createHiveCatalog(
+                    catalogInfo.getWarehouse(),
+                    catalogInfo.getHiveUri(),
+                    catalogInfo.getHiveConfDir());
         }
     }
-
 }

@@ -18,20 +18,24 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.mapper.DatabaseMapper;
 import org.apache.paimon.web.server.service.DatabaseService;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /** DatabaseServiceImpl. */
 @Service
-public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseInfo> implements DatabaseService {
+public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseInfo>
+        implements DatabaseService {
     @Override
     public boolean checkCatalogNameUnique(DatabaseInfo databaseInfo) {
         int databaseId = databaseInfo.getId() == null ? -1 : databaseInfo.getId();
         DatabaseInfo info =
-                this.lambdaQuery().eq(DatabaseInfo::getDatabaseName, databaseInfo.getDatabaseName()).one();
+                this.lambdaQuery()
+                        .eq(DatabaseInfo::getDatabaseName, databaseInfo.getDatabaseName())
+                        .one();
         return info == null || info.getId() == databaseId;
     }
 }
