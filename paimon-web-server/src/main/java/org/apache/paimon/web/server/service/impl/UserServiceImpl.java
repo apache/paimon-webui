@@ -20,20 +20,35 @@ package org.apache.paimon.web.server.service.impl;
 
 import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.enums.UserType;
+import org.apache.paimon.web.server.data.model.RoleMenu;
+import org.apache.paimon.web.server.data.model.SysMenu;
+import org.apache.paimon.web.server.data.model.SysRole;
 import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.model.UserRole;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 import org.apache.paimon.web.server.data.result.exception.user.UserDisabledException;
+import org.apache.paimon.web.server.data.result.exception.user.UserNotBindTenantException;
 import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
 import org.apache.paimon.web.server.data.result.exception.user.UserPasswordNotMatchException;
+import org.apache.paimon.web.server.data.vo.UserInfoVo;
 import org.apache.paimon.web.server.mapper.UserMapper;
 import org.apache.paimon.web.server.service.LdapService;
+import org.apache.paimon.web.server.service.RoleMenuService;
+import org.apache.paimon.web.server.service.SysMenuService;
+import org.apache.paimon.web.server.service.SysRoleService;
+import org.apache.paimon.web.server.service.TenantService;
+import org.apache.paimon.web.server.service.UserRoleService;
 import org.apache.paimon.web.server.service.UserService;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +58,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired private LdapService ldapService;
     @Autowired private UserMapper userMapper;
+    @Autowired private UserRoleService userRoleService;
+    @Autowired private SysRoleService sysRoleService;
+    @Autowired private RoleMenuService roleMenuService;
+    @Autowired private SysMenuService sysMenuService;
+    @Autowired private TenantService tenantService;
 
     /**
      * login by username and password.
@@ -51,21 +71,66 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return {@link String}
      */
     @Override
-    public String login(LoginDto loginDto) throws BaseException {
-        String username = loginDto.getUsername();
-        String password = loginDto.getPassword();
+    public UserInfoVo login(LoginDto loginDTO) throws BaseException {
+        String username = loginDTO.getUsername();
+        String password = loginDTO.getPassword();
 
         User user =
-                loginDto.isLdapLogin()
+                loginDTO.isLdapLogin()
                         ? ldapLogin(username, password)
                         : localLogin(username, password);
         if (!user.getEnabled()) {
             throw new UserDisabledException();
         }
+        // query user info
+        UserInfoVo userInfoVo = getUserInfoVo(user);
+        if (CollectionUtils.isEmpty(userInfoVo.getTenantList())) {
+            throw new UserNotBindTenantException();
+        }
 
-        StpUtil.login(user.getId(), loginDto.isRememberMe());
+        StpUtil.login(user.getId(), loginDTO.isRememberMe());
 
-        return StpUtil.getTokenValue();
+        return userInfoVo;
+    }
+
+    /**
+     * get user info. include user, role, menu. tenant.
+     *
+     * @param user user
+     * @return {@link UserInfoVo}
+     */
+    private UserInfoVo getUserInfoVo(User user) {
+        UserInfoVo userInfoVo = new UserInfoVo();
+        userInfoVo.setUser(user);
+        userInfoVo.setSaTokenInfo(StpUtil.getTokenInfo());
+
+        // get user role list
+        List<SysRole> sysRoles = new ArrayList<>();
+        List<UserRole> userRoleList = userRoleService.selectUserRoleListByUserId(user);
+
+        // get role list
+        userRoleList.forEach(
+                userRole -> {
+                    sysRoles.add(sysRoleService.getById(userRole.getRoleId()));
+                });
+        userInfoVo.setRoleList(sysRoles);
+        // get menu list
+        List<SysMenu> sysMenus = new ArrayList<>();
+        userRoleList.forEach(
+                userRole -> {
+                    roleMenuService
+                            .list(
+                                    new LambdaQueryWrapper<RoleMenu>()
+                                            .eq(RoleMenu::getRoleId, userRole.getRoleId()))
+                            .forEach(
+                                    roleMenu -> {
+                                        sysMenus.add(sysMenuService.getById(roleMenu.getMenuId()));
+                                    });
+                });
+        userInfoVo.setSysMenuList(sysMenus);
+
+        userInfoVo.setCurrentTenant(tenantService.getById(1));
+        return userInfoVo;
     }
 
     private User localLogin(String username, String password) throws BaseException {
@@ -77,10 +142,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (user == null) {
             throw new UserNotExistsException();
         }
-        if (!user.getPassword().equals(password)) {
+
+        if (SaSecureUtil.md5(password).equals(user.getPassword())) {
+            return user;
+        } else {
             throw new UserPasswordNotMatchException();
         }
-        return user;
     }
 
     private User ldapLogin(String username, String password) throws BaseException {

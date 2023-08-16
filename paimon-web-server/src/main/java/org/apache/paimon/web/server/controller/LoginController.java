@@ -20,13 +20,13 @@ package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.vo.UserInfoVo;
 import org.apache.paimon.web.server.service.UserService;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,8 +48,8 @@ public class LoginController {
      * @return token string
      */
     @PostMapping("/login")
-    public R<String> login(@Validated @RequestBody LoginDto loginDto) {
-        return R.succeed(userService.login(loginDto));
+    public R<UserInfoVo> login(@RequestBody LoginDto loginDTO) {
+        return R.succeed(userService.login(loginDTO));
     }
 
     /**
@@ -65,7 +65,7 @@ public class LoginController {
     /** logout. */
     @PostMapping("/logout")
     public R<Void> logout() {
-        StpUtil.logout();
+        StpUtil.logout(StpUtil.getLoginIdAsInt());
         return R.succeed();
     }
 }

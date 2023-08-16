@@ -16,8 +16,14 @@ specific language governing permissions and limitations
 under the License. */
 
 export const API_ENDPOINTS = {
+
+    // auth && login
+    GET_LDAP_ENABLE: '/ldap/enable',
+    LOGIN: '/login',
+
     // catalog
     CREATE_FILE_SYSTEM_CATALOG: '/catalog/createFilesystemCatalog',
     CREATE_HIVE_CATALOG: '/catalog/createHiveCatalog',
     GET_ALL_CATALOGS: '/catalog/getAllCatalogs',
+
 };

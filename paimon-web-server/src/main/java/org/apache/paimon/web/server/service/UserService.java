@@ -21,6 +21,7 @@ package org.apache.paimon.web.server.service;
 import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
+import org.apache.paimon.web.server.data.vo.UserInfoVo;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -32,10 +33,10 @@ public interface UserService extends IService<User> {
     /**
      * login by username and password.
      *
-     * @param loginDto login info
+     * @param loginDTO login params
      * @return {@link String}
      */
-    String login(LoginDto loginDto) throws BaseException;
+    UserInfoVo login(LoginDto loginDTO) throws BaseException;
 
     /**
      * Query the list of assigned user roles.
