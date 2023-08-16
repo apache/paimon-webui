@@ -1,20 +1,21 @@
 {
   "common": {
-    "filter": "过滤"
+    "filter": "搜索"
   },
   "header": {
-    "playground": "运行信息",
-    "metadata": "元数据",
+    "playground": "查询控制台",
+    "metadata": "元数据管理",
     "cdcingestion": "CDC集成",
-    "system": "系统"
+    "system": "系统管理"
   },
   "playground": {
     "selectCatalog": "选择Catalog"
   },
   "metadata": {
-    "catalog": "元数据",
-    "tableInfo": "表信息",
-    "details": "详细",
-    "files": "文件"
+    "catalog": "Catalog目录",
+    "tableInfo": "基本信息",
+    "details": "详细信息",
+    "files": "数据文件",
+    "add-database": "添加数据库"
   }
 }

@@ -16,7 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 import {Input, Tree} from '@douyinfe/semi-ui';
-import { IconSearch, IconFile } from "@douyinfe/semi-icons";
+import { IconSearch, IconFile, IconPlus } from "@douyinfe/semi-icons";
+import {Tooltip} from "@douyinfe/semi-ui";
 import {useEffect, useState} from "react";
 import styles from "./catalog-tree.module.less"
 import { useTranslation } from 'react-i18next';
@@ -24,6 +25,17 @@ import { useCatalogStore } from "@src/store/catalogStore.ts";
 
 const CatalogTree = () => {
     const { t } = useTranslation()
+    const [hoveredNode, setHoveredNode] = useState(null);
+    const [hoveredIcon, setHoveredIcon] = useState(false); // 新增一个状态来追踪图标的悬停状态
+
+    const handleMouseEnter = (key: any) => {
+        setHoveredNode(key);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredNode(null);
+    };
+
 
     type TreeDataItem = {
         label: string;
@@ -57,16 +69,44 @@ const CatalogTree = () => {
         const onClick = x.onClick;
         const data = x.data;
         const expandIcon = x.expandIcon;
-        const { label } = data;
+        const { label, key} = data;
         const isLeaf = !(data.children && data.children.length);
+
         return (
             <li
                 className={className}
                 role="treeitem"
                 onClick={isLeaf ? onClick : onExpand}
+                onMouseEnter={() => handleMouseEnter(key)}
+                onMouseLeave={handleMouseLeave}
+                tabIndex={0}
+                style={{
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%'
+                }}
             >
                 {isLeaf ? <IconFile style={{marginRight: "8px", color: "var(--semi-color-text-2)"}}/> : expandIcon}
-                <span>{label}</span>
+                <div style={{ flex: 1 }}>{label}</div>
+                { key === hoveredNode && (
+                    <Tooltip content={t('metadata.add-database')}>
+                        <IconPlus  style={{
+                            position: 'absolute',
+                            right: '10px',
+                            borderRadius: '5px',
+                            padding: '2px',
+                            transition: 'border 0.3s, color 0.3s', // Add color transition effects
+                            border: hoveredIcon ? '1px solid #d3d3d3' : 'none', // Set border color to light gray
+                            color: hoveredIcon ? '#d3d3d3' : '#000', // Set icon color to light gray or black
+                            fontSize: hoveredIcon ? '16px' : '12px',
+                        }}
+                                   onMouseEnter={() => setHoveredIcon(true)} // Update state on mouseover
+                                   onMouseLeave={() => setHoveredIcon(false)} // Update state when mouse leaves
+                        />
+                    </Tooltip>
+                )}
             </li>
         );
     };

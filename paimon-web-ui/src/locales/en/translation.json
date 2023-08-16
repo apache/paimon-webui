@@ -15,6 +15,7 @@
     "catalog": "Catalog",
     "tableInfo": "TableInfo",
     "details": "Details",
-    "files": "Files"
+    "files": "Files",
+    "add-database": "Add Database"
   }
 }

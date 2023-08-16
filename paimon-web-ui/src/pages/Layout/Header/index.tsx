@@ -15,26 +15,33 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import {Avatar, Button, Layout, Nav} from '@douyinfe/semi-ui';
-import { IconMoon, IconGithubLogo, IconSun } from '@douyinfe/semi-icons';
-import useThemeSwitcher from '@src/utils/mode'
-import paimonLogo from '@src/assets/logo/favicon_blue.svg'
-import paimonWhiteLogo from '@src/assets/logo/favicon_white.svg'
-import {useNavigate} from "react-router";
+import {Avatar, Layout, Nav} from '@douyinfe/semi-ui';
+import paimonLogo from '@src/assets/logo/favicon_blue.svg';
+import {useLocation, useNavigate} from "react-router";
 import {useMemo, useState} from "react";
 import menuList from "@config/menu.tsx";
-import ChangeI18nBtn from "@components/ChangeI18nBtn";
+import ChangeI18nBtn from "@components/Btn/ChangeI18nBtn";
+import ThemeSwitcherBtn from "@components/Btn/ThemeSwitcherBtn";
 import {useTranslation} from "react-i18next";
 import {Link} from "react-router-dom";
+import GithubLogoButton from "@components/Btn/GithubLogoButton";
+import styles from "./header.module.less";
 
 const { Header } = Layout
 
 const HeaderRoot = ()=> {
-    const {dark, switchMode } = useThemeSwitcher();
     const navigate = useNavigate()
 
     const [openKeys, setOpenKeys] = useState<string[]>([])
-    const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+    const location = useLocation();
+
+    const initialKey = useMemo(() => {
+        const path = location.pathname;
+        const matchedItem = menuList.find(item => item.path === path);
+        return matchedItem ? matchedItem.name : menuList[0]?.name;
+    }, [location, menuList]);
+
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([initialKey]);
 
     const navList = useMemo(() => {
         return menuList.map((e) => {
@@ -67,7 +74,7 @@ const HeaderRoot = ()=> {
             <div>
                  <Nav
                     header={{
-                        logo: <img src={dark ? paimonWhiteLogo : paimonLogo} alt="Apache Paimon"
+                        logo: <img src={ paimonLogo } alt="Apache Paimon"
                                    style={{ width: '96px', height: '36px', fontSize: 36, marginLeft: '-45px', marginRight: '-20px'}}/>,
                         text: 'Apache Paimon'
                     }}
@@ -80,23 +87,8 @@ const HeaderRoot = ()=> {
                     // items={navList}
                     footer={
                         <div>
-                            <Button
-                                theme="borderless"
-                                icon={!dark ? <IconMoon size={"extra-large"}/> : <IconSun size={"extra-large"}/>}
-                                style={{
-                                    color: 'var(--semi-color-text-2)',
-                                    marginRight: '12px',
-                                }}
-                                onClick={switchMode}
-                            />
-                            <Button
-                                theme="borderless"
-                                icon={<IconGithubLogo size="extra-large"/>}
-                                style={{
-                                    color: 'var(--semi-color-text-2)',
-                                    marginRight: '12px',
-                                }}
-                            />
+                            <ThemeSwitcherBtn />
+                            <GithubLogoButton />
                             <ChangeI18nBtn />
                             <Avatar
                                 color="orange"
@@ -115,7 +107,11 @@ const HeaderRoot = ()=> {
                                  style={{ textDecoration: "none" }}
                                  to={nav.path}
                              >
-                                <Nav.Item itemKey={nav.name} text={t('header.' + nav.name)} />
+                                <Nav.Item
+                                    itemKey={nav.name}
+                                    text={t('header.' + nav.name)}
+                                    className={selectedKeys.includes(nav.name) ? styles['selected-nav-item'] : ''}
+                                />
                              </Link>
                          )
                         })

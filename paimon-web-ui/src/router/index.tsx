@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 /*import { lazy } from 'react'*/
-import { RouteObject } from 'react-router';
+import {Navigate, RouteObject} from 'react-router';
 import { useRoutes } from 'react-router-dom';
 import LayoutPage from '@src/pages/Layout';
 import PlaygroundPage from '@src/pages/Playground';
@@ -31,6 +31,10 @@ const routeList: RouteObject[] = [
         path: '/',
         element: <LayoutPage/>,
         children: [
+            {
+                path: '/',
+                element: <Navigate to="playground" />
+            },
             {
                 path: 'playground',
                 element: <PlaygroundPage/>
