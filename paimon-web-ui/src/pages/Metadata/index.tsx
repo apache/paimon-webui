@@ -15,18 +15,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import MetadataSidebar from "@pages/Metadata/LeftContent";
+import MetadataSidebar from "@pages/Metadata/components/LeftContent";
 import {Divider} from "@douyinfe/semi-ui";
-import MetadataRightContent from "@pages/Metadata/RightContent";
+import MetadataRightContent from "@pages/Metadata/components/RightContent";
+import styles from "./metadata.module.less";
 
 const Index = () => {
     return(
-        <div style={{height: "100%", display: "flex", flexDirection: "column"}}>
-            <div style={{flex: 1, display: "flex"}}>
-                <MetadataSidebar/>
-                <Divider layout="vertical" margin='390px' style={{position: 'fixed', height: '100%', marginTop: "-25px"}}/>
-                <MetadataRightContent/>
-            </div>
+        <div className={styles.container}>
+            <MetadataSidebar/>
+            <Divider layout="vertical" margin='396px' className={styles.divider}/>
+            <MetadataRightContent/>
         </div>
     )
 }

@@ -27,9 +27,10 @@
       "@config/*": ["src/config/*"],
       "@utils/*": ["src/utils/*"],
       "@pages/*": ["src/pages/*"],
+      "@api/*": ["src/api/*"],
       "@mock/*": ["mock/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src","./**/*.d.ts", "./**/*.ts", "./**/*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -20,7 +20,7 @@ server:
 spring:
   # Paimon Web Service Name
   application:
-    name: PaimonManager
+    name: Paimon Web UI
   profiles:
     active:  dev
   messages:

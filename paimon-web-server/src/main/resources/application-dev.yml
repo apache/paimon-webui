@@ -14,6 +14,9 @@
 # limitations under the License.
 
 spring:
+  h2:  #http://localhost:10088/h2-console
+    console:
+      enabled: true
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:paimon;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;;NON_KEYWORDS=USER;INIT=runscript from 'classpath:db/ddl-h2.sql'

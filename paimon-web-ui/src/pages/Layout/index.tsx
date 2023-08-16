@@ -16,8 +16,9 @@ specific language governing permissions and limitations
 under the License. */
 
 import { Layout } from "@douyinfe/semi-ui";
-import Header from "./header";
+import Header from "@pages/Layout/Header";
 import { Outlet } from 'react-router-dom';
+import styles from "./layout.module.less";
 
 const { Content } = Layout
 
@@ -27,12 +28,7 @@ const LayoutRoot = () => {
             <Header/>
             <Layout>
                 {/*<Sider/>*/}
-                <Content
-                    style={{
-                        padding: '24px',
-                        backgroundColor: 'var(--semi-color-bg-0)',
-                    }}
-                >
+                <Content className={styles.content}>
                     <Outlet />
                 </Content>
             </Layout>

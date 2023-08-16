@@ -17,7 +17,7 @@ under the License. */
 
 import {Select} from '@douyinfe/semi-ui';
 import React from "react";
-import {CataLog} from "@pages/Playground/TabMenuSidebar/SiderTab";
+import {CataLog} from "@pages/Playground/components/TabMenuSidebar/components/SiderTab";
 import {IconRefresh} from "@douyinfe/semi-icons";
 
 /**
@@ -63,8 +63,9 @@ const CatalogDropdown: React.FC<CatalogDropdownProps> = (props) => {
             suffix={<IconRefresh onClick={reloadCatalogListCallBack}  title={"Refresh"} spin={reLoadCatalog}/>}
             loading={reLoadCatalog} onChange={handleCatalogChange}
             placeholder="Select Catalog"
-            style={{ width: '18vw', backgroundColor: "rgba(0, 0, 0, 0.08)" }} optionList={renderCatalogList()}
+            optionList={renderCatalogList()}
             showClear
+            style={{display: "flex", flexGrow: 1}}
         />
     </>
 }
