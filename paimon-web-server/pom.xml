@@ -34,10 +34,20 @@ under the License.
         Paimon Web Server is a server for the [Apache Paimon](https://paimon.apache.org/) project.
     </description>
 
+    <properties>
+        <hadoop.version>2.8.5</hadoop.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-web-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.paimon</groupId>
+            <artifactId>paimon-web-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -135,6 +145,13 @@ under the License.
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

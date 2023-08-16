@@ -40,7 +40,7 @@ const Index = () => {
     return (
         <Tabs type="card" defaultActiveKey="1" onTabClose={close}>
             {tabList.map((t) => (
-                <TabPane closable={t.closable} tab={<span><IconCode style={{color: "rgba(var(--semi-violet-6), 1)"}}/>{t.tab}</span>} itemKey={t.itemKey} key={t.itemKey}>
+                <TabPane closable={t.closable} tab={<span><IconCode style={{color: "rgba(var(--semi-blue-5), 1)"}}/>{t.tab}</span>} itemKey={t.itemKey} key={t.itemKey}>
                     {t.content}
                 </TabPane>
             ))}

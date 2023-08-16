@@ -22,9 +22,9 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
-    SemiPlugin({
+    /*SemiPlugin({
       theme: "@semi-bot/semi-theme-figma"
-    }),
+    }),*/
     react()
   ],
   resolve: {
@@ -35,7 +35,16 @@ export default defineConfig({
       '@pages': resolve(__dirname, './src/pages'),
       '@utils': resolve(__dirname, './src/utils'),
       '@config': resolve(__dirname, './src/config'),
-      '@mock': resolve(__dirname, './mock')
+      '@mock': resolve(__dirname, './mock'),
+      '@api': resolve(__dirname, './src/api')
+    }
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:10088',
+        changeOrigin: true
+      }
     }
   }
 })

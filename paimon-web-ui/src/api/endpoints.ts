@@ -15,8 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.catalog-tree-input {
-  //background-color: var(--semi-color-bg-0);
-  width: 347px;
-  margin-left: -12px;
-}
+export const API_ENDPOINTS = {
+    // catalog
+    CREATE_FILE_SYSTEM_CATALOG: '/catalog/createFilesystemCatalog',
+    CREATE_HIVE_CATALOG: '/catalog/createHiveCatalog',
+    GET_ALL_CATALOGS: '/catalog/getAllCatalogs',
+};
