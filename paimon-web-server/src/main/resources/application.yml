@@ -62,8 +62,8 @@ sa-token:
   is-log: false
 
 flink-env:
-  flink-lib-path: "D:/soft/develop/flink/flink-1.16.2/lib"
-  paimon-action-jar-path: "file:///C:/Users/ZackYoung/Downloads/paimon-flink-1.14-0.5-20230815.001819-125.jar"
-  flinkConfPath: "D:/soft/develop/flink/conf"
-  hadoopConfPath: "D:/soft/develop/flink/conf"
-  hdfsFlinkLibPath: "hdfs:///flink/flink-1.14.6/lib"
+  flink-lib-path: ""
+  paimon-action-jar-path: ""
+  flinkConfPath: ""
+  hadoopConfPath: ""
+  hdfsFlinkLibPath: ""

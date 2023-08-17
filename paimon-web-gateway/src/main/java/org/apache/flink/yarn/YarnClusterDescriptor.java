@@ -994,7 +994,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
             }
         }
         for (String classPath : systemClassPaths) {
-            if (classPath.contains("shaded-zookeeper")||classPath.contains("shaded-hadoop")){
+            if (classPath.contains("shaded-zookeeper") || classPath.contains("shaded-hadoop")) {
                 lastClassPath.add(classPath);
                 continue;
             }
@@ -1005,7 +1005,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
         final YarnLocalResourceDescriptor localResourceDescFlinkJar =
                 fileUploader.uploadFlinkDist(flinkJarPath);
         classPathBuilder.append(localResourceDescFlinkJar.getResourceKey()).append(pathSeparator);
-        classPathBuilder.append(StrUtil.join(pathSeparator,lastClassPath)).append(pathSeparator);
+        classPathBuilder.append(StrUtil.join(pathSeparator, lastClassPath)).append(pathSeparator);
 
         // write job graph to tmp file and add it to local resource
         // TODO: server use user main method to generate job graph

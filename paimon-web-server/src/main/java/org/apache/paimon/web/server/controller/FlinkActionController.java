@@ -1,12 +1,13 @@
 package org.apache.paimon.web.server.controller;
 
-import lombok.AllArgsConstructor;
 import org.apache.paimon.web.server.data.dto.PageDto;
 import org.apache.paimon.web.server.data.model.CdcManage;
 import org.apache.paimon.web.server.data.properties.FlinkEnv;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.service.CdcManageService;
+
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;

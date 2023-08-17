@@ -50,6 +50,10 @@ public class PageR<T> implements Serializable {
     }
 
     public static <T> PageR<T> pageToR(Page<T> page) {
-        return PageR.<T>builder().total(page.getTotal()).success(true).data(page.getRecords()).build();
+        return PageR.<T>builder()
+                .total(page.getTotal())
+                .success(true)
+                .data(page.getRecords())
+                .build();
     }
 }

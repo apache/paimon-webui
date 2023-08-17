@@ -1,12 +1,15 @@
 package org.apache.paimon.flink.gateway.yarn;
 
+import org.apache.paimon.flink.gateway.rest.yarn.proxy.FlinkRest;
+import org.apache.paimon.flink.gateway.result.FlinkRun;
+import org.apache.paimon.web.common.data.FlinkActionParam;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
-import org.apache.paimon.web.common.data.FlinkActionParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
@@ -15,8 +18,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
-import org.apache.paimon.flink.gateway.rest.yarn.proxy.FlinkRest;
-import org.apache.paimon.flink.gateway.result.FlinkRun;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,21 +46,44 @@ public class YarnApplicationGateway extends YarnGateway {
                         "org.apache.paimon.flink.action.FlinkActions");
         try {
             ClusterClientProvider<ApplicationId> clusterClientProvider =
-                    getYarnClusterDescriptor().deployApplicationCluster(clusterSpecification, applicationConfiguration);
+                    getYarnClusterDescriptor()
+                            .deployApplicationCluster(
+                                    clusterSpecification, applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             String applicationId = clusterClient.getClusterId().toString();
             String webInterfaceURL = clusterClient.getWebInterfaceURL();
             String yarnRmAddress = yarnConfiguration.get(YarnConfiguration.RM_ADDRESS);
-            clusterClient.listJobs().whenCompleteAsync((jobStatusMessages, throwable) -> {
-                if (CollUtil.isNotEmpty(jobStatusMessages)) {
-                    flinkActionParam.getHandlerJobId().accept(CollUtil.get(jobStatusMessages, 0).getJobId().toHexString());
-                } else {
-                    HttpUtil.createGet(yarnConfiguration.get(YarnConfiguration.RM_WEBAPP_ADDRESS) + FlinkRest.getJobOverview(applicationId)).then(x -> {
-                        JSONArray jobs = JSONUtil.parseObj(x.body()).getJSONArray("jobs");
-                        flinkActionParam.getHandlerJobId().accept(jobs.getJSONObject(0).getStr("jid"));
-                    });
-                }
-            });
+            clusterClient
+                    .listJobs()
+                    .whenCompleteAsync(
+                            (jobStatusMessages, throwable) -> {
+                                if (CollUtil.isNotEmpty(jobStatusMessages)) {
+                                    flinkActionParam
+                                            .getHandlerJobId()
+                                            .accept(
+                                                    CollUtil.get(jobStatusMessages, 0)
+                                                            .getJobId()
+                                                            .toHexString());
+                                } else {
+                                    HttpUtil.createGet(
+                                                    yarnConfiguration.get(
+                                                                    YarnConfiguration
+                                                                            .RM_WEBAPP_ADDRESS)
+                                                            + FlinkRest.getJobOverview(
+                                                                    applicationId))
+                                            .then(
+                                                    x -> {
+                                                        JSONArray jobs =
+                                                                JSONUtil.parseObj(x.body())
+                                                                        .getJSONArray("jobs");
+                                                        flinkActionParam
+                                                                .getHandlerJobId()
+                                                                .accept(
+                                                                        jobs.getJSONObject(0)
+                                                                                .getStr("jid"));
+                                                    });
+                                }
+                            });
             flinkRun.setApplicationId(applicationId);
             flinkRun.setWebInterfaceURL(webInterfaceURL);
             flinkRun.setRmProxyWebURL(yarnRmAddress);

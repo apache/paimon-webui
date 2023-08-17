@@ -115,3 +115,21 @@ CREATE TABLE if not exists `catalog`
     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
 ) engine = innodb;
+
+CREATE TABLE `cdc_manage` (
+                              `id` int(11) NOT NULL AUTO_INCREMENT,
+                              `name` varchar(255) NOT NULL COMMENT 'mission name',
+                              `type` int(11) DEFAULT NULL COMMENT '0: yarn-application 1: session',
+                              `run_args` longtext,
+                              `flink_conf` varchar(255) DEFAULT NULL,
+                              `submit_status` int(11) NOT NULL DEFAULT '0' COMMENT 'mission submit status 0: not submit 1: submit success 2: submit failed 3: submit processing',
+                              `mission_status` int(11) NOT NULL DEFAULT '0' COMMENT '',
+                              `run_log` longtext,
+                              `web_addr` varchar(255) DEFAULT NULL,
+                              `yarn_addr` varchar(255) DEFAULT NULL,
+                              `job_id` varchar(255) DEFAULT NULL,
+                              `application_id` varchar(255) DEFAULT NULL COMMENT 'flink application_id',
+                              `other_result` varchar(255) DEFAULT NULL,
+                              `create_time` datetime DEFAULT NULL,
+                              `update_time` datetime DEFAULT NULL
+) ENGINE = InnoDB;
