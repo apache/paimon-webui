@@ -19,6 +19,7 @@
 
 package org.apache.paimon.web.server.data.result;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -46,5 +47,9 @@ public class PageR<T> implements Serializable {
         this.total = total;
         this.success = success;
         this.data = data;
+    }
+
+    public static <T> PageR<T> pageToR(Page<T> page) {
+        return PageR.<T>builder().total(page.getTotal()).success(true).data(page.getRecords()).build();
     }
 }

@@ -20,9 +20,11 @@ package org.apache.paimon.web.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 /** Paimon Manager Server Application. */
 @SpringBootApplication
+@ConfigurationPropertiesScan(basePackages = "org.apache.paimon.web.server.data.properties")
 public class PaimonWebServerApplication {
 
     /**

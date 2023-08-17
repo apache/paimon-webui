@@ -41,8 +41,8 @@ const MENU_CONFIG: MenuItem[] = [
     {
         itemKey: '3',
         text: 'CDC Ingestion',
+        path: '/cdc-ingestion',
         name: 'cdcingestion',
-        path: '/system'
     },
     {
         itemKey: '4',

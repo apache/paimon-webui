@@ -22,6 +22,7 @@ import LayoutPage from '@src/pages/Layout';
 import PlaygroundPage from '@src/pages/Playground';
 import MetaDataPage from '@pages/Metadata';
 import DevStatus from "@pages/Abnormal/Dev";
+import {CdcIngestion} from "@pages/CdcIngestion";
 
 /*const Editor = lazy(() => import('@src/pages/Playground'))
 const Studio = lazy(() => import('@src/pages/Metadata'))*/
@@ -38,6 +39,10 @@ const routeList: RouteObject[] = [
             {
                 path: 'metadata',
                 element: <MetaDataPage/>
+            },
+            {
+                path: 'cdc-ingestion',
+                element: <CdcIngestion/>
             },
             {
                 path: 'system',
