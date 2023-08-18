@@ -48,8 +48,8 @@ public class LoginController {
      * @return token string
      */
     @PostMapping("/login")
-    public R<UserInfoVo> login(@RequestBody LoginDto loginDTO) {
-        return R.succeed(userService.login(loginDTO));
+    public R<UserInfoVo> login(@RequestBody LoginDto loginDto) {
+        return R.succeed(userService.login(loginDto));
     }
 
     /**
