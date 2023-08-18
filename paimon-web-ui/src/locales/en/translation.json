@@ -16,6 +16,19 @@
     "tableInfo": "TableInfo",
     "details": "Details",
     "files": "Files",
-    "add-database": "Add Database"
+    "add-database": "Add Database",
+    "add-table": "Add Table",
+    "create-database": "Create Database",
+    "create-table": "Create Table",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "message": "This item is required.",
+    "database-name": "Database Name",
+    "table-name": "Table Name",
+    "description": "Description",
+    "text-area-description": "Please Enter",
+    "create-catalog": "Create Catalog",
+    "create-database-success": "Database created successfully!",
+    "create-database-failed": "Failed to create database:"
   }
 }

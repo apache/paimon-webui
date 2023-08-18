@@ -42,4 +42,11 @@ declare namespace Prop {
         hiveConfDir: string,
         isDelete: boolean
     }
+
+    // Database
+    export interface DatabaseProp {
+        databaseName: string,
+        catalogId: number,
+        description: string
+    }
 }

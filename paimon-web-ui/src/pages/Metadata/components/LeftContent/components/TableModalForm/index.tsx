@@ -17,21 +17,19 @@ under the License. */
 
 import React, {useState} from "react";
 import { Modal } from '@douyinfe/semi-ui';
-import CatalogForm from "@pages/Metadata/components/LeftContent/components/CatalogModalForm/CatalogForm";
 import {useTranslation} from "react-i18next";
-import AutoSizer from "@douyinfe/semi-ui/lib/es/tree/autoSizer";
 import {auto} from "@popperjs/core";
+import TableForm from "@pages/Metadata/components/LeftContent/components/TableModalForm/TableForm";
 
-type CatalogModalFormProps = {
+type TableModalFormProps = {
     visible: boolean;
     onClose: () => void;
     onOk: (formApi: any) => void;
 };
 
-
-const CatalogModalForm: React.FC<CatalogModalFormProps> = ({ visible , onClose, onOk }) => {
-    const { t } = useTranslation();
+const TableModalForm: React.FC<TableModalFormProps> = ({ visible , onClose, onOk }) => {
     const [formApi, setFormApi] = useState(null);
+    const { t } = useTranslation();
 
     const getFormApi = (api: any) => {
         setFormApi(api);
@@ -44,19 +42,19 @@ const CatalogModalForm: React.FC<CatalogModalFormProps> = ({ visible , onClose, 
 
     return(
         <Modal
-            title={t('metadata.create-catalog')}
+            title = {t('metadata.create-table')}
             visible = {visible}
             onCancel= {onClose}
             maskClosable={false}
             okText={t('metadata.submit')}
             cancelText={t('metadata.cancel')}
-            width={'750px'}
+            width={'650px'}
             height={auto}
             onOk={() => handleOkClick()}
         >
-            <CatalogForm getFormApi={getFormApi}/>
+            <TableForm getFormApi={getFormApi}/>
         </Modal>
     );
 }
 
-export default CatalogModalForm;
+export default TableModalForm;

@@ -115,3 +115,14 @@ CREATE TABLE if not exists `catalog`
     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
 ) engine = innodb;
+
+CREATE TABLE if not exists `databases`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `database_name`     varchar(50)  not null comment 'database name',
+    `catalog_id`     int(11)     not null comment 'catalog id',
+    `description`     varchar(200)  comment 'description',
+    `is_delete`   tinyint(1)   NOT NULL DEFAULT 0 COMMENT 'is delete',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+) engine = innodb;

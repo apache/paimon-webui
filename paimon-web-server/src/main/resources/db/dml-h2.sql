@@ -61,7 +61,13 @@ values (1, 1),
        (1, 1003),
        (1, 1004);
 
-insert into `catalog` (catalog_type, catalog_name, warehouse)
+/*insert into `catalog` (catalog_type, catalog_name, warehouse)
 values ('filesystem', 'paimon', 'file:///D:/path/'),
        ('filesystem', 'fts', 'file:///D:/path/'),
-       ('filesystem', 'streaming_warehouse', 'file:///D:/path/')
+       ('filesystem', 'streaming_warehouse', 'file:///D:/path/');
+
+insert into `databases` (database_name, catalog_id, description)
+values ('ods', 1, 'description'),
+       ('ods', 2, 'description'),
+       ('ods', 3, 'description')*/
+

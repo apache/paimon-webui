@@ -22,6 +22,7 @@ import CatalogModalForm from "@pages/Metadata/components/LeftContent/components/
 import {useCatalogStore} from "@src/store/catalogStore.ts";
 import styles from "./left-content.module.less";
 import { useTranslation } from 'react-i18next';
+import {useDatabaseStore} from "@src/store/databaseStore.ts";
 
 
 const MetadataSidebar = () => {
@@ -30,6 +31,7 @@ const MetadataSidebar = () => {
     const createFilesystemCatalog = useCatalogStore(state => state.createFileSystemCatalog);
     const createHiveCatalog = useCatalogStore(state => state.createHiveCatalog);
     const fetchCatalogData = useCatalogStore(state => state.fetchCatalogData);
+    const fetchAllDatabases = useDatabaseStore(state => state.fetchDatabases);
 
     const handleOpenModal = () => {
         setShowModal(true);
@@ -60,12 +62,14 @@ const MetadataSidebar = () => {
                         createFilesystemCatalog(catalogProp)
                             .then(() => {
                                 fetchCatalogData();
+                                fetchAllDatabases();
                                 resolve();
                             })
                     } else {
                         createHiveCatalog(catalogProp)
                             .then(() => {
                                 fetchCatalogData();
+                                fetchAllDatabases();
                                 resolve();
                             })
                     }

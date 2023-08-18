@@ -5,7 +5,7 @@
   "header": {
     "playground": "查询控制台",
     "metadata": "元数据管理",
-    "cdcingestion": "CDC集成",
+    "cdcingestion": "CDC 集成",
     "system": "系统管理"
   },
   "playground": {
@@ -16,6 +16,19 @@
     "tableInfo": "基本信息",
     "details": "详细信息",
     "files": "数据文件",
-    "add-database": "添加数据库"
+    "add-database": "添加数据库",
+    "add-table": "添加数据表",
+    "create-database": "创建Database",
+    "create-table": "创建Table",
+    "submit": "确定",
+    "cancel": "取消",
+    "message": "该项为必填项！",
+    "database-name": "名称",
+    "table-name": "名称",
+    "description": "描述",
+    "text-area-description": "请输入",
+    "create-catalog": "创建Catalog",
+    "create-database-success": "创建 Database 成功！",
+    "create-database-failed": "创建 Database 失败："
   }
 }

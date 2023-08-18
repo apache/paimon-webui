@@ -20,4 +20,8 @@ export const API_ENDPOINTS = {
     CREATE_FILE_SYSTEM_CATALOG: '/catalog/createFilesystemCatalog',
     CREATE_HIVE_CATALOG: '/catalog/createHiveCatalog',
     GET_ALL_CATALOGS: '/catalog/getAllCatalogs',
+
+    // database
+    CREATE_DATABASE: '/database/createDatabase',
+    GET_ALL_DATABASES: '/database/getAllDatabases',
 };

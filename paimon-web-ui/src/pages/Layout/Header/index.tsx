@@ -76,7 +76,7 @@ const HeaderRoot = ()=> {
                     header={{
                         logo: <img src={ paimonLogo } alt="Apache Paimon"
                                    style={{ width: '96px', height: '36px', fontSize: 36, marginLeft: '-45px', marginRight: '-20px'}}/>,
-                        text: 'Apache Paimon'
+                        text: '巴别实时计算平台'
                     }}
                     mode={"horizontal"}
                     defaultSelectedKeys={['Home']}

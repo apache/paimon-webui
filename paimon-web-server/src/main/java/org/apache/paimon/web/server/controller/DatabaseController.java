@@ -26,15 +26,18 @@ import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
-import org.apache.paimon.web.server.service.DatabaseService;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** Database api controller. */
 @Slf4j
@@ -42,28 +45,72 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/database")
 public class DatabaseController {
 
-    @Autowired private DatabaseService databaseService;
-
     @Autowired private CatalogService catalogService;
 
+    /**
+     * Creates a new database based on the provided DatabaseInfo.
+     * @param databaseInfo The DatabaseInfo object containing the details of the new database.
+     * @return R<Void> indicating the result of the operation.
+     */
     @PostMapping("/createDatabase")
-    public R<Void> createFilesystemCatalog(@RequestBody DatabaseInfo databaseInfo) {
-        if (!databaseService.checkCatalogNameUnique(databaseInfo)) {
-            return R.failed(Status.CATALOG_NAME_IS_EXIST, databaseInfo.getDatabaseName());
-        }
-
+    public R<Void> createDatabase(@RequestBody DatabaseInfo databaseInfo) {
         try {
-            LambdaQueryWrapper<CatalogInfo> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(CatalogInfo::getId, databaseInfo.getCatalogId());
-            CatalogInfo catalogInfo = catalogService.getOne(queryWrapper);
-            DatabaseManager.createDatabase(getCatalog(catalogInfo), databaseInfo.getDatabaseName());
-            return databaseService.save(databaseInfo) ? R.succeed() : R.failed();
+            CatalogInfo catalogInfo = getCatalogInfo(databaseInfo);
+            Catalog catalog = getCatalog(catalogInfo);
+            if (DatabaseManager.databaseExists(catalog, databaseInfo.getDatabaseName())) {
+                return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseInfo.getDatabaseName());
+            }
+            DatabaseManager.createDatabase(catalog, databaseInfo.getDatabaseName());
+            return R.succeed();
         } catch (Exception e) {
             e.printStackTrace();
             return R.failed(Status.CATALOG_CREATE_ERROR);
         }
     }
 
+    /**
+     /**
+     * Get all database information.
+     *
+     * @return The list of all databases.
+     */
+    @GetMapping("/getAllDatabases")
+    public R<List<DatabaseInfo>> getAllDatabases() {
+        List<DatabaseInfo> databaseInfoList = new ArrayList<>();
+        List<CatalogInfo> catalogInfoList = catalogService.list();
+        catalogInfoList.forEach(item -> {
+            Catalog catalog = getCatalog(item);
+            List<String> list = DatabaseManager.listDatabase(catalog);
+            list.forEach(databaseName -> {
+                DatabaseInfo info = DatabaseInfo
+                        .builder()
+                        .databaseName(databaseName)
+                        .catalogId(item.getId())
+                        .description("")
+                        .build();
+                databaseInfoList.add(info);
+            });
+        });
+        return R.succeed(databaseInfoList);
+    }
+
+    /**
+     * Retrieves the associated CatalogInfo object based on the given DatabaseInfo object.
+     * @param databaseInfo The DatabaseInfo object for which to retrieve the associated CatalogInfo.
+     * @return The associated CatalogInfo object, or null if it doesn't exist.
+     */
+    private CatalogInfo getCatalogInfo(DatabaseInfo databaseInfo) {
+        LambdaQueryWrapper<CatalogInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CatalogInfo::getId, databaseInfo.getCatalogId());
+        return catalogService.getOne(queryWrapper);
+    }
+
+    /**
+     * Get a Catalog based on the provided CatalogInfo.
+     *
+     * @param catalogInfo The CatalogInfo object containing the catalog details.
+     * @return The created Catalog object.
+     */
     private Catalog getCatalog(CatalogInfo catalogInfo) {
         if ("filesystem".equals(catalogInfo.getCatalogType())) {
             return CatalogCreator.createFilesystemCatalog(catalogInfo.getWarehouse());

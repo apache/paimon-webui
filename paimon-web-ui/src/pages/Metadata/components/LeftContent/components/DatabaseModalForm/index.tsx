@@ -17,21 +17,18 @@ under the License. */
 
 import React, {useState} from "react";
 import { Modal } from '@douyinfe/semi-ui';
-import CatalogForm from "@pages/Metadata/components/LeftContent/components/CatalogModalForm/CatalogForm";
+import DatabaseForm from "@pages/Metadata/components/LeftContent/components/DatabaseModalForm/DatabaseForm";
 import {useTranslation} from "react-i18next";
-import AutoSizer from "@douyinfe/semi-ui/lib/es/tree/autoSizer";
-import {auto} from "@popperjs/core";
 
-type CatalogModalFormProps = {
+type DatabaseModalFormProps = {
     visible: boolean;
     onClose: () => void;
     onOk: (formApi: any) => void;
 };
 
-
-const CatalogModalForm: React.FC<CatalogModalFormProps> = ({ visible , onClose, onOk }) => {
-    const { t } = useTranslation();
+const DatabaseModalForm: React.FC<DatabaseModalFormProps> = ({ visible , onClose, onOk }) => {
     const [formApi, setFormApi] = useState(null);
+    const { t } = useTranslation();
 
     const getFormApi = (api: any) => {
         setFormApi(api);
@@ -44,19 +41,20 @@ const CatalogModalForm: React.FC<CatalogModalFormProps> = ({ visible , onClose, 
 
     return(
         <Modal
-            title={t('metadata.create-catalog')}
+            title = {t('metadata.create-database')}
             visible = {visible}
             onCancel= {onClose}
             maskClosable={false}
             okText={t('metadata.submit')}
             cancelText={t('metadata.cancel')}
-            width={'750px'}
-            height={auto}
+            width={'650px'}
+            height={'490px'}
             onOk={() => handleOkClick()}
         >
-            <CatalogForm getFormApi={getFormApi}/>
+            <DatabaseForm getFormApi={getFormApi}/>
         </Modal>
     );
 }
 
-export default CatalogModalForm;
+export default DatabaseModalForm;
+

@@ -22,6 +22,8 @@ import org.apache.paimon.web.server.data.model.DatabaseInfo;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /** Database Service. */
 public interface DatabaseService extends IService<DatabaseInfo> {
 
@@ -32,4 +34,12 @@ public interface DatabaseService extends IService<DatabaseInfo> {
      * @return result
      */
     boolean checkCatalogNameUnique(DatabaseInfo databaseInfo);
+
+    /**
+     * Retrieve a list of databases by catalog ID.
+     *
+     * @param catalogId the ID of the catalog
+     * @return a list of DatabaseInfo objects
+     */
+    List<DatabaseInfo> selectByCatalogId(Integer catalogId);
 }

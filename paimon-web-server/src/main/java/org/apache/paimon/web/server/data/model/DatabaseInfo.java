@@ -18,12 +18,9 @@
 
 package org.apache.paimon.web.server.data.model;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /** Database table model. */
@@ -31,15 +28,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@TableName("database")
-public class DatabaseInfo extends BaseModel {
+public class DatabaseInfo {
 
     private String databaseName;
 
-    private String description;
-
     private Integer catalogId;
 
-    @TableLogic private boolean isDelete;
+    private String description;
 }

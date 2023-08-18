@@ -21,12 +21,41 @@ import {Tooltip} from "@douyinfe/semi-ui";
 import {useEffect, useState} from "react";
 import styles from "./catalog-tree.module.less"
 import { useTranslation } from 'react-i18next';
+import { useDatabaseStore } from "@src/store/databaseStore.ts";
 import { useCatalogStore } from "@src/store/catalogStore.ts";
+import DatabaseModalForm from "@pages/Metadata/components/LeftContent/components/DatabaseModalForm";
+import TableModalForm from "@pages/Metadata/components/LeftContent/components/TableModalForm";
+
+type TreeDataItem = {
+    label: string;
+    value: string;
+    key: string;
+    type: "catalog" | "database" | "table";
+    catalogId: number;
+    children?: TreeDataItem[];
+};
 
 const CatalogTree = () => {
     const { t } = useTranslation()
     const [hoveredNode, setHoveredNode] = useState(null);
-    const [hoveredIcon, setHoveredIcon] = useState(false); // 新增一个状态来追踪图标的悬停状态
+    const [showModal, setShowModal] = useState(false);
+    const [createType, setCreateType] =
+        useState<"catalog" | "database" | "table" | null>(null);
+
+    // Database
+    const createDatabase = useDatabaseStore(state => state.createDatabase);
+    const fetchDatabases= useDatabaseStore(state => state.fetchDatabases);
+    const databaseItemList = useDatabaseStore(state => state.databaseItemList);
+
+    // Catalog
+    const [treeData, setTreeData] = useState<TreeDataItem[]>([]);
+    const fetchCatalogData = useCatalogStore(state => state.fetchCatalogData);
+    const catalogItemList = useCatalogStore(state => state.catalogItemList);
+
+    useEffect(() => {
+        // Fetch the catalog data when the component mounts
+        fetchDatabases();
+    }, [fetchDatabases]);
 
     const handleMouseEnter = (key: any) => {
         setHoveredNode(key);
@@ -36,17 +65,16 @@ const CatalogTree = () => {
         setHoveredNode(null);
     };
 
-
-    type TreeDataItem = {
-        label: string;
-        value: string;
-        key: string;
-        children?: TreeDataItem[];
+    const handleOpenModal = (type: "catalog" | "database" | "table") => {
+        if (type === "catalog" || type === "database") {
+            setCreateType(type);
+            setShowModal(true);
+        }
     };
 
-    const [treeData, setTreeData] = useState<TreeDataItem[]>([]);
-    const fetchCatalogData = useCatalogStore(state => state.fetchCatalogData);
-    const catalogItemList = useCatalogStore(state => state.catalogItemList);
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
 
     useEffect(() => {
         // Fetch the catalog data when the component mounts
@@ -58,52 +86,71 @@ const CatalogTree = () => {
         const transformedData = catalogItemList.map(item => ({
             label: item.catalogName,
             value: item.catalogName,
+            type: "catalog" as "catalog",
+            catalogId: item.id,
             key: item.id.toString(),
+            children: databaseItemList
+                .filter(dbItem => dbItem.catalogId === item.id)
+                .map(dbItem => ({
+                    label: dbItem.databaseName,
+                    value: dbItem.databaseName,
+                    type: "database" as "database",
+                    catalogId: item.id,
+                    key: item.id.toString() + "-" + dbItem.databaseName
+                })),
         }));
         setTreeData(transformedData);
-    }, [catalogItemList]);
+    }, [catalogItemList, databaseItemList]);
+
+    const handleOk = (formApi: any) => {
+        return new Promise<void>((resolve, reject) => {
+            formApi
+                .validate()
+                .then((values: any) => {
+                    const formData = values;
+                    const databaseProp: Prop.DatabaseProp = {
+                        databaseName: formData.databaseName,
+                        catalogId: formData.catalogId,
+                        description: formData.description
+                    };
+                    createDatabase(databaseProp)
+                        .then(() => {
+                            fetchDatabases();
+                            resolve();
+                        })
+                        .catch((error: any) => {
+                            console.log(error);
+                            reject(error);
+                        });
+                })
+                .catch((errors: any) => {
+                    console.log(errors);
+                    reject(errors);
+                });
+        });
+    }
 
     const renderLabel = (x: any) => {
-        const className = x.className;
-        const onExpand = x.onExpand;
-        const onClick = x.onClick;
-        const data = x.data;
-        const expandIcon = x.expandIcon;
-        const { label, key} = data;
+        const { className, onExpand, onClick, data, expandIcon } = x;
+        const { label, key, type } = data;
         const isLeaf = !(data.children && data.children.length);
 
         return (
             <li
-                className={className}
+                className={`${className} ${styles.liClass}`}
                 role="treeitem"
                 onClick={isLeaf ? onClick : onExpand}
                 onMouseEnter={() => handleMouseEnter(key)}
                 onMouseLeave={handleMouseLeave}
                 tabIndex={0}
-                style={{
-                    position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    width: '100%'
-                }}
             >
                 {isLeaf ? <IconFile style={{marginRight: "8px", color: "var(--semi-color-text-2)"}}/> : expandIcon}
                 <div style={{ flex: 1 }}>{label}</div>
-                { key === hoveredNode && (
-                    <Tooltip content={t('metadata.add-database')}>
-                        <IconPlus  style={{
-                            position: 'absolute',
-                            right: '10px',
-                            borderRadius: '5px',
-                            padding: '2px',
-                            transition: 'border 0.3s, color 0.3s', // Add color transition effects
-                            border: hoveredIcon ? '1px solid #d3d3d3' : 'none', // Set border color to light gray
-                            color: hoveredIcon ? '#d3d3d3' : '#000', // Set icon color to light gray or black
-                            fontSize: hoveredIcon ? '16px' : '12px',
-                        }}
-                                   onMouseEnter={() => setHoveredIcon(true)} // Update state on mouseover
-                                   onMouseLeave={() => setHoveredIcon(false)} // Update state when mouse leaves
+                { key === hoveredNode && (type === "catalog" || type === "database") && (
+                    <Tooltip content={type === "catalog" ? t('metadata.add-database') : t('metadata.add-table')}>
+                        <IconPlus
+                            className={styles.iconPlus}
+                            onClick={() => handleOpenModal(type)}
                         />
                     </Tooltip>
                 )}
@@ -112,16 +159,24 @@ const CatalogTree = () => {
     };
 
     return(
-        <Tree
-            filterTreeNode
-            treeData={treeData}
-            searchPlaceholder={t('common.filter')}
-            searchRender={({ prefix, ...restProps }) => (
-                <Input suffix={<IconSearch className={styles['catalog-tree-input-icon']}/>} {...restProps} className={styles['catalog-tree-input']}></Input>
+        <>
+            <Tree
+                filterTreeNode
+                treeData={treeData}
+                searchPlaceholder={t('common.filter')}
+                searchRender={({ prefix, ...restProps }) => (
+                    <Input suffix={<IconSearch className={styles['catalog-tree-input-icon']}/>} {...restProps} className={styles['catalog-tree-input']}></Input>
+                )}
+                renderFullLabel={renderLabel}
+            />
+            {showModal && createType  === "catalog" && (
+                <DatabaseModalForm visible={showModal} onClose={handleCloseModal} onOk={handleOk}/>
             )}
-            renderFullLabel={renderLabel}
-        />
-    )
+            {showModal && createType === "database" && (
+                <TableModalForm visible={showModal} onClose={handleCloseModal} onOk={handleOk}/>
+            )}
+        </>
+    );
 }
 
 export default CatalogTree;
