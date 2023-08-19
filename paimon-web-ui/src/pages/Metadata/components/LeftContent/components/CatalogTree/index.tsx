@@ -102,7 +102,7 @@ const CatalogTree = () => {
         setTreeData(transformedData);
     }, [catalogItemList, databaseItemList]);
 
-    const handleOk = (formApi: any) => {
+    const handleCreateDatabaseOk = (formApi: any) => {
         return new Promise<void>((resolve, reject) => {
             formApi
                 .validate()
@@ -122,6 +122,21 @@ const CatalogTree = () => {
                             console.log(error);
                             reject(error);
                         });
+                })
+                .catch((errors: any) => {
+                    console.log(errors);
+                    reject(errors);
+                });
+        });
+    }
+
+    const handleCreateTableOk = (formApi: any) => {
+        return new Promise<void>((resolve, reject) => {
+            formApi
+                .validate()
+                .then((values: any) => {
+                    console.log(values);
+                    resolve();
                 })
                 .catch((errors: any) => {
                     console.log(errors);
@@ -170,10 +185,10 @@ const CatalogTree = () => {
                 renderFullLabel={renderLabel}
             />
             {showModal && createType  === "catalog" && (
-                <DatabaseModalForm visible={showModal} onClose={handleCloseModal} onOk={handleOk}/>
+                <DatabaseModalForm visible={showModal} onClose={handleCloseModal} onOk={handleCreateDatabaseOk}/>
             )}
             {showModal && createType === "database" && (
-                <TableModalForm visible={showModal} onClose={handleCloseModal} onOk={handleOk}/>
+                <TableModalForm visible={showModal} onClose={handleCloseModal} onOk={handleCreateTableOk}/>
             )}
         </>
     );

@@ -48,7 +48,7 @@ const TableModalForm: React.FC<TableModalFormProps> = ({ visible , onClose, onOk
             maskClosable={false}
             okText={t('metadata.submit')}
             cancelText={t('metadata.cancel')}
-            width={'650px'}
+            width={'820px'}
             height={auto}
             onOk={() => handleOkClick()}
         >

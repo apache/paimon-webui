@@ -18,8 +18,8 @@
     "files": "数据文件",
     "add-database": "添加数据库",
     "add-table": "添加数据表",
-    "create-database": "创建Database",
-    "create-table": "创建Table",
+    "create-database": "创建 Database",
+    "create-table": "创建 Table",
     "submit": "确定",
     "cancel": "取消",
     "message": "该项为必填项！",
@@ -29,6 +29,14 @@
     "text-area-description": "请输入",
     "create-catalog": "创建Catalog",
     "create-database-success": "创建 Database 成功！",
-    "create-database-failed": "创建 Database 失败："
+    "create-database-failed": "创建 Database 失败：",
+    "form-group-basic-information": "基本信息",
+    "form-group-add-column": "添加列",
+    "add-column-field": "字段",
+    "add-column-type": "类型",
+    "add-column-comment": "备注",
+    "form-group-add-config": "添加选项",
+    "add-config-key": "键",
+    "add-config-value": "值"
   }
 }

@@ -29,6 +29,14 @@
     "text-area-description": "Please Enter",
     "create-catalog": "Create Catalog",
     "create-database-success": "Database created successfully!",
-    "create-database-failed": "Failed to create database:"
+    "create-database-failed": "Failed to create database:",
+    "form-group-basic-information": "Basic Information",
+    "form-group-add-column": "Add Columns",
+    "add-column-field": "Field",
+    "add-column-type": "Type",
+    "add-column-comment": "Comment",
+    "form-group-add-config": "Add Options",
+    "add-config-key": "Key",
+    "add-config-value": "Value"
   }
 }
