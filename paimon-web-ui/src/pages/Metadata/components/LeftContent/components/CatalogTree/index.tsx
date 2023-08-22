@@ -136,7 +136,7 @@ const CatalogTree = () => {
                 .map(dbItem => {
                     const databaseKey = item.id.toString() + "-" + dbItem.databaseName;
                     const tableChildren = tableItemList
-                        .filter(tableItem => tableItem.databaseName === dbItem.databaseName)
+                        .filter(tableItem => tableItem.catalogName === item.catalogName && tableItem.databaseName === dbItem.databaseName)
                         .map(tableItem => ({
                             label: tableItem.tableName,
                             value: tableItem.tableName,
