@@ -59,6 +59,10 @@ public enum Status {
     /** ------------database-----------------. */
     DATABASE_NAME_IS_EXIST(10401, "database.name.exist"),
     DATABASE_CREATE_ERROR(10402, "database.create.error"),
+
+    /** ------------table-----------------. */
+    TABLE_NAME_IS_EXIST(10501, "table.name.exist"),
+    TABLE_CREATE_ERROR(10502, "table.create.error"),
     ;
 
     private final int code;

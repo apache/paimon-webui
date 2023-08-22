@@ -19,14 +19,16 @@ import {Button, Tooltip} from "@douyinfe/semi-ui";
 import {IconGithubLogo} from "@douyinfe/semi-icons";
 import i18n from 'i18next';
 import {useMemo} from "react";
+import { useTranslation } from 'react-i18next';
 
 const GithubLogoButton = () => {
+    const { t } = useTranslation();
     const handleClick = () => {
         window.open('https://github.com/apache/incubator-paimon-webui', '_blank');
     }
 
     const tooltipContent = useMemo(() => {
-        return i18n.language === 'zh-CN' ? '访问 GitHub 仓库' : 'Visit GitHub repository';
+        return t('component.btn-github-icon');
     }, [i18n.language]);
 
     return (

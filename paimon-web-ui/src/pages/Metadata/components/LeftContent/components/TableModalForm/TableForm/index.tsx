@@ -19,16 +19,18 @@ import {Button, Form} from '@douyinfe/semi-ui';
 import {useTranslation} from "react-i18next";
 import {IconPlus, IconMinus} from "@douyinfe/semi-icons";
 import {useRef, useState} from "react";
+import {useTableStore} from "@src/store/tableStore.ts";
 
 // @ts-ignore
 const TableForm = ({ getFormApi }) => {
     const formApiRef = useRef<any>(null);
     const { t } = useTranslation();
-    const [inputs, setInputs] = useState([{}]);
-    const [configs, setConfigs] = useState<Array<{}>>([]);
+    const { inputs, configs, setInputs, setConfigs } = useTableStore();
+    const [fieldOptions, setFieldOptions] = useState<string[]>([]);
 
     const handleAddInput = () => {
-        setInputs(inputs.concat({})); // Add a new input to our array
+        const newInputs = inputs.concat({});
+        setInputs(newInputs);
     }
 
     const handleRemoveInput = (index: any) => {
@@ -39,8 +41,21 @@ const TableForm = ({ getFormApi }) => {
             formApiRef.current.setValue(`type${index}`, null);
             newInputs.splice(index, 1);
             setInputs(newInputs);
+            const newFieldOptions = newInputs.map((_, index) => formApiRef.current.getValue(`field${index}`));
+            setFieldOptions(newFieldOptions);
         }
     }
+
+    const updateFieldOptions = (index: any) => {
+        if (formApiRef.current) {
+            const fieldValue = formApiRef.current.getValue(`field${index}`);
+            if (fieldValue !== undefined) {
+                const newFieldOptions = [...fieldOptions];
+                newFieldOptions[index] = fieldValue;
+                setFieldOptions(newFieldOptions);
+            }
+        }
+    };
 
     const handleAddConfig = () => {
         setConfigs(configs.concat({}));
@@ -55,6 +70,22 @@ const TableForm = ({ getFormApi }) => {
             setConfigs(newConfigs);
         }
     }
+
+    const options = [
+        { value: 'INT', label: 'INT' },
+        { value: 'TINYINT', label: 'TINYINT' },
+        { value: 'SMALLINT', label: 'SMALLINT' },
+        { value: 'BIGINT', label: 'BIGINT' },
+        { value: 'STRING', label: 'STRING' },
+        { value: 'DOUBLE', label: 'DOUBLE' },
+        { value: 'BOOLEAN', label: 'BOOLEAN' },
+        { value: 'DATE', label: 'DATE' },
+        { value: 'TIME', label: 'TIME' },
+        { value: 'TIMESTAMP', label: 'TIMESTAMP' },
+        { value: 'BYTES', label: 'BYTES' },
+        { value: 'FLOAT', label: 'FLOAT' },
+        { value: 'DECIMAL', label: 'DECIMAL' },
+    ];
 
     return(
         <>
@@ -95,7 +126,7 @@ const TableForm = ({ getFormApi }) => {
                                             color: inputs.length > 0 ? 'black' : 'lightgray',}}
                                         onClick={handleAddInput}
                                     >
-                                        <span>{t('metadata.form-group-add-column')}</span>
+                                        <span>{t('metadata.form-group-add-column-ordinary')}</span>
                                         <IconPlus />
                                     </div>
                                 }
@@ -106,22 +137,40 @@ const TableForm = ({ getFormApi }) => {
                                             noLabel={true}
                                             field={`field${index}`}
                                             placeholder={t('metadata.add-column-field')}
-                                            style={{ width: "276px" }}
+                                            style={{ width: "160px" }}
+                                            onBlur={() => updateFieldOptions(index)}
                                             showClear />
                                         <Form.Select
                                             noLabel={true}
                                             field={`type${index}`}
                                             placeholder={t('metadata.add-column-type')}
-                                            style={{ width: "156px", marginLeft: '10px' }}
+                                            style={{ width: "130px", marginLeft: '10px' }}
+                                            allowCreate={true}
+                                            filter={true}
                                             showClear>
-                                            <Form.Select.Option value={"STRING"}>STRING</Form.Select.Option>
-                                            <Form.Select.Option value={"INT"}>INT</Form.Select.Option>
+                                            {options.map((option, i) => (
+                                                <Form.Select.Option key={i} value={option.value}>
+                                                    {option.label}
+                                                </Form.Select.Option>
+                                            ))}
                                         </Form.Select>
                                         <Form.Input
                                             noLabel={true}
                                             field={`comment${index}`}
                                             placeholder={t('metadata.add-column-comment')}
-                                            style={{ width: "276px", marginLeft: '10px' }}
+                                            style={{ width: "160px", marginLeft: '10px' }}
+                                            showClear />
+                                        <Form.Checkbox
+                                            field={`primaryKey${index}`}
+                                            noLabel={true}
+                                            style={{marginLeft: '10px'}}>
+                                                {t('metadata.add-column-primary-key')}
+                                        </Form.Checkbox>
+                                        <Form.Input
+                                            noLabel={true}
+                                            field={`defaultValue${index}`}
+                                            placeholder={t('metadata.add-column-default-value')}
+                                            style={{ width: "126px", marginLeft: '10px'}}
                                             showClear />
                                         <Button
                                             onClick={() => handleRemoveInput(index)}
@@ -130,6 +179,21 @@ const TableForm = ({ getFormApi }) => {
                                         />
                                     </div>
                                 ))}
+                            </Form.Section>
+
+                            <Form.Section text={t('metadata.form-group-add-column-partition')}>
+                                <Form.Select
+                                    noLabel={true}
+                                    field="partitionKey"
+                                    style={{ width: "100%" }}
+                                    filter={true}
+                                    showClear
+                                    multiple
+                                >
+                                    {fieldOptions.map((field, index) => (
+                                        <Form.Select.Option key={index} value={field}>{field}</Form.Select.Option>
+                                    ))}
+                                </Form.Select>
                             </Form.Section>
 
                             <Form.Section
@@ -153,13 +217,13 @@ const TableForm = ({ getFormApi }) => {
                                             noLabel={true}
                                             field={`configKey${index}`}
                                             placeholder={t('metadata.add-config-key')}
-                                            style={{ width: "359px"}}
+                                            style={{ width: "329px"}}
                                             showClear />
                                         <Form.Input
                                             noLabel={true}
                                             field={`configValue${index}`}
                                             placeholder={t('metadata.add-config-value')}
-                                            style={{ width: "359px", marginLeft: '10px' }}
+                                            style={{ width: "329px", marginLeft: '10px' }}
                                             showClear />
                                         <Button
                                             onClick={() => handleRemoveConfig(index)}

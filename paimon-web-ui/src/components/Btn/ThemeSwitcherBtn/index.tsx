@@ -20,17 +20,14 @@ import {Button, Tooltip} from "@douyinfe/semi-ui";
 import {IconMoon, IconSun} from "@douyinfe/semi-icons";
 import useThemeSwitcher from '@utils/mode.ts';
 import i18n from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const ThemeSwitcherBtn = () => {
+    const { t } = useTranslation();
     const {dark, switchMode } = useThemeSwitcher();
 
     const [tooltipContent, icon] = useMemo(() => {
-        let tooltipContent;
-        if(i18n.language === 'zh-CN') {
-            tooltipContent = dark ? '切换到亮色模式' : '切换到暗色模式';
-        } else {
-            tooltipContent = dark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
-        }
+        const tooltipContent = dark ? t('component.btn-switch-to-light-mode') : t('component.btn-switch-to-dark-mode');
         const icon = dark ? <IconSun size={"extra-large"}/> : <IconMoon size={"extra-large"}/>;
         return [tooltipContent, icon];
     }, [dark, i18n.language]);

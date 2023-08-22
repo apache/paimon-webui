@@ -20,6 +20,7 @@ import {API_ENDPOINTS} from '@api/endpoints';
 import Result = API.Result;
 import {CatalogItemList} from "@src/types/Catalog/data";
 import {DatabaseItem} from "@src/types/Database/data";
+import {TableItem} from "@src/types/Table/data";
 
 export const createFileSystemCatalog = async (catalogProp: Prop.CatalogProp) => {
     try {
@@ -61,12 +62,30 @@ export const getAllDatabases = async () => {
     }
 }
 
+export const createTable = async (databaseProp: TableItem) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.CREATE_TABLE, databaseProp);
+    } catch (error) {
+        console.error('Failed to create table:', error);
+    }
+};
+
+export const getAllTables = async () => {
+    try {
+        return await http.httpGet<Result<TableItem[]>, null>(API_ENDPOINTS.GET_ALL_TABLES)
+    } catch (error: any) {
+        console.error('Failed to get tables:', error);
+    }
+}
+
 const Api = {
     createFileSystemCatalog,
     createHiveCatalog,
     getAllCatalogs,
     createDatabase,
-    getAllDatabases
+    getAllDatabases,
+    createTable,
+    getAllTables,
 }
 
 export default Api;

@@ -25,14 +25,21 @@ type TableModalFormProps = {
     visible: boolean;
     onClose: () => void;
     onOk: (formApi: any) => void;
+    catalogName: string | null;
+    databaseName: string | null;
 };
 
-const TableModalForm: React.FC<TableModalFormProps> = ({ visible , onClose, onOk }) => {
+const TableModalForm: React.FC<TableModalFormProps> = ({ visible , onClose, onOk, catalogName, databaseName }) => {
     const [formApi, setFormApi] = useState(null);
     const { t } = useTranslation();
 
     const getFormApi = (api: any) => {
-        setFormApi(api);
+        const formData = {
+            ... api,
+            catalogName,
+            databaseName,
+        }
+        setFormApi(formData);
     };
 
     const handleOkClick = async () => {
@@ -48,7 +55,7 @@ const TableModalForm: React.FC<TableModalFormProps> = ({ visible , onClose, onOk
             maskClosable={false}
             okText={t('metadata.submit')}
             cancelText={t('metadata.cancel')}
-            width={'820px'}
+            width={'760px'}
             height={auto}
             onOk={() => handleOkClick()}
         >

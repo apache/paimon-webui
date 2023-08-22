@@ -30,13 +30,25 @@
     "create-catalog": "创建Catalog",
     "create-database-success": "创建 Database 成功！",
     "create-database-failed": "创建 Database 失败：",
+    "create-table-success": "创建 Table 成功！",
+    "create-table-failed": "创建 Table 失败：",
     "form-group-basic-information": "基本信息",
-    "form-group-add-column": "添加列",
+    "form-group-add-column-ordinary": "普通列",
+    "form-group-add-column-partition": "分区列",
     "add-column-field": "字段",
+    "add-column-default-value": "默认值",
     "add-column-type": "类型",
+    "add-column-primary-key": "主键",
     "add-column-comment": "备注",
     "form-group-add-config": "添加选项",
     "add-config-key": "键",
     "add-config-value": "值"
+  },
+  "component": {
+    "icon-more-dropdown-rename": "重命名",
+    "icon-more-dropdown-delete": "删除",
+    "btn-switch-to-light-mode": "切换到亮色模式",
+    "btn-switch-to-dark-mode": "切换到暗色模式",
+    "btn-github-icon": "访问 GitHub 仓库"
   }
 }

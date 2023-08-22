@@ -15,17 +15,27 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export const API_ENDPOINTS = {
-    // catalog
-    CREATE_FILE_SYSTEM_CATALOG: '/catalog/createFilesystemCatalog',
-    CREATE_HIVE_CATALOG: '/catalog/createHiveCatalog',
-    GET_ALL_CATALOGS: '/catalog/getAllCatalogs',
+import { IconMore, IconDelete, IconEdit } from "@douyinfe/semi-icons";
+import { Dropdown } from '@douyinfe/semi-ui';
+import { useTranslation } from 'react-i18next';
 
-    // database
-    CREATE_DATABASE: '/database/createDatabase',
-    GET_ALL_DATABASES: '/database/getAllDatabases',
+const TableIconMoreDropdown = () => {
+    const { t } = useTranslation();
 
-    // table
-    CREATE_TABLE: '/table/createTable',
-    GET_ALL_TABLES: '/table/getAllTables',
-};
+    return(
+        <Dropdown
+            trigger={'click'}
+            position={'bottomLeft'}
+            render={
+                <Dropdown.Menu>
+                    <Dropdown.Item><IconEdit/> {t('component.icon-more-dropdown-rename')}</Dropdown.Item>
+                    <Dropdown.Item><IconDelete/> {t('component.icon-more-dropdown-delete')}</Dropdown.Item>
+                </Dropdown.Menu>
+            }
+        >
+            <IconMore/>
+        </Dropdown>
+    );
+}
+
+export default TableIconMoreDropdown;

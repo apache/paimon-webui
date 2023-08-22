@@ -19,7 +19,6 @@ import React, {useState} from "react";
 import { Modal } from '@douyinfe/semi-ui';
 import CatalogForm from "@pages/Metadata/components/LeftContent/components/CatalogModalForm/CatalogForm";
 import {useTranslation} from "react-i18next";
-import AutoSizer from "@douyinfe/semi-ui/lib/es/tree/autoSizer";
 import {auto} from "@popperjs/core";
 
 type CatalogModalFormProps = {
@@ -50,7 +49,7 @@ const CatalogModalForm: React.FC<CatalogModalFormProps> = ({ visible , onClose, 
             maskClosable={false}
             okText={t('metadata.submit')}
             cancelText={t('metadata.cancel')}
-            width={'750px'}
+            width={'690px'}
             height={auto}
             onOk={() => handleOkClick()}
         >

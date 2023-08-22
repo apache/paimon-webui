@@ -30,13 +30,25 @@
     "create-catalog": "Create Catalog",
     "create-database-success": "Database created successfully!",
     "create-database-failed": "Failed to create database:",
+    "create-table-success": "Table created successfully!",
+    "create-table-failed": "Failed to create table:",
     "form-group-basic-information": "Basic Information",
-    "form-group-add-column": "Add Columns",
+    "form-group-add-column-ordinary": "Common Column",
+    "form-group-add-column-partition": "Partition Column",
     "add-column-field": "Field",
+    "add-column-default-value": "Default Value",
     "add-column-type": "Type",
+    "add-column-primary-key": "Primary Key",
     "add-column-comment": "Comment",
     "form-group-add-config": "Add Options",
     "add-config-key": "Key",
     "add-config-value": "Value"
+  },
+  "component": {
+    "icon-more-dropdown-rename": "Rename",
+    "icon-more-dropdown-delete": "Delete",
+    "btn-switch-to-light-mode": "Switch to Light Mode",
+    "btn-switch-to-dark-mode": "Switch to Dark Mode",
+    "btn-github-icon": "Visit GitHub repository"
   }
 }

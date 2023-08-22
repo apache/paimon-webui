@@ -15,17 +15,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export const API_ENDPOINTS = {
-    // catalog
-    CREATE_FILE_SYSTEM_CATALOG: '/catalog/createFilesystemCatalog',
-    CREATE_HIVE_CATALOG: '/catalog/createHiveCatalog',
-    GET_ALL_CATALOGS: '/catalog/getAllCatalogs',
+export type TableColumn = {
+    field: string,
+    dataType: string,
+    comment: string | null,
+    isPK: boolean,
+    defaultValue: string | null,
+}
 
-    // database
-    CREATE_DATABASE: '/database/createDatabase',
-    GET_ALL_DATABASES: '/database/getAllDatabases',
-
-    // table
-    CREATE_TABLE: '/table/createTable',
-    GET_ALL_TABLES: '/table/getAllTables',
-};
+export type TableItem = {
+    catalogName: string,
+    databaseName: string,
+    tableName: string,
+    description: string | null,
+    tableColumns: TableColumn[],
+    partitionKey: [],
+    tableOptions: Map<string, string>,
+}

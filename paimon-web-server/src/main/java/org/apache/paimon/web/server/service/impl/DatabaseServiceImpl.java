@@ -33,8 +33,7 @@ import java.util.List;
 public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseInfo>
         implements DatabaseService {
 
-    @Autowired
-    private DatabaseMapper databaseMapper;
+    @Autowired private DatabaseMapper databaseMapper;
 
     @Override
     public boolean checkCatalogNameUnique(DatabaseInfo databaseInfo) {
