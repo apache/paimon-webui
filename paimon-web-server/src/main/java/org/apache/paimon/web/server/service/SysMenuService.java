@@ -22,11 +22,13 @@ import org.apache.paimon.web.server.data.model.SysMenu;
 import org.apache.paimon.web.server.data.tree.TreeSelect;
 import org.apache.paimon.web.server.data.vo.RouterVo;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+
 import java.util.List;
 import java.util.Set;
 
 /** Menu service. */
-public interface SysMenuService {
+public interface SysMenuService extends IService<SysMenu> {
     /**
      * Query menu list by user.
      *

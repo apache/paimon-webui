@@ -43,6 +43,7 @@ public enum Status {
     USER_NOT_EXIST(10001, "user.not.exist"),
     USER_PASSWORD_ERROR(10002, "user.password.error"),
     USER_DISABLED_ERROR(10003, "user.is.disabled"),
+    USER_NOT_BING_TENANT(10004, "user.not.bing.tenant"),
     /** ------------role-----------------. */
     ROLE_IN_USED(10101, "role.in.used"),
     ROLE_NAME_IS_EXIST(10102, "role.name.exist"),

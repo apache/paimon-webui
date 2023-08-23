@@ -16,6 +16,11 @@ specific language governing permissions and limitations
 under the License. */
 
 export const API_ENDPOINTS = {
+
+    // auth && login
+    GET_LDAP_ENABLE: '/ldap/enable',
+    LOGIN: '/login',
+
     // catalog
     CREATE_FILE_SYSTEM_CATALOG: '/catalog/createFilesystemCatalog',
     CREATE_HIVE_CATALOG: '/catalog/createHiveCatalog',
@@ -28,4 +33,5 @@ export const API_ENDPOINTS = {
     // table
     CREATE_TABLE: '/table/createTable',
     GET_ALL_TABLES: '/table/getAllTables',
+
 };
