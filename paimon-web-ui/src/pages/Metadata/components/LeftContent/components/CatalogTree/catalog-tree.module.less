@@ -20,3 +20,63 @@ under the License. */
   width: 347px;
   margin-left: -12px;
 }
+
+.liClass {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.iconPlus {
+  position: absolute;
+  right: 40px;
+  padding: 2px;
+  transition: all 0.2s ease-in-out; /* Add transition effect */
+  border: none;
+  color: #000;
+  font-size: 12px; /* Small size for the "+" icon in the initial state */
+  visibility: hidden; /* Hide the "+" icon in the initial state */
+  border-radius: 50%; /* Add border radius */
+  background: transparent; /* Transparent background in the initial state */
+}
+
+.liClass:hover .iconPlus{
+  visibility: visible; /* Show the "+" icon when hovering over the entire node */
+  border: none;
+  color: #000;
+  font-size: 12px;
+  background: transparent;
+}
+
+.liClass .iconPlus:hover{
+  border: 1px solid #d3d3d3; /* Gray border when hovering over the "+" icon */
+  color: #d3d3d3; /* Gray color when hovering over the "+" icon */
+  font-size: 16px; /* Increase the size of the "+" icon when hovering */
+  background: #fff; /* White background when hovering over the "+" icon */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+}
+
+.iconMore {
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+  visibility: hidden;
+  margin-right: 12px;
+  color: #000;
+}
+
+.liClass:hover .iconMore {
+  visibility: visible;
+}
+
+.semi-tree-node-selected {
+  color: rgba(var(--semi-blue-5), 1) !important;
+}
+
+.icon {
+  margin-right: 8px;
+  color: var(--semi-color-text-2);
+}
+

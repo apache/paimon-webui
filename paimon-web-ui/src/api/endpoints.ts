@@ -26,4 +26,12 @@ export const API_ENDPOINTS = {
     CREATE_HIVE_CATALOG: '/catalog/createHiveCatalog',
     GET_ALL_CATALOGS: '/catalog/getAllCatalogs',
 
+    // database
+    CREATE_DATABASE: '/database/createDatabase',
+    GET_ALL_DATABASES: '/database/getAllDatabases',
+
+    // table
+    CREATE_TABLE: '/table/createTable',
+    GET_ALL_TABLES: '/table/getAllTables',
+
 };

@@ -82,13 +82,13 @@ public class TableManager {
         Schema.Builder schemaBuilder =
                 Schema.newBuilder()
                         .partitionKeys(
-                                tableMetadata.primaryKeys() == null
-                                        ? ImmutableList.of()
-                                        : ImmutableList.copyOf(tableMetadata.primaryKeys()))
-                        .partitionKeys(
                                 tableMetadata.partitionKeys() == null
                                         ? ImmutableList.of()
                                         : ImmutableList.copyOf(tableMetadata.partitionKeys()))
+                        .primaryKey(
+                                tableMetadata.primaryKeys() == null
+                                        ? ImmutableList.of()
+                                        : ImmutableList.copyOf(tableMetadata.primaryKeys()))
                         .comment(tableMetadata.comment() == null ? "" : tableMetadata.comment())
                         .options(handleOptions(tableMetadata.options()));
 

@@ -15,38 +15,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-declare namespace API {
-    export interface Result<T> {
-        code: number;
-        msg: string;
-        data: T;
-    }
-
-    export interface PageData<T> {
-        records: T[];
-        page: number;
-        size: number;
-        total: number;
-    }
-
-    export type PageResult<T> = Result<PageData<T>>
+.selected-nav-item {
+  color: rgba(var(--semi-blue-5), 1) !important;
 }
 
-declare namespace Prop {
-    // Catalog
-    export interface CatalogProp {
-        catalogName: string,
-        catalogType: string,
-        warehouse: string,
-        hiveUri: string,
-        hiveConfDir: string,
-        isDelete: boolean
-    }
-
-    // Database
-    export interface DatabaseProp {
-        databaseName: string,
-        catalogId: number,
-        description: string
-    }
+.header {
+  width: 96px;
+  height: 36px;
+  font-size: 36px;
+  margin-left: -45px;
+  margin-right: -20px;
 }

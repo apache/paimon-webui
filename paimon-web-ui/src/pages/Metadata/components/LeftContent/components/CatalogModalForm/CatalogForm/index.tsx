@@ -16,10 +16,11 @@ specific language governing permissions and limitations
 under the License. */
 
 import { Form } from '@douyinfe/semi-ui';
+import {useTranslation} from "react-i18next";
 
 // @ts-ignore
 const CatalogForm = ({ getFormApi }) => {
-    let message = 'This item is required.';
+    const { t } = useTranslation();
     return(
        <>
            <Form
@@ -37,18 +38,20 @@ const CatalogForm = ({ getFormApi }) => {
                                label='Catalog Name'
                                trigger='blur'
                                rules={[
-                                   { required: true, message },
+                                   { required: true, message: t('metadata.message') },
                                ]}
-                               style={{ width: "100%" }}/>
+                               style={{ width: "100%" }}
+                               showClear/>
 
                            <Form.Select
                                field="catalogType"
                                label='Catalog Type'
                                placeholder={"please select catalog"}
                                rules={[
-                                   { required: true, message },
+                                   { required: true, message: t('metadata.message') },
                                ]}
-                               style={{ width: "100%" }}>
+                               style={{ width: "100%" }}
+                               showClear>
                                <Form.Select.Option value="filesystem">FileSystem</Form.Select.Option>
                                <Form.Select.Option value="hive">Hive</Form.Select.Option>
                            </Form.Select>
@@ -59,9 +62,10 @@ const CatalogForm = ({ getFormApi }) => {
                                    label='Warehouse'
                                    trigger='blur'
                                    rules={[
-                                       { required: true, message },
+                                       { required: true, message: t('metadata.message') },
                                    ]}
-                                   style={{ width: "100%" }}/>
+                                   style={{ width: "100%" }}
+                                   showClear/>
                            )
                                :
                                <>
@@ -70,27 +74,30 @@ const CatalogForm = ({ getFormApi }) => {
                                        label='Warehouse'
                                        trigger='blur'
                                        rules={[
-                                           { required: true, message },
+                                           { required: true, message: t('metadata.message') },
                                        ]}
-                                       style={{ width: "100%" }}/>
+                                       style={{ width: "100%" }}
+                                       showClear/>
 
                                    <Form.Input
                                        field="uri"
                                        label='Hive Uri'
                                        trigger='blur'
                                        rules={[
-                                           { required: true, message },
+                                           { required: true, message: t('metadata.message') },
                                        ]}
-                                       style={{ width: "100%" }}/>
+                                       style={{ width: "100%" }}
+                                       showClear/>
 
                                    <Form.Input
                                        field="hiveConfDir"
                                        label='Hive Conf Dir'
                                        trigger='blur'
                                        rules={[
-                                           { required: true, message },
+                                           { required: true, message: t('metadata.message') },
                                        ]}
-                                       style={{ width: "100%" }}/>
+                                       style={{ width: "100%" }}
+                                       showClear/>
                                </>
                            }
                        </>

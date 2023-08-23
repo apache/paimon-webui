@@ -15,38 +15,26 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-declare namespace API {
-    export interface Result<T> {
-        code: number;
-        msg: string;
-        data: T;
-    }
+import { IconMore, IconDelete } from "@douyinfe/semi-icons";
+import { Dropdown } from '@douyinfe/semi-ui';
+import { useTranslation } from 'react-i18next';
 
-    export interface PageData<T> {
-        records: T[];
-        page: number;
-        size: number;
-        total: number;
-    }
+const CatalogIconMoreDropdown = () => {
+    const { t } = useTranslation();
 
-    export type PageResult<T> = Result<PageData<T>>
+    return(
+        <Dropdown
+            trigger={'click'}
+            position={'bottomLeft'}
+            render={
+                <Dropdown.Menu>
+                    <Dropdown.Item><IconDelete/> {t('component.icon-more-dropdown-delete')}</Dropdown.Item>
+                </Dropdown.Menu>
+            }
+        >
+            <IconMore onClick={(e) => e.stopPropagation()}/>
+        </Dropdown>
+    );
 }
 
-declare namespace Prop {
-    // Catalog
-    export interface CatalogProp {
-        catalogName: string,
-        catalogType: string,
-        warehouse: string,
-        hiveUri: string,
-        hiveConfDir: string,
-        isDelete: boolean
-    }
-
-    // Database
-    export interface DatabaseProp {
-        databaseName: string,
-        catalogId: number,
-        description: string
-    }
-}
+export default CatalogIconMoreDropdown;

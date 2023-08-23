@@ -15,38 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-declare namespace API {
-    export interface Result<T> {
-        code: number;
-        msg: string;
-        data: T;
-    }
-
-    export interface PageData<T> {
-        records: T[];
-        page: number;
-        size: number;
-        total: number;
-    }
-
-    export type PageResult<T> = Result<PageData<T>>
-}
-
-declare namespace Prop {
-    // Catalog
-    export interface CatalogProp {
-        catalogName: string,
-        catalogType: string,
-        warehouse: string,
-        hiveUri: string,
-        hiveConfDir: string,
-        isDelete: boolean
-    }
-
-    // Database
-    export interface DatabaseProp {
-        databaseName: string,
-        catalogId: number,
-        description: string
-    }
+export type DatabaseItem = {
+    databaseName: string,
+    catalogId: number,
+    description: string,
 }

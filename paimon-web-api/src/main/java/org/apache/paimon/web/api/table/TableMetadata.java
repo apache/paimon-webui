@@ -144,6 +144,23 @@ public class TableMetadata {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public String toString() {
+        return "TableMetadata{"
+                + "columns="
+                + columns
+                + ", partitionKeys="
+                + partitionKeys
+                + ", primaryKeys="
+                + primaryKeys
+                + ", options="
+                + options
+                + ", comment='"
+                + comment
+                + '\''
+                + '}';
+    }
+
     public static TableMetadata.Builder builder() {
         return new Builder();
     }
@@ -156,7 +173,7 @@ public class TableMetadata {
 
         private List<String> primaryKeys = new ArrayList<>();
 
-        private Map<String, String> options = new HashMap<>();
+        @Nullable private Map<String, String> options = new HashMap<>();
 
         @Nullable private String comment;
 
@@ -171,7 +188,7 @@ public class TableMetadata {
         }
 
         public Builder primaryKeys(List<String> primaryKeys) {
-            this.partitionKeys = new ArrayList<>(primaryKeys);
+            this.primaryKeys = new ArrayList<>(primaryKeys);
             return this;
         }
 
