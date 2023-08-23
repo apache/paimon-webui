@@ -33,7 +33,7 @@ const TableIconMoreDropdown = () => {
                 </Dropdown.Menu>
             }
         >
-            <IconMore/>
+            <IconMore onClick={(e) => e.stopPropagation()}/>
         </Dropdown>
     );
 }

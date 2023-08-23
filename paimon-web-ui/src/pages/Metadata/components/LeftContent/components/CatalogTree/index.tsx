@@ -342,7 +342,10 @@ const CatalogTree = () => {
                     <Tooltip content={type === "catalog" ? t('metadata.add-database') : t('metadata.add-table')}>
                         <IconPlus
                             className={styles.iconPlus}
-                            onClick={() => handleOpenModal(type, label, data.parentId)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenModal(type, label, data.parentId)
+                            }}
                         />
                     </Tooltip>
                 )}

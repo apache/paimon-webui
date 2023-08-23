@@ -32,7 +32,7 @@ const CatalogIconMoreDropdown = () => {
                 </Dropdown.Menu>
             }
         >
-            <IconMore/>
+            <IconMore onClick={(e) => e.stopPropagation()}/>
         </Dropdown>
     );
 }
