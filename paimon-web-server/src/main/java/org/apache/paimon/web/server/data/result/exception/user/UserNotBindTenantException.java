@@ -16,18 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.dto;
+package org.apache.paimon.web.server.data.result.exception.user;
 
-import org.apache.paimon.web.server.data.model.Tenant;
-import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.data.result.exception.BaseException;
 
-import lombok.Data;
+/** Exception to user not bind tenant. */
+public class UserNotBindTenantException extends BaseException {
+    private static final long serialVersionUID = 1L;
 
-import java.util.List;
-
-/** user data transfer object. */
-@Data
-public class UserDto {
-    private User user;
-    private List<Tenant> tenantList;
+    public UserNotBindTenantException() {
+        super(Status.USER_DISABLED_ERROR);
+    }
 }
