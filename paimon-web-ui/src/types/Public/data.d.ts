@@ -33,9 +33,6 @@ export interface PageData<T> {
 // with page
 export type PageResult<T> = Result<PageData<T>>
 
-
-
-
 export interface BaseBeanColumns extends ExcludeNameAndEnableColumns {
     name: string,
     enabled: boolean,
