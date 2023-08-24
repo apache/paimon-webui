@@ -22,18 +22,18 @@ import LayoutPage from '@src/pages/Layout';
 import PlaygroundPage from '@src/pages/Playground';
 import MetaDataPage from '@pages/Metadata';
 import DevStatus from "@pages/Abnormal/Dev";
-import Login from "@pages/Other/Login";
+/*import Login from "@pages/Other/Login";*/
 
 /*const Editor = lazy(() => import('@src/pages/Playground'))
 const Studio = lazy(() => import('@src/pages/Metadata'))*/
 
 const routeList: RouteObject[] = [
-    {
+   /* {
         path: '/',
         element: <Login/>,
-    },
+    },*/
     {
-        path: '/layout',
+        path: '/',
         element: <LayoutPage/>,
         children: [
             {
@@ -54,10 +54,10 @@ const routeList: RouteObject[] = [
             }
         ]
     },
-    {
+    /*{
         path: '*',
         element: <Login/>
-    }
+    }*/
 ]
 
 function RenderRouter() {

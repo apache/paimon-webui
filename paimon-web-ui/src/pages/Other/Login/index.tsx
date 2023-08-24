@@ -26,13 +26,15 @@ import http from "@api/http.ts";
 import {API_ENDPOINTS} from "@api/endpoints.ts";
 import {Col, Row} from "antd";
 import "@douyinfe/semi-foundation/lib/es/button/button.css?inline"
-import {LoginParams} from "@src/types/User/data";
+import {LoginParams, UserState} from "@src/types/User/data";
+import {useNavigate} from "react-router";
 
 
 const Login = () => {
     // const dispatch = useDispatch();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
+    // @ts-ignore
     const [ldapEnabled, setLdapEnabled] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
@@ -51,7 +53,18 @@ const Login = () => {
     const handleClickLogin = async () => {
         setSubmitting(true);
         const values = await form.validateFields();
-        await http.httpPost(API_ENDPOINTS.LOGIN, {...values}, () => setSubmitting(true), () => setSubmitting(false))
+        const response = await http.httpPost<UserState, typeof values>(
+            API_ENDPOINTS.LOGIN,
+            {...values},
+            () => setSubmitting(true),
+            () => setSubmitting(false)
+        );
+
+        if (response.status) {
+            navigate('/playground')
+        } else {
+            console.error('Login failed:', response.saTokenInfo);
+        }
     };
 
     const proFormSubmitter: SubmitterProps = {

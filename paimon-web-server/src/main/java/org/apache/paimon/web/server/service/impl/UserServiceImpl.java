@@ -27,7 +27,6 @@ import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.model.UserRole;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 import org.apache.paimon.web.server.data.result.exception.user.UserDisabledException;
-import org.apache.paimon.web.server.data.result.exception.user.UserNotBindTenantException;
 import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
 import org.apache.paimon.web.server.data.result.exception.user.UserPasswordNotMatchException;
 import org.apache.paimon.web.server.data.vo.UserInfoVo;
@@ -46,7 +45,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,9 +82,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         // query user info
         UserInfoVo userInfoVo = getUserInfoVo(user);
-        if (CollectionUtils.isEmpty(userInfoVo.getTenantList())) {
+        // todo: Currently do not bind tenants
+        /*if (CollectionUtils.isEmpty(userInfoVo.getTenantList())) {
             throw new UserNotBindTenantException();
-        }
+        }*/
 
         StpUtil.login(user.getId(), loginDto.isRememberMe());
 

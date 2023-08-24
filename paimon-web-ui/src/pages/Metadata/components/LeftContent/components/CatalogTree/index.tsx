@@ -70,6 +70,8 @@ const CatalogTree = () => {
     const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
     const [selectedKey, setSelectedKey] = useState(null);
 
+    const setTableNodeClicked = useTableStore((state) => state.setTableNodeClicked);
+
     useEffect(() => {
         // Fetch the catalog data when the component mounts
         fetchTables();
@@ -142,7 +144,7 @@ const CatalogTree = () => {
                             value: tableItem.tableName,
                             type: "table" as "table",
                             catalogId: item.id,
-                            key: databaseKey + "-" + tableItem.tableName
+                            key: item.catalogName + "#" + dbItem.databaseName + "#" + tableItem.tableName
                         }));
                     return {
                         label: dbItem.databaseName,
@@ -276,6 +278,13 @@ const CatalogTree = () => {
         return null;
     };
 
+    const onTreeNodeClick = (key: any) => {
+        const node = findNodeByKey(key, treeData);
+        if (node && node.type === 'table') {
+            setTableNodeClicked(key);
+        }
+    };
+
     const onExpand = (_: string[], info: any) => {
         const key = info.node.key;
         const expanded = info.expanded;
@@ -362,6 +371,7 @@ const CatalogTree = () => {
                 expandedKeys={expandedKeys}
                 onExpand={onExpand}
                 selectedKey={selectedKey}
+                onSelect={onTreeNodeClick}
                 searchPlaceholder={t('common.filter')}
                 searchRender={({ prefix, ...restProps }) => (
                     <Input suffix={<IconSearch className={styles['catalog-tree-input-icon']}/>} {...restProps} className={styles['catalog-tree-input']}></Input>

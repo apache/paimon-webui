@@ -25,6 +25,8 @@ type Store = {
     inputs: Array<{}>;
     configs: Array<{}>;
     tableItemList: TableItem[];
+    tableNodeClicked: string;
+    setTableNodeClicked: (newTableNodeClicked: string) => void;
     setInputs: (newInputs: Array<{}>) => void;
     setConfigs: (newConfigs: Array<{}>) => void;
     createTable: (tableProp: TableItem) => Promise<void>;
@@ -35,6 +37,8 @@ export const useTableStore = create<Store>((set) => ({
     inputs: [{}],
     configs: [],
     tableItemList: [],
+    tableNodeClicked: "",
+    setTableNodeClicked: (newTableNodeClicked) => set(() => ({ tableNodeClicked: newTableNodeClicked })),
     setInputs: (newInputs) => set(() => ({ inputs: newInputs })),
     setConfigs: (newConfigs) => set(() => ({ configs: newConfigs })),
     createTable: async (tableProp) => {
