@@ -34,7 +34,7 @@ interface LoginParams {
  */
 export interface UserState {
     status: boolean;
-    tokenInfo: SaTokenInfo;
+    saTokenInfo: SaTokenInfo;
     roleList: Role[];
     tenantList: Tenant[];
     menuList: SysMenu[];

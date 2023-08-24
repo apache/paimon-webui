@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.data.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -74,6 +75,7 @@ public class SysMenu extends BaseModel {
     private String remark;
 
     /** children menu. */
+    @TableField(exist = false)
     private List<SysMenu> children = new ArrayList<SysMenu>();
 
     private static final long serialVersionUID = 1L;

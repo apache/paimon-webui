@@ -20,14 +20,15 @@ import {Divider} from "@douyinfe/semi-ui";
 import MetadataRightContent from "@pages/Metadata/components/RightContent";
 import styles from "./metadata.module.less";
 
-const Index = () => {
+const RightContent = () => {
+
     return(
         <div className={styles.container}>
             <MetadataSidebar/>
             <Divider layout="vertical" margin='396px' className={styles.divider}/>
-            <MetadataRightContent/>
+            <MetadataRightContent />
         </div>
     )
 }
 
-export default Index;
+export default RightContent;

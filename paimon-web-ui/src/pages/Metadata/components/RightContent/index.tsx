@@ -16,12 +16,34 @@ specific language governing permissions and limitations
 under the License. */
 
 import TableTab from "@pages/Metadata/components/RightContent/components/MainContent/Table";
+import { Breadcrumb } from '@douyinfe/semi-ui';
+import {useTableStore} from "@src/store/tableStore.ts";
 import styles from "./right-content.module.less"
+import emptyImg from "@assets/img/empty.png";
 
 const MetadataRightContent = () => {
+    const tableNodeClicked = useTableStore((state) => state.tableNodeClicked);
+
+    if (!tableNodeClicked) {
+        return (
+            <div className={styles['empty-container']}>
+                <div className={styles['el-empty__image']}>
+                    <img src={emptyImg}/>
+                </div>
+                <div className={styles['el-empty__description']}>
+                    <p>请在左侧选择 Table</p>
+                </div>
+            </div>
+        )
+    }
+
     return(
         <div className={styles.container}>
-            <span style={{color: "var(--semi-color-text-0)"}}>paimon_table_01</span>
+            <Breadcrumb separator={'>'} compact={false}>
+                <Breadcrumb.Item>{tableNodeClicked.split("#")[0]}</Breadcrumb.Item>
+                <Breadcrumb.Item>{tableNodeClicked.split("#")[1]}</Breadcrumb.Item>
+                <Breadcrumb.Item>{tableNodeClicked.split("#")[2]}</Breadcrumb.Item>
+            </Breadcrumb>
             <TableTab/>
         </div>
     )

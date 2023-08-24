@@ -84,9 +84,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         // query user info
         UserInfoVo userInfoVo = getUserInfoVo(user);
-        if (CollectionUtils.isEmpty(userInfoVo.getTenantList())) {
+        //todo: Currently do not bind tenants
+        /*if (CollectionUtils.isEmpty(userInfoVo.getTenantList())) {
             throw new UserNotBindTenantException();
-        }
+        }*/
 
         StpUtil.login(user.getId(), loginDto.isRememberMe());
 
