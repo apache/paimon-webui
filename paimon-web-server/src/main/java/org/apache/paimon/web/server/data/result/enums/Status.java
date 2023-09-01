@@ -64,6 +64,13 @@ public enum Status {
     /** ------------table-----------------. */
     TABLE_NAME_IS_EXIST(10501, "table.name.exist"),
     TABLE_CREATE_ERROR(10502, "table.create.error"),
+    TABLE_ADD_COLUMN_ERROR(10503, "table.add.column.error"),
+    TABLE_ADD_OPTION_ERROR(10504, "table.add.option.error"),
+    TABLE_REMOVE_OPTION_ERROR(10505, "table.remove.option.error"),
+    TABLE_DROP_COLUMN_ERROR(10506, "table.drop.column.error"),
+    TABLE_RENAME_COLUMN_ERROR(10507, "table.rename.column.error"),
+    TABLE_UPDATE_COLUMN_TYPE_ERROR(10508, "table.update.column.type.error"),
+    TABLE_UPDATE_COLUMN_COMMENT_ERROR(10509, "table.update.column.comment.error"),
     ;
 
     private final int code;

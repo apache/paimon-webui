@@ -23,23 +23,38 @@ import {TableItem} from "@src/types/Table/data";
 
 type Store = {
     inputs: Array<{}>;
+    columnInputs: Array<{}>;
+    optionInputs: Array<{}>;
     configs: Array<{}>;
     tableItemList: TableItem[];
     tableNodeClicked: string;
     setTableNodeClicked: (newTableNodeClicked: string) => void;
     setInputs: (newInputs: Array<{}>) => void;
+    setColumnInputs: (newInputs: Array<{}>) => void;
+    setOptionInputs: (newInputs: Array<{}>) => void;
     setConfigs: (newConfigs: Array<{}>) => void;
     createTable: (tableProp: TableItem) => Promise<void>;
+    addColumn: (tableProp: TableItem) => Promise<void>;
+    dropColumn: (tableProp: TableItem) => Promise<void>;
+    renameColumn: (tableProp: TableItem) => Promise<void>;
+    updateColumnType: (tableProp: TableItem) => Promise<void>;
+    updateColumnComment: (tableProp: TableItem) => Promise<void>;
+    addOption: (tableProp: TableItem) => Promise<void>;
+    removeOption: (tableProp: TableItem) => Promise<void>;
     fetchTables: () => Promise<void>;
 };
 
 export const useTableStore = create<Store>((set) => ({
     inputs: [{}],
+    columnInputs: [{}],
+    optionInputs: [{}],
     configs: [],
     tableItemList: [],
     tableNodeClicked: "",
     setTableNodeClicked: (newTableNodeClicked) => set(() => ({ tableNodeClicked: newTableNodeClicked })),
     setInputs: (newInputs) => set(() => ({ inputs: newInputs })),
+    setColumnInputs: (newInputs) => set(() => ({ columnInputs: newInputs })),
+    setOptionInputs: (newInputs) => set(() => ({ optionInputs: newInputs })),
     setConfigs: (newConfigs) => set(() => ({ configs: newConfigs })),
     createTable: async (tableProp) => {
         try {
@@ -53,9 +68,128 @@ export const useTableStore = create<Store>((set) => ({
                 console.error('Failed to create table:', response.msg);
                 Toast.error(i18n.t('metadata.create-table-failed') +  response.msg);
             }
-        } catch (error) {
-            console.error('Failed to create table:', error);
-            Toast.error(i18n.t('metadata.create-table-failed') + error);
+        } catch (error: any) {
+            console.error('Failed to create table:', error.value);
+            Toast.error(i18n.t('metadata.create-table-failed') + error.value);
+        }
+    },
+    addColumn: async (tableProp) => {
+        try {
+            const response = await Api.addColumn(tableProp);
+            if (!response) {
+                throw new Error('No response from addColumn');
+            }
+            if (response.code === 200) {
+                Toast.success(i18n.t('metadata.add-column-success'));
+            } else {
+                console.error('Failed to add column:', response.msg);
+                Toast.error(i18n.t('metadata.add-column-failed') +  response.msg);
+            }
+        } catch (error: any) {
+            console.error('Failed to add colum:', error.value);
+            Toast.error(i18n.t('metadata.add-column-failed') + error.value);
+        }
+    },
+    dropColumn: async (tableProp) => {
+        try {
+            const response = await Api.dropColumn(tableProp);
+            if (!response) {
+                throw new Error('No response from dropColumn');
+            }
+            if (response.code === 200) {
+                Toast.success(i18n.t('metadata.drop-column-success'));
+            } else {
+                console.error('Failed to drop column:', response.msg);
+                Toast.error(i18n.t('metadata.drop-column-failed') +  response.msg);
+            }
+        } catch (error: any) {
+            console.error('Failed to drop colum:', error.value);
+            Toast.error(i18n.t('metadata.drop-column-failed') + error.value);
+        }
+    },
+    renameColumn: async (tableProp) => {
+        try {
+            const response = await Api.renameColumn(tableProp);
+            if (!response) {
+                throw new Error('No response from renameColumn');
+            }
+            if (response.code === 200) {
+                // Toast.success(i18n.t('metadata.modify-column-success'));
+            } else {
+                console.error('Failed to rename column:', response.msg);
+                // Toast.error(i18n.t('metadata.modify-column-failed') +  response.msg);
+            }
+        } catch (error: any) {
+            console.error('Failed to rename colum:', error.value);
+            // Toast.error(i18n.t('metadata.modify-column-failed') + error.value);
+        }
+    },
+    updateColumnType: async (tableProp) => {
+        try {
+            const response = await Api.updateColumnType(tableProp);
+            if (!response) {
+                throw new Error('No response from updateColumnType');
+            }
+            if (response.code === 200) {
+                // Toast.success(i18n.t('metadata.modify-column-success'));
+            } else {
+                console.error('Failed to update column type:', response.msg);
+                // Toast.error(i18n.t('metadata.modify-column-failed') +  response.msg);
+            }
+        } catch (error: any) {
+            console.error('Failed to update colum type:', error.value);
+            // Toast.error(i18n.t('metadata.modify-column-failed') + error.value);
+        }
+    },
+    updateColumnComment: async (tableProp) => {
+        try {
+            const response = await Api.updateColumnComment(tableProp);
+            if (!response) {
+                throw new Error('No response from updateColumnComment');
+            }
+            if (response.code === 200) {
+                // Toast.success(i18n.t('metadata.modify-column-success'));
+            } else {
+                console.error('Failed to update column comment:', response.msg);
+                // Toast.error(i18n.t('metadata.modify-column-failed') +  response.msg);
+            }
+        } catch (error: any) {
+            console.error('Failed to update colum type:', error.value);
+            // Toast.error(i18n.t('metadata.modify-column-failed') + error.value);
+        }
+    },
+    addOption: async (tableProp) => {
+        try {
+            const response = await Api.addOption(tableProp);
+            if (!response) {
+                throw new Error('No response from addOption');
+            }
+            if (response.code === 200) {
+                Toast.success(i18n.t('metadata.add-option-success'));
+            } else {
+                console.error('Failed to add option:', response.msg);
+                Toast.error(i18n.t('metadata.add-option-failed') +  response.msg);
+            }
+        } catch (error: any) {
+            console.error('Failed to add option:', error.value);
+            Toast.error(i18n.t('metadata.add-option-failed') + error.value);
+        }
+    },
+    removeOption: async (tableProp) => {
+        try {
+            const response = await Api.removeOption(tableProp);
+            if (!response) {
+                throw new Error('No response from removeOption');
+            }
+            if (response.code === 200) {
+                Toast.success(i18n.t('metadata.remove-option-success'));
+            } else {
+                console.error('Failed to remove option:', response.msg);
+                Toast.error(i18n.t('metadata.remove-option-failed') +  response.msg);
+            }
+        } catch (error: any) {
+            console.error('Failed to remove option:', error.value);
+            Toast.error(i18n.t('metadata.remove-option-failed') + error.value);
         }
     },
     fetchTables: async () => {
@@ -75,8 +209,8 @@ export const useTableStore = create<Store>((set) => ({
                 });
                 set((state) => ({ ...state, tableItemList: newTableItemList }));
             }
-        } catch (error) {
-            console.error('Failed to get tables:', error);
+        } catch (error: any) {
+            console.error('Failed to get tables:', error.value);
         }
     },
 }));

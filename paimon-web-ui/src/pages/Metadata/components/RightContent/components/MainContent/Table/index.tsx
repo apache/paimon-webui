@@ -18,14 +18,19 @@ under the License. */
 import { useState } from 'react';
 import {TabPane, Tabs} from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
+import TableInfoContent from "@pages/Metadata/components/RightContent/components/MainContent/TableInfoContent";
+import OptionInfoContent from "@pages/Metadata/components/RightContent/components/MainContent/OptionInfoContent";
+import styles from './table-tab.module.less';
 
 const TableTab = () => {
     const { t } = useTranslation()
 
     const [tabList, setTabList] = useState([
-        { tab: 'TableInfo', name: 'tableInfo', itemKey: '1', content: "info", closable: true },
-        { tab: 'Details', name: 'details', itemKey: '2', content: "info", closable: true },
-        { tab: 'Files', name: 'files', itemKey: '3', content: "info", closable: true }
+        { tab: 'TableInfo', name: 'tableInfo', itemKey: '1', content: <TableInfoContent/>, closable: true },
+        { tab: 'OptionInfo', name: 'optionInfo', itemKey: '2', content: <OptionInfoContent/>, closable: true },
+        { tab: 'Details', name: 'details', itemKey: '3', content: "info", closable: true },
+        { tab: 'Files', name: 'files', itemKey: '4', content: "info", closable: true },
+        { tab: 'Snapshot', name: 'snapshot', itemKey: '5', content: "info", closable: true },
     ]);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -35,13 +40,13 @@ const TableTab = () => {
         setTabList(newTabList);
     };
 
-
     return (
-        <Tabs type="line" defaultActiveKey="1" onTabClose={close}>
+        <Tabs className={styles.container} type="line" defaultActiveKey="1" onTabClose={close}>
             {tabList.map((tab) => (
                 <TabPane closable={tab.closable}
                          tab={<span>{t(`metadata.${tab.name}`)}</span>}
                          itemKey={tab.itemKey}
+                         className={styles['tab-plane']}
                          key={tab.itemKey}>
                     {tab.content}
                 </TabPane>

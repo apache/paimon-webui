@@ -21,7 +21,9 @@ package org.apache.paimon.web.server.controller;
 import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.table.Table;
 import org.apache.paimon.types.DataField;
+import org.apache.paimon.web.api.common.OperatorKind;
 import org.apache.paimon.web.api.database.DatabaseManager;
+import org.apache.paimon.web.api.table.AlterTableEntity;
 import org.apache.paimon.web.api.table.ColumnMetadata;
 import org.apache.paimon.web.api.table.TableManager;
 import org.apache.paimon.web.api.table.TableMetadata;
@@ -89,6 +91,207 @@ public class TableController {
     }
 
     /**
+     * Adds a column to the table.
+     *
+     * @param tableInfo The information of the table, including the catalog name, database name,
+     *     table name, and table columns.
+     * @return A response indicating the success or failure of the operation.
+     */
+    @PostMapping("/addColumn")
+    public R<Void> addColumn(@RequestBody TableInfo tableInfo) {
+        try {
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            List<TableColumn> tableColumns = tableInfo.getTableColumns();
+            List<AlterTableEntity> entityList = new ArrayList<>();
+            for (TableColumn tableColumn : tableColumns) {
+                AlterTableEntity alterTableEntity =
+                        AlterTableEntity.builder()
+                                .columnName(tableColumn.getField())
+                                .type(DataTypeConvertUtils.convert(tableColumn.getDataType()))
+                                .comment(tableColumn.getComment())
+                                .kind(OperatorKind.ADD_COLUMN)
+                                .build();
+                entityList.add(alterTableEntity);
+            }
+            TableManager.alterTable(
+                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
+            return R.succeed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.TABLE_ADD_COLUMN_ERROR);
+        }
+    }
+
+    /**
+     * Drops a column from a table.
+     *
+     * @param tableInfo The information of the table.
+     * @return The result of the operation.
+     */
+    @PostMapping("/dropColumn")
+    public R<Void> dropColumn(@RequestBody TableInfo tableInfo) {
+        try {
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            List<TableColumn> tableColumns = tableInfo.getTableColumns();
+            List<AlterTableEntity> entityList = new ArrayList<>();
+            for (TableColumn tableColumn : tableColumns) {
+                AlterTableEntity alterTableEntity =
+                        AlterTableEntity.builder()
+                                .columnName(tableColumn.getField())
+                                .kind(OperatorKind.DROP_COLUMN)
+                                .build();
+                entityList.add(alterTableEntity);
+            }
+            TableManager.alterTable(
+                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
+            return R.succeed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.TABLE_DROP_COLUMN_ERROR);
+        }
+    }
+
+    /**
+     * Renames a column in a table.
+     *
+     * @param tableInfo The information of the table.
+     * @return The result of the operation.
+     */
+    @PostMapping("/renameColumn")
+    public R<Void> renameColumn(@RequestBody TableInfo tableInfo) {
+        try {
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            List<TableColumn> tableColumns = tableInfo.getTableColumns();
+
+            if (tableColumns.size() != 2) {
+                throw new IllegalArgumentException("Expected exactly 2 TableColumn objects");
+            }
+
+            String columnName = tableColumns.get(0).getField();
+            String newColumnName = tableColumns.get(1).getField();
+
+            AlterTableEntity alterTableEntity =
+                    AlterTableEntity.builder()
+                            .columnName(columnName)
+                            .newColumn(newColumnName)
+                            .kind(OperatorKind.RENAME_COLUMN)
+                            .build();
+
+            List<AlterTableEntity> entityList = new ArrayList<>();
+            entityList.add(alterTableEntity);
+
+            TableManager.alterTable(
+                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
+            return R.succeed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.TABLE_RENAME_COLUMN_ERROR);
+        }
+    }
+
+    /**
+     * Updates the data type of columns in a table.
+     *
+     * @param tableInfo The information of the table.
+     * @return The result of the operation.
+     */
+    @PostMapping("/updateColumnType")
+    public R<Void> updateColumnType(@RequestBody TableInfo tableInfo) {
+        try {
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            List<TableColumn> tableColumns = tableInfo.getTableColumns();
+            List<AlterTableEntity> entityList = new ArrayList<>();
+            for (TableColumn tableColumn : tableColumns) {
+                AlterTableEntity alterTableEntity =
+                        AlterTableEntity.builder()
+                                .columnName(tableColumn.getField())
+                                .type(DataTypeConvertUtils.convert(tableColumn.getDataType()))
+                                .kind(OperatorKind.UPDATE_COLUMN_TYPE)
+                                .build();
+                entityList.add(alterTableEntity);
+            }
+            TableManager.alterTable(
+                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
+            return R.succeed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.TABLE_UPDATE_COLUMN_TYPE_ERROR);
+        }
+    }
+
+    /**
+     * Updates the comments of columns in a table.
+     *
+     * @param tableInfo The information of the table.
+     * @return The result of the operation.
+     */
+    @PostMapping("/updateColumnComment")
+    public R<Void> updateColumnComment(@RequestBody TableInfo tableInfo) {
+        try {
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            List<TableColumn> tableColumns = tableInfo.getTableColumns();
+            List<AlterTableEntity> entityList = new ArrayList<>();
+            for (TableColumn tableColumn : tableColumns) {
+                AlterTableEntity alterTableEntity =
+                        AlterTableEntity.builder()
+                                .columnName(tableColumn.getField())
+                                .comment(tableColumn.getComment())
+                                .kind(OperatorKind.UPDATE_COLUMN_COMMENT)
+                                .build();
+                entityList.add(alterTableEntity);
+            }
+            TableManager.alterTable(
+                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
+            return R.succeed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.TABLE_UPDATE_COLUMN_COMMENT_ERROR);
+        }
+    }
+
+    /**
+     * Adds options to a table.
+     *
+     * @param tableInfo An object containing table information.
+     * @return If the options are successfully added, returns a successful result object. If an
+     *     exception occurs, returns a result object with an error status.
+     */
+    @PostMapping("/addOption")
+    public R<Void> addOption(@RequestBody TableInfo tableInfo) {
+        try {
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            Map<String, String> tableOptions = tableInfo.getTableOptions();
+            TableManager.setOptions(
+                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), tableOptions);
+            return R.succeed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.TABLE_ADD_OPTION_ERROR);
+        }
+    }
+
+    /**
+     * Endpoint for deleting a table option.
+     *
+     * @param tableInfo The table information containing the catalog, database, table name, and
+     *     table options.
+     * @return A response indicating the success or failure of the operation.
+     */
+    @PostMapping("/removeOption")
+    public R<Void> deleteOption(@RequestBody TableInfo tableInfo) {
+        try {
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            Map<String, String> tableOptions = tableInfo.getTableOptions();
+            TableManager.removeOptions(
+                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), tableOptions);
+            return R.succeed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.TABLE_REMOVE_OPTION_ERROR);
+        }
+    }
+
+    /**
      * Handler method for the "/getAllTables" endpoint. Retrieves information about all tables and
      * returns a response containing the table details.
      *
@@ -99,101 +302,61 @@ public class TableController {
         List<TableInfo> tableInfoList = new ArrayList<>();
         List<CatalogInfo> catalogInfoList = catalogService.list();
         if (catalogInfoList.size() > 0) {
-            catalogInfoList.forEach(
-                    item -> {
-                        Catalog catalog = CatalogUtils.getCatalog(item);
-                        List<String> databaseList = DatabaseManager.listDatabase(catalog);
-                        if (databaseList.size() > 0) {
-                            databaseList.forEach(
-                                    db -> {
-                                        try {
-                                            List<String> tables =
-                                                    TableManager.listTables(catalog, db);
-                                            if (tables.size() > 0) {
-                                                tables.forEach(
-                                                        t -> {
-                                                            try {
-                                                                Table table =
-                                                                        TableManager.getTable(
-                                                                                catalog, db, t);
-                                                                if (table != null) {
-                                                                    List<String> primaryKeys =
-                                                                            table.primaryKeys();
-                                                                    List<DataField> fields =
-                                                                            table.rowType()
-                                                                                    .getFields();
-                                                                    List<TableColumn> tableColumns =
-                                                                            new ArrayList<>();
-                                                                    if (fields.size() > 0) {
-                                                                        fields.forEach(
-                                                                                field -> {
-                                                                                    TableColumn
-                                                                                                    .TableColumnBuilder
-                                                                                            builder =
-                                                                                                    TableColumn
-                                                                                                            .builder()
-                                                                                                            .field(
-                                                                                                                    field
-                                                                                                                            .name())
-                                                                                                            .dataType(
-                                                                                                                    DataTypeConvertUtils
-                                                                                                                            .fromPaimonType(
-                                                                                                                                    field
-                                                                                                                                            .type()))
-                                                                                                            .comment(
-                                                                                                                    field
-                                                                                                                            .description());
-                                                                                    if (primaryKeys
-                                                                                                            .size()
-                                                                                                    > 0
-                                                                                            && primaryKeys
-                                                                                                    .contains(
-                                                                                                            field
-                                                                                                                    .name())) {
-                                                                                        builder
-                                                                                                .isPK(
-                                                                                                        true);
-                                                                                    }
-                                                                                    tableColumns
-                                                                                            .add(
-                                                                                                    builder
-                                                                                                            .build());
-                                                                                });
-                                                                    }
-                                                                    TableInfo tableInfo =
-                                                                            TableInfo.builder()
-                                                                                    .catalogName(
-                                                                                            item
-                                                                                                    .getCatalogName())
-                                                                                    .databaseName(
-                                                                                            db)
-                                                                                    .tableName(
-                                                                                            table
-                                                                                                    .name())
-                                                                                    .partitionKey(
-                                                                                            table
-                                                                                                    .partitionKeys())
-                                                                                    .tableOptions(
-                                                                                            table
-                                                                                                    .options())
-                                                                                    .tableColumns(
-                                                                                            tableColumns)
-                                                                                    .build();
-                                                                    tableInfoList.add(tableInfo);
-                                                                }
-                                                            } catch (
-                                                                    Catalog.TableNotExistException
-                                                                            e) {
-                                                                throw new RuntimeException(e);
-                                                            }
-                                                        });
+            for (CatalogInfo item : catalogInfoList) {
+                Catalog catalog = CatalogUtils.getCatalog(item);
+                List<String> databaseList = DatabaseManager.listDatabase(catalog);
+                if (databaseList.size() > 0) {
+                    for (String db : databaseList) {
+                        try {
+                            List<String> tables = TableManager.listTables(catalog, db);
+                            if (tables.size() > 0) {
+                                for (String t : tables) {
+                                    try {
+                                        Table table = TableManager.getTable(catalog, db, t);
+                                        if (table != null) {
+                                            List<String> primaryKeys = table.primaryKeys();
+                                            List<DataField> fields = table.rowType().getFields();
+                                            List<TableColumn> tableColumns = new ArrayList<>();
+                                            if (fields.size() > 0) {
+                                                for (DataField field : fields) {
+                                                    TableColumn.TableColumnBuilder builder =
+                                                            TableColumn.builder()
+                                                                    .field(field.name())
+                                                                    .dataType(
+                                                                            DataTypeConvertUtils
+                                                                                    .fromPaimonType(
+                                                                                            field
+                                                                                                    .type()))
+                                                                    .comment(field.description());
+                                                    if (primaryKeys.size() > 0
+                                                            && primaryKeys.contains(field.name())) {
+                                                        builder.isPK(true);
+                                                    }
+                                                    tableColumns.add(builder.build());
+                                                }
                                             }
-                                        } catch (Catalog.DatabaseNotExistException e) {
-                                            throw new RuntimeException(e);
+                                            TableInfo tableInfo =
+                                                    TableInfo.builder()
+                                                            .catalogName(item.getCatalogName())
+                                                            .databaseName(db)
+                                                            .tableName(table.name())
+                                                            .partitionKey(table.partitionKeys())
+                                                            .tableOptions(table.options())
+                                                            .tableColumns(tableColumns)
+                                                            .build();
+                                            tableInfoList.add(tableInfo);
                                         }
-                                    });
+                                    } catch (Catalog.TableNotExistException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            }
+                        } catch (Catalog.DatabaseNotExistException e) {
+                            throw new RuntimeException(e);
                         }
-                    });
+                    }
+                }
+            }
         }
         return R.succeed(tableInfoList);
     }

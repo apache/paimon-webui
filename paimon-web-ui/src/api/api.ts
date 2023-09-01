@@ -46,9 +46,9 @@ export const getAllCatalogs = async () => {
     }
 }
 
-export const createDatabase = async (databaseProp: Prop.DatabaseProp) => {
+export const createDatabase = async (databaseProp: DatabaseItem) => {
     try {
-        return await http.httpPost<Result<any>, Prop.DatabaseProp>(API_ENDPOINTS.CREATE_DATABASE, databaseProp);
+        return await http.httpPost<Result<any>, DatabaseItem>(API_ENDPOINTS.CREATE_DATABASE, databaseProp);
     } catch (error) {
         console.error('Failed to create database:', error);
     }
@@ -62,9 +62,9 @@ export const getAllDatabases = async () => {
     }
 }
 
-export const createTable = async (databaseProp: TableItem) => {
+export const createTable = async (tableProp: TableItem) => {
     try {
-        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.CREATE_TABLE, databaseProp);
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.CREATE_TABLE, tableProp);
     } catch (error) {
         console.error('Failed to create table:', error);
     }
@@ -78,6 +78,62 @@ export const getAllTables = async () => {
     }
 }
 
+export const addColumn = async (tableProp: TableItem) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.ADD_COLUMN, tableProp);
+    } catch (error) {
+        console.error('Failed to add column:', error);
+    }
+};
+
+export const dropColumn = async (tableProp: TableItem) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.DROP_COLUMN, tableProp);
+    } catch (error) {
+        console.error('Failed to drop column:', error);
+    }
+};
+
+export const renameColumn = async (tableProp: TableItem) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.RENAME_COLUMN, tableProp);
+    } catch (error) {
+        console.error('Failed to rename column:', error);
+    }
+};
+
+export const updateColumnType = async (tableProp: TableItem) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.UPDATE_COLUMN_TYPE, tableProp);
+    } catch (error) {
+        console.error('Failed to update column type:', error);
+    }
+};
+
+export const updateColumnComment = async (tableProp: TableItem) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.UPDATE_COLUMN_COMMENT, tableProp);
+    } catch (error) {
+        console.error('Failed to update column comment:', error);
+    }
+};
+
+export const addOption = async (tableProp: TableItem) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.ADD_OPTION, tableProp);
+    } catch (error) {
+        console.error('Failed to add option:', error);
+    }
+};
+
+export const removeOption = async (tableProp: TableItem) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.REMOVE_OPTION, tableProp);
+    } catch (error) {
+        console.error('Failed to remove option:', error);
+    }
+};
+
 const Api = {
     createFileSystemCatalog,
     createHiveCatalog,
@@ -86,6 +142,13 @@ const Api = {
     getAllDatabases,
     createTable,
     getAllTables,
+    addColumn,
+    dropColumn,
+    renameColumn,
+    updateColumnType,
+    updateColumnComment,
+    addOption,
+    removeOption
 }
 
 export default Api;

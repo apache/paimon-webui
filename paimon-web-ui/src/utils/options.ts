@@ -15,26 +15,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  flex: 1;
-  height: calc(100vh - 70px);
-  padding: 10px 20px 0 20px;
-}
+const options = [
+    { value: 'INT', label: 'INT' },
+    { value: 'TINYINT', label: 'TINYINT' },
+    { value: 'SMALLINT', label: 'SMALLINT' },
+    { value: 'BIGINT', label: 'BIGINT' },
+    { value: 'STRING', label: 'STRING' },
+    { value: 'DOUBLE', label: 'DOUBLE' },
+    { value: 'BOOLEAN', label: 'BOOLEAN' },
+    { value: 'DATE', label: 'DATE' },
+    { value: 'TIME', label: 'TIME' },
+    { value: 'TIMESTAMP', label: 'TIMESTAMP' },
+    { value: 'BYTES', label: 'BYTES' },
+    { value: 'FLOAT', label: 'FLOAT' },
+    { value: 'DECIMAL', label: 'DECIMAL' },
+];
 
-.empty-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 350px);
-  width: 100vw;
-  flex-direction: column;
-}
-
-.el-empty__description {
-  font-size: 14px;
-  color: #888;
-}
-
-.breadcrumb {
-  height: 28px;
-}
+export default options;

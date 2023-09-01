@@ -17,6 +17,7 @@ under the License. */
 
 export type DatabaseItem = {
     databaseName: string,
-    catalogId: number,
+    catalogId: number | null,
+    catalogName: string,
     description: string,
 }

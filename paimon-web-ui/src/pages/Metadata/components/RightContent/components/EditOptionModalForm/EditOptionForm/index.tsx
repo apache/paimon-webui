@@ -15,37 +15,43 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Form } from '@douyinfe/semi-ui';
+import {Form} from "@douyinfe/semi-ui";
 import {useTranslation} from "react-i18next";
 
+
 // @ts-ignore
-const DatabaseForm = ({ getFormApi }) => {
+const EditOptionForm = ({ getFormApi, selectedOptionKey, selectedOptionValue}) => {
     const { t } = useTranslation();
 
     return(
         <>
             <Form
                 getFormApi={getFormApi}
+                initValues={{
+                    key: selectedOptionKey,
+                    value: selectedOptionValue
+                }}
             >
                 {
                     ({}) => (
                         <>
                             <Form.Input
-                                field="databaseName"
-                                label={t('metadata.database-name')}
+                                field="key"
+                                label={t('metadata.add-config-key')}
+                                style={{ width: "100%" }}
+                                disabled={true}
+                            />
+
+                            <Form.Input
+                                field="value"
+                                label={t('metadata.add-config-value')}
                                 trigger='blur'
                                 rules={[
                                     { required: true, message: t('metadata.message') },
                                 ]}
                                 style={{ width: "100%" }}
-                                showClear/>
-
-                            <Form.TextArea
-                                field="description"
-                                label={t('metadata.description')}
-                                style={{ width: "100%" }}
-                                placeholder={t('metadata.text-area-description')}
-                                showClear/>
+                                showClear
+                            />
                         </>
                     )
                 }
@@ -54,4 +60,4 @@ const DatabaseForm = ({ getFormApi }) => {
     );
 }
 
-export default DatabaseForm;
+export default EditOptionForm;

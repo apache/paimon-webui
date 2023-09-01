@@ -33,5 +33,12 @@ export const API_ENDPOINTS = {
     // table
     CREATE_TABLE: '/table/createTable',
     GET_ALL_TABLES: '/table/getAllTables',
+    ADD_COLUMN: '/table/addColumn',
+    DROP_COLUMN: '/table/dropColumn',
+    RENAME_COLUMN: '/table/renameColumn',
+    UPDATE_COLUMN_TYPE: '/table/updateColumnType',
+    UPDATE_COLUMN_COMMENT: '/table/updateColumnComment',
+    ADD_OPTION: '/table/addOption',
+    REMOVE_OPTION: '/table/removeOption',
 
 };

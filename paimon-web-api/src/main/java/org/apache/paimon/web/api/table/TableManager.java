@@ -178,8 +178,8 @@ public class TableManager {
 
         Map<String, String> filteredOptions = handleOptions(options);
         for (String key : filteredOptions.keySet()) {
-            SchemaChange addOption = SchemaChange.removeOption(key);
-            schemaChanges.add(addOption);
+            SchemaChange removeOption = SchemaChange.removeOption(key);
+            schemaChanges.add(removeOption);
         }
 
         catalog.alterTable(identifier, schemaChanges, false);
@@ -194,52 +194,44 @@ public class TableManager {
     }
 
     private static SchemaChange renameColumn(
-            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
-            throws Catalog.TableNotExistException, IOException {
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity) {
         ParameterValidationUtil.checkNotNull(
                 new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
                 new SimpleEntry<>(entity.getNewColumn(), () -> "New column name"),
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
                 new SimpleEntry<>(tableName, () -> "Table name"));
-        validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.renameColumn(entity.getColumnName(), entity.getNewColumn());
     }
 
     private static SchemaChange dropColumn(
-            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
-            throws Catalog.TableNotExistException, IOException {
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity) {
         ParameterValidationUtil.checkNotNull(
                 new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
                 new SimpleEntry<>(tableName, () -> "Table name"));
-        validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.dropColumn(entity.getColumnName());
     }
 
     private static SchemaChange updateColumnComment(
-            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
-            throws Catalog.TableNotExistException, IOException {
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity) {
         ParameterValidationUtil.checkNotNull(
                 new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
                 new SimpleEntry<>(tableName, () -> "Table name"));
-        validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.updateColumnComment(entity.getColumnName(), entity.getComment());
     }
 
     private static SchemaChange updateColumnType(
-            Catalog catalog, String dbName, String tableName, AlterTableEntity entity)
-            throws Catalog.TableNotExistException, IOException {
+            Catalog catalog, String dbName, String tableName, AlterTableEntity entity) {
         ParameterValidationUtil.checkNotNull(
                 new SimpleEntry<>(entity.getColumnName(), () -> "Column name"),
                 new SimpleEntry<>(entity.getType(), () -> "Column type"),
                 new SimpleEntry<>(catalog, () -> "Catalog"),
                 new SimpleEntry<>(dbName, () -> "Database name"),
                 new SimpleEntry<>(tableName, () -> "Table name"));
-        validateColumnExistence(catalog, dbName, tableName, entity.getColumnName());
         return SchemaChange.updateColumnType(entity.getColumnName(), entity.getType());
     }
 
@@ -356,7 +348,7 @@ public class TableManager {
 
         List<SchemaTableMetadata> schemas = new ArrayList<>();
 
-        Table table = getTable(catalog, dbName, "`" + tableName + "$" + SCHEMAS + "`");
+        Table table = getTable(catalog, dbName, tableName + "$" + SCHEMAS);
 
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(

@@ -1,0 +1,79 @@
+/* Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License. */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 70px - 28px - 52px - 12px);
+  overflow: auto;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 70px - 28px - 52px - 12px);
+  margin-top: 15px;
+}
+
+.group-title {
+  position: relative;
+  padding-left: 20px;
+  height: 40px;
+  background-color: rgba(var(--semi-grey-8), .05);
+  display: flex;
+  align-items: center;
+}
+
+.group-title::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  width: 4px;
+  height: 18px;
+  background-color: rgba(var(--semi-blue-5), 1);
+}
+
+.table-content {
+  overflow: auto;
+  flex: 1;
+}
+
+.group-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.group-title-text {
+  padding-left: 2px;
+}
+
+.icon-container {
+  margin-right: 60px; /* Adjust as needed */
+}
+
+.iconPlus:hover {
+  border: 1px solid #d3d3d3; /* Gray border when hovering over the "+" icon */
+  color: #d3d3d3; /* Gray color when hovering over the "+" icon */
+  font-size: 20px; /* Increase the size of the "+" icon when hovering */
+  background: #fff; /* White background when hovering over the "+" icon */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+  border-radius: 50%;
+}
+
+
+

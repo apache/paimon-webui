@@ -18,8 +18,21 @@
 
 package org.apache.paimon.web.server.util;
 
+import org.apache.paimon.types.BigIntType;
+import org.apache.paimon.types.BooleanType;
 import org.apache.paimon.types.DataType;
 import org.apache.paimon.types.DataTypes;
+import org.apache.paimon.types.DateType;
+import org.apache.paimon.types.DecimalType;
+import org.apache.paimon.types.DoubleType;
+import org.apache.paimon.types.FloatType;
+import org.apache.paimon.types.IntType;
+import org.apache.paimon.types.SmallIntType;
+import org.apache.paimon.types.TimeType;
+import org.apache.paimon.types.TimestampType;
+import org.apache.paimon.types.TinyIntType;
+import org.apache.paimon.types.VarBinaryType;
+import org.apache.paimon.types.VarCharType;
 
 /** data type convert util. */
 public class DataTypeConvertUtils {
@@ -58,31 +71,31 @@ public class DataTypeConvertUtils {
     }
 
     public static String fromPaimonType(DataType dataType) {
-        if (dataType.equals(DataTypes.INT())) {
+        if (dataType instanceof IntType) {
             return "INT";
-        } else if (dataType.equals(DataTypes.TINYINT())) {
+        } else if (dataType instanceof TinyIntType) {
             return "TINYINT";
-        } else if (dataType.equals(DataTypes.SMALLINT())) {
+        } else if (dataType instanceof SmallIntType) {
             return "SMALLINT";
-        } else if (dataType.equals(DataTypes.BIGINT())) {
+        } else if (dataType instanceof BigIntType) {
             return "BIGINT";
-        } else if (dataType.equals(DataTypes.STRING())) {
+        } else if (dataType instanceof VarCharType) {
             return "STRING";
-        } else if (dataType.equals(DataTypes.DOUBLE())) {
+        } else if (dataType instanceof DoubleType) {
             return "DOUBLE";
-        } else if (dataType.equals(DataTypes.BOOLEAN())) {
+        } else if (dataType instanceof BooleanType) {
             return "BOOLEAN";
-        } else if (dataType.equals(DataTypes.DATE())) {
+        } else if (dataType instanceof DateType) {
             return "DATE";
-        } else if (dataType.equals(DataTypes.TIME())) {
+        } else if (dataType instanceof TimeType) {
             return "TIME";
-        } else if (dataType.equals(DataTypes.TIMESTAMP())) {
+        } else if (dataType instanceof TimestampType) {
             return "TIMESTAMP";
-        } else if (dataType.equals(DataTypes.BYTES())) {
+        } else if (dataType instanceof VarBinaryType) {
             return "BYTES";
-        } else if (dataType.equals(DataTypes.FLOAT())) {
+        } else if (dataType instanceof FloatType) {
             return "FLOAT";
-        } else if (dataType.equals(DataTypes.DECIMAL(38, 0))) {
+        } else if (dataType instanceof DecimalType) {
             return "DECIMAL";
         } else {
             return "UNKNOWN";

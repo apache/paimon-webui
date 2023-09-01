@@ -18,10 +18,12 @@ under the License. */
 import TableTab from "@pages/Metadata/components/RightContent/components/MainContent/Table";
 import { Breadcrumb } from '@douyinfe/semi-ui';
 import {useTableStore} from "@src/store/tableStore.ts";
+import { useTranslation } from 'react-i18next';
 import styles from "./right-content.module.less"
 import emptyImg from "@assets/img/empty.png";
 
 const MetadataRightContent = () => {
+    const { t } = useTranslation()
     const tableNodeClicked = useTableStore((state) => state.tableNodeClicked);
 
     if (!tableNodeClicked) {
@@ -31,7 +33,7 @@ const MetadataRightContent = () => {
                     <img src={emptyImg}/>
                 </div>
                 <div className={styles['el-empty__description']}>
-                    <p>请在左侧选择 Table</p>
+                    <p>{t('metadata.empty-description-meta')}</p>
                 </div>
             </div>
         )
@@ -39,7 +41,7 @@ const MetadataRightContent = () => {
 
     return(
         <div className={styles.container}>
-            <Breadcrumb separator={'>'} compact={false}>
+            <Breadcrumb  className={styles.breadcrumb}  separator={'>'} compact={false}>
                 <Breadcrumb.Item>{tableNodeClicked.split("#")[0]}</Breadcrumb.Item>
                 <Breadcrumb.Item>{tableNodeClicked.split("#")[1]}</Breadcrumb.Item>
                 <Breadcrumb.Item>{tableNodeClicked.split("#")[2]}</Breadcrumb.Item>

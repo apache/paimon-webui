@@ -30,5 +30,5 @@ export type TableItem = {
     description: string | null,
     tableColumns: TableColumn[],
     partitionKey: [],
-    tableOptions: Map<string, string>,
+    tableOptions: Map<string, string> | { [key: string]: string },
 }

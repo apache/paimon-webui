@@ -15,26 +15,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  flex: 1;
-  height: calc(100vh - 70px);
-  padding: 10px 20px 0 20px;
+import { EditOutlined } from '@ant-design/icons';
+import {Button} from "@douyinfe/semi-ui";
+import styles from "./circle-edit-btn.module.less";
+
+// @ts-ignore
+const CircleEditBtn = ({ onClick }) => {
+    return(
+        <Button
+            className={styles['edit-btn']}
+            icon={
+                <EditOutlined style={{ color: '#000', fontSize: '16px' }} />}
+            onClick={onClick} />
+    );
 }
 
-.empty-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 350px);
-  width: 100vw;
-  flex-direction: column;
-}
-
-.el-empty__description {
-  font-size: 14px;
-  color: #888;
-}
-
-.breadcrumb {
-  height: 28px;
-}
+export default CircleEditBtn;

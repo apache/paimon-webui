@@ -17,27 +17,26 @@ under the License. */
 
 import React, {useState} from "react";
 import { Modal } from '@douyinfe/semi-ui';
-import DatabaseForm from "@pages/Metadata/components/LeftContent/components/DatabaseModalForm/DatabaseForm";
 import {useTranslation} from "react-i18next";
 import {auto} from "@popperjs/core";
+import EditColumnForm from "@pages/Metadata/components/RightContent/components/EditColumnModalForm/EditColumnForm";
 
-type DatabaseModalFormProps = {
+type EditColumnModalFormProps = {
     visible: boolean;
     onClose: () => void;
     onOk: (formApi: any) => void;
-    catalogName: string | null;
+    selectedColumnName: string | null;
+    selectedColumnDataType: string | null;
+    selectedColumnDescription: string | null;
 };
 
-const DatabaseModalForm: React.FC<DatabaseModalFormProps> = ({ visible , onClose, onOk, catalogName }) => {
+const EditColumnModalForm: React.FC<EditColumnModalFormProps> =
+    ({ visible , onClose, onOk, selectedColumnName, selectedColumnDataType, selectedColumnDescription  }) => {
     const [formApi, setFormApi] = useState(null);
     const { t } = useTranslation();
 
     const getFormApi = (api: any) => {
-        const formData = {
-            ... api,
-            catalogName,
-        }
-        setFormApi(formData);
+        setFormApi(api);
     };
 
     const handleOkClick = async () => {
@@ -47,20 +46,24 @@ const DatabaseModalForm: React.FC<DatabaseModalFormProps> = ({ visible , onClose
 
     return(
         <Modal
-            title = {t('metadata.create-database')}
+            title = {t('metadata.modify-column')}
             visible = {visible}
             onCancel= {onClose}
             maskClosable={false}
-            okText={t('metadata.submit')}
+            okText={t('metadata.modify')}
             cancelText={t('metadata.cancel')}
-            width={'500px'}
+            width={'562px'}
             height={auto}
             onOk={() => handleOkClick()}
         >
-            <DatabaseForm getFormApi={getFormApi}/>
+            <EditColumnForm
+                getFormApi={getFormApi}
+                selectedColumnName={selectedColumnName}
+                selectedColumnDataType={selectedColumnDataType}
+                selectedColumnDescription={selectedColumnDescription}
+            />
         </Modal>
     );
 }
 
-export default DatabaseModalForm;
-
+export default EditColumnModalForm;

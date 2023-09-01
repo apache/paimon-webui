@@ -23,7 +23,7 @@ import i18n from 'i18next';
 
 type Store = {
     databaseItemList: DatabaseItem[];
-    createDatabase: (databaseProp: Prop.DatabaseProp) => Promise<void>;
+    createDatabase: (databaseProp: DatabaseItem) => Promise<void>;
     fetchDatabases: () => Promise<void>;
 };
 
@@ -53,7 +53,8 @@ export const useDatabaseStore = create<Store>((set) => ({
                 const newDatabaseItemList = result.data.map((item) => {
                     return {
                         databaseName: item.databaseName,
-                        catalogId: item.catalogId,
+                        catalogName: item.catalogName,
+                        catalogId: null,
                         description: item.description,
                     };
                 });

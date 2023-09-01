@@ -90,6 +90,7 @@ public class DatabaseController {
                                             DatabaseInfo.builder()
                                                     .databaseName(databaseName)
                                                     .catalogId(item.getId())
+                                                    .catalogName(item.getCatalogName())
                                                     .description("")
                                                     .build();
                                     databaseInfoList.add(info);
@@ -107,7 +108,7 @@ public class DatabaseController {
      */
     private CatalogInfo getCatalogInfo(DatabaseInfo databaseInfo) {
         LambdaQueryWrapper<CatalogInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CatalogInfo::getId, databaseInfo.getCatalogId());
+        queryWrapper.eq(CatalogInfo::getCatalogName, databaseInfo.getCatalogName());
         return catalogService.getOne(queryWrapper);
     }
 

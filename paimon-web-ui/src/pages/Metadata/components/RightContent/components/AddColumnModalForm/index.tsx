@@ -17,27 +17,22 @@ under the License. */
 
 import React, {useState} from "react";
 import { Modal } from '@douyinfe/semi-ui';
-import DatabaseForm from "@pages/Metadata/components/LeftContent/components/DatabaseModalForm/DatabaseForm";
 import {useTranslation} from "react-i18next";
 import {auto} from "@popperjs/core";
+import AddColumnForm from "@pages/Metadata/components/RightContent/components/AddColumnModalForm/AddColumnForm";
 
-type DatabaseModalFormProps = {
+type AddColumnModalFormProps = {
     visible: boolean;
     onClose: () => void;
     onOk: (formApi: any) => void;
-    catalogName: string | null;
 };
 
-const DatabaseModalForm: React.FC<DatabaseModalFormProps> = ({ visible , onClose, onOk, catalogName }) => {
+const AddColumnModalForm: React.FC<AddColumnModalFormProps> = ({ visible , onClose, onOk }) => {
     const [formApi, setFormApi] = useState(null);
     const { t } = useTranslation();
 
     const getFormApi = (api: any) => {
-        const formData = {
-            ... api,
-            catalogName,
-        }
-        setFormApi(formData);
+        setFormApi(api);
     };
 
     const handleOkClick = async () => {
@@ -47,20 +42,19 @@ const DatabaseModalForm: React.FC<DatabaseModalFormProps> = ({ visible , onClose
 
     return(
         <Modal
-            title = {t('metadata.create-database')}
+            title = {t('metadata.add-column')}
             visible = {visible}
             onCancel= {onClose}
             maskClosable={false}
             okText={t('metadata.submit')}
             cancelText={t('metadata.cancel')}
-            width={'500px'}
+            width={'602px'}
             height={auto}
             onOk={() => handleOkClick()}
         >
-            <DatabaseForm getFormApi={getFormApi}/>
+            <AddColumnForm getFormApi={getFormApi}/>
         </Modal>
     );
 }
 
-export default DatabaseModalForm;
-
+export default AddColumnModalForm;

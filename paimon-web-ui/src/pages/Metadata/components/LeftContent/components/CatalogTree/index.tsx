@@ -30,6 +30,7 @@ import CatalogIconMoreDropdown from "@components/IconMoreDropdown/CatalogIconMor
 import DatabaseIconMoreDropdown from "@components/IconMoreDropdown/DatabaseIconMoreDropdown";
 import TableIconMoreDropdown from "@components/IconMoreDropdown/TableIconMoreDropdown";
 import styles from "./catalog-tree.module.less"
+import {DatabaseItem} from "@src/types/Database/data";
 
 type TreeDataItem = {
     label: string;
@@ -37,7 +38,7 @@ type TreeDataItem = {
     key: string;
     type: "catalog" | "database" | "table";
     catalogId: number;
-    parentId?: number;
+    parentId?: string;
     children?: TreeDataItem[];
 };
 
@@ -74,13 +75,18 @@ const CatalogTree = () => {
 
     useEffect(() => {
         // Fetch the catalog data when the component mounts
-        fetchTables();
-    }, [fetchTables]);
+        fetchCatalogData();
+    }, [fetchCatalogData]);
 
     useEffect(() => {
         // Fetch the catalog data when the component mounts
         fetchDatabases();
     }, [fetchDatabases]);
+
+    useEffect(() => {
+        // Fetch the catalog data when the component mounts
+        fetchTables();
+    }, [fetchTables]);
 
     const handleMouseEnter = (key: any) => {
         setHoveredNode(key);
@@ -90,13 +96,13 @@ const CatalogTree = () => {
         setHoveredNode(null);
     };
 
-    const handleOpenModal = (type: "catalog" | "database" | "table",  name: string, parentId?: number) => {
+    const handleOpenModal = (type: "catalog" | "database" | "table",  name: string, parentId?: string) => {
         if (type === "catalog" || type === "database") {
             if (type === "catalog") {
                 setSelectedCatalogName(name);
             } else if (type === "database") {
                 const databaseItem =
-                    databaseItemList.find(item => item.databaseName === name && item.catalogId === parentId);
+                    databaseItemList.find(item => item.databaseName === name && item.catalogName === parentId);
                 if (databaseItem) {
                     const catalogItem = catalogItemList.find(item => item.id === databaseItem.catalogId);
                     if (catalogItem) {
@@ -121,24 +127,20 @@ const CatalogTree = () => {
     };
 
     useEffect(() => {
-        // Fetch the catalog data when the component mounts
-        fetchCatalogData();
-    }, [fetchCatalogData]);
-
-    useEffect(() => {
         // Update treeData when catalogItemList changes
         const transformedData = catalogItemList.map(item => ({
             label: item.catalogName,
             value: item.catalogName,
             type: "catalog" as "catalog",
             catalogId: item.id,
-            key: item.id.toString(),
+            key: item.catalogName,
             children: databaseItemList
-                .filter(dbItem => dbItem.catalogId === item.id)
+                .filter(dbItem => dbItem.catalogName === item.catalogName)
                 .map(dbItem => {
-                    const databaseKey = item.id.toString() + "-" + dbItem.databaseName;
+                    const databaseKey = item.catalogName + "-" + dbItem.databaseName;
                     const tableChildren = tableItemList
-                        .filter(tableItem => tableItem.catalogName === item.catalogName && tableItem.databaseName === dbItem.databaseName)
+                        .filter(tableItem =>
+                            tableItem.catalogName === item.catalogName && tableItem.databaseName === dbItem.databaseName)
                         .map(tableItem => ({
                             label: tableItem.tableName,
                             value: tableItem.tableName,
@@ -151,7 +153,7 @@ const CatalogTree = () => {
                         value: dbItem.databaseName,
                         type: "database" as "database",
                         catalogId: item.id,
-                        parentId: item.id,
+                        parentId: item.catalogName,
                         key: databaseKey,
                         children: tableChildren
                     };
@@ -164,12 +166,14 @@ const CatalogTree = () => {
         return new Promise<void>((resolve, reject) => {
             formApi
                 .validate()
-                .then((values: any) => {
-                    const formData = values;
-                    const databaseProp: Prop.DatabaseProp = {
-                        databaseName: formData.databaseName,
-                        catalogId: formData.catalogId,
-                        description: formData.description
+                .then(() => {
+                    const values = formApi.getValues();
+                    const catalogName = formApi.catalogName;
+                    const databaseProp: DatabaseItem = {
+                        databaseName: values.databaseName,
+                        catalogId: null,
+                        catalogName: catalogName,
+                        description: values.description
                     };
                     createDatabase(databaseProp)
                         .then(() => {
@@ -249,7 +253,6 @@ const CatalogTree = () => {
                             setConfigs([]);
                             reject(error);
                         });
-                    console.log(tableProp)
                 })
                 .catch((errors: any) => {
                     console.log(errors);
@@ -374,12 +377,21 @@ const CatalogTree = () => {
                 onSelect={onTreeNodeClick}
                 searchPlaceholder={t('common.filter')}
                 searchRender={({ prefix, ...restProps }) => (
-                    <Input suffix={<IconSearch className={styles['catalog-tree-input-icon']}/>} {...restProps} className={styles['catalog-tree-input']}></Input>
+                    <Input
+                        suffix={<IconSearch className={styles['catalog-tree-input-icon']}/>}
+                        {...restProps}
+                        className={styles['catalog-tree-input']}>
+                    </Input>
                 )}
                 renderFullLabel={renderLabel}
             />
             {showModal && createType  === "catalog" && (
-                <DatabaseModalForm visible={showModal} onClose={handleCloseDatabaseModal} onOk={handleCreateDatabaseOk}/>
+                <DatabaseModalForm
+                    visible={showModal}
+                    onClose={handleCloseDatabaseModal}
+                    onOk={handleCreateDatabaseOk}
+                    catalogName={selectedCatalogName}
+                />
             )}
             {showModal && createType === "database" && (
                 <TableModalForm
@@ -387,7 +399,8 @@ const CatalogTree = () => {
                     onClose={handleCloseTableModal}
                     onOk={handleCreateTableOk}
                     catalogName={selectedCatalogName}
-                    databaseName={selectedDatabaseName}/>
+                    databaseName={selectedDatabaseName}
+                />
             )}
         </>
     );

@@ -20,9 +20,10 @@ import CatalogTree from "@pages/Metadata/components/LeftContent/components/Catal
 import { useState } from "react";
 import CatalogModalForm from "@pages/Metadata/components/LeftContent/components/CatalogModalForm";
 import {useCatalogStore} from "@src/store/catalogStore.ts";
-import styles from "./left-content.module.less";
 import { useTranslation } from 'react-i18next';
 import {useDatabaseStore} from "@src/store/databaseStore.ts";
+import {useTableStore} from "@src/store/tableStore.ts";
+import styles from "./left-content.module.less";
 
 
 const MetadataSidebar = () => {
@@ -32,6 +33,7 @@ const MetadataSidebar = () => {
     const createHiveCatalog = useCatalogStore(state => state.createHiveCatalog);
     const fetchCatalogData = useCatalogStore(state => state.fetchCatalogData);
     const fetchAllDatabases = useDatabaseStore(state => state.fetchDatabases);
+    const fetchTables = useTableStore(state => state.fetchTables);
 
     const handleOpenModal = () => {
         setShowModal(true);
@@ -63,6 +65,7 @@ const MetadataSidebar = () => {
                             .then(() => {
                                 fetchCatalogData();
                                 fetchAllDatabases();
+                                fetchTables();
                                 resolve();
                             })
                     } else {
@@ -70,6 +73,7 @@ const MetadataSidebar = () => {
                             .then(() => {
                                 fetchCatalogData();
                                 fetchAllDatabases();
+                                fetchTables();
                                 resolve();
                             })
                     }

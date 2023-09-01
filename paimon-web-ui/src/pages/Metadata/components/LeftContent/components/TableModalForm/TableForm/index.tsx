@@ -20,6 +20,7 @@ import {useTranslation} from "react-i18next";
 import {IconPlus, IconMinus} from "@douyinfe/semi-icons";
 import {useRef, useState} from "react";
 import {useTableStore} from "@src/store/tableStore.ts";
+import options from "@utils/options.ts";
 
 // @ts-ignore
 const TableForm = ({ getFormApi }) => {
@@ -41,7 +42,9 @@ const TableForm = ({ getFormApi }) => {
             formApiRef.current.setValue(`type${index}`, null);
             newInputs.splice(index, 1);
             setInputs(newInputs);
-            const newFieldOptions = newInputs.map((_, index) => formApiRef.current.getValue(`field${index}`));
+            const newFieldOptions =
+                newInputs.map((_, index) =>
+                    formApiRef.current.getValue(`field${index}`));
             setFieldOptions(newFieldOptions);
         }
     }
@@ -70,22 +73,6 @@ const TableForm = ({ getFormApi }) => {
             setConfigs(newConfigs);
         }
     }
-
-    const options = [
-        { value: 'INT', label: 'INT' },
-        { value: 'TINYINT', label: 'TINYINT' },
-        { value: 'SMALLINT', label: 'SMALLINT' },
-        { value: 'BIGINT', label: 'BIGINT' },
-        { value: 'STRING', label: 'STRING' },
-        { value: 'DOUBLE', label: 'DOUBLE' },
-        { value: 'BOOLEAN', label: 'BOOLEAN' },
-        { value: 'DATE', label: 'DATE' },
-        { value: 'TIME', label: 'TIME' },
-        { value: 'TIMESTAMP', label: 'TIMESTAMP' },
-        { value: 'BYTES', label: 'BYTES' },
-        { value: 'FLOAT', label: 'FLOAT' },
-        { value: 'DECIMAL', label: 'DECIMAL' },
-    ];
 
     return(
         <>
@@ -123,7 +110,7 @@ const TableForm = ({ getFormApi }) => {
                                 text={
                                     <div
                                         style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
-                                            color: inputs.length > 0 ? 'black' : 'lightgray',}}
+                                            color: inputs.length > 0 ? 'rgba(var(--semi-grey-9), 1)' : 'lightgray',}}
                                         onClick={handleAddInput}
                                     >
                                         <span>{t('metadata.form-group-add-column-ordinary')}</span>

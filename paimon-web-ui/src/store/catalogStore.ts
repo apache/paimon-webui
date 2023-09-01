@@ -20,6 +20,7 @@ import {persist} from "zustand/middleware";
 import {CatalogItemList} from "@src/types/Catalog/data";
 import Api from "@api/api.ts";
 import {Toast} from "@douyinfe/semi-ui";
+import i18n from 'i18next';
 
 type Store = {
     catalogItemList: CatalogItemList;
@@ -38,14 +39,14 @@ export const useCatalogStore = create<Store>()(persist(
                     throw new Error('No response from createFileSystemCatalog');
                 }
                 if (response.code === 200) {
-                    Toast.success('Catalog created successfully!');
+                    Toast.success(i18n.t('metadata.create-catalog-success'));
                 } else {
                     console.error('Failed to create catalog:', response.msg);
-                    Toast.error('Failed to create catalog:' +  response.msg);
+                    Toast.error(i18n.t('metadata.create-catalog-failed') +  response.msg);
                 }
             } catch (error) {
                 console.error('Failed to create catalog:', error);
-                Toast.error('Failed to create catalog:' + error);
+                Toast.error(i18n.t('metadata.create-database-failed') + error);
             }
         },
         createHiveCatalog: async (catalogProp) => {
@@ -55,14 +56,14 @@ export const useCatalogStore = create<Store>()(persist(
                     throw new Error('No response from createFileSystemCatalog');
                 }
                 if (response.code === 200) {
-                    Toast.success('Catalog created successfully!');
+                    Toast.success(i18n.t('metadata.create-catalog-success'));
                 } else {
                     console.error('Failed to create catalog:', response.msg);
-                    Toast.error('Failed to create catalog:' +  response.msg);
+                    Toast.error(i18n.t('metadata.create-database-failed') +  response.msg);
                 }
             } catch (error) {
                 console.error('Failed to create catalog:', error);
-                Toast.error('Failed to create catalog:' + error);
+                Toast.error(i18n.t('metadata.create-database-failed') + error);
             }
         },
         fetchCatalogData: async () => {
