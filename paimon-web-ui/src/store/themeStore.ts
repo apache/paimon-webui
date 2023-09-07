@@ -15,36 +15,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.delete-btn-light {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50% !important;
-  overflow: hidden;
-  width: 32px !important;
-  height: 32px !important;
-  background-color:rgba(var(--semi-red-4), 1) !important;
-  color: #666 !important;
-}
+import { create } from 'zustand';
 
-.delete-btn-dark {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50% !important;
-  overflow: hidden;
-  width: 32px !important;
-  height: 32px !important;
-  background-color:rgba(var(--semi-red-5), 1) !important;
-  color: #666 !important;
-}
+type ThemeStore = {
+    dark: boolean;
+    switchMode: () => void;
+};
 
-.icon-dark {
-  color: #000 !important;
-  font-size: 16px;
-}
+export const useThemeStore = create<ThemeStore>((set) => ({
+    dark: false,
+    switchMode: () => set((state) => {
+        const updatedValue = !state.dark;
+        const body = document.body;
 
-.icon-light {
-  color: #fff !important;
-  font-size: 16px;
-}
+        if (updatedValue) {
+            body.setAttribute('theme-mode', 'dark');
+        } else {
+            body.removeAttribute('theme-mode');
+        }
+
+        return { dark: updatedValue };
+    }),
+}));

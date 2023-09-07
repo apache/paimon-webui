@@ -21,6 +21,9 @@ export type TableColumn = {
     comment: string | null,
     isPK: boolean,
     defaultValue: string | null,
+    isNullable: boolean,
+    length0: number,
+    length1: number,
 }
 
 export type TableItem = {

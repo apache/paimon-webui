@@ -24,11 +24,10 @@ import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -101,13 +100,15 @@ public class CatalogController {
     }
 
     /**
-     * Removes a catalog by its ID.
+     * Removes a catalog based on the catalog name.
      *
-     * @param catalogId The ID of the catalog to be removed.
-     * @return A response indicating the success or failure of the removal operation.
+     * @param catalogInfo The catalog information containing the catalog name.
+     * @return R<Void/> indicating the success or failure of the operation.
      */
-    @DeleteMapping("/{catalogId}")
-    public R<Void> remove(@PathVariable Integer catalogId) {
-        return catalogService.removeById(catalogId) ? R.succeed() : R.failed();
+    @PostMapping("/removeCatalog")
+    public R<Void> remove(@RequestBody CatalogInfo catalogInfo) {
+        QueryWrapper<CatalogInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("catalog_name", catalogInfo.getCatalogName());
+        return catalogService.remove(queryWrapper) ? R.succeed() : R.failed();
     }
 }

@@ -18,13 +18,13 @@ under the License. */
 import { useMemo } from "react";
 import {Button, Tooltip} from "@douyinfe/semi-ui";
 import {IconMoon, IconSun} from "@douyinfe/semi-icons";
-import useThemeSwitcher from '@utils/mode.ts';
+import {useThemeStore} from "@src/store/themeStore.ts";
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 const ThemeSwitcherBtn = () => {
     const { t } = useTranslation();
-    const {dark, switchMode } = useThemeSwitcher();
+    const { dark, switchMode } = useThemeStore();
 
     const [tooltipContent, icon] = useMemo(() => {
         const tooltipContent = dark ? t('component.btn-switch-to-light-mode') : t('component.btn-switch-to-dark-mode');

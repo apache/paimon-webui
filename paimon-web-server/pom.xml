@@ -36,6 +36,7 @@ under the License.
 
     <properties>
         <hadoop.version>2.8.5</hadoop.version>
+        <knife4j.version>4.1.0</knife4j.version>
     </properties>
 
     <dependencies>
@@ -167,6 +168,12 @@ under the License.
             <artifactId>hadoop-client</artifactId>
             <version>${hadoop.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+            <version>${knife4j.version}</version>
         </dependency>
     </dependencies>
 

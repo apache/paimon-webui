@@ -23,6 +23,7 @@ import {useCatalogStore} from "@src/store/catalogStore.ts";
 import { useTranslation } from 'react-i18next';
 import {useDatabaseStore} from "@src/store/databaseStore.ts";
 import {useTableStore} from "@src/store/tableStore.ts";
+import {Tooltip} from "@douyinfe/semi-ui";
 import styles from "./left-content.module.less";
 
 
@@ -91,7 +92,9 @@ const MetadataSidebar = () => {
         <div className={styles.container}>
             <div className={styles['add-catalog-container']}>
                 <span>{t('metadata.catalog')}</span>
-                <IconPlus className={styles.iconPlus}  onClick={handleOpenModal}/>
+                <Tooltip content={t('metadata.register-catalog')}>
+                    <IconPlus className={styles.iconPlus}  onClick={handleOpenModal}/>
+                </Tooltip>
             </div>
             <CatalogTree/>
             {showModal && (

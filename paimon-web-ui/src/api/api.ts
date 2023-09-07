@@ -46,6 +46,14 @@ export const getAllCatalogs = async () => {
     }
 }
 
+export const removeCatalog = async (catalogProp: Prop.CatalogProp) => {
+    try {
+        return await http.httpPost<Result<any>, Prop.CatalogProp>(API_ENDPOINTS.REMOVE_CATALOG, catalogProp);
+    } catch (error) {
+        console.error('Failed to remove catalog:', error);
+    }
+};
+
 export const createDatabase = async (databaseProp: DatabaseItem) => {
     try {
         return await http.httpPost<Result<any>, DatabaseItem>(API_ENDPOINTS.CREATE_DATABASE, databaseProp);
@@ -62,6 +70,14 @@ export const getAllDatabases = async () => {
     }
 }
 
+export const removeDatabase = async (databaseProp: DatabaseItem) => {
+    try {
+        return await http.httpPost<Result<any>, DatabaseItem>(API_ENDPOINTS.REMOVE_DATABASE, databaseProp);
+    } catch (error) {
+        console.error('Failed to delete database:', error);
+    }
+};
+
 export const createTable = async (tableProp: TableItem) => {
     try {
         return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.CREATE_TABLE, tableProp);
@@ -69,6 +85,22 @@ export const createTable = async (tableProp: TableItem) => {
         console.error('Failed to create table:', error);
     }
 };
+
+export const dropTable = async (tableProp: TableItem) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.DROP_TABLE, tableProp);
+    } catch (error) {
+        console.error('Failed to drop table:', error);
+    }
+};
+export const renameTable = async (tableProp: TableItem[]) => {
+    try {
+        return await http.httpPost<Result<any>, TableItem[]>(API_ENDPOINTS.RENAME_TABLE, tableProp);
+    } catch (error) {
+        console.error('Failed to rename table:', error);
+    }
+};
+
 
 export const getAllTables = async () => {
     try {
@@ -138,10 +170,14 @@ const Api = {
     createFileSystemCatalog,
     createHiveCatalog,
     getAllCatalogs,
+    removeCatalog,
     createDatabase,
     getAllDatabases,
     createTable,
+    dropTable,
+    renameTable,
     getAllTables,
+    removeDatabase,
     addColumn,
     dropColumn,
     renameColumn,

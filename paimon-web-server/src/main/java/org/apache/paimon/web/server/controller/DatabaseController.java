@@ -30,7 +30,6 @@ import org.apache.paimon.web.server.util.CatalogUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -119,7 +118,7 @@ public class DatabaseController {
      * @return A response indicating the success or failure of the removal operation.
      * @throws RuntimeException if the database is not found or it is not empty.
      */
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public R<Void> remove(@RequestBody DatabaseInfo databaseInfo) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(databaseInfo);

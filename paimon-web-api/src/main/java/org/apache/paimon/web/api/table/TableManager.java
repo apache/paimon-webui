@@ -90,7 +90,7 @@ public class TableManager {
                                         ? ImmutableList.of()
                                         : ImmutableList.copyOf(tableMetadata.primaryKeys()))
                         .comment(tableMetadata.comment() == null ? "" : tableMetadata.comment())
-                        .options(handleOptions(tableMetadata.options()));
+                        .options(tableMetadata.options());
 
         for (ColumnMetadata column : tableMetadata.columns()) {
             schemaBuilder.column(column.name(), column.type(), column.description());
@@ -157,9 +157,8 @@ public class TableManager {
 
         List<SchemaChange> schemaChanges = new ArrayList<>();
 
-        Map<String, String> filteredOptions = handleOptions(options);
-        for (String key : filteredOptions.keySet()) {
-            SchemaChange addOption = SchemaChange.setOption(key, filteredOptions.get(key));
+        for (String key : options.keySet()) {
+            SchemaChange addOption = SchemaChange.setOption(key, options.get(key));
             schemaChanges.add(addOption);
         }
 
@@ -176,8 +175,7 @@ public class TableManager {
 
         List<SchemaChange> schemaChanges = new ArrayList<>();
 
-        Map<String, String> filteredOptions = handleOptions(options);
-        for (String key : filteredOptions.keySet()) {
+        for (String key : options.keySet()) {
             SchemaChange removeOption = SchemaChange.removeOption(key);
             schemaChanges.add(removeOption);
         }

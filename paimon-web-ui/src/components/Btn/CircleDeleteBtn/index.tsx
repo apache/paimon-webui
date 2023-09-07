@@ -18,10 +18,13 @@ under the License. */
 import { DeleteOutlined } from '@ant-design/icons';
 import {Button, Popconfirm} from "@douyinfe/semi-ui";
 import { useTranslation } from 'react-i18next';
+import {useThemeStore} from "@src/store/themeStore.ts";
 import styles from "./circle-delete-btn.module.less";
 
 const CircleDeleteBtn = ({ onConfirm }: { onConfirm?: () => void; id: string }) => {
     const { t } = useTranslation()
+    const { dark} = useThemeStore();
+
     return (
         <Popconfirm
             title={t('component.delete-btn-confirm-title')}
@@ -33,8 +36,8 @@ const CircleDeleteBtn = ({ onConfirm }: { onConfirm?: () => void; id: string }) 
             position={"topRight"}
         >
             <Button
-                className={styles['delete-btn']}
-                icon={<DeleteOutlined style={{ color: '#000', fontSize: '16px' }} />}
+                className={dark ? styles['delete-btn-dark'] : styles['delete-btn-light']}
+                icon={<DeleteOutlined className={dark ? styles['icon-dark'] : styles['icon-light']} />}
             />
         </Popconfirm>
     );

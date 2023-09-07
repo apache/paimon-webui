@@ -48,7 +48,7 @@ const AddColumnModalForm: React.FC<AddColumnModalFormProps> = ({ visible , onClo
             maskClosable={false}
             okText={t('metadata.submit')}
             cancelText={t('metadata.cancel')}
-            width={'602px'}
+            width={'1040px'}
             height={auto}
             onOk={() => handleOkClick()}
         >

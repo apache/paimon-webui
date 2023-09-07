@@ -17,17 +17,18 @@ under the License. */
 
 import React, {useState} from "react";
 import { Modal } from '@douyinfe/semi-ui';
+import EditTableForm from "@pages/Metadata/components/LeftContent/components/EditTableModalForm/EditTableForm";
 import {useTranslation} from "react-i18next";
 import {auto} from "@popperjs/core";
-import AddOptionForm from "@pages/Metadata/components/RightContent/components/AddOptionModalForm/AddOptionForm";
 
-type AddOptionModalFormProps = {
+type EditTableModalFormProps = {
     visible: boolean;
     onClose: () => void;
     onOk: (formApi: any) => void;
+    initialValues: { tableName: string };
 };
 
-const AddOptionModalForm: React.FC<AddOptionModalFormProps> = ({ visible , onClose, onOk }) => {
+const EditTableModalForm: React.FC<EditTableModalFormProps> = ({ visible , onClose, onOk, initialValues  }) => {
     const [formApi, setFormApi] = useState(null);
     const { t } = useTranslation();
 
@@ -42,19 +43,20 @@ const AddOptionModalForm: React.FC<AddOptionModalFormProps> = ({ visible , onClo
 
     return(
         <Modal
-            title = {t('metadata.add-option')}
+            title = {t('metadata.rename-table')}
             visible = {visible}
             onCancel= {onClose}
             maskClosable={false}
-            okText={t('metadata.submit')}
+            okText={t('metadata.modify')}
             cancelText={t('metadata.cancel')}
-            width={'682px'}
+            width={'500px'}
             height={auto}
             onOk={() => handleOkClick()}
         >
-            <AddOptionForm getFormApi={getFormApi}/>
+            <EditTableForm getFormApi={getFormApi} initialValues={initialValues}/>
         </Modal>
     );
 }
 
-export default AddOptionModalForm;
+export default EditTableModalForm;
+

@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import {Input, Tree} from '@douyinfe/semi-ui';
+import {Input, Toast, Tree} from '@douyinfe/semi-ui';
 import { IconSearch, IconFile, IconPlus, IconFolder, IconFolderOpen } from "@douyinfe/semi-icons";
 import {Tooltip} from "@douyinfe/semi-ui";
 import {useEffect, useState} from "react";
@@ -29,8 +29,9 @@ import {TableItem, TableColumn} from "@src/types/Table/data";
 import CatalogIconMoreDropdown from "@components/IconMoreDropdown/CatalogIconMoreDropdown";
 import DatabaseIconMoreDropdown from "@components/IconMoreDropdown/DatabaseIconMoreDropdown";
 import TableIconMoreDropdown from "@components/IconMoreDropdown/TableIconMoreDropdown";
-import styles from "./catalog-tree.module.less"
 import {DatabaseItem} from "@src/types/Database/data";
+import EditTableModalForm from "@pages/Metadata/components/LeftContent/components/EditTableModalForm";
+import styles from "./catalog-tree.module.less"
 
 type TreeDataItem = {
     label: string;
@@ -46,6 +47,7 @@ const CatalogTree = () => {
     const { t } = useTranslation()
     const [hoveredNode, setHoveredNode] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showEditTableModal, setShowEditTableModal] = useState(false);
     const [createType, setCreateType] =
         useState<"catalog" | "database" | "table" | null>(null);
 
@@ -53,17 +55,16 @@ const CatalogTree = () => {
     const createDatabase = useDatabaseStore(state => state.createDatabase);
     const fetchDatabases= useDatabaseStore(state => state.fetchDatabases);
     const databaseItemList = useDatabaseStore(state => state.databaseItemList);
+    const  removeDatabase = useDatabaseStore(state => state.removeDatabase);
 
     // Catalog
     const [treeData, setTreeData] = useState<TreeDataItem[]>([]);
     const fetchCatalogData = useCatalogStore(state => state.fetchCatalogData);
+    const removeCatalog = useCatalogStore(state => state.removeCatalog);
     const catalogItemList = useCatalogStore(state => state.catalogItemList);
 
     // Table
-    const { inputs, configs, setInputs, setConfigs} = useTableStore();
-    const createTable = useTableStore(state => state.createTable);
-    const fetchTables= useTableStore(state => state.fetchTables);
-    const tableItemList = useTableStore(state => state.tableItemList);
+    const { inputs, configs, setInputs, setConfigs, createTable, fetchTables, tableItemList, dropTable, renameTable} = useTableStore();
 
     const [selectedCatalogName, setSelectedCatalogName] = useState<string | null>(null);
     const [selectedDatabaseName, setSelectedDatabaseName] = useState<string | null>(null);
@@ -72,6 +73,8 @@ const CatalogTree = () => {
     const [selectedKey, setSelectedKey] = useState(null);
 
     const setTableNodeClicked = useTableStore((state) => state.setTableNodeClicked);
+
+    const [selectedTableKey, setSelectedTableKey] = useState<string | null>(null);
 
     useEffect(() => {
         // Fetch the catalog data when the component mounts
@@ -96,6 +99,64 @@ const CatalogTree = () => {
         setHoveredNode(null);
     };
 
+    const handleOpenRenameTableModal = (key: string) => {
+        setSelectedTableKey(key);
+        setShowEditTableModal(true);
+    };
+
+    const handleCloseRenameTableModal = () => {
+        setShowEditTableModal(false);
+    };
+
+    const handleRenameTableOk = (key: string) => {
+        return (formApi: any) => {
+            const catalogName = key.split("#")[0];
+            const databaseName = key.split("#")[1];
+            const tableName = key.split("#")[2];
+
+            return new Promise<void>((resolve, reject) => {
+                formApi
+                    .validate()
+                    .then(() => {
+                        const values = formApi.getValues();
+
+                        const oldTableProp: TableItem = {
+                            catalogName: catalogName,
+                            databaseName: databaseName,
+                            tableName: tableName,
+                            description: "",
+                            tableColumns: [],
+                            partitionKey: [],
+                            tableOptions: new Map,
+                        }
+                        const newTableProp: TableItem = {
+                            catalogName: catalogName,
+                            databaseName: databaseName,
+                            tableName: values.tableName,
+                            description: "",
+                            tableColumns: [],
+                            partitionKey: [],
+                            tableOptions: new Map,
+                        }
+
+                        renameTable([oldTableProp, newTableProp])
+                            .then(() => {
+                                fetchTables();
+                                resolve();
+                            })
+                            .catch((error: any) => {
+                                console.log(error);
+                                reject(error);
+                            });
+                    })
+                    .catch((errors: any) => {
+                        console.log(errors);
+                        reject(errors);
+                    });
+            });
+        }
+    }
+
     const handleOpenModal = (type: "catalog" | "database" | "table",  name: string, parentId?: string) => {
         if (type === "catalog" || type === "database") {
             if (type === "catalog") {
@@ -104,7 +165,7 @@ const CatalogTree = () => {
                 const databaseItem =
                     databaseItemList.find(item => item.databaseName === name && item.catalogName === parentId);
                 if (databaseItem) {
-                    const catalogItem = catalogItemList.find(item => item.id === databaseItem.catalogId);
+                    const catalogItem = catalogItemList.find(item => item.catalogName === databaseItem.catalogName);
                     if (catalogItem) {
                         setSelectedCatalogName(catalogItem.catalogName);
                     }
@@ -192,6 +253,46 @@ const CatalogTree = () => {
         });
     }
 
+    const getLength0 = (dataType: string, values: any, index: number) => {
+        switch (dataType) {
+            case 'CHAR':
+            case 'VARCHAR':
+            case 'BINARY':
+            case 'VARBINARY':
+            case 'TIME(precision)':
+            case 'TIMESTAMP(precision)':
+            case 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)':
+                const length = values[`length${index}`];
+                if (length !== undefined && length !== null) {
+                    return length;
+                } else {
+                    return 0;
+                }
+            case 'DECIMAL':
+                const precision = values[`precision${index}`];
+                if (precision !== undefined && precision !== null) {
+                    return precision;
+                } else {
+                    return 38;
+                }
+            default:
+                return 0;
+        }
+    }
+
+    const getLength1 = (dataType: string, values: any, index: number) => {
+        if (dataType === "DECIMAL") {
+            const scale = values[`scale${index}`];
+            if (scale !== undefined && scale !== null) {
+                return scale;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
     const handleCreateTableOk = (formApi: any) => {
         return new Promise<void>((resolve, reject) => {
             formApi
@@ -210,6 +311,13 @@ const CatalogTree = () => {
                             const comment = values[`comment${index}`];
                             const primaryKey = values[`primaryKey${index}`];
                             const defaultValue = values[`defaultValue${index}`];
+                            const nullable = values[`nullable${index}`];
+
+                            if (field === undefined || dataType === undefined) {
+                                Toast.error(t('metadata.file-and-type-is-required'));
+                                throw new Error(t('metadata.file-and-type-is-required'));
+                            }
+
                             if (field !== undefined && dataType !== undefined) {
                                 const tableColumn: TableColumn = {
                                     field: field,
@@ -217,6 +325,9 @@ const CatalogTree = () => {
                                     comment: comment === undefined ? null : comment,
                                     isPK: primaryKey !== undefined,
                                     defaultValue: defaultValue === undefined ? null : defaultValue,
+                                    isNullable: nullable,
+                                    length0: getLength0(dataType, values, index),
+                                    length1: getLength1(dataType, values, index),
                                 }
                                 tableColumns.push(tableColumn);
                             }
@@ -227,6 +338,14 @@ const CatalogTree = () => {
                         configs.map((_, index) => {
                             const key = values[`configKey${index}`];
                             const value = values[`configValue${index}`];
+                            if (key !== undefined && value === undefined) {
+                                Toast.error(t('metadata.value-can-not-null'));
+                                throw new Error(t('metadata.value-can-not-null'));
+                            }
+                            if (value !== undefined && key === undefined) {
+                                Toast.error(t('metadata.key-can-not-null'));
+                                throw new Error(t('metadata.key-can-not-null'));
+                            }
                             tableOptions.set(key, value);
                         });
                     }
@@ -238,8 +357,10 @@ const CatalogTree = () => {
                         description: values.description === undefined ? null : values.description,
                         tableColumns: tableColumns,
                         partitionKey: values.partitionKey === undefined ? [] : values.partitionKey,
-                        tableOptions: tableOptions,
+                        tableOptions: Object.fromEntries(tableOptions),
                     }
+
+
                     createTable(tableProp)
                         .then(() => {
                             fetchTables();
@@ -304,6 +425,68 @@ const CatalogTree = () => {
         }
     };
 
+    const onConfirmRemoveCatalog = async (catalogName: string) => {
+
+        const catalogProp: Prop.CatalogProp = {
+            catalogName: catalogName,
+            catalogType: "",
+            warehouse: "",
+            hiveUri: "",
+            hiveConfDir: "",
+            isDelete: false
+        };
+
+        removeCatalog(catalogProp)
+            .then(() => {
+                fetchCatalogData();
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    };
+
+    const onConfirmRemoveDatabase = async (databaseName: string, catalogName: string) => {
+
+        const databaseProp: DatabaseItem = {
+            databaseName: databaseName,
+            catalogId: null,
+            catalogName: catalogName,
+            description: "",
+        };
+
+        removeDatabase(databaseProp)
+            .then(() => {
+                fetchDatabases();
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    };
+
+    const onConfirmDropTable = async (key: string) => {
+        const catalogName = key.split("#")[0];
+        const databaseName = key.split("#")[1];
+        const tableName = key.split("#")[2];
+
+        const tableProp: TableItem = {
+            catalogName: catalogName,
+            databaseName: databaseName,
+            tableName: tableName,
+            description: "",
+            tableColumns: [],
+            partitionKey: [],
+            tableOptions: new Map,
+        }
+
+        dropTable(tableProp)
+            .then(() => {
+                fetchTables();
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    };
+
     const renderLabel = (x: any) => {
         const { className, onExpand, onClick, data, expandIcon } = x;
         const { label, key, type } = data;
@@ -324,11 +507,11 @@ const CatalogTree = () => {
 
         let iconMore;
         if (type === 'catalog') {
-            iconMore = <CatalogIconMoreDropdown/>;
+            iconMore = <CatalogIconMoreDropdown id={label} onConfirm={() => onConfirmRemoveCatalog(label)}/>;
         } else if (type === 'database') {
-            iconMore = <DatabaseIconMoreDropdown/>;
+            iconMore = <DatabaseIconMoreDropdown id={label} onConfirm={() => onConfirmRemoveDatabase(label, data.parentId)}/>;
         } else {
-            iconMore = <TableIconMoreDropdown/>;
+            iconMore = <TableIconMoreDropdown id={label} onConfirm={() => onConfirmDropTable(key)} onRename={() => handleOpenRenameTableModal(key)}/>;
         }
 
         return (
@@ -369,6 +552,7 @@ const CatalogTree = () => {
     return(
         <>
             <Tree
+                className={styles.container}
                 filterTreeNode
                 treeData={treeData}
                 expandedKeys={expandedKeys}
@@ -400,6 +584,14 @@ const CatalogTree = () => {
                     onOk={handleCreateTableOk}
                     catalogName={selectedCatalogName}
                     databaseName={selectedDatabaseName}
+                />
+            )}
+            {showEditTableModal && (
+                <EditTableModalForm
+                    visible={showEditTableModal}
+                    onClose={handleCloseRenameTableModal}
+                    onOk={handleRenameTableOk(selectedTableKey || '')}
+                    initialValues={{ tableName: selectedTableKey?.split("#")[2] || '' }}
                 />
             )}
         </>

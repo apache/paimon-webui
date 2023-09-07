@@ -71,19 +71,13 @@ const AddOptionForm = ({ getFormApi }) => {
                                             noLabel={true}
                                             field={`configKey${index}`}
                                             placeholder={t('metadata.add-config-key')}
-                                            style={{ width: "229px"}}
-                                            rules={[
-                                                { required: true, message: t('metadata.message') },
-                                            ]}
+                                            style={{ width: "289px"}}
                                             showClear />
                                         <Form.Input
                                             noLabel={true}
                                             field={`configValue${index}`}
                                             placeholder={t('metadata.add-config-value')}
-                                            style={{ width: "229px", marginLeft: '10px' }}
-                                            rules={[
-                                                { required: true, message: t('metadata.message') },
-                                            ]}
+                                            style={{ width: "289px", marginLeft: '10px' }}
                                             showClear />
                                         <Button
                                             onClick={() => handleRemoveInput(index)}

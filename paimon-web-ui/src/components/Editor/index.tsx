@@ -18,14 +18,14 @@ under the License. */
 import {Editor as MonacoEditor} from "@monaco-editor/react";
 
 import React from "react";
-import useThemeSwitcher from "@utils/mode.ts";
+import {useThemeStore} from "@src/store/themeStore.ts";
 
 export type EditorProps = {
     value?: string;
     theme?: string;
 }
 const Editor:React.FC<EditorProps> = (props) => {
-    const {dark} = useThemeSwitcher();
+    const { dark} = useThemeStore();
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

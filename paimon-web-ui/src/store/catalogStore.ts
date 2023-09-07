@@ -26,6 +26,7 @@ type Store = {
     catalogItemList: CatalogItemList;
     createFileSystemCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
     createHiveCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
+    removeCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
     fetchCatalogData: () => Promise<void>;
 };
 
@@ -41,12 +42,12 @@ export const useCatalogStore = create<Store>()(persist(
                 if (response.code === 200) {
                     Toast.success(i18n.t('metadata.create-catalog-success'));
                 } else {
-                    console.error('Failed to create catalog:', response.msg);
+                    console.error(i18n.t('metadata.create-catalog-failed'), response.msg);
                     Toast.error(i18n.t('metadata.create-catalog-failed') +  response.msg);
                 }
             } catch (error) {
-                console.error('Failed to create catalog:', error);
-                Toast.error(i18n.t('metadata.create-database-failed') + error);
+                console.error(i18n.t('metadata.create-catalog-failed'), error);
+                Toast.error(i18n.t('metadata.create-catalog-failed') + error);
             }
         },
         createHiveCatalog: async (catalogProp) => {
@@ -58,12 +59,29 @@ export const useCatalogStore = create<Store>()(persist(
                 if (response.code === 200) {
                     Toast.success(i18n.t('metadata.create-catalog-success'));
                 } else {
-                    console.error('Failed to create catalog:', response.msg);
-                    Toast.error(i18n.t('metadata.create-database-failed') +  response.msg);
+                    console.error(i18n.t('metadata.create-catalog-failed'), response.msg);
+                    Toast.error(i18n.t('metadata.create-catalog-failed') +  response.msg);
                 }
             } catch (error) {
-                console.error('Failed to create catalog:', error);
-                Toast.error(i18n.t('metadata.create-database-failed') + error);
+                console.error(i18n.t('metadata.create-catalog-failed'), error);
+                Toast.error(i18n.t('metadata.create-catalog-failed') + error);
+            }
+        },
+        removeCatalog: async (catalogProp) => {
+            try {
+                const response = await Api.removeCatalog(catalogProp);
+                if (!response) {
+                    throw new Error('No response from removeCatalog');
+                }
+                if (response.code === 200) {
+                    Toast.success(i18n.t('metadata.remove-catalog-success'));
+                } else {
+                    console.error(i18n.t('metadata.remove-catalog-failed'), response.msg);
+                    Toast.error(i18n.t('metadata.remove-catalog-failed') +  response.msg);
+                }
+            } catch (error) {
+                console.error(i18n.t('metadata.remove-catalog-failed'), error);
+                Toast.error(i18n.t('metadata.remove-catalog-failed') + error);
             }
         },
         fetchCatalogData: async () => {

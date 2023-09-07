@@ -19,14 +19,16 @@
 package org.apache.paimon.web.server.util;
 
 import org.apache.paimon.types.BigIntType;
+import org.apache.paimon.types.BinaryType;
 import org.apache.paimon.types.BooleanType;
+import org.apache.paimon.types.CharType;
 import org.apache.paimon.types.DataType;
-import org.apache.paimon.types.DataTypes;
 import org.apache.paimon.types.DateType;
 import org.apache.paimon.types.DecimalType;
 import org.apache.paimon.types.DoubleType;
 import org.apache.paimon.types.FloatType;
 import org.apache.paimon.types.IntType;
+import org.apache.paimon.types.LocalZonedTimestampType;
 import org.apache.paimon.types.SmallIntType;
 import org.apache.paimon.types.TimeType;
 import org.apache.paimon.types.TimestampType;
@@ -37,68 +39,146 @@ import org.apache.paimon.types.VarCharType;
 /** data type convert util. */
 public class DataTypeConvertUtils {
 
-    public static DataType convert(String type) {
-        switch (type) {
+    public static DataType convert(PaimonDataType type) {
+        switch (type.getType()) {
             case "INT":
-                return DataTypes.INT();
+                return new IntType(type.isNullable());
             case "TINYINT":
-                return DataTypes.TINYINT();
+                return new TinyIntType(type.isNullable());
             case "SMALLINT":
-                return DataTypes.SMALLINT();
+                return new SmallIntType(type.isNullable());
             case "BIGINT":
-                return DataTypes.BIGINT();
+                return new BigIntType(type.isNullable());
+            case "CHAR":
+                return new CharType(
+                        type.isNullable(), type.getLength0() > 0 ? type.getLength0() : 1);
+            case "VARCHAR":
+                return new VarCharType(
+                        type.isNullable(), type.getLength0() > 0 ? type.getLength0() : 1);
             case "STRING":
-                return DataTypes.STRING();
+                return new VarCharType(type.isNullable(), Integer.MAX_VALUE);
+            case "BINARY":
+                return new BinaryType(
+                        type.isNullable(), type.getLength0() > 0 ? type.getLength0() : 1);
+            case "VARBINARY":
+                return new VarBinaryType(
+                        type.isNullable(), type.getLength0() > 0 ? type.getLength0() : 1);
             case "DOUBLE":
-                return DataTypes.DOUBLE();
+                return new DoubleType(type.isNullable());
             case "BOOLEAN":
-                return DataTypes.BOOLEAN();
+                return new BooleanType(type.isNullable());
             case "DATE":
-                return DataTypes.DATE();
+                return new DateType(type.isNullable());
             case "TIME":
-                return DataTypes.TIME();
+                return new TimeType(type.isNullable(), 0);
+            case "TIME(precision)":
+                return new TimeType(type.isNullable(), type.getLength0());
             case "TIMESTAMP":
-                return DataTypes.TIMESTAMP();
+                return new TimestampType(type.isNullable(), 0);
+            case "TIMESTAMP(precision)":
+                return new TimestampType(type.isNullable(), type.getLength0());
+            case "TIMESTAMP_MILLIS":
+                return new TimestampType(type.isNullable(), 3);
             case "BYTES":
-                return DataTypes.BYTES();
+                return new VarBinaryType(type.isNullable(), 0);
             case "FLOAT":
-                return DataTypes.FLOAT();
+                return new FloatType(type.isNullable());
             case "DECIMAL":
-                return DataTypes.DECIMAL(38, 0);
+                return new DecimalType(type.isNullable(), type.getLength0(), type.getLength1());
+            case "TIMESTAMP_WITH_LOCAL_TIME_ZONE":
+                return new LocalZonedTimestampType(type.isNullable(), 0);
+            case "TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)":
+                return new LocalZonedTimestampType(type.isNullable(), type.getLength0());
             default:
                 throw new RuntimeException("Invalid type: " + type);
         }
     }
 
-    public static String fromPaimonType(DataType dataType) {
+    public static PaimonDataType fromPaimonType(DataType dataType) {
         if (dataType instanceof IntType) {
-            return "INT";
+            return new PaimonDataType("INT", dataType.isNullable(), 0, 0);
         } else if (dataType instanceof TinyIntType) {
-            return "TINYINT";
+            return new PaimonDataType("TINYINT", dataType.isNullable(), 0, 0);
         } else if (dataType instanceof SmallIntType) {
-            return "SMALLINT";
+            return new PaimonDataType("SMALLINT", dataType.isNullable(), 0, 0);
         } else if (dataType instanceof BigIntType) {
-            return "BIGINT";
+            return new PaimonDataType("BIGINT", dataType.isNullable(), 0, 0);
         } else if (dataType instanceof VarCharType) {
-            return "STRING";
-        } else if (dataType instanceof DoubleType) {
-            return "DOUBLE";
-        } else if (dataType instanceof BooleanType) {
-            return "BOOLEAN";
-        } else if (dataType instanceof DateType) {
-            return "DATE";
-        } else if (dataType instanceof TimeType) {
-            return "TIME";
-        } else if (dataType instanceof TimestampType) {
-            return "TIMESTAMP";
+            VarCharType varCharType = (VarCharType) dataType;
+            if (varCharType.getLength() == Integer.MAX_VALUE) {
+                return new PaimonDataType("STRING", varCharType.isNullable(), 0, 0);
+            } else {
+                return new PaimonDataType(
+                        "VARCHAR", varCharType.isNullable(), varCharType.getLength(), 0);
+            }
+        } else if (dataType instanceof CharType) {
+            CharType charType = (CharType) dataType;
+            return new PaimonDataType("CHAR", charType.isNullable(), charType.getLength(), 0);
+        } else if (dataType instanceof BinaryType) {
+            BinaryType binaryType = (BinaryType) dataType;
+            return new PaimonDataType("BINARY", binaryType.isNullable(), binaryType.getLength(), 0);
         } else if (dataType instanceof VarBinaryType) {
-            return "BYTES";
+            VarBinaryType varBinaryType = (VarBinaryType) dataType;
+            if (varBinaryType.getLength() == Integer.MAX_VALUE) {
+                return new PaimonDataType(
+                        "BYTES", varBinaryType.isNullable(), varBinaryType.getLength(), 0);
+            } else {
+                return new PaimonDataType(
+                        "VARBINARY", varBinaryType.isNullable(), varBinaryType.getLength(), 0);
+            }
+        } else if (dataType instanceof DoubleType) {
+            return new PaimonDataType("DOUBLE", dataType.isNullable(), 0, 0);
+        } else if (dataType instanceof BooleanType) {
+            return new PaimonDataType("BOOLEAN", dataType.isNullable(), 0, 0);
+        } else if (dataType instanceof DateType) {
+            return new PaimonDataType("DATE", dataType.isNullable(), 0, 0);
+        } else if (dataType instanceof TimeType) {
+            TimeType timeType = (TimeType) dataType;
+            if (timeType.getPrecision() == 0) {
+                return new PaimonDataType("TIME", timeType.isNullable(), 0, 0);
+            } else {
+                return new PaimonDataType(
+                        "TIME(precision)", timeType.isNullable(), timeType.getPrecision(), 0);
+            }
+        } else if (dataType instanceof TimestampType) {
+            TimestampType timestampType = (TimestampType) dataType;
+            if (timestampType.getPrecision() == 0) {
+                return new PaimonDataType("TIMESTAMP", timestampType.isNullable(), 0, 0);
+            } else if (timestampType.getPrecision() == 3) {
+                return new PaimonDataType("TIMESTAMP_MILLIS", timestampType.isNullable(), 3, 0);
+            } else {
+                return new PaimonDataType(
+                        "TIMESTAMP(precision)",
+                        timestampType.isNullable(),
+                        timestampType.getPrecision(),
+                        0);
+            }
         } else if (dataType instanceof FloatType) {
-            return "FLOAT";
+            return new PaimonDataType("FLOAT", dataType.isNullable(), 0, 0);
         } else if (dataType instanceof DecimalType) {
-            return "DECIMAL";
+            DecimalType decimalType = (DecimalType) dataType;
+            return new PaimonDataType(
+                    "DECIMAL",
+                    decimalType.isNullable(),
+                    decimalType.getPrecision(),
+                    decimalType.getScale());
+        } else if (dataType instanceof LocalZonedTimestampType) {
+            LocalZonedTimestampType localZonedTimestampType = (LocalZonedTimestampType) dataType;
+            if (localZonedTimestampType.getPrecision() == 0) {
+                return new PaimonDataType(
+                        "TIMESTAMP_WITH_LOCAL_TIME_ZONE",
+                        localZonedTimestampType.isNullable(),
+                        0,
+                        0);
+            } else {
+                return new PaimonDataType(
+                        "TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)",
+                        localZonedTimestampType.isNullable(),
+                        localZonedTimestampType.getPrecision(),
+                        0);
+            }
         } else {
-            return "UNKNOWN";
+            return new PaimonDataType("UNKNOWN", dataType.isNullable(), 0, 0);
         }
     }
 }

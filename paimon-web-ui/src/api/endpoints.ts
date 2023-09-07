@@ -25,13 +25,17 @@ export const API_ENDPOINTS = {
     CREATE_FILE_SYSTEM_CATALOG: '/catalog/createFilesystemCatalog',
     CREATE_HIVE_CATALOG: '/catalog/createHiveCatalog',
     GET_ALL_CATALOGS: '/catalog/getAllCatalogs',
+    REMOVE_CATALOG: '/catalog/removeCatalog',
 
     // database
     CREATE_DATABASE: '/database/createDatabase',
     GET_ALL_DATABASES: '/database/getAllDatabases',
+    REMOVE_DATABASE: '/database/delete',
 
     // table
     CREATE_TABLE: '/table/createTable',
+    DROP_TABLE: '/table/dropTable',
+    RENAME_TABLE: '/table/renameTable',
     GET_ALL_TABLES: '/table/getAllTables',
     ADD_COLUMN: '/table/addColumn',
     DROP_COLUMN: '/table/dropColumn',

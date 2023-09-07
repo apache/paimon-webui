@@ -15,36 +15,33 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.delete-btn-light {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50% !important;
-  overflow: hidden;
-  width: 32px !important;
-  height: 32px !important;
-  background-color:rgba(var(--semi-red-4), 1) !important;
-  color: #666 !important;
+import { Pagination } from '@douyinfe/semi-ui';
+import React from "react";
+import styles from './pagination.module.less';
+
+interface PaginationWrapperProps {
+    total: number;
+    onPageChange: (page: number, pageSize: number) => void;
 }
 
-.delete-btn-dark {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50% !important;
-  overflow: hidden;
-  width: 32px !important;
-  height: 32px !important;
-  background-color:rgba(var(--semi-red-5), 1) !important;
-  color: #666 !important;
-}
+const PaginationWrapper: React.FC<PaginationWrapperProps> = ({ total, onPageChange }) => {
+    const defaultPageSize = 10;
 
-.icon-dark {
-  color: #000 !important;
-  font-size: 16px;
-}
+    const handlePageChange = (page: number, pageSize: number) => {
+        if (onPageChange) {
+            onPageChange(page, pageSize);
+        }
+    };
 
-.icon-light {
-  color: #fff !important;
-  font-size: 16px;
-}
+    return (
+        <Pagination
+            total={total}
+            pageSize={defaultPageSize}
+            className={styles.circlePagination}
+            onChange={handlePageChange}
+        />
+    );
+};
+
+
+export default PaginationWrapper;

@@ -17,15 +17,18 @@ under the License. */
 
 import { EditOutlined } from '@ant-design/icons';
 import {Button} from "@douyinfe/semi-ui";
+import {useThemeStore} from "@src/store/themeStore.ts";
 import styles from "./circle-edit-btn.module.less";
 
 // @ts-ignore
 const CircleEditBtn = ({ onClick }) => {
+    const { dark} = useThemeStore();
+
     return(
         <Button
-            className={styles['edit-btn']}
+            className={dark ? styles['edit-btn-dark'] : styles['edit-btn-light']}
             icon={
-                <EditOutlined style={{ color: '#000', fontSize: '16px' }} />}
+                <EditOutlined className={dark ? styles['icon-dark'] : styles['icon-light']} />}
             onClick={onClick} />
     );
 }

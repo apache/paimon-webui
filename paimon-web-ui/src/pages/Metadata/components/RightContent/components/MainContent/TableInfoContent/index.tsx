@@ -65,6 +65,46 @@ const TableInfoContent = () => {
         setShowEditColumnModal(false);
     };
 
+    const getLength0 = (dataType: string, values: any, index: number) => {
+        switch (dataType) {
+            case 'CHAR':
+            case 'VARCHAR':
+            case 'BINARY':
+            case 'VARBINARY':
+            case 'TIME(precision)':
+            case 'TIMESTAMP(precision)':
+            case 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)':
+                const length = values[`length${index}`];
+                if (length !== undefined && length !== null) {
+                    return length;
+                } else {
+                    return 0;
+                }
+            case 'DECIMAL':
+                const precision = values[`precision${index}`];
+                if (precision !== undefined && precision !== null) {
+                    return precision;
+                } else {
+                    return 38;
+                }
+            default:
+                return 0;
+        }
+    }
+
+    const getLength1 = (dataType: string, values: any, index: number) => {
+        if (dataType === "DECIMAL") {
+            const scale = values[`scale${index}`];
+            if (scale !== undefined && scale !== null) {
+                return scale;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
     const handleAddColumnOk = (formApi: any) => {
         return new Promise<void>((resolve, reject) => {
             formApi
@@ -78,13 +118,24 @@ const TableInfoContent = () => {
                             const field = values[`field${index}`];
                             const dataType = values[`type${index}`];
                             const comment = values[`comment${index}`];
+                            const nullable = values[`nullable${index}`];
+                            const defaultValue = values[`defaultValue${index}`];
+
+                            if (field === undefined || dataType === undefined) {
+                                Toast.error(t('metadata.file-and-type-is-required'));
+                                throw new Error(t('metadata.file-and-type-is-required'));
+                            }
+
                             if (field !== undefined && dataType !== undefined) {
                                 const tableColumn: TableColumn = {
                                     field: field,
                                     dataType: dataType,
                                     comment: comment === undefined ? null : comment,
                                     isPK: false,
-                                    defaultValue: null,
+                                    isNullable: nullable,
+                                    defaultValue: defaultValue === undefined ? null : defaultValue,
+                                    length0: getLength0(dataType, values, index),
+                                    length1: getLength1(dataType, values, index),
                                 }
                                 tableColumns.push(tableColumn);
                             }
@@ -135,6 +186,9 @@ const TableInfoContent = () => {
                             comment: values.description,
                             isPK: false,
                             defaultValue: null,
+                            isNullable: true,
+                            length0: 0,
+                            length1: 0,
                         }
 
                         const tableColumnNew: TableColumn = {
@@ -143,6 +197,9 @@ const TableInfoContent = () => {
                             comment: values.description,
                             isPK: false,
                             defaultValue: null,
+                            isNullable: true,
+                            length0: 0,
+                            length1: 0,
                         }
 
                         tableColumns.push(tableColumnOld);
@@ -194,6 +251,9 @@ const TableInfoContent = () => {
                             comment: values.description,
                             isPK: false,
                             defaultValue: null,
+                            isNullable: true,
+                            length0: 0,
+                            length1: 0,
                         }
 
                         tableColumns.push(tableColumn);
@@ -254,6 +314,9 @@ const TableInfoContent = () => {
                 comment: columnToRemove.description,
                 isPK: false,
                 defaultValue: null,
+                isNullable: true,
+                length0: 0,
+                length1: 0,
             }
             tableColumns.push(tableColumn);
 
@@ -267,7 +330,6 @@ const TableInfoContent = () => {
                 tableOptions: new Map<string, string>(),
             };
 
-            console.log(tableProp)
             dropColumn(tableProp)
                 .then(() => {
                     fetchTables();
@@ -288,6 +350,23 @@ const TableInfoContent = () => {
         item.tableName === tableName
     );
 
+    const getType = (datatype: string, column: TableColumn) => {
+        switch (datatype) {
+            case 'CHAR':
+            case 'VARCHAR':
+            case 'BINARY':
+            case 'VARBINARY':
+            case 'TIME(precision)':
+            case 'TIMESTAMP(precision)':
+            case 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)':
+                return datatype  + "(" + column.length0 + ")";
+            case 'DECIMAL':
+                return datatype  + "(" + column.length0 + "," + column.length1 + ")";
+            default:
+                return datatype;
+        }
+    }
+
     let columnDataSource: { key: number, columnName: string, columnType: string, isPk: boolean, partitionKey: boolean, description: string | null }[] = [];
     matchingTableItems.forEach((item: { partitionKey: string[] } & TableItem) => {
         const data = item.tableColumns.map((column: TableColumn, index: number) => {
@@ -295,24 +374,36 @@ const TableInfoContent = () => {
             return {
                 key: index + 1,
                 columnName: column.field,
-                columnType: column.dataType,
+                columnType: getType(column.dataType, column),
                 isPk: column.isPK,
                 partitionKey: isPartitionKey,
                 description: column.comment || '---',
+                isNullable: column.isNullable,
+                defaultValue: column.defaultValue || '---',
             };
         });
         columnDataSource = [...columnDataSource, ...data];
     });
 
     const columns = [
-        { title: t('metadata.column-table-column-name'), dataIndex: 'columnName', key: 'columnName', fixed: true,  width: 250,},
-        { title: t('metadata.column-table-column-type'), dataIndex: 'columnType', key: 'columnType',  fixed: true,  width: 250,},
+        { title: t('metadata.column-table-column-name'), dataIndex: 'columnName', key: 'columnName', fixed: true },
+        { title: t('metadata.column-table-column-type'), dataIndex: 'columnType', key: 'columnType',  fixed: true },
+        {
+            title: t('metadata.add-column-nullable'),
+            dataIndex: 'isNullable',
+            key: 'isNullable',
+            fixed: true,
+            render: (_: any, record: any) => (
+                <div style={{ pointerEvents: "none" }}>
+                    <Checkbox checked={record.isNullable} />
+                </div>
+            ),
+        },
         {
             title: t('metadata.column-table-column-primary-key'),
             dataIndex: 'isPk',
             key: 'isPk',
             fixed: true,
-            width: 250,
             render: (_: any, record: any) => (
                 <div style={{ pointerEvents: "none" }}>
                     <Checkbox checked={record.isPk} />
@@ -324,19 +415,18 @@ const TableInfoContent = () => {
             dataIndex: 'partition',
             key: 'partition',
             fixed: true,
-            width: 250,
             render: (_: any, record: any) => (
                 <div style={{ pointerEvents: "none" }}>
                     <Checkbox checked={record.partitionKey} />
                 </div>
             ),
         },
-        { title: t('metadata.column-table-column-description'), dataIndex: 'description', key: 'description',  fixed: true,  width: 250,},
+        { title: t('metadata.add-column-default-value'), dataIndex: 'defaultValue', key: 'defaultValue',  fixed: true },
+        { title: t('metadata.column-table-column-description'), dataIndex: 'description', key: 'description',  fixed: true },
         {
             title: t('metadata.table-column-operation'),
             dataIndex: 'operate',
             fixed: true,
-            width: 140,
             render: (_: any, record: any) => (
                 <>
                     <CircleEditBtn onClick={() => handleOpenEditColumnModal(record)}/>

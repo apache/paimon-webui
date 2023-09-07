@@ -37,7 +37,7 @@ const OptionInfoContent = () => {
     const [showEditOptionModal, setShowEditOptionModal] = useState(false);
     const [selectedOptionKey, setSelectedOptionKey] = useState(null);
     const [selectedOptionValue, setSelectedOptionValue] = useState(null);
-    const { fetchTables, optionInputs, setOptionInputs, removeOption, addOption} = useTableStore();
+    const { fetchTables, optionInputs, setOptionInputs, removeOption, addOption, modifyOption} = useTableStore();
 
     const catalogName = tableNodeClicked.split("#")[0];
     const databaseName = tableNodeClicked.split("#")[1];
@@ -74,6 +74,10 @@ const OptionInfoContent = () => {
                         optionInputs.map((_, index) => {
                             const key = values[`configKey${index}`];
                             const value = values[`configValue${index}`];
+                            if (key === undefined || value === undefined) {
+                                Toast.error(t('metadata.key-or-value-is-required'));
+                                throw new Error(t('metadata.key-or-value-is-required'));
+                            }
                             tableOptions.set(key, value);
                         });
                     }
@@ -89,21 +93,18 @@ const OptionInfoContent = () => {
                     }
                     addOption(tableProp)
                         .then(() => {
-                            Toast.success(t('metadata.add-option-success'));
                             fetchTables();
                             setOptionInputs([{}]);
                             resolve();
                         })
                         .catch((error: any) => {
                             console.log(error);
-                            Toast.error(t('metadata.add-option-failed') + error.value);
                             setOptionInputs([{}]);
                             reject(error);
                         });
                 })
                 .catch((errors: any) => {
                     console.log(errors);
-                    Toast.error(t('metadata.add-option-failed') + errors.value);
                     setOptionInputs([{}]);
                     reject(errors);
                 });
@@ -129,21 +130,18 @@ const OptionInfoContent = () => {
                         partitionKey: [],
                         tableOptions: Object.fromEntries(tableOptions),
                     }
-                    addOption(tableProp)
+                    modifyOption(tableProp)
                         .then(() => {
-                            Toast.success(t('metadata.modify-option-success'));
                             fetchTables();
                             resolve();
                         })
                         .catch((error: any) => {
                             console.log(error);
-                            Toast.error(t('metadata.modify-option-failed') + error.value);
                             reject(error);
                         });
                 })
                 .catch((errors: any) => {
                     console.log(errors);
-                    Toast.error(t('metadata.modify-option-failed') + errors.value);
                     reject(errors);
                 });
         });
@@ -155,6 +153,11 @@ const OptionInfoContent = () => {
             const optionToRemove = tableOptionsDataSource.find((option) => option.key === numericKey);
             if (!optionToRemove) {
                 console.error('Option not found:', key);
+                return;
+            }
+
+            if (optionToRemove.optionName === "path") {
+                Toast.warning(t('metadata.can-not-remove-option-path'));
                 return;
             }
 

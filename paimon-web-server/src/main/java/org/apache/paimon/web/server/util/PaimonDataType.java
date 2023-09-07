@@ -16,29 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.util;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** TableColumn model. */
+/** paimon data type. */
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TableColumn {
+public class PaimonDataType {
 
-    private String field;
-
-    private String dataType;
-
-    private String comment;
-
-    private boolean isPK;
-
-    private String defaultValue;
+    private String type;
 
     private boolean isNullable;
 

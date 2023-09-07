@@ -35,6 +35,7 @@ import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
 import org.apache.paimon.web.server.util.CatalogUtils;
 import org.apache.paimon.web.server.util.DataTypeConvertUtils;
+import org.apache.paimon.web.server.util.PaimonDataType;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +56,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/table")
 public class TableController {
+
+    private final String FIELDS_PREFIX = "fields";
+    private final String DEFAULT_VALUE_SUFFIX = "default-value";
 
     @Autowired private CatalogService catalogService;
 
@@ -68,7 +73,24 @@ public class TableController {
         try {
             Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
             List<String> partitionKeys = tableInfo.getPartitionKey();
+
             Map<String, String> tableOptions = tableInfo.getTableOptions();
+            List<TableColumn> tableColumns = tableInfo.getTableColumns();
+            if (tableColumns != null && tableColumns.size() > 0) {
+                for (TableColumn tableColumn : tableColumns) {
+                    if (tableColumn.getDefaultValue() != null
+                            && !tableColumn.getDefaultValue().equals("")) {
+                        tableOptions.put(
+                                FIELDS_PREFIX
+                                        + "."
+                                        + tableColumn.getField()
+                                        + "."
+                                        + DEFAULT_VALUE_SUFFIX,
+                                tableColumn.getDefaultValue());
+                    }
+                }
+            }
+
             TableMetadata tableMetadata =
                     TableMetadata.builder()
                             .columns(buildColumns(tableInfo))
@@ -103,11 +125,28 @@ public class TableController {
             Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
             List<TableColumn> tableColumns = tableInfo.getTableColumns();
             List<AlterTableEntity> entityList = new ArrayList<>();
+            Map<String, String> options = new HashMap<>();
             for (TableColumn tableColumn : tableColumns) {
+                if (tableColumn.getDefaultValue() != null
+                        && !tableColumn.getDefaultValue().equals("")) {
+                    options.put(
+                            FIELDS_PREFIX
+                                    + "."
+                                    + tableColumn.getField()
+                                    + "."
+                                    + DEFAULT_VALUE_SUFFIX,
+                            tableColumn.getDefaultValue());
+                }
                 AlterTableEntity alterTableEntity =
                         AlterTableEntity.builder()
                                 .columnName(tableColumn.getField())
-                                .type(DataTypeConvertUtils.convert(tableColumn.getDataType()))
+                                .type(
+                                        DataTypeConvertUtils.convert(
+                                                new PaimonDataType(
+                                                        tableColumn.getDataType(),
+                                                        tableColumn.isNullable(),
+                                                        tableColumn.getLength0(),
+                                                        tableColumn.getLength1())))
                                 .comment(tableColumn.getComment())
                                 .kind(OperatorKind.ADD_COLUMN)
                                 .build();
@@ -115,6 +154,10 @@ public class TableController {
             }
             TableManager.alterTable(
                     catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
+            if (options.size() > 0) {
+                TableManager.setOptions(
+                        catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), options);
+            }
             return R.succeed();
         } catch (Exception e) {
             e.printStackTrace();
@@ -205,7 +248,13 @@ public class TableController {
                 AlterTableEntity alterTableEntity =
                         AlterTableEntity.builder()
                                 .columnName(tableColumn.getField())
-                                .type(DataTypeConvertUtils.convert(tableColumn.getDataType()))
+                                .type(
+                                        DataTypeConvertUtils.convert(
+                                                new PaimonDataType(
+                                                        tableColumn.getDataType(),
+                                                        tableColumn.isNullable(),
+                                                        tableColumn.getLength0(),
+                                                        tableColumn.getLength1())))
                                 .kind(OperatorKind.UPDATE_COLUMN_TYPE)
                                 .build();
                 entityList.add(alterTableEntity);
@@ -292,6 +341,48 @@ public class TableController {
     }
 
     /**
+     * Drops a table.
+     *
+     * @param tableInfo The information of the table to be dropped.
+     * @return R<Void/> indicating the result of the operation.
+     */
+    @PostMapping("/dropTable")
+    public R<Void> dropTable(@RequestBody TableInfo tableInfo) {
+        try {
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            TableManager.dropTable(catalog, tableInfo.getDatabaseName(), tableInfo.getTableName());
+            return R.succeed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.TABLE_DROP_ERROR);
+        }
+    }
+
+    /**
+     * Renames a table.
+     *
+     * @param tableInfos A list containing the information of the old and new table names. The first
+     *     element should contain the information of the old table name, and the second element
+     *     should contain the information of the new table name.
+     * @return R<Void/> indicating the result of the operation.
+     */
+    @PostMapping("/renameTable")
+    public R<Void> renameTable(@RequestBody List<TableInfo> tableInfos) {
+        try {
+            Catalog catalog =
+                    CatalogUtils.getCatalog(getCatalogInfo(tableInfos.get(0).getCatalogName()));
+            String oldTableName = tableInfos.get(0).getTableName();
+            String newTableName = tableInfos.get(1).getTableName();
+            TableManager.renameTable(
+                    catalog, tableInfos.get(0).getDatabaseName(), oldTableName, newTableName);
+            return R.succeed();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.failed(Status.TABLE_RENAME_ERROR);
+        }
+    }
+
+    /**
      * Handler method for the "/getAllTables" endpoint. Retrieves information about all tables and
      * returns a response containing the table details.
      *
@@ -317,8 +408,15 @@ public class TableController {
                                             List<String> primaryKeys = table.primaryKeys();
                                             List<DataField> fields = table.rowType().getFields();
                                             List<TableColumn> tableColumns = new ArrayList<>();
+                                            Map<String, String> options = table.options();
                                             if (fields.size() > 0) {
                                                 for (DataField field : fields) {
+                                                    String key =
+                                                            FIELDS_PREFIX
+                                                                    + "."
+                                                                    + field.name()
+                                                                    + "."
+                                                                    + DEFAULT_VALUE_SUFFIX;
                                                     TableColumn.TableColumnBuilder builder =
                                                             TableColumn.builder()
                                                                     .field(field.name())
@@ -326,11 +424,30 @@ public class TableController {
                                                                             DataTypeConvertUtils
                                                                                     .fromPaimonType(
                                                                                             field
-                                                                                                    .type()))
-                                                                    .comment(field.description());
+                                                                                                    .type())
+                                                                                    .getType())
+                                                                    .comment(field.description())
+                                                                    .isNullable(
+                                                                            field.type()
+                                                                                    .isNullable())
+                                                                    .length0(
+                                                                            DataTypeConvertUtils
+                                                                                    .fromPaimonType(
+                                                                                            field
+                                                                                                    .type())
+                                                                                    .getLength0())
+                                                                    .length1(
+                                                                            DataTypeConvertUtils
+                                                                                    .fromPaimonType(
+                                                                                            field
+                                                                                                    .type())
+                                                                                    .getLength1());
                                                     if (primaryKeys.size() > 0
                                                             && primaryKeys.contains(field.name())) {
                                                         builder.isPK(true);
+                                                    }
+                                                    if (options.get(key) != null) {
+                                                        builder.defaultValue(options.get(key));
                                                     }
                                                     tableColumns.add(builder.build());
                                                 }
@@ -396,7 +513,12 @@ public class TableController {
                         ColumnMetadata columnMetadata =
                                 new ColumnMetadata(
                                         item.getField(),
-                                        DataTypeConvertUtils.convert(item.getDataType()),
+                                        DataTypeConvertUtils.convert(
+                                                new PaimonDataType(
+                                                        item.getDataType(),
+                                                        item.isNullable(),
+                                                        item.getLength0(),
+                                                        item.getLength1())),
                                         item.getComment() != null ? item.getComment() : null);
                         columns.add(columnMetadata);
                     });

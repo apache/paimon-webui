@@ -24,6 +24,7 @@ import i18n from 'i18next';
 type Store = {
     databaseItemList: DatabaseItem[];
     createDatabase: (databaseProp: DatabaseItem) => Promise<void>;
+    removeDatabase: (databaseProp: DatabaseItem) => Promise<void>;
     fetchDatabases: () => Promise<void>;
 };
 
@@ -38,12 +39,29 @@ export const useDatabaseStore = create<Store>((set) => ({
             if (response.code === 200) {
                 Toast.success(i18n.t('metadata.create-database-success'));
             } else {
-                console.error('Failed to create database:', response.msg);
+                console.error(i18n.t('metadata.create-database-failed'), response.msg);
                 Toast.error(i18n.t('metadata.create-database-failed') +  response.msg);
             }
         } catch (error) {
-            console.error('Failed to create database:', error);
+            console.error(i18n.t('metadata.create-database-failed'), error);
             Toast.error(i18n.t('metadata.create-database-failed') + error);
+        }
+    },
+    removeDatabase: async (databaseProp) => {
+        try {
+            const response = await Api.removeDatabase(databaseProp);
+            if (!response) {
+                throw new Error('No response from removeDatabase');
+            }
+            if (response.code === 200) {
+                Toast.success(i18n.t('metadata.remove-database-success'));
+            } else {
+                console.error(i18n.t('metadata.remove-database-failed'), response.msg);
+                Toast.error(i18n.t('metadata.remove-database-failed') +  response.msg);
+            }
+        } catch (error) {
+            console.error(i18n.t('metadata.remove-database-failed'), error);
+            Toast.error(i18n.t('metadata.remove-database-failed') + error);
         }
     },
     fetchDatabases: async () => {

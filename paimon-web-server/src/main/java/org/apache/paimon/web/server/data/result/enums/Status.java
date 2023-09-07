@@ -71,6 +71,8 @@ public enum Status {
     TABLE_RENAME_COLUMN_ERROR(10507, "table.rename.column.error"),
     TABLE_UPDATE_COLUMN_TYPE_ERROR(10508, "table.update.column.type.error"),
     TABLE_UPDATE_COLUMN_COMMENT_ERROR(10509, "table.update.column.comment.error"),
+    TABLE_DROP_ERROR(10510, "table.drop.error"),
+    TABLE_RENAME_ERROR(10510, "table.rename.error"),
     ;
 
     private final int code;

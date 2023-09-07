@@ -22,7 +22,7 @@ spring:
   application:
     name: Paimon-Web-UI
   profiles:
-    active: dev
+    active: dev-h2
   messages:
     basename: i18n/messages
     encoding: UTF-8
@@ -65,3 +65,6 @@ sa-token:
   is-write-header: true
   is-read-header: true
   is-read-body: true
+
+knife4j:
+  enable: true
