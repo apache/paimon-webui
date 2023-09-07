@@ -21,4 +21,5 @@ export class Setting {
    * # Msi version
    */
   static readonly version = 'v0.0.1';
+  
 }

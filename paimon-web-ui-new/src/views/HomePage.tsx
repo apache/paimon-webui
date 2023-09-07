@@ -20,9 +20,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'HomePage',
   setup() {
-    const handleRequest = () => {
-      console.log('测试成功')
-    }
+    const handleRequest = () => {}
 
     return { handleRequest }
   },
@@ -34,7 +32,7 @@ export default defineComponent({
           <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Welcome to Paimon</h2>
         </div>
         <div class="flex justify-center py-12">
-          <n-button onClick={this.handleRequest}>请求测试</n-button>
+          <n-button onClick={this.handleRequest}>Request Test</n-button>
         </div>
       </div>
     );
