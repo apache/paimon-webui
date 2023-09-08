@@ -3,7 +3,6 @@
 .hg
 .zip
 .gz
-.DS_Store
 .target
 .idea/
 target/
@@ -19,9 +18,6 @@ target/
 .vim
 .tmp
 node/
-node_modules
-npm-debug.log
-.vscode
 paimon-manager-ui/.vscode
 paimon-manager-ui/.idea
 paimon-manager-ui/node/*
@@ -42,8 +38,36 @@ target
 *.swp
 *.jar
 *.zip
-*.log
 *.pyc
 dependency-reduced-pom.xml
 *.dependency-reduced-pom.xml
 !.idea/paimon.svg
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
+
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor directories and files
+*.vscode
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
