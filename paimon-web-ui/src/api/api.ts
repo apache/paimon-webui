@@ -46,9 +46,9 @@ export const getAllCatalogs = async () => {
     }
 }
 
-export const removeCatalog = async (catalogProp: Prop.CatalogProp) => {
+export const removeCatalog = async (catalogName: string) => {
     try {
-        return await http.httpPost<Result<any>, Prop.CatalogProp>(API_ENDPOINTS.REMOVE_CATALOG, catalogProp);
+        return await http.httpDelete<Result<any>, string>(API_ENDPOINTS.REMOVE_CATALOG, catalogName);
     } catch (error) {
         console.error('Failed to remove catalog:', error);
     }
@@ -70,9 +70,10 @@ export const getAllDatabases = async () => {
     }
 }
 
-export const removeDatabase = async (databaseProp: DatabaseItem) => {
+export const removeDatabase = async (databaseName: string, catalogName: string) => {
     try {
-        return await http.httpPost<Result<any>, DatabaseItem>(API_ENDPOINTS.REMOVE_DATABASE, databaseProp);
+        return await http.httpDelete<Result<any>, { databaseName: string, catalogName: string }>
+        (API_ENDPOINTS.REMOVE_DATABASE, { databaseName, catalogName });
     } catch (error) {
         console.error('Failed to delete database:', error);
     }
@@ -86,16 +87,18 @@ export const createTable = async (tableProp: TableItem) => {
     }
 };
 
-export const dropTable = async (tableProp: TableItem) => {
+export const dropTable = async (catalogName: string, databaseName: string, tableName: string) => {
     try {
-        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.DROP_TABLE, tableProp);
+        return await http.httpDelete<Result<any>, {catalogName: string, databaseName: string, tableName: string}>
+        (API_ENDPOINTS.DROP_TABLE, {catalogName, databaseName, tableName});
     } catch (error) {
         console.error('Failed to drop table:', error);
     }
 };
-export const renameTable = async (tableProp: TableItem[]) => {
+export const renameTable = async (catalogName: string, databaseName: string, fromTableName: string,  toTableName: string) => {
     try {
-        return await http.httpPost<Result<any>, TableItem[]>(API_ENDPOINTS.RENAME_TABLE, tableProp);
+        const url = `${API_ENDPOINTS.RENAME_TABLE}?catalogName=${encodeURIComponent(catalogName)}&databaseName=${encodeURIComponent(databaseName)}&fromTableName=${encodeURIComponent(fromTableName)}&toTableName=${encodeURIComponent(toTableName)}`;
+        return await http.httpPost<Result<any>, null>(url, null);
     } catch (error) {
         console.error('Failed to rename table:', error);
     }
@@ -118,17 +121,19 @@ export const addColumn = async (tableProp: TableItem) => {
     }
 };
 
-export const dropColumn = async (tableProp: TableItem) => {
+export const dropColumn = async (catalogName: string, databaseName: string, tableName: string, columnName: string) => {
     try {
-        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.DROP_COLUMN, tableProp);
+        return await http.httpDelete<Result<any>, {catalogName: string, databaseName: string, tableName: string, columnName: string}>
+        (API_ENDPOINTS.DROP_COLUMN, {catalogName, databaseName, tableName, columnName});
     } catch (error) {
         console.error('Failed to drop column:', error);
     }
 };
 
-export const renameColumn = async (tableProp: TableItem) => {
+export const renameColumn = async (catalogName: string, databaseName: string, tableName: string, fromColumnName: string, toColumnName: string) => {
     try {
-        return await http.httpPost<Result<any>, TableItem>(API_ENDPOINTS.RENAME_COLUMN, tableProp);
+        const url = `${API_ENDPOINTS.RENAME_COLUMN}?catalogName=${encodeURIComponent(catalogName)}&databaseName=${encodeURIComponent(databaseName)}&tableName=${encodeURIComponent(tableName)}&fromColumnName=${encodeURIComponent(fromColumnName)}&toColumnName=${encodeURIComponent(toColumnName)}`;
+        return await http.httpPost<Result<any>, null>(url, null);
     } catch (error) {
         console.error('Failed to rename column:', error);
     }

@@ -92,12 +92,18 @@ const httpPost = async <T, E>(url: string, body: E, beforeCallBack? : () => void
     return data
 }
 
-const httpDelete = async <T, E>(url: string, param: E ,beforeCallBack? : () => void , afterCallBack? : () => void): Promise<T> => {
-    beforeCallBack && beforeCallBack()
-    const {data} = await httpClient.delete(url, {params: param})
-    afterCallBack && afterCallBack()
-    return data
-}
+const httpDelete = async <T, E extends { [key: string]: any } | string>(url: string, params: E, beforeCallBack?: () => void, afterCallBack?: () => void): Promise<T> => {
+    beforeCallBack && beforeCallBack();
+    let urlWithParams = url;
+    if (typeof params === 'string') {
+        urlWithParams += `/${params}`;
+    } else {
+        urlWithParams += `/${Object.values(params).join('/')}`;
+    }
+    const { data } = await httpClient.delete(urlWithParams);
+    afterCallBack && afterCallBack();
+    return data;
+};
 
 const httpFormPost = async <T, E>(url: string, body?: E , beforeCallBack? : () => void , afterCallBack? : () => void): Promise<T> => {
     beforeCallBack && beforeCallBack()

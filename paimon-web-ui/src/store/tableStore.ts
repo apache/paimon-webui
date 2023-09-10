@@ -34,12 +34,12 @@ type Store = {
     setOptionInputs: (newInputs: Array<{}>) => void;
     setConfigs: (newConfigs: Array<{}>) => void;
     createTable: (tableProp: TableItem) => Promise<void>;
-    dropTable: (tableProp: TableItem) => Promise<void>;
-    renameTable: (tableProp: TableItem[]) => Promise<void>;
+    dropTable: (catalogName: string, databaseName: string, tableName: string) => Promise<void>;
+    renameTable: (catalogName: string, databaseName: string, fromTableName: string,  toTableName: string) => Promise<void>;
     addColumn: (tableProp: TableItem) => Promise<void>;
     modifyOption: (tableProp: TableItem) => Promise<void>;
-    dropColumn: (tableProp: TableItem) => Promise<void>;
-    renameColumn: (tableProp: TableItem) => Promise<void>;
+    dropColumn: (catalogName: string, databaseName: string, tableName: string, columnName: string) => Promise<void>;
+    renameColumn: (catalogName: string, databaseName: string, tableName: string, fromColumnName: string,  toColumnName: string) => Promise<void>;
     updateColumnType: (tableProp: TableItem) => Promise<void>;
     updateColumnComment: (tableProp: TableItem) => Promise<void>;
     addOption: (tableProp: TableItem) => Promise<void>;
@@ -76,9 +76,9 @@ export const useTableStore = create<Store>((set) => ({
             Toast.error(i18n.t('metadata.create-table-failed') + error.value);
         }
     },
-    dropTable: async (tableProp) => {
+    dropTable: async (catalogName: string, databaseName: string, tableName: string) => {
         try {
-            const response = await Api.dropTable(tableProp);
+            const response = await Api.dropTable(catalogName, databaseName, tableName);
             if (!response) {
                 throw new Error('No response from dropTable');
             }
@@ -93,9 +93,9 @@ export const useTableStore = create<Store>((set) => ({
             Toast.error(i18n.t('metadata.drop-table-failed') + error.value);
         }
     },
-    renameTable: async (tableProp) => {
+    renameTable: async (catalogName, databaseName, fromTableName,  toTableName) => {
         try {
-            const response = await Api.renameTable(tableProp);
+            const response = await Api.renameTable(catalogName, databaseName, fromTableName, toTableName);
             if (!response) {
                 throw new Error('No response from renameTable');
             }
@@ -127,9 +127,9 @@ export const useTableStore = create<Store>((set) => ({
             Toast.error(i18n.t('metadata.add-column-failed') + error.value);
         }
     },
-    dropColumn: async (tableProp) => {
+    dropColumn: async (catalogName, databaseName, tableName, columnName) => {
         try {
-            const response = await Api.dropColumn(tableProp);
+            const response = await Api.dropColumn(catalogName, databaseName, tableName, columnName);
             if (!response) {
                 throw new Error('No response from dropColumn');
             }
@@ -144,9 +144,9 @@ export const useTableStore = create<Store>((set) => ({
             Toast.error(i18n.t('metadata.drop-column-failed') + error.value);
         }
     },
-    renameColumn: async (tableProp) => {
+    renameColumn: async (catalogName, databaseName, tableName, fromColumnName, toColumnName) => {
         try {
-            const response = await Api.renameColumn(tableProp);
+            const response = await Api.renameColumn(catalogName, databaseName, tableName, fromColumnName, toColumnName);
             if (!response) {
                 throw new Error('No response from renameColumn');
             }

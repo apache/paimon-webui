@@ -120,26 +120,7 @@ const CatalogTree = () => {
                     .then(() => {
                         const values = formApi.getValues();
 
-                        const oldTableProp: TableItem = {
-                            catalogName: catalogName,
-                            databaseName: databaseName,
-                            tableName: tableName,
-                            description: "",
-                            tableColumns: [],
-                            partitionKey: [],
-                            tableOptions: new Map,
-                        }
-                        const newTableProp: TableItem = {
-                            catalogName: catalogName,
-                            databaseName: databaseName,
-                            tableName: values.tableName,
-                            description: "",
-                            tableColumns: [],
-                            partitionKey: [],
-                            tableOptions: new Map,
-                        }
-
-                        renameTable([oldTableProp, newTableProp])
+                        renameTable(catalogName, databaseName, tableName, values.tableName)
                             .then(() => {
                                 fetchTables();
                                 resolve();
@@ -427,16 +408,7 @@ const CatalogTree = () => {
 
     const onConfirmRemoveCatalog = async (catalogName: string) => {
 
-        const catalogProp: Prop.CatalogProp = {
-            catalogName: catalogName,
-            catalogType: "",
-            warehouse: "",
-            hiveUri: "",
-            hiveConfDir: "",
-            isDelete: false
-        };
-
-        removeCatalog(catalogProp)
+        removeCatalog(catalogName)
             .then(() => {
                 fetchCatalogData();
             })
@@ -446,15 +418,7 @@ const CatalogTree = () => {
     };
 
     const onConfirmRemoveDatabase = async (databaseName: string, catalogName: string) => {
-
-        const databaseProp: DatabaseItem = {
-            databaseName: databaseName,
-            catalogId: null,
-            catalogName: catalogName,
-            description: "",
-        };
-
-        removeDatabase(databaseProp)
+        removeDatabase(databaseName, catalogName)
             .then(() => {
                 fetchDatabases();
             })
@@ -468,17 +432,7 @@ const CatalogTree = () => {
         const databaseName = key.split("#")[1];
         const tableName = key.split("#")[2];
 
-        const tableProp: TableItem = {
-            catalogName: catalogName,
-            databaseName: databaseName,
-            tableName: tableName,
-            description: "",
-            tableColumns: [],
-            partitionKey: [],
-            tableOptions: new Map,
-        }
-
-        dropTable(tableProp)
+        dropTable(catalogName, databaseName, tableName)
             .then(() => {
                 fetchTables();
             })

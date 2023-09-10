@@ -39,11 +39,15 @@ import org.apache.paimon.web.server.util.PaimonDataType;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -76,7 +80,7 @@ public class TableController {
 
             Map<String, String> tableOptions = tableInfo.getTableOptions();
             List<TableColumn> tableColumns = tableInfo.getTableColumns();
-            if (tableColumns != null && tableColumns.size() > 0) {
+            if (!CollectionUtils.isEmpty(tableColumns)) {
                 for (TableColumn tableColumn : tableColumns) {
                     if (tableColumn.getDefaultValue() != null
                             && !tableColumn.getDefaultValue().equals("")) {
@@ -107,7 +111,7 @@ public class TableController {
                     catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), tableMetadata);
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_CREATE_ERROR);
         }
     }
@@ -160,7 +164,7 @@ public class TableController {
             }
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_ADD_COLUMN_ERROR);
         }
     }
@@ -168,28 +172,31 @@ public class TableController {
     /**
      * Drops a column from a table.
      *
-     * @param tableInfo The information of the table.
-     * @return The result of the operation.
+     * @param catalogName The name of the catalog.
+     * @param databaseName The name of the database.
+     * @param tableName The name of the table.
+     * @param columnName The name of the column to be dropped.
+     * @return The result indicating the success or failure of the operation.
      */
-    @PostMapping("/dropColumn")
-    public R<Void> dropColumn(@RequestBody TableInfo tableInfo) {
+    @DeleteMapping("/dropColumn/{catalogName}/{databaseName}/{tableName}/{columnName}")
+    public R<Void> dropColumn(
+            @PathVariable String catalogName,
+            @PathVariable String databaseName,
+            @PathVariable String tableName,
+            @PathVariable String columnName) {
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
-            List<TableColumn> tableColumns = tableInfo.getTableColumns();
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
             List<AlterTableEntity> entityList = new ArrayList<>();
-            for (TableColumn tableColumn : tableColumns) {
-                AlterTableEntity alterTableEntity =
-                        AlterTableEntity.builder()
-                                .columnName(tableColumn.getField())
-                                .kind(OperatorKind.DROP_COLUMN)
-                                .build();
-                entityList.add(alterTableEntity);
-            }
-            TableManager.alterTable(
-                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
+            AlterTableEntity alterTableEntity =
+                    AlterTableEntity.builder()
+                            .columnName(columnName)
+                            .kind(OperatorKind.DROP_COLUMN)
+                            .build();
+            entityList.add(alterTableEntity);
+            TableManager.alterTable(catalog, databaseName, tableName, entityList);
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_DROP_COLUMN_ERROR);
         }
     }
@@ -197,37 +204,37 @@ public class TableController {
     /**
      * Renames a column in a table.
      *
-     * @param tableInfo The information of the table.
-     * @return The result of the operation.
+     * @param catalogName The name of the catalog.
+     * @param databaseName The name of the database.
+     * @param tableName The name of the table.
+     * @param fromColumnName The current name of the column.
+     * @param toColumnName The new name for the column.
+     * @return The result indicating the success or failure of the operation.
      */
     @PostMapping("/renameColumn")
-    public R<Void> renameColumn(@RequestBody TableInfo tableInfo) {
+    public R<Void> renameColumn(
+            @RequestParam String catalogName,
+            @RequestParam String databaseName,
+            @RequestParam String tableName,
+            @RequestParam String fromColumnName,
+            @RequestParam String toColumnName) {
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
-            List<TableColumn> tableColumns = tableInfo.getTableColumns();
-
-            if (tableColumns.size() != 2) {
-                throw new IllegalArgumentException("Expected exactly 2 TableColumn objects");
-            }
-
-            String columnName = tableColumns.get(0).getField();
-            String newColumnName = tableColumns.get(1).getField();
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
 
             AlterTableEntity alterTableEntity =
                     AlterTableEntity.builder()
-                            .columnName(columnName)
-                            .newColumn(newColumnName)
+                            .columnName(fromColumnName)
+                            .newColumn(toColumnName)
                             .kind(OperatorKind.RENAME_COLUMN)
                             .build();
 
             List<AlterTableEntity> entityList = new ArrayList<>();
             entityList.add(alterTableEntity);
 
-            TableManager.alterTable(
-                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
+            TableManager.alterTable(catalog, databaseName, tableName, entityList);
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_RENAME_COLUMN_ERROR);
         }
     }
@@ -263,7 +270,7 @@ public class TableController {
                     catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_UPDATE_COLUMN_TYPE_ERROR);
         }
     }
@@ -293,7 +300,7 @@ public class TableController {
                     catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_UPDATE_COLUMN_COMMENT_ERROR);
         }
     }
@@ -314,7 +321,7 @@ public class TableController {
                     catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), tableOptions);
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_ADD_OPTION_ERROR);
         }
     }
@@ -335,49 +342,63 @@ public class TableController {
                     catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), tableOptions);
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_REMOVE_OPTION_ERROR);
         }
     }
 
     /**
-     * Drops a table.
+     * Drops a table from the specified database in the given catalog.
      *
-     * @param tableInfo The information of the table to be dropped.
-     * @return R<Void/> indicating the result of the operation.
+     * @param catalogName The name of the catalog from which the table will be dropped.
+     * @param databaseName The name of the database from which the table will be dropped.
+     * @param tableName The name of the table to be dropped.
+     * @return A Response object indicating the success or failure of the operation. If the
+     *     operation is successful, the response will be R.succeed(). If the operation fails, the
+     *     response will be R.failed() with Status.TABLE_DROP_ERROR.
+     * @throws RuntimeException If there is an error during the operation, a RuntimeException is
+     *     thrown with the error message.
      */
-    @PostMapping("/dropTable")
-    public R<Void> dropTable(@RequestBody TableInfo tableInfo) {
+    @DeleteMapping("/delete/{catalogName}/{databaseName}/{tableName}")
+    public R<Void> dropTable(
+            @PathVariable String catalogName,
+            @PathVariable String databaseName,
+            @PathVariable String tableName) {
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
-            TableManager.dropTable(catalog, tableInfo.getDatabaseName(), tableInfo.getTableName());
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
+            TableManager.dropTable(catalog, databaseName, tableName);
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_DROP_ERROR);
         }
     }
 
     /**
-     * Renames a table.
+     * Renames a table in the specified database of the given catalog.
      *
-     * @param tableInfos A list containing the information of the old and new table names. The first
-     *     element should contain the information of the old table name, and the second element
-     *     should contain the information of the new table name.
-     * @return R<Void/> indicating the result of the operation.
+     * @param catalogName The name of the catalog where the table resides.
+     * @param databaseName The name of the database where the table resides.
+     * @param fromTableName The current name of the table to be renamed.
+     * @param toTableName The new name for the table.
+     * @return A Response object indicating the success or failure of the operation. If the
+     *     operation is successful, the response will be R.succeed(). If the operation fails, the
+     *     response will be R.failed() with Status.TABLE_RENAME_ERROR.
+     * @throws RuntimeException If there is an error during the operation, a RuntimeException is
+     *     thrown with the error message.
      */
     @PostMapping("/renameTable")
-    public R<Void> renameTable(@RequestBody List<TableInfo> tableInfos) {
+    public R<Void> renameTable(
+            @RequestParam String catalogName,
+            @RequestParam String databaseName,
+            @RequestParam String fromTableName,
+            @RequestParam String toTableName) {
         try {
-            Catalog catalog =
-                    CatalogUtils.getCatalog(getCatalogInfo(tableInfos.get(0).getCatalogName()));
-            String oldTableName = tableInfos.get(0).getTableName();
-            String newTableName = tableInfos.get(1).getTableName();
-            TableManager.renameTable(
-                    catalog, tableInfos.get(0).getDatabaseName(), oldTableName, newTableName);
+            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
+            TableManager.renameTable(catalog, databaseName, fromTableName, toTableName);
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return R.failed(Status.TABLE_RENAME_ERROR);
         }
     }
@@ -392,15 +413,15 @@ public class TableController {
     public R<List<TableInfo>> getAllTables() {
         List<TableInfo> tableInfoList = new ArrayList<>();
         List<CatalogInfo> catalogInfoList = catalogService.list();
-        if (catalogInfoList.size() > 0) {
+        if (!CollectionUtils.isEmpty(catalogInfoList)) {
             for (CatalogInfo item : catalogInfoList) {
                 Catalog catalog = CatalogUtils.getCatalog(item);
                 List<String> databaseList = DatabaseManager.listDatabase(catalog);
-                if (databaseList.size() > 0) {
+                if (!CollectionUtils.isEmpty(databaseList)) {
                     for (String db : databaseList) {
                         try {
                             List<String> tables = TableManager.listTables(catalog, db);
-                            if (tables.size() > 0) {
+                            if (!CollectionUtils.isEmpty(tables)) {
                                 for (String t : tables) {
                                     try {
                                         Table table = TableManager.getTable(catalog, db, t);
@@ -409,7 +430,7 @@ public class TableController {
                                             List<DataField> fields = table.rowType().getFields();
                                             List<TableColumn> tableColumns = new ArrayList<>();
                                             Map<String, String> options = table.options();
-                                            if (fields.size() > 0) {
+                                            if (!CollectionUtils.isEmpty(fields)) {
                                                 for (DataField field : fields) {
                                                     String key =
                                                             FIELDS_PREFIX
@@ -487,7 +508,7 @@ public class TableController {
     private List<String> buildPrimaryKeys(TableInfo tableInfo) {
         List<String> primaryKeys = new ArrayList<>();
         List<TableColumn> tableColumns = tableInfo.getTableColumns();
-        if (tableColumns != null && tableColumns.size() > 0) {
+        if (!CollectionUtils.isEmpty(tableColumns)) {
             tableColumns.forEach(
                     item -> {
                         if (item.isPK()) {
@@ -507,7 +528,7 @@ public class TableController {
     private List<ColumnMetadata> buildColumns(TableInfo tableInfo) {
         List<ColumnMetadata> columns = new ArrayList<>();
         List<TableColumn> tableColumns = tableInfo.getTableColumns();
-        if (tableColumns != null && tableColumns.size() > 0) {
+        if (!CollectionUtils.isEmpty(tableColumns)) {
             tableColumns.forEach(
                     item -> {
                         ColumnMetadata columnMetadata =

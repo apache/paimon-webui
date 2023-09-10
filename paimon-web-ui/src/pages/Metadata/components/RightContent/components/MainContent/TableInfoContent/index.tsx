@@ -215,7 +215,7 @@ const TableInfoContent = () => {
                             tableOptions: new Map<string, string>(),
                         }
 
-                        renameColumn(tableProp)
+                        renameColumn(catalogName, databaseName, tableName, selectedColumnName == null ? values.field : selectedColumnName, values.field)
                             .then(() => {
                                 updateColumnType(tableProp)
                                     .then(() => {
@@ -307,30 +307,7 @@ const TableInfoContent = () => {
                 return;
             }
 
-            let tableColumns: TableColumn[] = [];
-            const tableColumn: TableColumn = {
-                field: columnToRemove.columnName,
-                dataType: columnToRemove.columnType,
-                comment: columnToRemove.description,
-                isPK: false,
-                defaultValue: null,
-                isNullable: true,
-                length0: 0,
-                length1: 0,
-            }
-            tableColumns.push(tableColumn);
-
-            const tableProp: TableItem = {
-                catalogName: catalogName,
-                databaseName: databaseName,
-                tableName: tableName,
-                description: null,
-                tableColumns: tableColumns,
-                partitionKey: [],
-                tableOptions: new Map<string, string>(),
-            };
-
-            dropColumn(tableProp)
+            dropColumn(catalogName, databaseName, tableName, columnToRemove.columnName)
                 .then(() => {
                     fetchTables();
                 })

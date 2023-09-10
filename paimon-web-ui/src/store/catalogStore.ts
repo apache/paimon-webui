@@ -26,7 +26,7 @@ type Store = {
     catalogItemList: CatalogItemList;
     createFileSystemCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
     createHiveCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
-    removeCatalog: (catalogProp: Prop.CatalogProp) => Promise<void>;
+    removeCatalog: (catalogName: string) => Promise<void>;
     fetchCatalogData: () => Promise<void>;
 };
 
@@ -67,9 +67,9 @@ export const useCatalogStore = create<Store>()(persist(
                 Toast.error(i18n.t('metadata.create-catalog-failed') + error);
             }
         },
-        removeCatalog: async (catalogProp) => {
+        removeCatalog: async (catalogName) => {
             try {
-                const response = await Api.removeCatalog(catalogProp);
+                const response = await Api.removeCatalog(catalogName);
                 if (!response) {
                     throw new Error('No response from removeCatalog');
                 }

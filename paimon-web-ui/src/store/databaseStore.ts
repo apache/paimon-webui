@@ -24,7 +24,7 @@ import i18n from 'i18next';
 type Store = {
     databaseItemList: DatabaseItem[];
     createDatabase: (databaseProp: DatabaseItem) => Promise<void>;
-    removeDatabase: (databaseProp: DatabaseItem) => Promise<void>;
+    removeDatabase: (databaseName: string, catalogName: string) => Promise<void>;
     fetchDatabases: () => Promise<void>;
 };
 
@@ -47,9 +47,9 @@ export const useDatabaseStore = create<Store>((set) => ({
             Toast.error(i18n.t('metadata.create-database-failed') + error);
         }
     },
-    removeDatabase: async (databaseProp) => {
+    removeDatabase: async (databaseName: string, catalogName: string) => {
         try {
-            const response = await Api.removeDatabase(databaseProp);
+            const response = await Api.removeDatabase(databaseName, catalogName);
             if (!response) {
                 throw new Error('No response from removeDatabase');
             }
