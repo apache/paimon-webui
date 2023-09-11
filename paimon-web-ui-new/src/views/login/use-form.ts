@@ -15,25 +15,43 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { createRouter, createWebHistory } from 'vue-router'
+export function useForm() {
+  const router = useRouter()
+  const { t } = VueI18n.useI18n()
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'homepage',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/HomePage')
+  const state = reactive({
+    loginForm: ref(),
+    model: {
+      username: '',
+      password: ''
     },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/login')
+    rules: {
+      username: {
+        trigger: ['input', 'blur'],
+        validator() {
+          if (state.loginForm.username === '') {
+            return new Error(t('login.username_tips'))
+          }
+        }
+      },
+      password: {
+        trigger: ['input', 'blur'],
+        validator() {
+          if (state.loginForm.password === '') {
+            return new Error(t('login.password_tips'))
+          }
+        }
+      }
     }
-  ]
-})
+  })
 
-export default router
+  const handleLogin = () => {
+
+  }
+
+  return {
+    t,
+    state,
+    handleLogin
+  }
+}

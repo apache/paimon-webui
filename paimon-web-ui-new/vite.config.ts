@@ -33,30 +33,31 @@ export default defineConfig({
       imports: [
         'vue',
         'vue-router',
+        'vue-i18n',
         'pinia',
         {
           'naive-ui': [
             'useDialog',
             'useMessage',
             'useNotification',
-            'useLoadingBar',
-          ],
-        },
+            'useLoadingBar'
+          ]
+        }
       ],
       dts: './auto-imports.d.ts',
       eslintrc: {
-        enabled: false,
-      },
+        enabled: false
+      }
     }),
     Components({
-      resolvers: [NaiveUiResolver()],
-    }),
+      resolvers: [NaiveUiResolver()]
+    })
   ],
   css: {
     postcss: {
       plugins: [
         require("tailwindcss"),
-        require("autoprefixer"),
+        require("autoprefixer")
       ]
     }
   },

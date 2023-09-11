@@ -15,13 +15,42 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import {
+  darkTheme,
+  dateZhCN,
+  dateEnUS,
+  zhCN,
+  enUS
+} from 'naive-ui'
+import { useConfigStore } from '@/store/config'
+import themes from '@/themes'
+
 export default defineComponent({
   name: 'App',
   setup() {
+    const configStore = useConfigStore()
+    console.log(configStore.getCurrentTheme)
+    const theme = computed(() => configStore.getCurrentTheme === 'dark' ? darkTheme : undefined)
+    const themeOverrides = computed(() => themes[theme.value ? 'dark' : 'light'])
+    const locale = computed(() => configStore.getCurrentLocale)
 
-    return {}
+    console.log(theme.value)
+    console.log(themeOverrides.value)
+
+    return {
+      theme,
+      themeOverrides,
+      locale
+    }
   },
   render() {
-    return <router-view />
+    return <n-config-provider
+      theme={this.theme}
+      theme-overrides={this.themeOverrides}
+      locale={this.locale === 'en' ? enUS : zhCN}
+      date-locale={this.locale === 'en' ? dateEnUS : dateZhCN}
+    >
+      <router-view />
+    </n-config-provider>
   }
 })

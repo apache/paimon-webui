@@ -25,6 +25,10 @@ import naive from 'naive-ui'
 import { Setting } from './config'
 import './assets/tailMain.css'
 
+const meta = document.createElement('meta')
+meta.name = 'naive-ui-style'
+document.head.appendChild(meta)
+
 const app = createApp(App)
 
 const pinia = createPinia()
