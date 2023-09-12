@@ -16,6 +16,5 @@ specific language governing permissions and limitations
 under the License. */
 
 export const plugins = {
-  tailwindcss: {},
-  autoprefixer: {},
-};
+  autoprefixer: {}
+}

@@ -18,20 +18,16 @@ under the License. */
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-
 import App from './App'
 import router from './router'
 import naive from 'naive-ui'
+import i18n from './locales'
 import { Setting } from './config'
-import './assets/tailMain.css'
-
-const meta = document.createElement('meta')
-meta.name = 'naive-ui-style'
-document.head.appendChild(meta)
 
 const app = createApp(App)
-
 const pinia = createPinia()
+
+app.use(i18n)
 app.use(pinia)
 pinia.use(piniaPluginPersistedstate)
 app.use(router)

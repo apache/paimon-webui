@@ -33,7 +33,6 @@ export default defineConfig({
       imports: [
         'vue',
         'vue-router',
-        'vue-i18n',
         'pinia',
         {
           'naive-ui': [
@@ -56,7 +55,6 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        require("tailwindcss"),
         require("autoprefixer")
       ]
     }

@@ -20,5 +20,7 @@ export default {
   username: '用户名',
   password: '密码',
   username_tips: '请输入用户名',
-  password_tips: '请输入密码'
+  password_tips: '请输入密码',
+  light: '浅色',
+  dark: '暗色'
 }

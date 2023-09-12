@@ -17,31 +17,12 @@ under the License. */
 
 export function useForm() {
   const router = useRouter()
-  const { t } = VueI18n.useI18n()
 
   const state = reactive({
     loginForm: ref(),
     model: {
       username: '',
       password: ''
-    },
-    rules: {
-      username: {
-        trigger: ['input', 'blur'],
-        validator() {
-          if (state.loginForm.username === '') {
-            return new Error(t('login.username_tips'))
-          }
-        }
-      },
-      password: {
-        trigger: ['input', 'blur'],
-        validator() {
-          if (state.loginForm.password === '') {
-            return new Error(t('login.password_tips'))
-          }
-        }
-      }
     }
   })
 
@@ -50,7 +31,6 @@ export function useForm() {
   }
 
   return {
-    t,
     state,
     handleLogin
   }

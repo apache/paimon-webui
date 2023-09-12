@@ -15,71 +15,102 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { useConfigStore } from '@/store/config'
 import { useForm } from '@/views/login/use-form'
+import { useConfigStore } from '@/store/config'
+import i18n from '@/locales'
 import backgroundImage from '@/assets/background.png'
 import logoImage from '@/assets/logo.svg'
+import styles from './index.module.scss'
 
 export default defineComponent({
   name: 'login',
   setup() {
-    const { t } = VueI18n.useI18n()
-    const configStore = useConfigStore()
     const { state, handleLogin } = useForm()
+    const configStore = useConfigStore()
+    const handleLocale = () => {
+      configStore.setCurrentLocale(configStore.getCurrentLocale === 'zh' ? 'en' : 'zh')
+      i18n.global.locale.value = configStore.getCurrentLocale === 'zh' ? 'en' : 'zh'
+    }
 
     return {
-      t,
+      configStore,
       handleLogin,
+      handleLocale,
       ...toRefs(state)
     }
   },
   render() {
     return <n-layout>
-      <n-space class='w-screen h-screen' justify='center' align='center'>
-        <n-card bordered={false} content-style={{padding: 0}}>
-          <div class='h-4/6 flex'>
-            <div class='w-1/2'>
-              <img src={backgroundImage} alt='background-image' />
-            </div>
-            <div class='w-1/2 py-2 px-3'>
+      <n-space justify='center' align='center' class={styles['container']}>
+        <n-card bordered={false} content-style={{padding: 0, width: '1200px'}}>
+          <n-space justify='start'>
+            <img src={backgroundImage} alt='background-image' class={styles['background']} />
+            <div class={styles['form-container']}>
               <n-space align='center' justify='center'>
-                <img class='h-16 w-16' src={logoImage} alt='logo-image'/>
-                <h1 class='text-2xl'>Apache Paimon</h1>
+                <img class={styles['logo']} src={logoImage} alt='logo-image'/>
+                <h1>Apache Paimon</h1>
               </n-space>
               <n-form
                 ref='loginForm'
                 model={this.model}
-                rules={this.rules}
-                label-placement='left'
                 label-width='auto'
+                style={{marginTop: '50px'}}
               >
                 <n-form-item
-                  label={this.t('login.username')}
-                  label-style={{ color: 'black' }}
+                  label={i18n.global.t('login.username')}
                   path='userName'
                 >
                   <n-input
                     clearable
                     v-model={[this.model.username, 'value']}
-                    placeholder={this.t('login.username_tips')}
+                    placeholder={i18n.global.t('login.username_tips')}
                     autofocus
+                    size='large'
                   />
                 </n-form-item>
                 <n-form-item
-                  label={this.t('login.password')}
-                  label-style={{ color: 'black' }}
+                  label={i18n.global.t('login.password')}
                   path='userPassword'
                 >
                   <n-input
                     clearable
                     type='password'
                     v-model={[this.model.password, 'value']}
-                    placeholder={this.t('login.password_tips')}
+                    placeholder={i18n.global.t('login.password_tips')}
+                    size='large'
                   />
                 </n-form-item>
+                <n-button
+                  size='large'
+                  type='primary'
+                  disabled={!this.model.password || !this.model.username}
+                  style={{ width: '100%' }}
+                >
+                  {i18n.global.t('login.login')}
+                </n-button>
               </n-form>
+              <n-space justify='center' style={{marginTop: '80px'}}>
+                <n-button
+                  quaternary
+                  type='primary'
+                  style={{width: '100px'}}
+                  onClick={() => this.configStore.setCurrentTheme(
+                    this.configStore.getCurrentTheme === 'light' ? 'dark' : 'light'
+                  )}
+                >
+                  {i18n.global.t('login.' + String(this.configStore.getCurrentTheme === 'light' ? 'dark' : 'light'))}
+                </n-button>
+                <n-button
+                  quaternary
+                  type='primary'
+                  style={{width: '100px'}}
+                  onClick={this.handleLocale}
+                >
+                  {this.configStore.getCurrentLocale === 'zh' ? '简体中文' : 'English'}
+                </n-button>
+              </n-space>
             </div>
-          </div>
+          </n-space>
         </n-card>
       </n-space>
     </n-layout>

@@ -20,5 +20,7 @@ export default {
   username: 'Username',
   password: 'Password',
   username_tips: 'Please input username',
-  password_tips: 'Please input password'
+  password_tips: 'Please input password',
+  light: 'Light',
+  dark: 'Dark'
 }

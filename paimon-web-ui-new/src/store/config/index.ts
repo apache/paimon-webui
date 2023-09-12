@@ -16,13 +16,13 @@ specific language governing permissions and limitations
 under the License. */
 
 type Theme = 'dark' | 'light'
-type Locale = 'en' | 'us'
+type Locale = 'en' | 'zh'
 
 export const useConfigStore = defineStore({
   id: 'config',
   state: (): { theme: Theme, locale: Locale } => ({
-    theme: 'dark',
-    locale: 'en'
+    theme: 'light',
+    locale: 'zh'
   }),
   getters: {
     getCurrentLocale(): Locale {

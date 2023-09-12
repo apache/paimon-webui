@@ -20,14 +20,20 @@ import type { GlobalThemeOverrides } from 'naive-ui'
 const light: GlobalThemeOverrides = {
   common: {
     bodyColor: '#F4F5F6',
+
     primaryColor: '#2475FE',
+    primaryColorHover: '#3a7bfa',
+    primaryColorPressed: '#1a6efb',
+    primaryColorSuppl: '#0060fa',
+
     infoColor: '#A6A6A6',
     successColor: '#00B69B',
     warningColor: '#FCBE2D',
     errorColor: '#EC4C4D'
   },
   Card: {
-    color: '#FAFAFA'
+    color: '#FAFAFA',
+    borderRadius: '8px'
   }
 }
 
