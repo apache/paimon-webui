@@ -18,7 +18,11 @@ under the License. */
 import { createAxle } from '@varlet/axle'
 import { createUseAxle, type UseAxleInstance, type UseAxleOptions } from '@varlet/axle/use'
 
-type AxleConfigOptions<D, R = any, P = Record<string, any>> = Omit<UseAxleOptions<D, R, P>, 'data'> & Pick<UseAxleOptions<D, R, P>, 'data'>
+type RequestConfigOptions<D, R = any, P = Record<string, any>> = Omit<UseAxleOptions<D, R, P>, 'data'> & Pick<UseAxleOptions<D, R, P>, 'data'>
+
+type AxleConfigOptions<R = any, P = Record<string, any>> = Omit<RequestConfigOptions<R, P>, 'url' | 'runner'>
+
+export type HttpRequestOptions<R, P = any> = Omit<AxleConfigOptions<R, P>, 'data'>
 
 const axle = createAxle({
   baseURL: '/api'
@@ -58,38 +62,41 @@ const useAxle = createUseAxle({
 })
 
 class HttpRequest {
-  private request<R = any, P = any>(options: AxleConfigOptions<R, P>): UseAxleInstance<R, P, Record<string, any>> {
+  private request<R = any, P = any>(options: RequestConfigOptions<R, P>): UseAxleInstance<R, P, Record<string, any>> {
     return useAxle(options)
   }
 
-  get<R = any, P = any>(url: string, options: Omit<AxleConfigOptions<R, P>, 'url' | 'runner'>) {
-    return this.request({
+  get<R = any, P = any>(url: string, options: AxleConfigOptions<R, P>) {
+    return this.request<R, P>({
       url,
       runner: axle.get,
       ...options
     })
   }
 
-  post<R = any, P = any>(url: string, options: Omit<AxleConfigOptions<R, P>, 'url' | 'runner'>) {
-    return this.request({
+  post<R = any, P = any>(url: string, options: HttpRequestOptions<R, P> = {}) {
+    return this.request<R, P>({
       url,
       runner: axle.post,
+      data: null as any,
       ...options
     })
   }
 
-  put<R = any, P = any>(url: string, options: Omit<AxleConfigOptions<R, P>, 'url' | 'runner'>) {
-    return this.request({
+  put<R = any, P = any>(url: string, options: HttpRequestOptions<R, P> = {}) {
+    return this.request<R, P>({
       url,
       runner: axle.put,
+      data: null as any,
       ...options
     })
   }
 
-  delete<R = any, P = any>(url: string, options: Omit<AxleConfigOptions<R, P>, 'url' | 'runner'>) {
-    return this.request({
+  delete<R = any, P = any>(url: string, options: HttpRequestOptions<R, P> = {}) {
+    return this.request<R, P>({
       url,
       runner: axle.delete,
+      data: null as any,
       ...options
     })
   }

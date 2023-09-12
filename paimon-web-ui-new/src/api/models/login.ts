@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import httpRequest from '../request'
+import httpRequest, { type HttpRequestOptions } from '../request'
 
 interface LoginOptions {
   ldapLogin: boolean
@@ -25,5 +25,5 @@ interface LoginOptions {
 }
 
 export const onLogin = () => {
-  return httpRequest.post<any, any>('/login', { data: {} })
+  return httpRequest.post<LoginOptions, any>('/login')
 }

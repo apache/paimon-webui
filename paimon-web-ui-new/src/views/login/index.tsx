@@ -20,7 +20,6 @@ import { useConfigStore } from '@/store/config'
 import i18n from '@/locales'
 import backgroundImage from '@/assets/background.png'
 import logoImage from '@/assets/logo.svg'
-import { onLogin } from '@/api'
 
 import styles from './index.module.scss'
 
@@ -28,7 +27,6 @@ export default defineComponent({
   name: 'LoginPage',
   setup() {
     const { state, handleLogin } = useForm()
-    const [userInfo, onSubmit] = onLogin()
 
     const configStore = useConfigStore()
 
@@ -37,18 +35,10 @@ export default defineComponent({
       i18n.global.locale.value = configStore.getCurrentLocale === 'zh' ? 'en' : 'zh'
     }
 
-    const handleSubmit = async () => {
-      await onSubmit({ username: '', password: '', ldapLogin: true, rememberMe: true })
-      console.log('userInfo', userInfo);
-      console.log('onSubmit', onSubmit);
-    }
-
-
     return {
       configStore,
       handleLogin,
       handleLocale,
-      handleSubmit,
       ...toRefs(state)
     }
   },
@@ -98,7 +88,7 @@ export default defineComponent({
                   type='primary'
                   disabled={!this.model.password || !this.model.username}
                   style={{ width: '100%' }}
-                  onClick={this.handleSubmit}
+                  onClick={this.handleLogin}
                 >
                   {i18n.global.t('login.login')}
                 </n-button>

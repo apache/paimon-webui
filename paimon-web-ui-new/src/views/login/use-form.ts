@@ -15,8 +15,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { onLogin } from "@/api"
+import type { FormValidationError } from "naive-ui"
+
 export function useForm() {
   const router = useRouter()
+  const [userInfo, onSubmit] = onLogin()
+
 
   const state = reactive({
     loginForm: ref(),
@@ -27,7 +32,15 @@ export function useForm() {
   })
 
   const handleLogin = () => {
-
+    state.loginForm.validate(async (errors: Array<FormValidationError>) => {
+      if (!errors) {
+        await onSubmit({ params: { username: state.model.username, password: state.model.password, ldapLogin: true, rememberMe: true } })
+        console.log('userInfo', userInfo);
+        // vaild here
+      } else {
+        // error here
+      }
+    })
   }
 
   return {
