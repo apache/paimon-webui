@@ -15,12 +15,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { useForm } from './use-form'
 import { useConfigStore } from '@/store/config'
 import i18n from '@/locales'
 import backgroundImage from '@/assets/background.png'
 import logoImage from '@/assets/logo.svg'
-
-import { useForm } from './use-form'
 import styles from './index.module.scss'
 
 export default defineComponent({
