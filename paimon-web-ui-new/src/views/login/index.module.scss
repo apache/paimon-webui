@@ -15,13 +15,23 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-/** @type {import('tailwindcss').Config} */
-export const content = ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'];
-export const theme = {
-  extend: {},
-};
-export const variants = {
-  extend: {},
-};
-export const plugins = [];
+.container {
+  height: 100vh;
+  width: 100vw;
+}
 
+.background {
+  width: 600px;
+  height: 100%;
+  border-radius: 8px 0 0 8px;
+}
+
+.form-container {
+  padding: 30px 50px;
+  width: 488px;
+}
+
+.logo {
+  height: 80px;
+  width: 80px;
+}
