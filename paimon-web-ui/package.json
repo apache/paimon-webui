@@ -16,8 +16,6 @@
     "@douyinfe/semi-ui": "^2.38.1",
     "@monaco-editor/react": "^4.5.1",
     "@reduxjs/toolkit": "^1.9.5",
-    "@semi-bot/semi-theme-doucreator": "^1.0.18",
-    "@semi-bot/semi-theme-figma": "^0.1.6",
     "antd": "^5.8.3",
     "axios": "^1.4.0",
     "http-proxy-middleware": "^2.0.6",
@@ -33,7 +31,6 @@
     "react-icons": "^4.10.1",
     "screenfull": "^6.0.2",
     "styled-components": "^6.0.0-rc.3",
-    "vite-plugin-semi-theme": "^0.5.0",
     "zustand": "^4.4.1"
   },
   "devDependencies": {

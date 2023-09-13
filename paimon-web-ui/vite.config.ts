@@ -17,14 +17,10 @@ under the License. */
 
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import SemiPlugin from "vite-plugin-semi-theme";
 import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
-    /*SemiPlugin({
-      theme: "@semi-bot/semi-theme-figma"
-    }),*/
     react()
   ],
   resolve: {

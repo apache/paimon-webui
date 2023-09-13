@@ -167,7 +167,13 @@ under the License.
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
             <version>${hadoop.version}</version>
-            <scope>provided</scope>
+           <!-- <scope>provided</scope>-->
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -178,7 +184,7 @@ under the License.
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}-${project.version}</finalName>
+       <!-- <finalName>${project.artifactId}-${project.version}</finalName>
         <resources>
             <resource>
                 <filtering>true</filtering>
@@ -195,10 +201,10 @@ under the License.
                     <include>static/**</include>
                 </includes>
             </resource>
-        </resources>
+        </resources>-->
 
         <plugins>
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <configuration>
@@ -281,6 +287,23 @@ under the License.
                             <goal>jar</goal>
                         </goals>
                         <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.1</version>
+                <configuration>
+                    <mainClass>org.apache.paimon.web.server.PaimonWebServerApplication</mainClass>
+                    <layout>JAR</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
