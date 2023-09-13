@@ -15,38 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { onLogin } from '@/api'
-import type { FormValidationError } from 'naive-ui'
-
-export function useForm() {
-  const [userInfo, onSubmit] = onLogin()
-
-  const state = reactive({
-    loginForm: ref(),
-    model: {
-      username: '',
-      password: ''
-    }
-  })
-
-  const handleLogin = () => {
-    state.loginForm.validate(async (errors: Array<FormValidationError>) => {
-      if (!errors) {
-        await onSubmit({
-          params: {
-            username: state.model.username,
-            password: state.model.password,
-            ldapLogin: false,
-            rememberMe: true
-          }
-        })
-        console.log(userInfo)
-      }
-    })
-  }
-
-  return {
-    state,
-    handleLogin
-  }
+export default interface ResponseOptions {
+  code: number
+  data: any
+  msg: string
 }
