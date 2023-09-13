@@ -15,25 +15,26 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { createRouter, createWebHistory } from 'vue-router'
+import type { GlobalThemeOverrides } from 'naive-ui'
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'homepage',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/HomePage')
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/login')
-    }
-  ]
-})
+const light: GlobalThemeOverrides = {
+  common: {
+    bodyColor: '#F4F5F6',
 
-export default router
+    primaryColor: '#2475FE',
+    primaryColorHover: '#3a7bfa',
+    primaryColorPressed: '#1a6efb',
+    primaryColorSuppl: '#0060fa',
+
+    infoColor: '#A6A6A6',
+    successColor: '#00B69B',
+    warningColor: '#FCBE2D',
+    errorColor: '#EC4C4D'
+  },
+  Card: {
+    color: '#FAFAFA',
+    borderRadius: '8px'
+  }
+}
+
+export default light

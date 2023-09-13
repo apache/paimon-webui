@@ -15,25 +15,29 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { createRouter, createWebHistory } from 'vue-router'
+type Theme = 'dark' | 'light'
+type Locale = 'en' | 'zh'
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'homepage',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/HomePage')
+export const useConfigStore = defineStore({
+  id: 'config',
+  state: (): { theme: Theme, locale: Locale } => ({
+    theme: 'light',
+    locale: 'zh'
+  }),
+  getters: {
+    getCurrentLocale(): Locale {
+      return this.locale
     },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/login')
+    getCurrentTheme(): Theme {
+      return this.theme
     }
-  ]
+  },
+  actions: {
+    setCurrentLocale(locale: Locale): void {
+      this.locale = locale
+    },
+    setCurrentTheme(theme: Theme): void {
+      this.theme = theme
+    }
+  }
 })
-
-export default router

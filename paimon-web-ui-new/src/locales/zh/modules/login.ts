@@ -15,25 +15,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { createRouter, createWebHistory } from 'vue-router'
-
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'homepage',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/HomePage')
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/login')
-    }
-  ]
-})
-
-export default router
+export default {
+  login: '登录',
+  username: '用户名',
+  password: '密码',
+  username_tips: '请输入用户名',
+  password_tips: '请输入密码',
+  light: '浅色',
+  dark: '暗色'
+}

@@ -15,25 +15,38 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { createRouter, createWebHistory } from 'vue-router'
+import { onLogin } from '@/api'
+import type { FormValidationError } from 'naive-ui'
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'homepage',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/HomePage')
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/login')
+export function useForm() {
+  const [userInfo, onSubmit] = onLogin()
+
+  const state = reactive({
+    loginForm: ref(),
+    model: {
+      username: '',
+      password: ''
     }
-  ]
-})
+  })
 
-export default router
+  const handleLogin = () => {
+    state.loginForm.validate(async (errors: Array<FormValidationError>) => {
+      if (!errors) {
+        await onSubmit({
+          params: {
+            username: state.model.username,
+            password: state.model.password,
+            ldapLogin: false,
+            rememberMe: true
+          }
+        })
+        console.log(userInfo)
+      }
+    })
+  }
+
+  return {
+    state,
+    handleLogin
+  }
+}

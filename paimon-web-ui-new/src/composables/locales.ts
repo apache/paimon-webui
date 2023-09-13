@@ -15,7 +15,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-/* tailMain.css */ 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+import { useI18n } from 'vue-i18n'
+
+export const useLocaleHooks = () => {
+  const { t } = useI18n()
+
+  return {
+    t
+  }
+}
