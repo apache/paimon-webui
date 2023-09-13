@@ -26,6 +26,14 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://43.143.237.199:10088',
+        changeOrigin: true,
+      }
+    }
+  },
   plugins: [
     vue(),
     vueJsx(),
@@ -39,24 +47,23 @@ export default defineConfig({
             'useDialog',
             'useMessage',
             'useNotification',
-            'useLoadingBar',
-          ],
-        },
+            'useLoadingBar'
+          ]
+        }
       ],
       dts: './auto-imports.d.ts',
       eslintrc: {
-        enabled: false,
-      },
+        enabled: false
+      }
     }),
     Components({
-      resolvers: [NaiveUiResolver()],
-    }),
+      resolvers: [NaiveUiResolver()]
+    })
   ],
   css: {
     postcss: {
       plugins: [
-        require("tailwindcss"),
-        require("autoprefixer"),
+        require("autoprefixer")
       ]
     }
   },

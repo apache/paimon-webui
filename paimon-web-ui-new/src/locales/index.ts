@@ -15,13 +15,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-/** @type {import('tailwindcss').Config} */
-export const content = ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'];
-export const theme = {
-  extend: {},
-};
-export const variants = {
-  extend: {},
-};
-export const plugins = [];
+import { createI18n } from 'vue-i18n'
+import en from './en'
+import zh from './zh'
 
+const i18n = createI18n({
+  locale: 'en',
+  legacy: false,
+  fallbackLocale: 'zh',
+  messages: {
+    en,
+    zh
+  }
+})
+
+export default i18n
