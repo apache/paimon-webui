@@ -26,5 +26,5 @@ interface LoginOptions {
 }
 
 export const onLogin = () => {
-  return httpRequest.post<LoginOptions, ResponseOptions>('/login')
+  return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login')
 }

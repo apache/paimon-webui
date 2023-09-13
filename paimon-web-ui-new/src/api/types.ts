@@ -15,8 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default interface ResponseOptions {
+export default interface ResponseOptions<P> {
   code: number
-  data: any
+  data: P
   msg: string
 }

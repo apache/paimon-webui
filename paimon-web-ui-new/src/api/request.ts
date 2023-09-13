@@ -18,7 +18,9 @@ under the License. */
 import { createAxle } from '@varlet/axle'
 import { createUseAxle, type UseAxleInstance, type UseAxleOptions } from '@varlet/axle/use'
 
-type RequestConfigOptions<D, R = any, P = Record<string, any>> = Omit<UseAxleOptions<D, R, P>, 'data'> & Pick<UseAxleOptions<D, R, P>, 'data'>
+import type ResponseOptions from './types'
+
+type RequestConfigOptions<D, R = any, P = Record<string, any>> = Omit<UseAxleOptions<D, ResponseOptions<R>, P>, 'data'> & Pick<UseAxleOptions<D, R, P>, 'data'>
 
 type AxleConfigOptions<R = any, P = Record<string, any>> = Omit<RequestConfigOptions<R, P>, 'url' | 'runner'>
 
@@ -62,7 +64,7 @@ const useAxle = createUseAxle({
 })
 
 class HttpRequest {
-  private request<R = any, P = any>(options: RequestConfigOptions<R, P>): UseAxleInstance<R, P, Record<string, any>> {
+  private request<R = any, P = any>(options: RequestConfigOptions<R, P>): UseAxleInstance<R, ResponseOptions<P>, Record<string, any>> {
     return useAxle(options)
   }
 
