@@ -18,7 +18,7 @@ under the License. */
 export default {
   playground: '查询控制台',
   metadata: '元数据管理',
-  CDC_Ingestion: 'CDC 集成',
+  cdc_ingestion: 'CDC 集成',
   system: '系统管理',
   light: '浅色',
   dark: '暗色'

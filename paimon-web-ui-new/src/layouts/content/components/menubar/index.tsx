@@ -38,8 +38,8 @@ export default defineComponent({
             key: 'metadata',
           },
           {
-            label: i18n.global.t('layout.CDC_Ingestion'),
-            key: 'CDC_Ingestion',
+            label: i18n.global.t('layout.cdc_ingestion'),
+            key: 'cdc_ingestion',
           },
           {
             label: i18n.global.t('layout.system'),

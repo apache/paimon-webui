@@ -18,7 +18,7 @@ under the License. */
 export default {
   playground: 'Playground',
   metadata: 'MetaData',
-  CDC_Ingestion: 'CDC Ingestion',
+  cdc_ingestion: 'CDC Ingestion',
   system: 'System',
   light: 'Light',
   dark: 'Dark'
