@@ -17,8 +17,10 @@ under the License. */
 
 import { onLogin } from '@/api'
 import type { FormValidationError } from 'naive-ui'
+import type { Router } from 'vue-router'
 
 export function useForm() {
+  const router: Router = useRouter()
   const [userInfo, onSubmit] = onLogin()
 
   const state = reactive({
@@ -41,6 +43,7 @@ export function useForm() {
           }
         })
         console.log(userInfo)
+        router.push({ path: '/' })
       }
     })
   }

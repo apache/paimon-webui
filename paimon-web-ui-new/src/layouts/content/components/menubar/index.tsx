@@ -15,39 +15,53 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import {
-  darkTheme,
-  dateZhCN,
-  dateEnUS,
-  zhCN,
-  enUS
-} from 'naive-ui'
+import i18n from '@/locales'
 import { useConfigStore } from '@/store/config'
-import themes from '@/themes'
 
 export default defineComponent({
-  name: 'App',
+  name: 'MenuBar',
   setup() {
     const configStore = useConfigStore()
-    const theme = computed(() => configStore.getCurrentTheme === 'dark' ? darkTheme : undefined)
-    const themeOverrides = computed(() => themes[theme.value ? 'dark' : 'light'])
-    const locale = computed(() => configStore.getCurrentLocale)
+
+    const menuOptions = ref([] as any[]) 
+
+    watch(
+      () => configStore.getCurrentLocale,
+      () => {
+        menuOptions.value = [
+          {
+            label: i18n.global.t('layout.playground'),
+            key: 'playground',
+          },
+          {
+            label: i18n.global.t('layout.metadata'),
+            key: 'metadata',
+          },
+          {
+            label: i18n.global.t('layout.cdc_ingestion'),
+            key: 'cdc_ingestion',
+          },
+          {
+            label: i18n.global.t('layout.system'),
+            key: 'system',
+          },
+        ]
+      },
+      { immediate: true }
+    )
 
     return {
-      theme,
-      themeOverrides,
-      locale
+      activeKey: ref<string | null>('playground'),
+      menuOptions
     }
   },
-  render() {
-    return <n-config-provider
-      theme={this.theme}
-      theme-overrides={this.themeOverrides}
-      locale={this.locale === 'en' ? enUS : zhCN}
-      date-locale={this.locale === 'en' ? dateEnUS : dateZhCN}
-      style={{ width: '100%', height: '100vh' }}
-    >
-      <router-view />
-    </n-config-provider>
+  render () {
+    return (
+      <n-menu 
+        v-model:value={this.activeKey}
+        mode="horizontal"
+        options={this.menuOptions}
+      />
+    )
   }
 })

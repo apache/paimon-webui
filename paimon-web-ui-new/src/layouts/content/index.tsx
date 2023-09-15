@@ -15,10 +15,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import layout from './modules/layout'
-import login from './modules/login'
+import NavBar from './components/topbar'
+import styles from './index.module.scss'
 
-export default {
-  login,
-  layout
-}
+export default defineComponent({
+  name: 'ContentPage',
+  setup() {
+  },
+  render() {
+    return (
+      <div class={styles['container']}>
+        <n-layout>
+          <n-layout-header style="height: 64px;" bordered>
+            <NavBar></NavBar>
+          </n-layout-header>
+          <n-layout-content content-style="height: calc(100vh - 64px);">
+            <router-view />
+          </n-layout-content>
+        </n-layout>
+      </div>
+    )
+  }
+})

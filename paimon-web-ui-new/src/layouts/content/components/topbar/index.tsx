@@ -15,10 +15,33 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import layout from './modules/layout'
-import login from './modules/login'
+import styles from './index.module.scss'
+import logoImage from '@/assets/logo.svg'
+import MenuBar from '../menubar'
+import ToolBar from '../toolbar'
 
-export default {
-  login,
-  layout
-}
+export default defineComponent({
+  name: 'TopBar',
+  setup() {
+  },
+  render () {
+    return (
+      <div class={styles.container}>
+        <div class={styles['logo-bar']}>
+          <n-space align='center' justify='center'>
+            <div class={styles.logo}>
+              <img src={logoImage} alt='logo-image'/>
+            </div>
+            <div>Apache Paimon</div>
+          </n-space>
+        </div>
+        <div class={styles['menu-bar']}>
+          <MenuBar />
+        </div>
+        <div class={styles.toolbar}>
+          <ToolBar />
+        </div>
+      </div>
+    )
+  }
+})
