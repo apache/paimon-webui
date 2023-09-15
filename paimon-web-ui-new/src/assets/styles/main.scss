@@ -15,10 +15,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import layout from './modules/layout'
-import login from './modules/login'
+html, body {
+  margin: 0;
+  padding: 0;
+}
 
-export default {
-  login,
-  layout
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }

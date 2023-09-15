@@ -45,12 +45,12 @@ axle.axios.interceptors.request.use(
 
 axle.axios.interceptors.response.use(
   (response) => {
-    const { code, message } = response.data
+    const { code, msg } = response.data
 
-    if (code !== 200 && message) {
+    if (code !== 200 && msg) {
       // do something there
+      return Promise.reject(response.data)
     }
-
     return response.data
   },
   (error) => {

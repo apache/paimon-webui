@@ -26,6 +26,7 @@
     "@tsconfig/node18": "^18.2.2",
     "@types/node": "^18.17.15",
     "@varlet/axle": "^0.1.2",
+    "@vicons/ionicons5": "^0.12.0",
     "@vitejs/plugin-vue": "^4.3.4",
     "@vitejs/plugin-vue-jsx": "^3.0.2",
     "@vue/eslint-config-prettier": "^8.0.0",

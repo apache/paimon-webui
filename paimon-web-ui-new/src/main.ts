@@ -23,6 +23,7 @@ import router from './router'
 import naive from 'naive-ui'
 import i18n from './locales'
 import { Setting } from './config'
+import '@/assets/styles/main.scss'
 
 const app = createApp(App)
 const pinia = createPinia()

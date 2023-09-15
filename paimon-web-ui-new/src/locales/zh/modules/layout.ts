@@ -15,10 +15,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import layout from './modules/layout'
-import login from './modules/login'
-
 export default {
-  login,
-  layout
+  playground: '查询控制台',
+  metadata: '元数据管理',
+  CDC_Ingestion: 'CDC 集成',
+  system: '系统管理',
+  light: '浅色',
+  dark: '暗色'
 }
