@@ -15,17 +15,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { LANGUAGES } from "@/locales"
+
 type Theme = 'dark' | 'light'
-type Locale = 'en' | 'zh'
 
 export const useConfigStore = defineStore({
   id: 'config',
-  state: (): { theme: Theme, locale: Locale } => ({
+  state: (): { theme: Theme, locale: LANGUAGES } => ({
     theme: 'light',
-    locale: 'zh'
+    locale: LANGUAGES.ZH
   }),
   getters: {
-    getCurrentLocale(): Locale {
+    getCurrentLocale(): LANGUAGES {
       return this.locale
     },
     getCurrentTheme(): Theme {
@@ -33,7 +34,7 @@ export const useConfigStore = defineStore({
     }
   },
   actions: {
-    setCurrentLocale(locale: Locale): void {
+    setCurrentLocale(locale: LANGUAGES): void {
       this.locale = locale
     },
     setCurrentTheme(theme: Theme): void {

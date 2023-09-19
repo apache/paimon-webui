@@ -19,10 +19,15 @@ import { createI18n } from 'vue-i18n'
 import en from './en'
 import zh from './zh'
 
+export enum LANGUAGES {
+  EN = 'en',
+  ZH = 'zh'
+}
+
 const i18n = createI18n({
-  locale: 'en',
+  locale: LANGUAGES.ZH,
   legacy: false,
-  fallbackLocale: 'zh',
+  fallbackLocale: LANGUAGES.ZH,
   messages: {
     en,
     zh
