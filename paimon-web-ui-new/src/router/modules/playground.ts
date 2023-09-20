@@ -15,30 +15,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-type Theme = 'dark' | 'light'
-type Locale = 'en' | 'zh'
-
-export const useConfigStore = defineStore({
-  id: 'config',
-  state: (): { theme: Theme, locale: Locale } => ({
-    theme: 'light',
-    locale: 'zh'
-  }),
-  persist: true,
-  getters: {
-    getCurrentLocale(): Locale {
-      return this.locale
-    },
-    getCurrentTheme(): Theme {
-      return this.theme
-    }
-  },
-  actions: {
-    setCurrentLocale(locale: Locale): void {
-      this.locale = locale
-    },
-    setCurrentTheme(theme: Theme): void {
-      this.theme = theme
-    }
+export default [
+  {
+    path: '/',
+    name: 'homepage',
+    meta: { title: '首页' },
+    redirect: { name: 'playground' },
+    component: () => import('@/layouts/content'),
+    children: [
+      {
+        path: '/playground',
+        name: 'playground',
+        meta: { title: '查询控制台' },
+        component: () => import('@/views/playground')
+      },
+    ]
   }
-})
+]

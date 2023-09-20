@@ -17,7 +17,7 @@ under the License. */
 
 import i18n from '@/locales'
 import { useConfigStore } from '@/store/config'
-import { LogoGithub, Moon, SunnyOutline, Language, PersonCircleOutline } from '@vicons/ionicons5'
+import { LogoGithub, Moon, SunnyOutline, Language } from '@vicons/ionicons5'
 
 export default defineComponent({
   name: 'ToolBar',

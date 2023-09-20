@@ -17,8 +17,10 @@ under the License. */
 
 import layout from './modules/layout'
 import login from './modules/login'
+import playground from './modules/playground'
 
 export default {
   login,
-  layout
+  layout,
+  playground
 }
