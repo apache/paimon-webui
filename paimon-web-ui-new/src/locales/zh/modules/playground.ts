@@ -16,6 +16,6 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  select_catalog: '选择Catalog',
+  select_catalog: '选择 Catalog',
   search: '搜索'
 }

@@ -26,8 +26,8 @@ const basePage: RouteRecordRaw[] = [
 ]
 
 /**
-   * Login page
-   */
+ * Login page
+ */
 const loginPage: RouteRecordRaw[] = [
   {
     path: '/login',

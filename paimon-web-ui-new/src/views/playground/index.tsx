@@ -31,7 +31,7 @@ export default defineComponent({
     const content = ref('')
     const language = ref('javascript')
     const editorMounted = (editor: monaco.editor.IStandaloneCodeEditor) => {
-      console.log('editor实例加载完成', editor)
+      console.log('Loaded editor instance.', editor)
     }
 
     return {
