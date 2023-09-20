@@ -20,7 +20,6 @@ import { useConfigStore } from '@/store/config'
 import { LANGUAGES } from '@/locales'
 import logoImage from '@/assets/logo.svg'
 import styles from './index.module.scss'
-import { useLocaleHooks } from '@/composables/locales'
 
 export default defineComponent({
   name: 'LoginPage',

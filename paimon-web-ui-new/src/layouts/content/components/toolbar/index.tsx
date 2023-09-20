@@ -15,7 +15,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { useLocaleHooks } from '@/composables/locales'
 import { LANGUAGES } from '@/locales'
 import { useConfigStore } from '@/store/config'
 import { LogoGithub, Moon, SunnyOutline, Language } from '@vicons/ionicons5'

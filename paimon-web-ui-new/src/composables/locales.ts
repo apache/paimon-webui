@@ -23,7 +23,6 @@ type LocaleType = Pick<typeof i18n.global, 't' | 'n' | 'd'> & {
   setLanguage(locale: UseI18nOptions['locale']): void
 }
 
-
 export const useLocaleHooks = (): LocaleType => {
   const { t, d, n, locale } = i18n.global
 
