@@ -98,7 +98,6 @@ export default defineComponent({
         monaco.editor.setModelLanguage(editor.getModel()!, newValue)
       }
     )
-
     watch(
       () => configStore.getCurrentTheme ,
       () => {

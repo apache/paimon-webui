@@ -61,14 +61,14 @@ export default defineComponent({
           >
             <div class={styles.content}>
               <div class={styles.catalog}>
-                <CataLog></CataLog>
+                <CataLog />
               </div>
               <div class={styles.editor}>
                 <MonacoEditor
                   v-model={this.content}
                   language={this.language}
                   onEditorMounted={this.editorMounted}
-                  ></MonacoEditor>
+                />
               </div>
             </div>
           </n-tab-pane>
