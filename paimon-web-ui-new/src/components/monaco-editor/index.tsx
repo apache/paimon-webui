@@ -67,9 +67,8 @@ export default defineComponent({
         theme: monacoEditorThemeRef.value,
         ...props.options
       })
-      // 监听值的变化
       editor.onDidChangeModelContent(() => {
-        const value = editor.getValue() //给父组件实时返回最新文本
+        const value = editor.getValue()
         emit('update:modelValue', value)
         emit('change', value)
       })

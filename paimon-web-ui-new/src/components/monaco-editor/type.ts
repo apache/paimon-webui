@@ -19,19 +19,18 @@ export type Theme = 'vs' | 'vs-dark'
 export type FoldingStrategy = 'auto' | 'indentation'
 export type RenderLineHighlight = 'all' | 'line' | 'none' | 'gutter'
 export interface Options {
-  automaticLayout?: boolean // 自适应布局
-  foldingStrategy?: FoldingStrategy // 折叠方式  auto | indentation
-  renderLineHighlight?: RenderLineHighlight // 行亮
-  selectOnLineNumbers?: boolean // 显示行号
+  automaticLayout?: boolean
+  foldingStrategy?: FoldingStrategy
+  renderLineHighlight?: RenderLineHighlight
+  selectOnLineNumbers?: boolean
   minimap?: {
-    // 关闭小地图
     enabled: boolean
   }
-  readOnly: boolean // 只读
+  readOnly: boolean
   contextmenu: boolean
-  fontSize?: number // 字体大小
-  scrollBeyondLastLine?: boolean // 取消代码后面一大段空白
-  overviewRulerBorder?: boolean // 不要滚动条的边框
+  fontSize?: number
+  scrollBeyondLastLine?: boolean
+  overviewRulerBorder?: boolean
 }
 
 export const editorProps = {
