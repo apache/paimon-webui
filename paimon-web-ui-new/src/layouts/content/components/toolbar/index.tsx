@@ -15,13 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import i18n from '@/locales'
+import { LANGUAGES } from '@/locales'
 import { useConfigStore } from '@/store/config'
 import { LogoGithub, Moon, SunnyOutline, Language } from '@vicons/ionicons5'
 
+// ts-ignore
 export default defineComponent({
   name: 'ToolBar',
   setup() {
+    const { t, setLanguage } = useLocaleHooks()
+
     const handleLink = () => {
       window.open('https://github.com/apache/incubator-paimon-webui')
     }
@@ -34,11 +37,14 @@ export default defineComponent({
     }
 
     const handleLanguage = () => {
-      configStore.setCurrentLocale(configStore.getCurrentLocale === 'zh' ? 'en' : 'zh')
-      i18n.global.locale.value = configStore.getCurrentLocale === 'zh' ? 'en' : 'zh'
+      const lang = configStore.getCurrentLocale === LANGUAGES.ZH ? LANGUAGES.EN : LANGUAGES.ZH
+
+      configStore.setCurrentLocale(lang)
+      setLanguage(lang)
     }
-  
+
     return {
+      t,
       handleLink,
       handleTheme,
       handleLanguage,
@@ -46,7 +52,7 @@ export default defineComponent({
       active: ref(false)
     }
   },
-  render () {
+  render() {
     return (
       <n-space align="center" size={20}>
         <n-popover trigger="hover" placement="bottom"
@@ -59,8 +65,8 @@ export default defineComponent({
               </n-icon>
             )
           }}
-          >
-          <span>{i18n.global.t('layout.' + String(this.configStore.getCurrentTheme === 'light' ? 'dark' : 'light'))}</span>
+        >
+          <span>{this.t('layout.' + String(this.configStore.getCurrentTheme === 'light' ? 'dark' : 'light'))}</span>
         </n-popover>
         <n-icon size="24" onClick={this.handleLink}>
           <LogoGithub />

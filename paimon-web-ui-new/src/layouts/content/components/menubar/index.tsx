@@ -15,40 +15,29 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import i18n from '@/locales'
-import { useConfigStore } from '@/store/config'
-
 export default defineComponent({
   name: 'MenuBar',
   setup() {
-    const configStore = useConfigStore()
+    const { t } = useLocaleHooks()
 
-    const menuOptions = ref([] as any[]) 
-
-    watch(
-      () => configStore.getCurrentLocale,
-      () => {
-        menuOptions.value = [
-          {
-            label: i18n.global.t('layout.playground'),
-            key: 'playground',
-          },
-          {
-            label: i18n.global.t('layout.metadata'),
-            key: 'metadata',
-          },
-          {
-            label: i18n.global.t('layout.cdc_ingestion'),
-            key: 'cdc_ingestion',
-          },
-          {
-            label: i18n.global.t('layout.system'),
-            key: 'system',
-          },
-        ]
+    const menuOptions = computed(() => ([
+      {
+        label: t('layout.playground'),
+        key: 'playground',
       },
-      { immediate: true }
-    )
+      {
+        label: t('layout.metadata'),
+        key: 'metadata',
+      },
+      {
+        label: t('layout.cdc_ingestion'),
+        key: 'cdc_ingestion',
+      },
+      {
+        label: t('layout.system'),
+        key: 'system',
+      },
+    ]))
 
     return {
       activeKey: ref<string | null>('playground'),

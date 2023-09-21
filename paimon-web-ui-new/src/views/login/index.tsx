@@ -17,24 +17,28 @@ under the License. */
 
 import { useForm } from './use-form'
 import { useConfigStore } from '@/store/config'
-import i18n from '@/locales'
+import { LANGUAGES } from '@/locales'
 import logoImage from '@/assets/logo.svg'
 import styles from './index.module.scss'
 
 export default defineComponent({
   name: 'LoginPage',
   setup() {
+    const { t, setLanguage } = useLocaleHooks()
     const { state, handleLogin } = useForm()
 
     const configStore = useConfigStore()
 
     const handleLocale = () => {
-      configStore.setCurrentLocale(configStore.getCurrentLocale === 'zh' ? 'en' : 'zh')
-      i18n.global.locale.value = configStore.getCurrentLocale === 'zh' ? 'en' : 'zh'
+      const lang = configStore.getCurrentLocale === LANGUAGES.ZH ? LANGUAGES.EN : LANGUAGES.ZH
+      
+      configStore.setCurrentLocale(lang)
+      setLanguage(lang)
     }
 
     return {
       configStore,
+      t,
       handleLogin,
       handleLocale,
       ...toRefs(state)
@@ -56,26 +60,26 @@ export default defineComponent({
               style={{marginTop: '50px'}}
             >
               <n-form-item
-                label={i18n.global.t('login.username')}
+                label={this.t('login.username')}
                 path='userName'
               >
                 <n-input
                   clearable
                   v-model={[this.model.username, 'value']}
-                  placeholder={i18n.global.t('login.username_tips')}
+                  placeholder={this.t('login.username_tips')}
                   autofocus
                   size='large'
                 />
               </n-form-item>
               <n-form-item
-                label={i18n.global.t('login.password')}
+                label={this.t('login.password')}
                 path='userPassword'
               >
                 <n-input
                   clearable
                   type='password'
                   v-model={[this.model.password, 'value']}
-                  placeholder={i18n.global.t('login.password_tips')}
+                  placeholder={this.t('login.password_tips')}
                   size='large'
                 />
               </n-form-item>
@@ -86,7 +90,7 @@ export default defineComponent({
                 style={{ width: '100%' }}
                 onClick={this.handleLogin}
               >
-                {i18n.global.t('login.login')}
+                {this.t('login.login')}
               </n-button>
             </n-form>
             <n-space justify='center' style={{marginTop: '80px'}}>
@@ -98,7 +102,7 @@ export default defineComponent({
                   this.configStore.getCurrentTheme === 'light' ? 'dark' : 'light'
                 )}
               >
-                {i18n.global.t('login.' + String(this.configStore.getCurrentTheme === 'light' ? 'dark' : 'light'))}
+                {this.t('login.' + String(this.configStore.getCurrentTheme === 'light' ? 'dark' : 'light'))}
               </n-button>
               <n-button
                 quaternary
