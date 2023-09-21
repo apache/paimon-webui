@@ -99,7 +99,7 @@ export default defineComponent({
       }
     )
     watch(
-      () => configStore.getCurrentTheme ,
+      () => configStore.getCurrentTheme,
       () => {
         editor?.dispose()
         monacoEditorThemeRef.value = configStore.getCurrentTheme === 'dark' ? 'vs-dark' : 'vs'
