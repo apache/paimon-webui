@@ -15,25 +15,31 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { createRouter, createWebHistory } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  type RouteLocationNormalized,
+  type NavigationGuardNext
+} from 'vue-router'
+import routes from './routes'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'homepage',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../layouts/content')
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/login')
-    }
-  ]
+  routes
 })
+
+/**
+ * Routing to intercept
+ */
+router.beforeEach(
+  async (
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext
+  ) => {
+    next()
+  }
+)
 
 export default router

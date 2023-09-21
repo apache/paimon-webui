@@ -15,22 +15,28 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { defineComponent } from 'vue';
+import type { RouteRecordRaw } from 'vue-router'
+import playground_routes from './modules/playground'
 
-export default defineComponent({
-  name: 'HomePage',
-  setup() {
-    const handleRequest = () => {}
+/**
+ * Basic page
+ */
+const basePage: RouteRecordRaw[] = [
+  ...playground_routes,
+]
 
-    return { handleRequest }
-  },
-  render() {
-    return (
-      <div>
-        <div>
-          <n-button onClick={this.handleRequest}>Request Test</n-button>
-        </div>
-      </div>
-    );
-  },
-});
+/**
+ * Login page
+ */
+const loginPage: RouteRecordRaw[] = [
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/login')
+  }
+]
+
+
+const routes: RouteRecordRaw[] = [...basePage, ...loginPage]
+
+export default routes

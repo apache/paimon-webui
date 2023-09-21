@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "dart-sass": "^1.25.0",
+    "monaco-editor": "^0.43.0",
     "pinia": "^2.1.6",
     "pinia-plugin-persistedstate": "^3.2.0",
     "sass": "^1.66.1",
