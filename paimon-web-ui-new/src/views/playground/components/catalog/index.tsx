@@ -58,21 +58,7 @@ export default defineComponent({
             ]
           }
         ]
-      },
-      {
-        label: 'iceberg',
-        key: 'iceberg',
-        children: [
-          {
-            label: 'Canada',
-            key: 'Canada'
-          },
-          {
-            label: 'United States',
-            key: 'United States'
-          }
-        ]
-      },
+      }
     ]
 
     return { selectedValue, options, searchVal, treeData }
