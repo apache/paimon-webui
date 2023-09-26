@@ -18,15 +18,13 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.table.Table;
 import org.apache.paimon.types.DataField;
-import org.apache.paimon.web.api.common.OperatorKind;
-import org.apache.paimon.web.api.database.DatabaseManager;
-import org.apache.paimon.web.api.table.AlterTableEntity;
+import org.apache.paimon.web.api.catalog.PaimonCatalog;
 import org.apache.paimon.web.api.table.ColumnMetadata;
-import org.apache.paimon.web.api.table.TableManager;
+import org.apache.paimon.web.api.table.TableChange;
 import org.apache.paimon.web.api.table.TableMetadata;
+import org.apache.paimon.web.server.data.model.AlterTableRequest;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.model.TableInfo;
@@ -54,6 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /** Table api controller. */
 @Slf4j
@@ -75,7 +74,8 @@ public class TableController {
     @PostMapping("/createTable")
     public R<Void> createTable(@RequestBody TableInfo tableInfo) {
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            PaimonCatalog catalog =
+                    CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
             List<String> partitionKeys = tableInfo.getPartitionKey();
 
             Map<String, String> tableOptions = tableInfo.getTableOptions();
@@ -103,15 +103,14 @@ public class TableController {
                             .options(tableOptions)
                             .comment(tableInfo.getDescription())
                             .build();
-            if (TableManager.tableExists(
-                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName())) {
+            if (catalog.tableExists(tableInfo.getDatabaseName(), tableInfo.getTableName())) {
                 return R.failed(Status.TABLE_NAME_IS_EXIST, tableInfo.getTableName());
             }
-            TableManager.createTable(
-                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), tableMetadata);
+            catalog.createTable(
+                    tableInfo.getDatabaseName(), tableInfo.getTableName(), tableMetadata);
             return R.succeed();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error occurred while creating table.", e);
             return R.failed(Status.TABLE_CREATE_ERROR);
         }
     }
@@ -126,9 +125,10 @@ public class TableController {
     @PostMapping("/addColumn")
     public R<Void> addColumn(@RequestBody TableInfo tableInfo) {
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            PaimonCatalog catalog =
+                    CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
             List<TableColumn> tableColumns = tableInfo.getTableColumns();
-            List<AlterTableEntity> entityList = new ArrayList<>();
+            List<TableChange> tableChanges = new ArrayList<>();
             Map<String, String> options = new HashMap<>();
             for (TableColumn tableColumn : tableColumns) {
                 if (tableColumn.getDefaultValue() != null
@@ -141,30 +141,31 @@ public class TableController {
                                     + DEFAULT_VALUE_SUFFIX,
                             tableColumn.getDefaultValue());
                 }
-                AlterTableEntity alterTableEntity =
-                        AlterTableEntity.builder()
-                                .columnName(tableColumn.getField())
-                                .type(
-                                        DataTypeConvertUtils.convert(
-                                                new PaimonDataType(
-                                                        tableColumn.getDataType(),
-                                                        tableColumn.isNullable(),
-                                                        tableColumn.getLength0(),
-                                                        tableColumn.getLength1())))
-                                .comment(tableColumn.getComment())
-                                .kind(OperatorKind.ADD_COLUMN)
-                                .build();
-                entityList.add(alterTableEntity);
+                ColumnMetadata columnMetadata =
+                        new ColumnMetadata(
+                                tableColumn.getField(),
+                                DataTypeConvertUtils.convert(
+                                        new PaimonDataType(
+                                                tableColumn.getDataType().getType(),
+                                                true,
+                                                tableColumn.getDataType().getPrecision(),
+                                                tableColumn.getDataType().getScale())),
+                                tableColumn.getComment());
+                TableChange.AddColumn add = TableChange.add(columnMetadata);
+                tableChanges.add(add);
             }
-            TableManager.alterTable(
-                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
+
             if (options.size() > 0) {
-                TableManager.setOptions(
-                        catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), options);
+                for (Map.Entry<String, String> entry : options.entrySet()) {
+                    TableChange.SetOption setOption =
+                            TableChange.set(entry.getKey(), entry.getValue());
+                    tableChanges.add(setOption);
+                }
             }
+            catalog.alterTable(tableInfo.getDatabaseName(), tableInfo.getTableName(), tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error occurred while adding column.", e);
             return R.failed(Status.TABLE_ADD_COLUMN_ERROR);
         }
     }
@@ -185,124 +186,81 @@ public class TableController {
             @PathVariable String tableName,
             @PathVariable String columnName) {
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
-            List<AlterTableEntity> entityList = new ArrayList<>();
-            AlterTableEntity alterTableEntity =
-                    AlterTableEntity.builder()
-                            .columnName(columnName)
-                            .kind(OperatorKind.DROP_COLUMN)
-                            .build();
-            entityList.add(alterTableEntity);
-            TableManager.alterTable(catalog, databaseName, tableName, entityList);
+            PaimonCatalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
+            List<TableChange> tableChanges = new ArrayList<>();
+            TableChange.DropColumn dropColumn = TableChange.dropColumn(columnName);
+            tableChanges.add(dropColumn);
+            catalog.alterTable(databaseName, tableName, tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error occurred while dropping column.", e);
             return R.failed(Status.TABLE_DROP_COLUMN_ERROR);
         }
     }
 
     /**
-     * Renames a column in a table.
+     * Modify a column in a table.
      *
      * @param catalogName The name of the catalog.
      * @param databaseName The name of the database.
      * @param tableName The name of the table.
-     * @param fromColumnName The current name of the column.
-     * @param toColumnName The new name for the column.
-     * @return The result indicating the success or failure of the operation.
+     * @return A response indicating the success or failure of the operation.
      */
-    @PostMapping("/renameColumn")
-    public R<Void> renameColumn(
+    @PostMapping("/alterTable")
+    public R<Void> alterTable(
             @RequestParam String catalogName,
             @RequestParam String databaseName,
             @RequestParam String tableName,
-            @RequestParam String fromColumnName,
-            @RequestParam String toColumnName) {
+            @RequestBody AlterTableRequest alterTableRequest) {
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
+            PaimonCatalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
 
-            AlterTableEntity alterTableEntity =
-                    AlterTableEntity.builder()
-                            .columnName(fromColumnName)
-                            .newColumn(toColumnName)
-                            .kind(OperatorKind.RENAME_COLUMN)
-                            .build();
+            TableColumn oldColumn = alterTableRequest.getOldColumn();
+            TableColumn newColumn = alterTableRequest.getNewColumn();
 
-            List<AlterTableEntity> entityList = new ArrayList<>();
-            entityList.add(alterTableEntity);
+            List<TableChange> tableChanges = createTableChanges(oldColumn, newColumn);
 
-            TableManager.alterTable(catalog, databaseName, tableName, entityList);
+            if (!Objects.equals(newColumn.getField(), oldColumn.getField())) {
+                ColumnMetadata columnMetadata =
+                        new ColumnMetadata(
+                                oldColumn.getField(),
+                                DataTypeConvertUtils.convert(oldColumn.getDataType()),
+                                oldColumn.getComment());
+
+                TableChange.ModifyColumnName modifyColumnName =
+                        TableChange.modifyColumnName(columnMetadata, newColumn.getField());
+                List<TableChange> modifyNameTableChanges = new ArrayList<>();
+                modifyNameTableChanges.add(modifyColumnName);
+                catalog.alterTable(databaseName, tableName, modifyNameTableChanges);
+            }
+
+            catalog.alterTable(databaseName, tableName, tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return R.failed(Status.TABLE_RENAME_COLUMN_ERROR);
+            log.error("Error occurred while altering table.", e);
+            return R.failed(Status.TABLE_AlTER_COLUMN_ERROR);
         }
     }
 
-    /**
-     * Updates the data type of columns in a table.
-     *
-     * @param tableInfo The information of the table.
-     * @return The result of the operation.
-     */
-    @PostMapping("/updateColumnType")
-    public R<Void> updateColumnType(@RequestBody TableInfo tableInfo) {
-        try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
-            List<TableColumn> tableColumns = tableInfo.getTableColumns();
-            List<AlterTableEntity> entityList = new ArrayList<>();
-            for (TableColumn tableColumn : tableColumns) {
-                AlterTableEntity alterTableEntity =
-                        AlterTableEntity.builder()
-                                .columnName(tableColumn.getField())
-                                .type(
-                                        DataTypeConvertUtils.convert(
-                                                new PaimonDataType(
-                                                        tableColumn.getDataType(),
-                                                        tableColumn.isNullable(),
-                                                        tableColumn.getLength0(),
-                                                        tableColumn.getLength1())))
-                                .kind(OperatorKind.UPDATE_COLUMN_TYPE)
-                                .build();
-                entityList.add(alterTableEntity);
-            }
-            TableManager.alterTable(
-                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
-            return R.succeed();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return R.failed(Status.TABLE_UPDATE_COLUMN_TYPE_ERROR);
-        }
-    }
+    private List<TableChange> createTableChanges(TableColumn oldColumn, TableColumn newColumn) {
+        ColumnMetadata columnMetadata =
+                new ColumnMetadata(
+                        newColumn.getField(),
+                        DataTypeConvertUtils.convert(oldColumn.getDataType()),
+                        oldColumn.getComment());
 
-    /**
-     * Updates the comments of columns in a table.
-     *
-     * @param tableInfo The information of the table.
-     * @return The result of the operation.
-     */
-    @PostMapping("/updateColumnComment")
-    public R<Void> updateColumnComment(@RequestBody TableInfo tableInfo) {
-        try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
-            List<TableColumn> tableColumns = tableInfo.getTableColumns();
-            List<AlterTableEntity> entityList = new ArrayList<>();
-            for (TableColumn tableColumn : tableColumns) {
-                AlterTableEntity alterTableEntity =
-                        AlterTableEntity.builder()
-                                .columnName(tableColumn.getField())
-                                .comment(tableColumn.getComment())
-                                .kind(OperatorKind.UPDATE_COLUMN_COMMENT)
-                                .build();
-                entityList.add(alterTableEntity);
-            }
-            TableManager.alterTable(
-                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), entityList);
-            return R.succeed();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return R.failed(Status.TABLE_UPDATE_COLUMN_COMMENT_ERROR);
-        }
+        TableChange.ModifyColumnType modifyColumnType =
+                TableChange.modifyColumnType(
+                        columnMetadata, DataTypeConvertUtils.convert(newColumn.getDataType()));
+
+        TableChange.ModifyColumnComment modifyColumnComment =
+                TableChange.modifyColumnComment(columnMetadata, newColumn.getComment());
+
+        List<TableChange> tableChanges = new ArrayList<>();
+        tableChanges.add(modifyColumnType);
+        tableChanges.add(modifyColumnComment);
+
+        return tableChanges;
     }
 
     /**
@@ -314,35 +272,50 @@ public class TableController {
      */
     @PostMapping("/addOption")
     public R<Void> addOption(@RequestBody TableInfo tableInfo) {
+        List<TableChange> tableChanges = new ArrayList<>();
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
+            PaimonCatalog catalog =
+                    CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
             Map<String, String> tableOptions = tableInfo.getTableOptions();
-            TableManager.setOptions(
-                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), tableOptions);
+            for (Map.Entry<String, String> entry : tableOptions.entrySet()) {
+                TableChange.SetOption setOption = TableChange.set(entry.getKey(), entry.getValue());
+                tableChanges.add(setOption);
+            }
+            catalog.alterTable(tableInfo.getDatabaseName(), tableInfo.getTableName(), tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error occurred while adding option.", e);
             return R.failed(Status.TABLE_ADD_OPTION_ERROR);
         }
     }
 
     /**
-     * Endpoint for deleting a table option.
+     * Removes an option from a table.
      *
-     * @param tableInfo The table information containing the catalog, database, table name, and
-     *     table options.
-     * @return A response indicating the success or failure of the operation.
+     * @param catalogName The name of the catalog.
+     * @param databaseName The name of the database.
+     * @param tableName The name of the table.
+     * @param key The key of the option to be removed.
+     * @return Returns a {@link R} object indicating the success or failure of the operation. If the
+     *     option is successfully removed, the result will be a successful response with no data. If
+     *     an error occurs during the operation, the result will be a failed response with an error
+     *     code. Possible error codes: {@link Status#TABLE_REMOVE_OPTION_ERROR}.
      */
     @PostMapping("/removeOption")
-    public R<Void> deleteOption(@RequestBody TableInfo tableInfo) {
+    public R<Void> removeOption(
+            @RequestParam String catalogName,
+            @RequestParam String databaseName,
+            @RequestParam String tableName,
+            @RequestParam String key) {
+        List<TableChange> tableChanges = new ArrayList<>();
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(tableInfo.getCatalogName()));
-            Map<String, String> tableOptions = tableInfo.getTableOptions();
-            TableManager.removeOptions(
-                    catalog, tableInfo.getDatabaseName(), tableInfo.getTableName(), tableOptions);
+            PaimonCatalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
+            TableChange.ResetOption removeOption = TableChange.reset(key);
+            tableChanges.add(removeOption);
+            catalog.alterTable(databaseName, tableName, tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error occurred while removing option.", e);
             return R.failed(Status.TABLE_REMOVE_OPTION_ERROR);
         }
     }
@@ -365,11 +338,11 @@ public class TableController {
             @PathVariable String databaseName,
             @PathVariable String tableName) {
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
-            TableManager.dropTable(catalog, databaseName, tableName);
+            PaimonCatalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
+            catalog.dropTable(databaseName, tableName);
             return R.succeed();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error occurred while dropping table.", e);
             return R.failed(Status.TABLE_DROP_ERROR);
         }
     }
@@ -394,11 +367,11 @@ public class TableController {
             @RequestParam String fromTableName,
             @RequestParam String toTableName) {
         try {
-            Catalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
-            TableManager.renameTable(catalog, databaseName, fromTableName, toTableName);
+            PaimonCatalog catalog = CatalogUtils.getCatalog(getCatalogInfo(catalogName));
+            catalog.renameTable(databaseName, fromTableName, toTableName);
             return R.succeed();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error occurred while renaming table.", e);
             return R.failed(Status.TABLE_RENAME_ERROR);
         }
     }
@@ -415,16 +388,16 @@ public class TableController {
         List<CatalogInfo> catalogInfoList = catalogService.list();
         if (!CollectionUtils.isEmpty(catalogInfoList)) {
             for (CatalogInfo item : catalogInfoList) {
-                Catalog catalog = CatalogUtils.getCatalog(item);
-                List<String> databaseList = DatabaseManager.listDatabase(catalog);
+                PaimonCatalog catalog = CatalogUtils.getCatalog(item);
+                List<String> databaseList = catalog.listDatabases();
                 if (!CollectionUtils.isEmpty(databaseList)) {
                     for (String db : databaseList) {
                         try {
-                            List<String> tables = TableManager.listTables(catalog, db);
+                            List<String> tables = catalog.listTables(db);
                             if (!CollectionUtils.isEmpty(tables)) {
                                 for (String t : tables) {
                                     try {
-                                        Table table = TableManager.getTable(catalog, db, t);
+                                        Table table = catalog.getTable(db, t);
                                         if (table != null) {
                                             List<String> primaryKeys = table.primaryKeys();
                                             List<DataField> fields = table.rowType().getFields();
@@ -438,34 +411,17 @@ public class TableController {
                                                                     + field.name()
                                                                     + "."
                                                                     + DEFAULT_VALUE_SUFFIX;
+                                                    PaimonDataType dataType =
+                                                            DataTypeConvertUtils.fromPaimonType(
+                                                                    field.type());
                                                     TableColumn.TableColumnBuilder builder =
                                                             TableColumn.builder()
                                                                     .field(field.name())
-                                                                    .dataType(
-                                                                            DataTypeConvertUtils
-                                                                                    .fromPaimonType(
-                                                                                            field
-                                                                                                    .type())
-                                                                                    .getType())
-                                                                    .comment(field.description())
-                                                                    .isNullable(
-                                                                            field.type()
-                                                                                    .isNullable())
-                                                                    .length0(
-                                                                            DataTypeConvertUtils
-                                                                                    .fromPaimonType(
-                                                                                            field
-                                                                                                    .type())
-                                                                                    .getLength0())
-                                                                    .length1(
-                                                                            DataTypeConvertUtils
-                                                                                    .fromPaimonType(
-                                                                                            field
-                                                                                                    .type())
-                                                                                    .getLength1());
+                                                                    .dataType(dataType)
+                                                                    .comment(field.description());
                                                     if (primaryKeys.size() > 0
                                                             && primaryKeys.contains(field.name())) {
-                                                        builder.isPK(true);
+                                                        builder.isPk(true);
                                                     }
                                                     if (options.get(key) != null) {
                                                         builder.defaultValue(options.get(key));
@@ -484,12 +440,12 @@ public class TableController {
                                                             .build();
                                             tableInfoList.add(tableInfo);
                                         }
-                                    } catch (Catalog.TableNotExistException e) {
+                                    } catch (Exception e) {
                                         throw new RuntimeException(e);
                                     }
                                 }
                             }
-                        } catch (Catalog.DatabaseNotExistException e) {
+                        } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }
@@ -511,7 +467,7 @@ public class TableController {
         if (!CollectionUtils.isEmpty(tableColumns)) {
             tableColumns.forEach(
                     item -> {
-                        if (item.isPK()) {
+                        if (item.isPk()) {
                             primaryKeys.add(item.getField());
                         }
                     });
@@ -536,10 +492,10 @@ public class TableController {
                                         item.getField(),
                                         DataTypeConvertUtils.convert(
                                                 new PaimonDataType(
-                                                        item.getDataType(),
-                                                        item.isNullable(),
-                                                        item.getLength0(),
-                                                        item.getLength1())),
+                                                        item.getDataType().getType(),
+                                                        item.getDataType().isNullable(),
+                                                        item.getDataType().getPrecision(),
+                                                        item.getDataType().getScale())),
                                         item.getComment() != null ? item.getComment() : null);
                         columns.add(columnMetadata);
                     });

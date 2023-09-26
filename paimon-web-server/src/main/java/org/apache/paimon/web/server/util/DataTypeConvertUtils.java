@@ -51,18 +51,18 @@ public class DataTypeConvertUtils {
                 return new BigIntType(type.isNullable());
             case "CHAR":
                 return new CharType(
-                        type.isNullable(), type.getLength0() > 0 ? type.getLength0() : 1);
+                        type.isNullable(), type.getPrecision() > 0 ? type.getPrecision() : 1);
             case "VARCHAR":
                 return new VarCharType(
-                        type.isNullable(), type.getLength0() > 0 ? type.getLength0() : 1);
+                        type.isNullable(), type.getPrecision() > 0 ? type.getPrecision() : 1);
             case "STRING":
                 return new VarCharType(type.isNullable(), Integer.MAX_VALUE);
             case "BINARY":
                 return new BinaryType(
-                        type.isNullable(), type.getLength0() > 0 ? type.getLength0() : 1);
+                        type.isNullable(), type.getPrecision() > 0 ? type.getPrecision() : 1);
             case "VARBINARY":
                 return new VarBinaryType(
-                        type.isNullable(), type.getLength0() > 0 ? type.getLength0() : 1);
+                        type.isNullable(), type.getPrecision() > 0 ? type.getPrecision() : 1);
             case "DOUBLE":
                 return new DoubleType(type.isNullable());
             case "BOOLEAN":
@@ -72,11 +72,11 @@ public class DataTypeConvertUtils {
             case "TIME":
                 return new TimeType(type.isNullable(), 0);
             case "TIME(precision)":
-                return new TimeType(type.isNullable(), type.getLength0());
+                return new TimeType(type.isNullable(), type.getPrecision());
             case "TIMESTAMP":
                 return new TimestampType(type.isNullable(), 0);
             case "TIMESTAMP(precision)":
-                return new TimestampType(type.isNullable(), type.getLength0());
+                return new TimestampType(type.isNullable(), type.getPrecision());
             case "TIMESTAMP_MILLIS":
                 return new TimestampType(type.isNullable(), 3);
             case "BYTES":
@@ -84,11 +84,11 @@ public class DataTypeConvertUtils {
             case "FLOAT":
                 return new FloatType(type.isNullable());
             case "DECIMAL":
-                return new DecimalType(type.isNullable(), type.getLength0(), type.getLength1());
+                return new DecimalType(type.isNullable(), type.getPrecision(), type.getScale());
             case "TIMESTAMP_WITH_LOCAL_TIME_ZONE":
                 return new LocalZonedTimestampType(type.isNullable(), 0);
             case "TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)":
-                return new LocalZonedTimestampType(type.isNullable(), type.getLength0());
+                return new LocalZonedTimestampType(type.isNullable(), type.getPrecision());
             default:
                 throw new RuntimeException("Invalid type: " + type);
         }

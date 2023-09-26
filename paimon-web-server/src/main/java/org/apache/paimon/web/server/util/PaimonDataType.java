@@ -19,11 +19,13 @@
 package org.apache.paimon.web.server.util;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /** paimon data type. */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaimonDataType {
@@ -32,7 +34,7 @@ public class PaimonDataType {
 
     private boolean isNullable;
 
-    private Integer length0;
+    private Integer precision;
 
-    private Integer length1;
+    private Integer scale;
 }

@@ -16,31 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.api.exception;
 
-import org.apache.paimon.web.server.util.PaimonDataType;
+/** table exception. */
+public class TableException extends RuntimeException {
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+    public TableException(String message) {
+        super(message);
+    }
 
-import javax.annotation.Nullable;
+    /** table already exists exception. */
+    public static class TableAlreadyExistException extends TableException {
 
-/** TableColumn model. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class TableColumn {
+        public TableAlreadyExistException(String message) {
+            super(message);
+        }
+    }
 
-    private String field;
+    /** table not exists exception. */
+    public static class TableNotExistException extends TableException {
 
-    private PaimonDataType dataType;
-
-    @Nullable private String comment;
-
-    @Nullable private boolean isPk;
-
-    @Nullable private String defaultValue;
+        public TableNotExistException(String message) {
+            super(message);
+        }
+    }
 }

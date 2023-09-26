@@ -18,29 +18,17 @@
 
 package org.apache.paimon.web.server.data.model;
 
-import org.apache.paimon.web.server.util.PaimonDataType;
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nullable;
-
-/** TableColumn model. */
+/** Alter table request. */
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class TableColumn {
+@NoArgsConstructor
+public class AlterTableRequest {
 
-    private String field;
+    private TableColumn oldColumn;
 
-    private PaimonDataType dataType;
-
-    @Nullable private String comment;
-
-    @Nullable private boolean isPk;
-
-    @Nullable private String defaultValue;
+    private TableColumn newColumn;
 }

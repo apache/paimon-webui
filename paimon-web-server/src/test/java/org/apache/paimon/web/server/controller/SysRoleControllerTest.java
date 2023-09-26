@@ -18,26 +18,19 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.model.SysRole;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
-import org.apache.paimon.web.server.util.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -50,63 +43,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SysRoleControllerTest {
+public class SysRoleControllerTest extends ControllerTestBase {
 
     private static final String rolePath = "/api/role";
-    private static final String loginPath = "/api/login";
-    private static final String logoutPath = "/api/logout";
 
     private static final int roleId = 3;
     private static final String roleName = "test";
-
-    @Value("${spring.application.name}")
-    private String tokenName;
-
-    @Autowired private MockMvc mockMvc;
-
-    private String token;
-
-    @BeforeEach
-    public void before() throws Exception {
-        LoginDto login = new LoginDto();
-        login.setUsername("admin");
-        login.setPassword("21232f297a57a5a743894a0e4a801fc3");
-
-        String result =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post(loginPath)
-                                        .content(ObjectMapperUtils.toJSON(login))
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-        R<?> r = ObjectMapperUtils.fromJSON(result, R.class);
-        assertEquals(200, r.getCode());
-
-        assertTrue(StringUtils.isNotBlank(r.getData().toString()));
-
-        this.token = r.getData().toString();
-    }
-
-    @AfterEach
-    public void after() throws Exception {
-        String result =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post(logoutPath)
-                                        .header(tokenName, token)
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-        R<?> r = ObjectMapperUtils.fromJSON(result, R.class);
-        assertEquals(200, r.getCode());
-    }
 
     @Test
     @Order(1)
@@ -122,7 +64,7 @@ public class SysRoleControllerTest {
 
         mockMvc.perform(
                         MockMvcRequestBuilders.post(rolePath)
-                                .header(tokenName, token)
+                                .cookie(cookie)
                                 .content(ObjectMapperUtils.toJSON(sysRole))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -136,7 +78,7 @@ public class SysRoleControllerTest {
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(rolePath + "/" + roleId)
-                                        .header(tokenName, token)
+                                        .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -167,7 +109,7 @@ public class SysRoleControllerTest {
 
         mockMvc.perform(
                         MockMvcRequestBuilders.put(rolePath)
-                                .header(tokenName, token)
+                                .cookie(cookie)
                                 .content(ObjectMapperUtils.toJSON(sysRole))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -176,7 +118,7 @@ public class SysRoleControllerTest {
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(rolePath + "/" + roleId)
-                                        .header(tokenName, token)
+                                        .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -198,7 +140,7 @@ public class SysRoleControllerTest {
         String delResponseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.delete(rolePath + "/" + roleId)
-                                        .header(tokenName, token)
+                                        .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -217,7 +159,7 @@ public class SysRoleControllerTest {
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(rolePath + "/list")
-                                        .header(tokenName, token)
+                                        .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())

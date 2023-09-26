@@ -18,9 +18,8 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -34,27 +33,59 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** Test of permission service. */
+/** Test for DatabaseController. */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PermissionTest extends ControllerTestBase {
-    private static final String getUserPath = "/api/user";
+public class DatabaseControllerTest extends ControllerTestBase {
+
+    private static final String databasePath = "/api/database";
+
+    private static final String catalogName = "paimon_catalog";
 
     @Test
-    public void testNoPermission() throws Exception {
+    public void testCreateDatabase() throws Exception {
+        DatabaseInfo databaseInfo = new DatabaseInfo();
+        databaseInfo.setDatabaseName("test_db");
+        databaseInfo.setCatalogName(catalogName);
+
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get(getUserPath + "/" + 1)
+                                MockMvcRequestBuilders.post(databasePath + "/createDatabase")
                                         .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(databaseInfo))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                        .andExpect(MockMvcResultMatchers.status().isOk())
                         .andDo(MockMvcResultHandlers.print())
                         .andReturn()
                         .getResponse()
                         .getContentAsString();
 
-        R<User> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<User>>() {});
-        assertEquals(Status.SUCCESS.getCode(), r.getCode());
+        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, r.getCode());
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(databasePath + "/delete/" + "test_db/" + catalogName)
+                        .cookie(cookie)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON_VALUE));
+    }
+
+    @Test
+    public void testGetDatabases() throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(databasePath + "/getAllDatabases")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, r.getCode());
     }
 }

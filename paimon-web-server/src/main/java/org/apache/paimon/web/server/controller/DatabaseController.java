@@ -18,8 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.catalog.Catalog;
-import org.apache.paimon.web.api.database.DatabaseManager;
+import org.apache.paimon.web.api.catalog.PaimonCatalog;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.result.R;
@@ -60,14 +59,14 @@ public class DatabaseController {
     public R<Void> createDatabase(@RequestBody DatabaseInfo databaseInfo) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(databaseInfo.getCatalogName());
-            Catalog catalog = CatalogUtils.getCatalog(catalogInfo);
-            if (DatabaseManager.databaseExists(catalog, databaseInfo.getDatabaseName())) {
+            PaimonCatalog catalog = CatalogUtils.getCatalog(catalogInfo);
+            if (catalog.databaseExists(databaseInfo.getDatabaseName())) {
                 return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseInfo.getDatabaseName());
             }
-            DatabaseManager.createDatabase(catalog, databaseInfo.getDatabaseName());
+            catalog.createDatabase(databaseInfo.getDatabaseName());
             return R.succeed();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error occurred while creating database.", e);
             return R.failed(Status.DATABASE_CREATE_ERROR);
         }
     }
@@ -84,8 +83,8 @@ public class DatabaseController {
         if (!CollectionUtils.isEmpty(catalogInfoList)) {
             catalogInfoList.forEach(
                     item -> {
-                        Catalog catalog = CatalogUtils.getCatalog(item);
-                        List<String> list = DatabaseManager.listDatabase(catalog);
+                        PaimonCatalog catalog = CatalogUtils.getCatalog(item);
+                        List<String> list = catalog.listDatabases();
                         list.forEach(
                                 databaseName -> {
                                     DatabaseInfo info =
@@ -113,11 +112,12 @@ public class DatabaseController {
     public R<Void> remove(@PathVariable String databaseName, @PathVariable String catalogName) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(catalogName);
-            Catalog catalog = CatalogUtils.getCatalog(catalogInfo);
-            DatabaseManager.dropDatabase(catalog, databaseName);
+            PaimonCatalog catalog = CatalogUtils.getCatalog(catalogInfo);
+            catalog.dropDatabase(databaseName);
             return R.succeed();
-        } catch (Catalog.DatabaseNotEmptyException | Catalog.DatabaseNotExistException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log.error("Error occurred while dropping database.", e);
+            return R.failed(Status.DATABASE_CREATE_ERROR);
         }
     }
 
