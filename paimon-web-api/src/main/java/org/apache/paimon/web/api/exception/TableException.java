@@ -16,31 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.utils;
+package org.apache.paimon.web.api.exception;
 
-import org.apache.commons.lang3.tuple.Pair;
+/** table exception. */
+public class TableException extends RuntimeException {
 
-import java.util.Map;
-import java.util.function.Supplier;
+    public TableException(String message) {
+        super(message);
+    }
 
-/** parameter validation util. */
-public class ParameterValidationUtil {
+    /** table already exists exception. */
+    public static class TableAlreadyExistException extends TableException {
 
-    @SafeVarargs
-    public static void checkNotNull(Map.Entry<Object, Supplier<String>>... entries) {
-        for (Map.Entry<Object, Supplier<String>> entry : entries) {
-            if (entry.getKey() == null) {
-                throw new IllegalArgumentException(entry.getValue().get() + " can not be null.");
-            }
+        public TableAlreadyExistException(String message) {
+            super(message);
         }
     }
 
-    @SafeVarargs
-    public static void checkNotNull(Pair<Object, String>... entries) {
-        for (Pair<Object, String> entry : entries) {
-            if (entry.getLeft() == null) {
-                throw new IllegalArgumentException(entry.getRight() + " cannot be null.");
-            }
+    /** table not exists exception. */
+    public static class TableNotExistException extends TableException {
+
+        public TableNotExistException(String message) {
+            super(message);
         }
     }
 }
