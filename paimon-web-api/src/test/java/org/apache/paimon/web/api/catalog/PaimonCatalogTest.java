@@ -271,7 +271,7 @@ public class PaimonCatalogTest {
         String bucket = tb1.options().get("bucket");
         assertThat(bucket).isEqualTo("2");
 
-        TableChange.ResetOption resetOption = TableChange.reset("bucket");
+        TableChange.RemoveOption resetOption = TableChange.remove("bucket");
         List<TableChange> changes = new ArrayList<>();
         changes.add(resetOption);
         catalog.alterTable(db, "tb1", changes);

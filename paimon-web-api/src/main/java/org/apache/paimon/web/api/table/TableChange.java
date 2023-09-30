@@ -24,7 +24,10 @@ import javax.annotation.Nullable;
 
 import java.util.Objects;
 
-/** TableChange represents the modification of the table. */
+/**
+ * This change represents the modification of the table including adding, modifying and dropping
+ * column etc.
+ */
 public interface TableChange {
     static AddColumn add(ColumnMetadata column) {
         return new AddColumn(column, null);
@@ -66,8 +69,8 @@ public interface TableChange {
         return new SetOption(key, value);
     }
 
-    static ResetOption reset(String key) {
-        return new ResetOption(key);
+    static RemoveOption remove(String key) {
+        return new RemoveOption(key);
     }
 
     /** A table change to add a column. */
@@ -131,22 +134,14 @@ public interface TableChange {
             this.newPosition = newPosition;
         }
 
-        /** Returns the original {@link ColumnMetadata} instance. */
         public ColumnMetadata getOldColumn() {
             return oldColumn;
         }
 
-        /** Returns the modified {@link ColumnMetadata} instance. */
         public ColumnMetadata getNewColumn() {
             return newColumn;
         }
 
-        /**
-         * Returns the position of the modified {@link ColumnMetadata} instance. When the return
-         * value is null, it means modify the column at the original position. When the return value
-         * is FIRST, it means move the modified column to the first. When the return value is AFTER,
-         * it means move the column after the referred column.
-         */
         public @Nullable ColumnPosition getNewPosition() {
             return newPosition;
         }
@@ -267,9 +262,8 @@ public interface TableChange {
             return "ModifyColumnComment{"
                     + "Column="
                     + oldColumn
-                    + ", newComment='"
+                    + ", newComment="
                     + newComment
-                    + '\''
                     + '}';
         }
     }
@@ -330,7 +324,7 @@ public interface TableChange {
 
         @Override
         public String toString() {
-            return "DropColumn{" + "columnName='" + columnName + '\'' + '}';
+            return "DropColumn{" + "columnName=" + columnName + '}';
         }
     }
 
@@ -374,16 +368,16 @@ public interface TableChange {
 
         @Override
         public String toString() {
-            return "SetOption{" + "key='" + key + '\'' + ", value='" + value + '\'' + '}';
+            return "SetOption{" + "key=" + key + ", value=" + value + '}';
         }
     }
 
-    /** A table change to reset the table option. */
-    class ResetOption implements TableChange {
+    /** A table change to remove the table option. */
+    class RemoveOption implements TableChange {
 
         private final String key;
 
-        public ResetOption(String key) {
+        public RemoveOption(String key) {
             this.key = key;
         }
 
@@ -397,10 +391,10 @@ public interface TableChange {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof ResetOption)) {
+            if (!(o instanceof RemoveOption)) {
                 return false;
             }
-            ResetOption that = (ResetOption) o;
+            RemoveOption that = (RemoveOption) o;
             return Objects.equals(key, that.key);
         }
 
@@ -411,7 +405,7 @@ public interface TableChange {
 
         @Override
         public String toString() {
-            return "ResetOption{" + "key='" + key + '\'' + '}';
+            return "ResetOption{" + "key=" + key + '}';
         }
     }
 

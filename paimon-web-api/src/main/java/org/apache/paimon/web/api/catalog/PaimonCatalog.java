@@ -271,9 +271,9 @@ public class PaimonCatalog {
 
             schemaChanges.add(SchemaChange.setOption(key, value));
             return schemaChanges;
-        } else if (change instanceof TableChange.ResetOption) {
-            TableChange.ResetOption resetOption = (TableChange.ResetOption) change;
-            schemaChanges.add(SchemaChange.removeOption(resetOption.getKey()));
+        } else if (change instanceof TableChange.RemoveOption) {
+            TableChange.RemoveOption removeOption = (TableChange.RemoveOption) change;
+            schemaChanges.add(SchemaChange.removeOption(removeOption.getKey()));
             return schemaChanges;
         } else {
             throw new UnsupportedOperationException(
