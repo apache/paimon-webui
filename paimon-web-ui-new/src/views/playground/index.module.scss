@@ -16,31 +16,13 @@ specific language governing permissions and limitations
 under the License. */
 
 .container {
-  height: 100%;
+  display: flex;
   width: 100%;
-
-  :global {
-    .n-tabs {
-      height: 100%;
-    }
-  }
+  height: 100%;
 
   .content {
     display: flex;
+    width: calc(100% - 60px);
     height: 100%;
-
-    .catalog {
-      width: 350px;
-      height: 100%;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    .editor {
-      height: 100%;
-      flex: 1;
-      padding: 10px;
-      box-sizing: border-box;
-    }
   }
 }

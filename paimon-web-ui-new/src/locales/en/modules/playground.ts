@@ -16,6 +16,22 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  select_catalog: 'Select Catalog',
-  search: 'Search'
+  database_query: 'Database Query',
+  workbench: 'Workbench',
+  task_operation_and_maintenance: 'Task Operation and Maintenance',
+  settings: 'Settings',
+  terminal: 'Terminal',
+  branch: 'Branch',
+  data: 'Data',
+  saved_query: 'Saved Query',
+  query_record: 'Query Record',
+  search: 'Search',
+  run: 'Run',
+  format: 'Format',
+  save: 'Save',
+  clear: 'Clear',
+  unfold: 'Unfold',
+  pack_up: 'Pack Up',
+  logs: 'Logs',
+  result: 'Result',
 }
