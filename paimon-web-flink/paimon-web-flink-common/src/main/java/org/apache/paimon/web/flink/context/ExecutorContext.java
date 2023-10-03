@@ -20,16 +20,22 @@ package org.apache.paimon.web.flink.context;
 
 import org.apache.paimon.web.flink.common.ExecutionMode;
 
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 /** The ExecutorContext class provides the context for creating an Executor. */
 public abstract class ExecutorContext {
 
+    protected StreamExecutionEnvironment environment;
     protected StreamTableEnvironment tableEnv;
 
     public StreamTableEnvironment getTableEnvironment() {
         return tableEnv;
+    }
+
+    public StreamExecutionEnvironment getEnvironment() {
+        return environment;
     }
 
     protected EnvironmentSettings createEnvironmentSettings(ExecutionMode mode) {

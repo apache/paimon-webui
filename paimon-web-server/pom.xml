@@ -34,9 +34,6 @@ under the License.
         Paimon Web Server is a server for the [Apache Paimon](https://paimon.apache.org/) project.
     </description>
 
-    <properties>
-        <hadoop.version>2.8.5</hadoop.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -48,6 +45,12 @@ under the License.
         <dependency>
             <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-web-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.paimon</groupId>
+            <artifactId>paimon-web-flink-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 

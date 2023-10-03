@@ -31,7 +31,6 @@ public class RemoteExecutorContext extends ExecutorContext {
 
     public RemoteExecutorContext(
             RemoteParams parameters, Configuration configuration, ExecutionMode mode) {
-        StreamExecutionEnvironment environment;
         if (parameters.getJarFilePath() != null) {
             environment =
                     StreamExecutionEnvironment.createRemoteEnvironment(

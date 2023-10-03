@@ -29,8 +29,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 public class LocalExecutorContext extends ExecutorContext {
 
     public LocalExecutorContext(Configuration configuration, ExecutionMode mode) {
-        StreamExecutionEnvironment environment =
-                StreamExecutionEnvironment.getExecutionEnvironment();
+        environment = StreamExecutionEnvironment.getExecutionEnvironment();
         environment.getConfig().setGlobalJobParameters(configuration);
         EnvironmentSettings settings = createEnvironmentSettings(mode);
         tableEnv = StreamTableEnvironment.create(environment, settings);

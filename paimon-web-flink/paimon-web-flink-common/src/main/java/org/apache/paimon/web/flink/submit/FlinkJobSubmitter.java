@@ -31,6 +31,7 @@ import org.apache.paimon.web.flink.handler.SqlTaskHandler;
 import org.apache.paimon.web.flink.job.FlinkJobResult;
 
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.Map;
 
@@ -41,6 +42,7 @@ import java.util.Map;
  */
 public class FlinkJobSubmitter {
 
+    private StreamExecutionEnvironment environment;
     private final SqlTaskHandler sqlTaskHandler;
 
     public FlinkJobSubmitter(FlinkJobConfiguration jobConfig) {
@@ -67,9 +69,15 @@ public class FlinkJobSubmitter {
                             remoteParams, configuration, jobConfig.getExecutionMode());
         }
 
+        environment = context.getEnvironment();
+
         Executor executor = executorFactory.createExecutor(context);
 
         sqlTaskHandler = new SqlTaskHandler(executor);
+    }
+
+    public StreamExecutionEnvironment getEnvironment() {
+        return environment;
     }
 
     /**

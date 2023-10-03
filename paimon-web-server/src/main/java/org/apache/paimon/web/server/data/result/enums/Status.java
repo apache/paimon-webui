@@ -64,6 +64,12 @@ public enum Status {
     /** ------------table-----------------. */
     TABLE_NAME_IS_EXIST(10501, "table.name.exist"),
     TABLE_CREATE_ERROR(10502, "table.create.error"),
+
+    /** ------------flink Job task-----------------. */
+    FLINK_JOB_NAME_IS_EXIST(10601, "flink.job.name.exist"),
+    FLINK_JOB_TASK_CREATE_ERROR(10602, "flink.job.task.create.error"),
+    FLINK_JOB_TASK_SUBMIT_ERROR(10603, "flink.job.task.submit.error"),
+    FLINK_JOB_TASK_STOP_ERROR(10604, "flink.job.task.stop.error"),
     ;
 
     private final int code;

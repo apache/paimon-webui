@@ -71,3 +71,75 @@ values ('ods', 1, 'description'),
        ('ods', 2, 'description'),
        ('ods', 3, 'description')*/
 
+INSERT INTO `flink_job_task` (`job_name`,
+                              `execution_runtime_mode`,
+                              `execution_target`,
+                              `job_memory`,
+                              `task_memory`,
+                              `parallelism`,
+                              `flink_version`,
+                              `flink_config_path`,
+                              `hadoop_config_path`,
+                              `checkpoint_path`,
+                              `checkpoint_interval`,
+                              `savepoint_path`,
+                              `user_jar_path`,
+                              `user_jar_main_app_class`,
+                              `flink_lib_path`,
+                              `job_id`,
+                              `application_id`,
+                              `flink_web_url`,
+                              `job_status`,
+                              `admin_user`,
+                              `other_params`,
+                              `flink_sql`)
+VALUES ('MyFlinkJob',
+        'AUTOMATIC',
+        'yarn-application',
+        '1gb',
+        '2gb',
+        1,
+        '1.17.0',
+        '/opt/datasophon/flink-1.17.0/conf',
+        '/opt/datasophon/hadoop-3.3.3/etc/hadoop',
+        'hdfs://nameservice1/flink_meta/flink-checkpoints',
+        '60000',
+        '',
+        'hdfs://nameservice1/flink-user-jars/paimon-app-1.17-0.1-SNAPSHOT.jar',
+        'org.apache.paimon.web.app.MainApp',
+        'hdfs://nameservice1/flink-dist/lib',
+        'job123',
+        'app456',
+        'http://localhost:8081',
+        'RUNNING',
+        'guangfuyang',
+        '{}',
+        'create table Orders
+        ( order_number BIGINT,
+        price DECIMAL(32,2),
+        buyer row<first_name STRING,
+        last_name STRING>,
+        order_time TIMESTAMP(3)
+        ) with
+        ( ''connector'' = ''datagen'',
+        ''rows-per-second'' = ''1'',
+        ''number-of-rows'' = ''10000000'' );
+
+        create table Orders_print
+        ( order_number BIGINT,
+        price DECIMAL(32,2),
+        first_name STRING,
+        last_name STRING,
+        order_time TIMESTAMP(3) )
+        with ( ''connector'' = ''print'' );
+
+        insert into Orders_print
+            select
+            order_number,
+            price,
+            first_name,
+            last_name,
+            order_time
+        from
+            Orders;', '2023-09-03 11:59:06', '2023-09-03 11:59:06');
+
