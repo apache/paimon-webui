@@ -26,6 +26,7 @@ import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
+import org.apache.flink.configuration.MemorySize;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
@@ -85,35 +86,15 @@ public class YarnApplicationSubmit extends AbstractFlinkJobSubmit {
                         YarnClientYarnClusterInformationRetriever.create(yarnClient),
                         true);
 
-        Object jobMemory = config.get("jobMemory");
-        int jobMemorySize = 2048;
-        if (jobMemory != null) {
-            if (jobMemory.toString().toUpperCase().contains("GB")) {
-                jobMemorySize =
-                        Integer.parseInt(jobMemory.toString().toUpperCase().replaceAll("GB", ""))
-                                * 1024;
-            } else {
-                jobMemorySize =
-                        Integer.parseInt(jobMemory.toString().toUpperCase().replaceAll("MB", ""));
-            }
-        }
-        Object taskMemory = config.get("taskMemory");
-        int taskMemorySize = 1024;
-        if (taskMemory != null) {
-            if (taskMemory.toString().toUpperCase().contains("GB")) {
-                taskMemorySize =
-                        Integer.parseInt(taskMemory.toString().toUpperCase().replaceAll("GB", ""))
-                                * 1024;
-            } else {
-                taskMemorySize =
-                        Integer.parseInt(taskMemory.toString().toUpperCase().replaceAll("MB", ""));
-            }
-        }
+        String jobMemory =
+                config.get("jobMemory") == null ? "1g" : config.get("jobMemory").toString();
+        String taskMemory =
+                config.get("taskMemory") == null ? "1g" : config.get("taskMemory").toString();
 
         ClusterSpecification clusterSpecification =
                 new ClusterSpecification.ClusterSpecificationBuilder()
-                        .setMasterMemoryMB(jobMemorySize)
-                        .setTaskManagerMemoryMB(taskMemorySize)
+                        .setMasterMemoryMB(MemorySize.parse(jobMemory).getMebiBytes())
+                        .setTaskManagerMemoryMB(MemorySize.parse(taskMemory).getMebiBytes())
                         .setSlotsPerTaskManager(1)
                         .createClusterSpecification();
 
