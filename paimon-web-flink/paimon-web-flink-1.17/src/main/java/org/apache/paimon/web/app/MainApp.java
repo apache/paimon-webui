@@ -92,6 +92,7 @@ public class MainApp {
                 jobConfig.setTaskConfig(otherParamsMap);
             }
             FlinkJobSubmitter submitter = new FlinkJobSubmitter(jobConfig);
+            submitter.getEnvironment().setParallelism(Integer.parseInt(parallelism));
             submitter.submitJob(taskConfig.get("flink_sql"));
             submitter.getEnvironment().execute(jobName);
         } catch (Exception e) {

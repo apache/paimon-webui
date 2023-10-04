@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<configuration status="OFF" monitorInterval="600">
+  <Properties>
+    <property name="LOG_PATH">./logs/</property>
+    <property name="LOG_FILE">paimon-web-app</property>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss z} %-5level %class{36}#%M:%L - %msg%xEx%n"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%6p} %style{%5pid}{bright,magenta} --- [%15.15t] %style{%c{20}}{bright,cyan}: %m%n"/>
+  </Properties>
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="ACCEPT"/>
+      <PatternLayout>
+        <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+      </PatternLayout>
+    </Console>
+
+    <RollingFile name="RollingFile" fileName="${LOG_PATH}/${LOG_FILE}.log"
+                 filePattern="${LOG_PATH}/$${date:yyyy-MM}/${LOG_FILE}-%d{yyyy-MM-dd}-%i.log">
+      <PatternLayout>
+        <Pattern>${FILE_LOG_PATTERN}</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="100MB"/>
+      </Policies>
+    </RollingFile>
+  </appenders>
+
+  <loggers>
+    <root level="info">
+      <appender-ref ref="Console"/>
+      <!--<appender-ref ref="File"/>-->
+      <appender-ref ref="RollingFile"/>
+    </root>
+
+  </loggers>
+</configuration>

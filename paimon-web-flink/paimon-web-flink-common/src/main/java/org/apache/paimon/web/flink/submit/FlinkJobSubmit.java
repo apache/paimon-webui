@@ -22,7 +22,12 @@ import org.apache.paimon.web.flink.submit.result.SubmitResult;
 
 import java.util.Map;
 
-/** flink job FlinkJobSubmit. */
+/**
+ * flink job FlinkJobSubmit.
+ *
+ * <p>The function of this interface is to submit the flink SQL submitted by the user to the backend
+ * for execution, which can be a yarn cluster or a flink cluster.
+ */
 public interface FlinkJobSubmit {
 
     /**

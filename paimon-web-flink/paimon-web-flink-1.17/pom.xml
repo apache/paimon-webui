@@ -41,7 +41,7 @@ under the License.
 
     <dependencies>
         <dependency>
-            <groupId>org.apache</groupId>
+            <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-web-flink-common</artifactId>
             <version>${project.version}</version>
             <exclusions>
@@ -82,8 +82,18 @@ under the License.
                         </goals>
                         <configuration>
                             <artifactSet>
+                                <includes>
+                                    <!-- Keep the module's own configuration file -->
+                                    <include>${project.groupId}:${project.artifactId}</include>
+                                    <include>org.apache.paimon:*</include>
+                                    <include>cn.hutool:*</include>
+                                    <include>mysql:*</include>
+                                </includes>
                                 <excludes>
-                                    <exclude>com.google.code.findbugs:jsr305</exclude>
+                                    <!-- Exclude packages that do not require retention -->
+                                    <exclude>!org.apache.paimon.web</exclude>
+                                    <exclude>!cn.hutool</exclude>
+                                    <exclude>!mysql</exclude>
                                 </excludes>
                             </artifactSet>
                             <filters>
@@ -92,9 +102,8 @@ under the License.
                                     Otherwise, this might cause SecurityExceptions when using the JAR. -->
                                     <artifact>*:*</artifact>
                                     <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
+                                        <!-- Exclude ingested profiles -->
+                                        <exclude>META-INF/*</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -109,7 +118,6 @@ under the License.
             </plugin>
         </plugins>
     </build>
-
 
 
 </project>

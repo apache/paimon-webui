@@ -46,7 +46,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/** yarn-application submit flink job implement. */
+/**
+ * yarn-application submit flink job implement.
+ *
+ * <p>This class implements the function of submitting Flink SQL to the YARN cluster for execution
+ * by calling the Flink-Yarn API.
+ */
 public class YarnApplicationSubmit extends AbstractFlinkJobSubmit {
     private static final Logger log = LoggerFactory.getLogger(YarnApplicationSubmit.class);
     /** yarn config info. */
@@ -79,11 +84,10 @@ public class YarnApplicationSubmit extends AbstractFlinkJobSubmit {
                         yarnClient,
                         YarnClientYarnClusterInformationRetriever.create(yarnClient),
                         true);
-        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
-                new ClusterSpecification.ClusterSpecificationBuilder();
+
         Object jobMemory = config.get("jobMemory");
+        int jobMemorySize = 2048;
         if (jobMemory != null) {
-            int jobMemorySize;
             if (jobMemory.toString().toUpperCase().contains("GB")) {
                 jobMemorySize =
                         Integer.parseInt(jobMemory.toString().toUpperCase().replaceAll("GB", ""))
@@ -92,11 +96,10 @@ public class YarnApplicationSubmit extends AbstractFlinkJobSubmit {
                 jobMemorySize =
                         Integer.parseInt(jobMemory.toString().toUpperCase().replaceAll("MB", ""));
             }
-            clusterSpecificationBuilder.setMasterMemoryMB(jobMemorySize);
         }
         Object taskMemory = config.get("taskMemory");
+        int taskMemorySize = 1024;
         if (taskMemory != null) {
-            int taskMemorySize;
             if (taskMemory.toString().toUpperCase().contains("GB")) {
                 taskMemorySize =
                         Integer.parseInt(taskMemory.toString().toUpperCase().replaceAll("GB", ""))
@@ -105,22 +108,27 @@ public class YarnApplicationSubmit extends AbstractFlinkJobSubmit {
                 taskMemorySize =
                         Integer.parseInt(taskMemory.toString().toUpperCase().replaceAll("MB", ""));
             }
-            clusterSpecificationBuilder.setTaskManagerMemoryMB(taskMemorySize);
         }
+
+        ClusterSpecification clusterSpecification =
+                new ClusterSpecification.ClusterSpecificationBuilder()
+                        .setMasterMemoryMB(jobMemorySize)
+                        .setTaskManagerMemoryMB(taskMemorySize)
+                        .setSlotsPerTaskManager(1)
+                        .createClusterSpecification();
+
         // Execute jobs submitted to the cluster
-        return executeSubmit(
-                applicationConfiguration, yarnClusterDescriptor, clusterSpecificationBuilder);
+        return executeSubmit(applicationConfiguration, yarnClusterDescriptor, clusterSpecification);
     }
 
     private SubmitResult executeSubmit(
             ApplicationConfiguration applicationConfiguration,
             YarnClusterDescriptor yarnClusterDescriptor,
-            ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder) {
+            ClusterSpecification clusterSpecification) {
         try {
             ClusterClientProvider<ApplicationId> clusterClientProvider =
                     yarnClusterDescriptor.deployApplicationCluster(
-                            clusterSpecificationBuilder.createClusterSpecification(),
-                            applicationConfiguration);
+                            clusterSpecification, applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
             while (jobStatusMessages.size() == 0) {
@@ -141,6 +149,7 @@ public class YarnApplicationSubmit extends AbstractFlinkJobSubmit {
                     .isSuccess(true)
                     .build();
         } catch (Exception e) {
+            log.error("flink sql is committed to the yarn cluster exception:", e);
             return SubmitResult.builder().isSuccess(false).msg(e.getMessage()).build();
         } finally {
             try {
