@@ -38,7 +38,7 @@ export default defineComponent({
           title: 'Layers',
           description: computed(() => (t('playground.query'))),
           isClick: true,
-          path: '/playground/database'
+          path: '/playground/query'
         },
         {
           icon: renderIcon(CodeSlashSharp),
