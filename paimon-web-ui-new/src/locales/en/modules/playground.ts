@@ -16,12 +16,12 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  database_query: 'Database Query',
+  query: 'Query',
   workbench: 'Workbench',
   task_operation_and_maintenance: 'Task Operation and Maintenance',
   settings: 'Settings',
   terminal: 'Terminal',
-  branch: 'Branch',
+  git_branch: 'Git Branch',
   data: 'Data',
   saved_query: 'Saved Query',
   query_record: 'Query Record',
@@ -31,7 +31,7 @@ export default {
   save: 'Save',
   clear: 'Clear',
   unfold: 'Unfold',
-  pack_up: 'Pack Up',
+  collapse: 'Collapse',
   logs: 'Logs',
   result: 'Result',
 }

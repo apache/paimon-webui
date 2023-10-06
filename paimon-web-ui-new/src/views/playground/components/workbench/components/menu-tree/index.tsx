@@ -27,8 +27,8 @@ export default defineComponent({
     const treeVariables = reactive({
       treeData: [
         {
-          key: 'paimon',
-          label: 'paimon',
+          key: 'paimon2',
+          label: 'paimon2',
           prefix: () =>
             h(NIcon, null, {
               default: () => h(ServerOutline)
@@ -119,48 +119,6 @@ export default defineComponent({
       tabData.value = data
     })
 
-    const savedQueryList = ref([
-      {
-        key: 1,
-        label: 'test1',
-        prefix: () =>
-          h(NIcon, {color: '#0066FF'}, {
-            default: () => h(CodeSlash)
-          }),
-        content: ''
-      },
-      {
-        key: 2,
-        label: 'test2',
-        prefix: () =>
-          h(NIcon, {color: '#0066FF'}, {
-            default: () => h(CodeSlash)
-          }),
-        content: ''
-      }
-    ]) as any
-
-    const recordList = ref([
-      {
-        key: 3,
-        label: 'test3',
-        prefix: () =>
-          h(NIcon, {color: '#0066FF'}, {
-            default: () => h(CodeSlash)
-          }),
-        content: ''
-      },
-      {
-        key: 4,
-        label: 'test4',
-        prefix: () =>
-          h(NIcon, {color: '#0066FF'}, {
-            default: () => h(CodeSlash)
-          }),
-        content: ''
-      }
-    ]) as any
-
     onMounted(() => {
       mittBus.emit('initTreeData', treeVariables)
     })
@@ -169,77 +127,31 @@ export default defineComponent({
       t,
       ...toRefs(treeVariables),
       nodeProps,
-      handleTreeSelect,
-      savedQueryList,
-      recordList
+      handleTreeSelect
     }
   },
   render() {
     return (
       <div class={styles.container}>
-        <n-card class={styles.card} content-style={'padding:7px 18px;'}>
-          <n-tabs default-value="data" justify-content="space-between" type="line">
-            <n-tab-pane name="data" tab={this.t('playground.data')}>
-              <n-space vertical>
-                <n-input placeholder={this.t('playground.search')} style="width: 100%;"
-                  v-model:value={this.filterValue}
-                  v-slots={{
-                    prefix: () => <n-icon component={Search} />
-                  }}
-                >
-                </n-input>
-                <n-tree
-                  block-line
-                  expand-on-click
-                  selected-keys={this.selectedKeys}
-                  on-update:selected-keys={this.handleTreeSelect}
-                  data={this.treeData}
-                  pattern={this.filterValue}
-                  node-props={this.nodeProps}
-                />
-              </n-space>
-            </n-tab-pane>
-            <n-tab-pane name="saved_query" tab={this.t('playground.saved_query')}>
-              <n-space vertical>
-                <n-input placeholder={this.t('playground.search')} style="width: 100%;"
-                  v-model:value={this.filterValue}
-                  v-slots={{
-                    prefix: () => <n-icon component={Search} />
-                  }}
-                >
-                </n-input>
-                <n-tree
-                  block-line
-                  expand-on-click
-                  selected-keys={this.selectedKeys}
-                  on-update:selected-keys={this.handleTreeSelect}
-                  data={this.savedQueryList}
-                  pattern={this.filterValue}
-                  node-props={this.nodeProps}
-                />
-              </n-space>
-            </n-tab-pane>
-            <n-tab-pane name="query_record" tab={this.t('playground.query_record')}>
-            <n-space vertical>
-                <n-input placeholder={this.t('playground.search')} style="width: 100%;"
-                  v-model:value={this.filterValue}
-                  v-slots={{
-                    prefix: () => <n-icon component={Search} />
-                  }}
-                >
-                </n-input>
-                <n-tree
-                  block-line
-                  expand-on-click
-                  selected-keys={this.selectedKeys}
-                  on-update:selected-keys={this.handleTreeSelect}
-                  data={this.recordList}
-                  pattern={this.filterValue}
-                  node-props={this.nodeProps}
-                />
-              </n-space>
-            </n-tab-pane>
-          </n-tabs>
+        <n-card class={styles.card} content-style={'padding:20px 18px;'}>
+          <n-space vertical>
+            <n-input placeholder={this.t('playground.search')} style="width: 100%;"
+              v-model:value={this.filterValue}
+              v-slots={{
+                prefix: () => <n-icon component={Search} />
+              }}
+            >
+            </n-input>
+            <n-tree
+              block-line
+              expand-on-click
+              selected-keys={this.selectedKeys}
+              on-update:selected-keys={this.handleTreeSelect}
+              data={this.treeData}
+              pattern={this.filterValue}
+              node-props={this.nodeProps}
+            />
+          </n-space>
         </n-card>
       </div>
     );

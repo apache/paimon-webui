@@ -25,6 +25,7 @@ export default defineComponent({
   setup() {
     const configStore = useConfigStore()
     const { t } = useLocaleHooks()
+    const router = useRouter()
 
     const renderIcon = (icon: any) => {
       return () => h(NIcon, { size: 24 }, { default: () => h(icon) })
@@ -35,14 +36,16 @@ export default defineComponent({
         {
           icon: renderIcon(Layers),
           title: 'Layers',
-          description: computed(() => (t('playground.database_query'))),
-          isClick: true
+          description: computed(() => (t('playground.query'))),
+          isClick: true,
+          path: '/playground/database'
         },
         {
           icon: renderIcon(CodeSlashSharp),
           title: 'Code',
           description: computed(() => (t('playground.workbench'))),
-          isClick: false
+          isClick: false,
+          path: '/playground/workbench'
         },
       ],
       domainList: [
@@ -59,7 +62,7 @@ export default defineComponent({
         {
           icon: renderIcon(GitBranch),
           title: 'GitBranch',
-          description: computed(() => (t('playground.branch'))),
+          description: computed(() => (t('playground.git_branch'))),
         }
       ],
     })
@@ -70,6 +73,7 @@ export default defineComponent({
           sliderVariables.workspaceList[i].isClick = false
         }
         sliderVariables.workspaceList[index].isClick = true
+        router.push(sliderVariables.workspaceList[index].path)
       }
     }
 

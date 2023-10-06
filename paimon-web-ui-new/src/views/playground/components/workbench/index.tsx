@@ -26,7 +26,7 @@ import { format } from 'sql-formatter';
 import { useMessage } from 'naive-ui'
 
 export default defineComponent({
-  name: 'DatabasePage',
+  name: 'WorkbenchPage',
   setup() {
     const message = useMessage()
 
@@ -96,7 +96,7 @@ export default defineComponent({
   },
   render() {
     return (
-      <div class={styles.database}>
+      <div class={styles.workbench}>
         <div class={styles['menu-tree']}>
           <MenuTree />
         </div>

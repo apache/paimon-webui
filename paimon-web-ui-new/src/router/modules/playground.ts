@@ -33,8 +33,14 @@ export default [
           {
             path: '/playground/database',
             name: 'playground-database',
-            meta: { title: '数据库查询' },
+            meta: { title: '查询' },
             component: () => import('@/views/playground/components/database')
+          },
+          {
+            path: '/playground/workbench',
+            name: 'playground-workbench',
+            meta: { title: '工作台' },
+            component: () => import('@/views/playground/components/workbench')
           },
         ]
       },
