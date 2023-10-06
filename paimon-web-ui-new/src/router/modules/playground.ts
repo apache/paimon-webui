@@ -27,7 +27,22 @@ export default [
         path: '/playground',
         name: 'playground',
         meta: { title: '查询控制台' },
-        component: () => import('@/views/playground')
+        redirect: { name: 'playground-query' },
+        component: () => import('@/views/playground'),
+        children: [
+          {
+            path: '/playground/query',
+            name: 'playground-query',
+            meta: { title: '查询' },
+            component: () => import('@/views/playground/components/query')
+          },
+          {
+            path: '/playground/workbench',
+            name: 'playground-workbench',
+            meta: { title: '工作台' },
+            component: () => import('@/views/playground/components/workbench')
+          },
+        ]
       },
     ]
   }

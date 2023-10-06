@@ -15,20 +15,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss';
-import Slider from './components/slider';
+.container {
+  width: 100%;
+  height: 100%;
 
-export default defineComponent({
-  name: 'PlaygroundPage',
-  setup() {},
-  render() {
-    return (
-      <div class={styles.container}>
-        <Slider />
-        <div class={styles.content}>
-          <router-view />
-        </div>
-      </div>
-    );
-  },
-});
+  .card {
+    height: 100%;
+
+    .search {
+      display: flex;
+    }
+
+    .icon {
+      display: flex;
+    }
+  }
+}

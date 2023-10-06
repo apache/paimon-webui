@@ -15,20 +15,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss';
-import Slider from './components/slider';
 
-export default defineComponent({
-  name: 'PlaygroundPage',
-  setup() {},
-  render() {
-    return (
-      <div class={styles.container}>
-        <Slider />
-        <div class={styles.content}>
-          <router-view />
-        </div>
-      </div>
-    );
-  },
-});
+.tabs {
+  display: flex;
+  align-items: center;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #33994A;
+    margin-right: 8px;
+  }
+
+  .asterisk {
+    color: #C82E2E;
+    padding-left: 10px;
+  }
+}

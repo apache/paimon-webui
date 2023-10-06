@@ -23,6 +23,7 @@ import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { editorProps } from './type'
 import { useConfigStore } from '@/store/config'
+import { format } from 'sql-formatter'
 
 // @ts-ignore: worker
 self.MonacoEnvironment = {
@@ -46,7 +47,7 @@ self.MonacoEnvironment = {
 export default defineComponent({
   name: 'MonacoEditor',
   props: editorProps,
-  emits: ['update:modelValue', 'change', 'EditorMounted'],
+  emits: ['update:modelValue', 'change', 'EditorMounted', 'EditorSave'],
   setup(props, { emit }) {
     const configStore = useConfigStore()
     const monacoEditorThemeRef = ref(configStore.getCurrentTheme === 'dark' ? 'vs-dark' : 'vs')
@@ -61,12 +62,45 @@ export default defineComponent({
         target: monaco.languages.typescript.ScriptTarget.ES2020,
         allowNonTsExtensions: true
       })
+      monaco.languages.registerCompletionItemProvider('sql', {
+        provideCompletionItems: function(model, position) {
+          const word = model.getWordUntilPosition(position);
+          const range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn
+          };
+          const suggestions = [];
+          const sqlStr = ['select','from','where','and','or','limit','order by','group by'];
+            for(const i in sqlStr){
+              suggestions.push({
+                label: sqlStr[i],
+                kind: monaco.languages.CompletionItemKind['Function'],
+                insertText: sqlStr[i],
+                detail: '',
+                range:range
+              });
+            }
+          return {
+            suggestions: suggestions
+          };
+        },
+      });
+
       editor = monaco.editor.create(codeEditBox.value, {
         value: props.modelValue,
         language: props.language,
         theme: monacoEditorThemeRef.value,
         ...props.options
       })
+
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
+        emit('EditorSave')
+      })
+
+      editor.setValue(format(toRaw(editor).getValue()))
+      
       editor.onDidChangeModelContent(() => {
         const value = editor.getValue()
         emit('update:modelValue', value)
@@ -81,6 +115,7 @@ export default defineComponent({
           const value = editor.getValue()
           if (newValue !== value) {
             editor.setValue(newValue)
+            editor.setValue(format(toRaw(editor).getValue()))
           }
         }
       }
@@ -106,6 +141,7 @@ export default defineComponent({
         init()
       }
     )
+    
     onBeforeUnmount(() => {
       editor.dispose()
     })

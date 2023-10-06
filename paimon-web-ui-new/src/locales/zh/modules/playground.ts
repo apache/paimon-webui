@@ -16,6 +16,22 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  select_catalog: '选择 Catalog',
-  search: '搜索'
+  query: '查询',
+  workbench: '工作台',
+  task_operation_and_maintenance: '任务运维',
+  settings: '设置',
+  terminal: '终端',
+  git_branch: 'Git 分支',
+  data: '数据',
+  saved_query: '已保存查询',
+  query_record: '查询记录',
+  search: '搜索',
+  run: '运行',
+  format: '格式化',
+  save: '保存',
+  clear: '清空',
+  unfold: '展开',
+  collapse: '折叠',
+  logs: '日志',
+  result: '结果',
 }

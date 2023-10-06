@@ -66,12 +66,12 @@ export const editorProps = {
         renderLineHighlight: 'line',
         selectOnLineNumbers: true,
         minimap: {
-          enabled: true
+          enabled: false
         },
         readOnly: false,
         contextmenu: true,
         fontSize: 16,
-        scrollBeyondLastLine: false,
+        scrollBeyondLastLine: true,
         overviewRulerBorder: false
       }
     }
