@@ -27,14 +27,14 @@ export default [
         path: '/playground',
         name: 'playground',
         meta: { title: '查询控制台' },
-        redirect: { name: 'playground-database' },
+        redirect: { name: 'playground-query' },
         component: () => import('@/views/playground'),
         children: [
           {
-            path: '/playground/database',
-            name: 'playground-database',
+            path: '/playground/query',
+            name: 'playground-query',
             meta: { title: '查询' },
-            component: () => import('@/views/playground/components/database')
+            component: () => import('@/views/playground/components/query')
           },
           {
             path: '/playground/workbench',
