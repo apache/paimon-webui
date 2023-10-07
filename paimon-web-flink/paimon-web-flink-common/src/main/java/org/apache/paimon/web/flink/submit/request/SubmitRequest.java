@@ -22,9 +22,7 @@ import org.apache.paimon.web.flink.submit.SubmitMode;
 
 import java.util.Map;
 
-/**
- * Represents a submit request for a job.
- */
+/** Represents a submit request for a job. */
 public class SubmitRequest {
 
     private final String flinkConfigPath;
@@ -125,6 +123,7 @@ public class SubmitRequest {
         return new Builder();
     }
 
+    /** Builder. */
     public static class Builder {
 
         private String flinkConfigPath;

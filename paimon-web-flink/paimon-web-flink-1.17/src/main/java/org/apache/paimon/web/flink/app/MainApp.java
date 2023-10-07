@@ -18,8 +18,6 @@
 
 package org.apache.paimon.web.flink.app;
 
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.paimon.web.flink.client.db.DBConfig;
 import org.apache.paimon.web.flink.client.util.FlinkJobConfUtil;
 import org.apache.paimon.web.flink.common.ExecutionMode;
@@ -27,6 +25,8 @@ import org.apache.paimon.web.flink.config.FlinkJobConfiguration;
 import org.apache.paimon.web.flink.submit.FlinkJobSubmitter;
 
 import cn.hutool.json.JSONUtil;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.configuration.CheckpointingOptions;
 import org.slf4j.Logger;

@@ -21,8 +21,8 @@ package org.apache.paimon.web.flink.executor;
 import org.apache.paimon.web.flink.context.ApplicationExecutorContext;
 
 /**
- * The ApplicationExecutorFactory class is an implementation of the ExecutorFactory interface for application
- * execution environments.
+ * The ApplicationExecutorFactory class is an implementation of the ExecutorFactory interface for
+ * application execution environments.
  */
 public class ApplicationExecutorFactory implements ExecutorFactory<ApplicationExecutorContext> {
 

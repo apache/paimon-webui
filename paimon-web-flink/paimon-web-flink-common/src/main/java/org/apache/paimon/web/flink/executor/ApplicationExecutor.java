@@ -18,14 +18,16 @@
 
 package org.apache.paimon.web.flink.executor;
 
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.paimon.web.flink.context.ApplicationExecutorContext;
 
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+
 /**
- * The ApplicationExecutor class is an implementation of the Executor interface for application execution environments.
+ * The ApplicationExecutor class is an implementation of the Executor interface for application
+ * execution environments.
  */
-public class ApplicationExecutor implements Executor{
+public class ApplicationExecutor implements Executor {
 
     private final StreamTableEnvironment tableEnv;
 

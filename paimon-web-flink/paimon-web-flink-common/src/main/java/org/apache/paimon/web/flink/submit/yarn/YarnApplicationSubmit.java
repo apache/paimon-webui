@@ -19,15 +19,16 @@
 
 package org.apache.paimon.web.flink.submit.yarn;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.paimon.web.flink.submit.FlinkSubmit;
 import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 import org.apache.paimon.web.flink.submit.result.SubmitResult;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
+import org.apache.flink.configuration.MemorySize;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
@@ -61,7 +62,7 @@ public class YarnApplicationSubmit extends FlinkSubmit {
 
     protected YarnClient yarnClient;
 
-    private final int DEFAULT_MEMORY_SIZE = 1024;
+    private final String DEFAULT_MEMORY_SIZE = "1g";
 
     private final int MAX_ATTEMPTS = 30;
 
@@ -73,8 +74,7 @@ public class YarnApplicationSubmit extends FlinkSubmit {
 
     @Override
     protected void init() {
-        YarnLogConfigUtil.setLogConfigFileInConfig(
-                configuration, request.getFlinkConfigPath());
+        YarnLogConfigUtil.setLogConfigFileInConfig(configuration, request.getFlinkConfigPath());
         yarnConfiguration = new YarnConfiguration();
         String hadoopConfigPath = request.getHadoopConfigPath();
         yarnConfiguration.addResource(new Path(URI.create(hadoopConfigPath + "/yarn-site.xml")));
@@ -94,13 +94,11 @@ public class YarnApplicationSubmit extends FlinkSubmit {
     @Override
     protected SubmitResult doSubmit() {
         configuration.set(
-                PipelineOptions.JARS,
-                Collections.singletonList(request.getUserJarPath()));
+                PipelineOptions.JARS, Collections.singletonList(request.getUserJarPath()));
 
         String[] userJarParams = request.getUserJarParams().split(" ");
         ApplicationConfiguration applicationConfiguration =
-                new ApplicationConfiguration(
-                        userJarParams, request.getUserJarMainAppClass());
+                new ApplicationConfiguration(userJarParams, request.getUserJarMainAppClass());
 
         YarnClusterDescriptor yarnClusterDescriptor =
                 new YarnClusterDescriptor(
@@ -114,13 +112,21 @@ public class YarnApplicationSubmit extends FlinkSubmit {
                 new ClusterSpecification.ClusterSpecificationBuilder();
 
         if (StringUtils.isNotBlank(request.getJobManagerMemory())) {
-            int jobManagerMemorySize = parseMemorySize(request.getJobManagerMemory(), DEFAULT_MEMORY_SIZE);
-            clusterSpecificationBuilder.setMasterMemoryMB(jobManagerMemorySize);
+            String jobManagerMemorySize =
+                    StringUtils.isBlank(request.getJobManagerMemory())
+                            ? DEFAULT_MEMORY_SIZE
+                            : request.getJobManagerMemory();
+            clusterSpecificationBuilder.setMasterMemoryMB(
+                    MemorySize.parse(jobManagerMemorySize).getMebiBytes());
         }
 
         if (StringUtils.isNotBlank(request.getTaskManagerMemory())) {
-            int taskManagerMemorySize = parseMemorySize(request.getTaskManagerMemory(), DEFAULT_MEMORY_SIZE);
-            clusterSpecificationBuilder.setTaskManagerMemoryMB(taskManagerMemorySize);
+            String taskManagerMemorySize =
+                    StringUtils.isBlank(request.getTaskManagerMemory())
+                            ? DEFAULT_MEMORY_SIZE
+                            : request.getTaskManagerMemory();
+            clusterSpecificationBuilder.setTaskManagerMemoryMB(
+                    MemorySize.parse(taskManagerMemorySize).getMebiBytes());
         }
 
         if (request.getTaskSlots() != null) {
@@ -128,20 +134,10 @@ public class YarnApplicationSubmit extends FlinkSubmit {
         }
 
         // Execute jobs submitted to the cluster
-        return executeSubmit(applicationConfiguration, yarnClusterDescriptor, clusterSpecificationBuilder.createClusterSpecification());
-    }
-
-    private int parseMemorySize(String memory, int defaultMemorySize) {
-        if (StringUtils.isNotBlank(memory)) {
-            String memoryStr = memory.toUpperCase();
-            if (memoryStr.contains("GB")) {
-                return Integer.parseInt(memoryStr.replaceAll("GB", "")) * DEFAULT_MEMORY_SIZE;
-            } else {
-                return Integer.parseInt(memoryStr.replaceAll("MB", ""));
-            }
-        } else {
-            return defaultMemorySize;
-        }
+        return executeSubmit(
+                applicationConfiguration,
+                yarnClusterDescriptor,
+                clusterSpecificationBuilder.createClusterSpecification());
     }
 
     private SubmitResult executeSubmit(
@@ -181,7 +177,8 @@ public class YarnApplicationSubmit extends FlinkSubmit {
         }
     }
 
-    private Collection<JobStatusMessage> waitForJobs(ClusterClient<ApplicationId> clusterClient) throws Exception {
+    private Collection<JobStatusMessage> waitForJobs(ClusterClient<ApplicationId> clusterClient)
+            throws Exception {
         int attempt = 0;
         Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
         while (jobStatusMessages.size() == 0 && attempt < MAX_ATTEMPTS) {

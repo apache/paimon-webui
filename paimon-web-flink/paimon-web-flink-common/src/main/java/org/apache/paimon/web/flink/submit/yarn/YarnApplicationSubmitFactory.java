@@ -23,8 +23,8 @@ import org.apache.paimon.web.flink.submit.FlinkSubmitFactory;
 import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 
 /**
- * This class is a factory implementation for creating instances of YarnApplicationSubmit.
- * It implements the FlinkSubmitFactory interface.
+ * This class is a factory implementation for creating instances of YarnApplicationSubmit. It
+ * implements the FlinkSubmitFactory interface.
  */
 public class YarnApplicationSubmitFactory implements FlinkSubmitFactory {
 
@@ -33,7 +33,7 @@ public class YarnApplicationSubmitFactory implements FlinkSubmitFactory {
         return new YarnApplicationSubmit(request);
     }
 
-    public static YarnApplicationSubmitFactory createFactory()  {
+    public static YarnApplicationSubmitFactory createFactory() {
         return new YarnApplicationSubmitFactory();
     }
 }

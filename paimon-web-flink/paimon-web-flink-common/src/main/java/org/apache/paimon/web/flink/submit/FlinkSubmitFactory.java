@@ -20,9 +20,7 @@ package org.apache.paimon.web.flink.submit;
 
 import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 
-/**
- * This interface defines a factory for creating instances of FlinkSubmit.
- */
+/** This interface defines a factory for creating instances of FlinkSubmit. */
 public interface FlinkSubmitFactory {
 
     FlinkSubmit createSubmit(SubmitRequest request);

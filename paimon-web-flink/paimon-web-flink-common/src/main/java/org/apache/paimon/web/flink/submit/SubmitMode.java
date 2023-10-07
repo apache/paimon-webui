@@ -18,11 +18,8 @@
 
 package org.apache.paimon.web.flink.submit;
 
-import org.apache.paimon.web.flink.submit.yarn.YarnApplicationSubmit;
-
 /** The mode of flink job submitted. */
 public enum SubmitMode {
-
     LOCAL(0, "local"),
     REMOTE(1, "remote"),
     YARN_PRE_JOB(2, "yarn-pre-job"),

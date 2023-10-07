@@ -4,19 +4,19 @@ import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 import org.apache.paimon.web.flink.submit.result.SubmitResult;
 import org.apache.paimon.web.flink.submit.yarn.YarnApplicationSubmitFactory;
 
-/**
- * This class provides a method to submit a Flink job based on the given SubmitRequest.
- */
+/** This class provides a method to submit a Flink job based on the given SubmitRequest. */
 public class Submitter {
 
     public static SubmitResult submit(SubmitRequest request) {
-        FlinkSubmitFactory flinkSubmitFactory = submitRequest -> {
-            throw new UnsupportedOperationException("Factory not supported.");
-        };
+        FlinkSubmitFactory flinkSubmitFactory =
+                submitRequest -> {
+                    throw new UnsupportedOperationException("Factory not supported.");
+                };
 
         SubmitMode mode = SubmitMode.of(request.getExecutionTarget());
         if (mode == null) {
-            throw new IllegalArgumentException("Invalid execution target: " + request.getExecutionTarget());
+            throw new IllegalArgumentException(
+                    "Invalid execution target: " + request.getExecutionTarget());
         }
 
         switch (mode) {
@@ -47,5 +47,4 @@ public class Submitter {
 
         return flinkSubmitFactory.createSubmit(request).submit();
     }
-
 }

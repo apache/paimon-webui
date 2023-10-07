@@ -18,6 +18,9 @@
 
 package org.apache.paimon.web.flink.submit;
 
+import org.apache.paimon.web.flink.submit.request.SubmitRequest;
+import org.apache.paimon.web.flink.submit.result.SubmitResult;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.CheckpointingOptions;
@@ -26,21 +29,10 @@ import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
-import org.apache.paimon.web.flink.submit.request.SubmitRequest;
-import org.apache.paimon.web.flink.submit.result.SubmitResult;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
 
-/**
- * This abstract class provides a base implementation for submitting Flink jobs.
- */
+/** This abstract class provides a base implementation for submitting Flink jobs. */
 public abstract class FlinkSubmit {
 
     protected Configuration configuration;
@@ -64,25 +56,24 @@ public abstract class FlinkSubmit {
     protected abstract void buildPlatformSpecificConf();
 
     protected void buildConf() {
-        configuration =
-                GlobalConfiguration.loadConfiguration(request.getFlinkConfigPath());
+        configuration = GlobalConfiguration.loadConfiguration(request.getFlinkConfigPath());
         if (MapUtils.isNotEmpty(request.getFlinkConfigMap())) {
-            request.getFlinkConfigMap().forEach(
-                    (K, v) -> {
-                        if (K != null
-                                && K.trim().length() > 0
-                                && v != null
-                                && v.trim().length() > 0) {
-                            configuration.setString(K, v);
-                        }
-                    });
+            request.getFlinkConfigMap()
+                    .forEach(
+                            (K, v) -> {
+                                if (K != null
+                                        && K.trim().length() > 0
+                                        && v != null
+                                        && v.trim().length() > 0) {
+                                    configuration.setString(K, v);
+                                }
+                            });
         }
 
         configuration.set(DeploymentOptions.TARGET, request.getExecutionTarget());
         if (StringUtils.isNotBlank(request.getSavepointPath())) {
             configuration.setString(
-                    SavepointConfigOptions.SAVEPOINT_PATH,
-                    request.getSavepointPath().trim());
+                    SavepointConfigOptions.SAVEPOINT_PATH, request.getSavepointPath().trim());
         }
 
         if (StringUtils.isNotBlank(request.getCheckpointPath())) {
@@ -90,11 +81,9 @@ public abstract class FlinkSubmit {
             configuration.setString("execution.checkpointing.enabled", "true");
             // Set the Checkpoint interval to 10 minute
             configuration.setString(
-                    "execution.checkpointing.interval",
-                    request.getCheckpointInterval());
+                    "execution.checkpointing.interval", request.getCheckpointInterval());
             configuration.setString(
-                    CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(),
-                    request.getCheckpointPath());
+                    CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(), request.getCheckpointPath());
         }
 
         configuration.set(
