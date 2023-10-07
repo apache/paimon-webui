@@ -174,7 +174,7 @@ under the License.
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}-${project.version}</finalName>
+       <!-- <finalName>${project.artifactId}-${project.version}</finalName>
         <resources>
             <resource>
                 <filtering>true</filtering>
@@ -191,10 +191,10 @@ under the License.
                     <include>static/**</include>
                 </includes>
             </resource>
-        </resources>
+        </resources>-->
 
         <plugins>
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <configuration>
@@ -279,7 +279,23 @@ under the License.
                         <phase>package</phase>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
+             <plugin>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-maven-plugin</artifactId>
+               <version>2.7.1</version>
+               <configuration>
+                   <mainClass>org.apache.paimon.web.server.PaimonWebServerApplication</mainClass>
+                   <layout>JAR</layout>
+               </configuration>
+               <executions>
+                   <execution>
+                       <goals>
+                           <goal>repackage</goal>
+                       </goals>
+                   </execution>
+               </executions>
+           </plugin>
         </plugins>
     </build>
 

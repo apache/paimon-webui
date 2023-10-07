@@ -21,7 +21,7 @@ package org.apache.paimon.web.flink.executor;
 import org.apache.paimon.web.flink.context.ExecutorContext;
 
 /** The ExecutorFactory interface provides a method to create an Executor. */
-public interface ExecutorFactory {
+public interface ExecutorFactory<C extends ExecutorContext> {
 
-    Executor createExecutor(ExecutorContext context);
+    Executor createExecutor(C context);
 }

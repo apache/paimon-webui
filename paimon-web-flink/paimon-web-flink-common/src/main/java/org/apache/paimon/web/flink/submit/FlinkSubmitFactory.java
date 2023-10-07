@@ -16,22 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.context;
+package org.apache.paimon.web.flink.submit;
 
-import org.apache.paimon.web.flink.common.ExecutionMode;
+import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+/**
+ * This interface defines a factory for creating instances of FlinkSubmit.
+ */
+public interface FlinkSubmitFactory {
 
-/** The LocalExecutorContext class provides the context for creating a LocalExecutor. */
-public class LocalExecutorContext extends ExecutorContext {
-
-    public LocalExecutorContext(Configuration configuration, ExecutionMode mode) {
-        super(configuration, mode);
-    }
-
-    @Override
-    protected StreamExecutionEnvironment createEnvironment() {
-        return StreamExecutionEnvironment.createLocalEnvironment();
-    }
+    FlinkSubmit createSubmit(SubmitRequest request);
 }

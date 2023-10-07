@@ -31,6 +31,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class SubmitResult {
+
     private boolean isSuccess;
     private String msg;
     private String appId;

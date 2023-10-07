@@ -16,8 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.app;
+package org.apache.paimon.web.flink.app;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.paimon.web.flink.client.db.DBConfig;
 import org.apache.paimon.web.flink.client.util.FlinkJobConfUtil;
 import org.apache.paimon.web.flink.common.ExecutionMode;
@@ -37,6 +39,7 @@ import java.util.Properties;
 
 /** User jar package startup class. */
 public class MainApp {
+
     private static final Logger logger = LoggerFactory.getLogger(MainApp.class);
 
     public static void main(String[] args) {
@@ -48,36 +51,40 @@ public class MainApp {
             DBConfig dbConfig = DBConfig.build(properties);
             Integer id = Integer.valueOf(args[0]);
             Map<String, String> taskConfig = FlinkJobConfUtil.getJobTaskConfig(id, dbConfig);
-            if (taskConfig == null || taskConfig.isEmpty()) {
+            if (MapUtils.isEmpty(taskConfig)) {
                 logger.error(
                         "get flink job task info error! job info is Empty! Check whether the flink job task with the id {} exists",
                         id);
                 return;
             }
+
             FlinkJobConfiguration jobConfig = new FlinkJobConfiguration();
             Map<String, String> config = new HashMap<>();
             String jobName = taskConfig.get("job_name");
             String checkpointPath = taskConfig.get("checkpoint_path");
-            if (checkpointPath != null && !"".equals(checkpointPath.trim())) {
+            if (StringUtils.isNotBlank(checkpointPath)) {
                 // enable Checkpoint
                 config.put("execution.checkpointing.enabled", "true");
                 // Set the default Checkpoint interval to 10 minute
                 String interval = taskConfig.get("checkpoint_interval");
-                if (interval == null || "".equals(interval.trim())) {
+                if (StringUtils.isNotBlank(interval)) {
                     interval = "600000";
                 }
                 config.put("execution.checkpointing.interval", interval);
                 config.put(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(), checkpointPath);
             }
+
             String savepointPath = taskConfig.get("savepoint_path");
-            if (savepointPath != null && !"".equals(savepointPath.trim())) {
+            if (StringUtils.isNotBlank(savepointPath)) {
                 config.put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(), savepointPath);
             }
+
             String parallelism = taskConfig.get("parallelism");
-            if (parallelism == null || "".equals(parallelism.trim())) {
+            if (StringUtils.isBlank(parallelism)) {
                 parallelism = "1";
             }
             config.put("parallelism.default", parallelism);
+
             String runtimeMode = taskConfig.get("execution_runtime_mode");
             if (runtimeMode != null
                     && runtimeMode.equalsIgnoreCase(RuntimeExecutionMode.BATCH.toString())) {
@@ -85,18 +92,20 @@ public class MainApp {
             } else {
                 jobConfig.setExecutionMode(ExecutionMode.STREAMING);
             }
+
             jobConfig.setLocalMode(true);
             String otherParams = taskConfig.get("other_params");
-            if (otherParams != null && !"".equals(otherParams.trim())) {
+            if (StringUtils.isNotBlank(otherParams)) {
                 Map<String, String> otherParamsMap = JSONUtil.parse(otherParams).toBean(Map.class);
                 jobConfig.setTaskConfig(otherParamsMap);
             }
+
             FlinkJobSubmitter submitter = new FlinkJobSubmitter(jobConfig);
             submitter.getEnvironment().setParallelism(Integer.parseInt(parallelism));
             submitter.submitJob(taskConfig.get("flink_sql"));
             submitter.getEnvironment().execute(jobName);
         } catch (Exception e) {
-            logger.error("org.apache.paimon.web.app.MainApp run error:", e);
+            logger.error("org.apache.paimon.web.flink.app.MainApp run error:", e);
         }
     }
 }

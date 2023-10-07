@@ -23,15 +23,21 @@ import org.apache.paimon.web.flink.common.ExecutionMode;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-/** The LocalExecutorContext class provides the context for creating a LocalExecutor. */
-public class LocalExecutorContext extends ExecutorContext {
+/**
+ * The ApplicationExecutorContext class is an extension of the ExecutorContext, designed to work
+ * with Flink applications running in YARN or Kubernetes application mode.
+ *
+ * <p>In this mode, Flink automatically identifies the runtime environment and returns the
+ * appropriate StreamExecutionEnvironment instance.
+ */
+public class ApplicationExecutorContext extends ExecutorContext {
 
-    public LocalExecutorContext(Configuration configuration, ExecutionMode mode) {
+    public ApplicationExecutorContext(Configuration configuration, ExecutionMode mode) {
         super(configuration, mode);
     }
 
     @Override
     protected StreamExecutionEnvironment createEnvironment() {
-        return StreamExecutionEnvironment.createLocalEnvironment();
+        return StreamExecutionEnvironment.getExecutionEnvironment();
     }
 }

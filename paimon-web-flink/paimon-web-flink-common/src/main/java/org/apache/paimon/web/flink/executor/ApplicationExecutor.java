@@ -16,22 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.context;
+package org.apache.paimon.web.flink.executor;
 
-import org.apache.paimon.web.flink.common.ExecutionMode;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.paimon.web.flink.context.ApplicationExecutorContext;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+/**
+ * The ApplicationExecutor class is an implementation of the Executor interface for application execution environments.
+ */
+public class ApplicationExecutor implements Executor{
 
-/** The LocalExecutorContext class provides the context for creating a LocalExecutor. */
-public class LocalExecutorContext extends ExecutorContext {
+    private final StreamTableEnvironment tableEnv;
 
-    public LocalExecutorContext(Configuration configuration, ExecutionMode mode) {
-        super(configuration, mode);
+    public ApplicationExecutor(ApplicationExecutorContext context) {
+        tableEnv = context.getTableEnvironment();
     }
 
     @Override
-    protected StreamExecutionEnvironment createEnvironment() {
-        return StreamExecutionEnvironment.createLocalEnvironment();
+    public TableResult executeSql(String statement) {
+        return tableEnv.executeSql(statement);
     }
 }

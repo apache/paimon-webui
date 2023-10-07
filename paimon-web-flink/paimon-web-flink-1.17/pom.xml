@@ -33,7 +33,7 @@ under the License.
     <name>Paimon : Web : Flink: 1.17</name>
 
     <properties>
-        <mainClass>org.apache.paimon.web.app.MainApp</mainClass>
+        <mainClass>org.apache.paimon.web.flink.app.MainApp</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>

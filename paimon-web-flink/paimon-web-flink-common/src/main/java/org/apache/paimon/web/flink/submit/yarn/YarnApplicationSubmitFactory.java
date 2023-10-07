@@ -16,32 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.submit;
+package org.apache.paimon.web.flink.submit.yarn;
 
-import org.apache.paimon.web.flink.submit.result.SubmitResult;
-
-import java.util.Map;
+import org.apache.paimon.web.flink.submit.FlinkSubmit;
+import org.apache.paimon.web.flink.submit.FlinkSubmitFactory;
+import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 
 /**
- * flink job FlinkJobSubmit.
- *
- * <p>The function of this interface is to submit the flink SQL submitted by the user to the backend
- * for execution, which can be a yarn cluster or a flink cluster.
+ * This class is a factory implementation for creating instances of YarnApplicationSubmit.
+ * It implements the FlinkSubmitFactory interface.
  */
-public interface FlinkJobSubmit {
+public class YarnApplicationSubmitFactory implements FlinkSubmitFactory {
 
-    /**
-     * init configuration info.
-     *
-     * @param config configuration info
-     * @param flinkConfigMap flink configuration others info
-     */
-    void buildConf(Map<String, Object> config, Map<String, String> flinkConfigMap);
+    @Override
+    public FlinkSubmit createSubmit(SubmitRequest request) {
+        return new YarnApplicationSubmit(request);
+    }
 
-    /**
-     * submit flink sql task.
-     *
-     * @return submit result
-     */
-    SubmitResult submitFlinkSql();
+    public static YarnApplicationSubmitFactory createFactory()  {
+        return new YarnApplicationSubmitFactory();
+    }
 }

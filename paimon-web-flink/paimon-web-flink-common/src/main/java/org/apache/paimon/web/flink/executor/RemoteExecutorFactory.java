@@ -18,17 +18,16 @@
 
 package org.apache.paimon.web.flink.executor;
 
-import org.apache.paimon.web.flink.context.ExecutorContext;
 import org.apache.paimon.web.flink.context.RemoteExecutorContext;
 
 /**
  * The RemoteExecutorFactory class is an implementation of the ExecutorFactory interface for remote
  * execution environments.
  */
-public class RemoteExecutorFactory implements ExecutorFactory {
+public class RemoteExecutorFactory implements ExecutorFactory<RemoteExecutorContext> {
 
     @Override
-    public Executor createExecutor(ExecutorContext context) {
-        return new RemoteExecutor((RemoteExecutorContext) context);
+    public Executor createExecutor(RemoteExecutorContext context) {
+        return new RemoteExecutor(context);
     }
 }

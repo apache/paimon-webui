@@ -23,27 +23,26 @@ import org.apache.paimon.web.flink.context.params.RemoteParams;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.EnvironmentSettings;
-import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 /** The RemoteExecutorContext class provides the context for creating a RemoteExecutor. */
 public class RemoteExecutorContext extends ExecutorContext {
 
+    private final RemoteParams parameters;
+
     public RemoteExecutorContext(
             RemoteParams parameters, Configuration configuration, ExecutionMode mode) {
+        super(configuration, mode);
+        this.parameters = parameters;
+    }
+
+    @Override
+    protected StreamExecutionEnvironment createEnvironment() {
         if (parameters.getJarFilePath() != null) {
-            environment =
-                    StreamExecutionEnvironment.createRemoteEnvironment(
-                            parameters.getHost(),
-                            parameters.getPort(),
-                            parameters.getJarFilePath());
+            return StreamExecutionEnvironment.createRemoteEnvironment(
+                    parameters.getHost(), parameters.getPort(), parameters.getJarFilePath());
         } else {
-            environment =
-                    StreamExecutionEnvironment.createRemoteEnvironment(
-                            parameters.getHost(), parameters.getPort());
+            return StreamExecutionEnvironment.createRemoteEnvironment(
+                    parameters.getHost(), parameters.getPort());
         }
-        environment.getConfig().setGlobalJobParameters(configuration);
-        EnvironmentSettings settings = createEnvironmentSettings(mode);
-        tableEnv = StreamTableEnvironment.create(environment, settings);
     }
 }

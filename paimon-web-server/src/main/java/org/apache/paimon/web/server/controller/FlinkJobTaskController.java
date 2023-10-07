@@ -19,8 +19,10 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.utils.StringUtils;
-import org.apache.paimon.web.flink.submit.FlinkJobSubmit;
-import org.apache.paimon.web.flink.submit.SubmitType;
+import org.apache.paimon.web.flink.submit.FlinkSubmit;
+import org.apache.paimon.web.flink.submit.SubmitMode;
+import org.apache.paimon.web.flink.submit.Submitter;
+import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 import org.apache.paimon.web.flink.submit.result.SubmitResult;
 import org.apache.paimon.web.server.constant.JobStatus;
 import org.apache.paimon.web.server.data.model.FlinkJobTask;
@@ -71,12 +73,26 @@ public class FlinkJobTaskController {
             if (!StringUtils.isBlank(flinkJob.getOtherParams())) {
                 flinkConfigMap = JSONUtil.parse(flinkJob.getOtherParams()).toBean(Map.class);
             }
-            Map<String, Object> conf = JSONUtil.parse(flinkJob).toBean(Map.class);
-            conf.put("userJarParams", id.toString());
-            FlinkJobSubmit flinkJobSubmit =
-                    SubmitType.get(flinkJob.getExecutionTarget()).getFlinkJobSubmit();
-            flinkJobSubmit.buildConf(conf, flinkConfigMap);
-            SubmitResult result = flinkJobSubmit.submitFlinkSql();
+
+            SubmitRequest request = SubmitRequest
+                    .builder()
+                    .flinkConfigPath(flinkJob.getFlinkConfigPath())
+                    .flinkConfigMap(flinkConfigMap)
+                    .executionTarget(SubmitMode.of(flinkJob.getExecutionTarget()))
+                    .savepointPath(flinkJob.getSavepointPath())
+                    .checkpointPath(flinkJob.getCheckpointPath())
+                    .checkpointInterval(flinkJob.getCheckpointInterval())
+                    .flinkLibPath(flinkJob.getFlinkLibPath())
+                    .jobName(flinkJob.getJobName())
+                    .hadoopConfigPath(flinkJob.getHadoopConfigPath())
+                    .userJarPath(flinkJob.getUserJarPath())
+                    .userJarParams(id.toString())
+                    .userJarMainAppClass(flinkJob.getUserJarMainAppClass())
+                    .jobManagerMemory(flinkJob.getJobMemory())
+                    .taskManagerMemory(flinkJob.getTaskMemory())
+                    .build();
+
+            SubmitResult result = Submitter.submit(request);
             if (result.isSuccess()) {
                 flinkJob.setJobStatus(JobStatus.RUNNING.toString());
                 flinkJob.setFlinkWebUrl(result.getWebUrl());

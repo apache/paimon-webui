@@ -16,22 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.context;
+package org.apache.paimon.web.flink.executor;
 
-import org.apache.paimon.web.flink.common.ExecutionMode;
+import org.apache.paimon.web.flink.context.ApplicationExecutorContext;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-
-/** The LocalExecutorContext class provides the context for creating a LocalExecutor. */
-public class LocalExecutorContext extends ExecutorContext {
-
-    public LocalExecutorContext(Configuration configuration, ExecutionMode mode) {
-        super(configuration, mode);
-    }
+/**
+ * The ApplicationExecutorFactory class is an implementation of the ExecutorFactory interface for application
+ * execution environments.
+ */
+public class ApplicationExecutorFactory implements ExecutorFactory<ApplicationExecutorContext> {
 
     @Override
-    protected StreamExecutionEnvironment createEnvironment() {
-        return StreamExecutionEnvironment.createLocalEnvironment();
+    public Executor createExecutor(ApplicationExecutorContext context) {
+        return new ApplicationExecutor(context);
     }
 }

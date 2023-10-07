@@ -18,17 +18,16 @@
 
 package org.apache.paimon.web.flink.executor;
 
-import org.apache.paimon.web.flink.context.ExecutorContext;
 import org.apache.paimon.web.flink.context.LocalExecutorContext;
 
 /**
  * The LocalExecutorFactory class is an implementation of the ExecutorFactory interface for local
  * execution environments.
  */
-public class LocalExecutorFactory implements ExecutorFactory {
+public class LocalExecutorFactory implements ExecutorFactory<LocalExecutorContext> {
 
     @Override
-    public Executor createExecutor(ExecutorContext context) {
-        return new LocalExecutor((LocalExecutorContext) context);
+    public Executor createExecutor(LocalExecutorContext context) {
+        return new LocalExecutor(context);
     }
 }

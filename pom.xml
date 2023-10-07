@@ -114,7 +114,7 @@ under the License.
         <sa-token.version>1.35.0.RC</sa-token.version>
         <common-lang3.version>3.12.0</common-lang3.version>
         <hutool.version>5.8.11</hutool.version>
-        <hadoop.version>3.3.3</hadoop.version>
+        <hadoop.version>3.1.3</hadoop.version>
     </properties>
 
     <dependencyManagement>
