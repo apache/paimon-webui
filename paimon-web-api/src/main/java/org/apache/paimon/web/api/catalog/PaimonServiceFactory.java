@@ -26,23 +26,24 @@ import org.apache.paimon.web.api.common.MetastoreType;
 
 import org.apache.commons.lang3.StringUtils;
 
-/** Paimon catalog factory. */
-public class PaimonCatalogFactory {
+/** Paimon service factory. */
+public class PaimonServiceFactory {
 
-    public static PaimonCatalog createFileSystemCatalog(String name, String warehouse) {
+    public static PaimonService createFileSystemCatalogService(String name, String warehouse) {
         Options options = new Options();
         options.set(CatalogProperties.WAREHOUSE, warehouse + "/" + name);
 
         CatalogContext context = CatalogContext.create(options);
 
-        return new PaimonCatalog(CatalogFactory.createCatalog(context), name);
+        return new PaimonService(CatalogFactory.createCatalog(context), name);
     }
 
-    public static PaimonCatalog createHiveCatalog(String name, String warehouse, String uri) {
-        return createHiveCatalog(name, warehouse, uri, null);
+    public static PaimonService createHiveCatalogService(
+            String name, String warehouse, String uri) {
+        return createHiveCatalogService(name, warehouse, uri, null);
     }
 
-    public static PaimonCatalog createHiveCatalog(
+    public static PaimonService createHiveCatalogService(
             String name, String warehouse, String uri, String hiveConfDir) {
         Options options = new Options();
         options.set(CatalogProperties.WAREHOUSE, warehouse + "/" + name);
@@ -54,6 +55,6 @@ public class PaimonCatalogFactory {
         }
         CatalogContext context = CatalogContext.create(options);
 
-        return new PaimonCatalog(CatalogFactory.createCatalog(context), name);
+        return new PaimonService(CatalogFactory.createCatalog(context), name);
     }
 }

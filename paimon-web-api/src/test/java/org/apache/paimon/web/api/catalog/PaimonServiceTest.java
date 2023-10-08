@@ -37,12 +37,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-/** The test class of catalog creator in {@link PaimonCatalog}. */
-public class PaimonCatalogTest {
+/** The test class of catalog creator in {@link PaimonService}. */
+public class PaimonServiceTest {
 
     private String warehouse;
 
-    private PaimonCatalog catalog;
+    private PaimonService catalog;
 
     @TempDir java.nio.file.Path tempFile;
 
@@ -51,7 +51,7 @@ public class PaimonCatalogTest {
     @BeforeEach
     public void before() {
         warehouse = tempFile.toUri().toString();
-        catalog = PaimonCatalogFactory.createFileSystemCatalog("paimon", warehouse);
+        catalog = PaimonServiceFactory.createFileSystemCatalogService("paimon", warehouse);
         catalog.createDatabase(db);
     }
 

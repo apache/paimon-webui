@@ -41,19 +41,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/** Paimon catalog. */
-public class PaimonCatalog {
+/** Paimon service. */
+public class PaimonService {
     private final Catalog catalog;
 
     private final String name;
 
-    public PaimonCatalog(Catalog catalog, String name) {
+    public PaimonService(Catalog catalog, String name) {
         this.catalog = catalog;
         this.name = name;
     }
 
     public Catalog catalog() {
         return catalog;
+    }
+
+    public String catalogName() {
+        return name;
     }
 
     public List<String> listDatabases() {
