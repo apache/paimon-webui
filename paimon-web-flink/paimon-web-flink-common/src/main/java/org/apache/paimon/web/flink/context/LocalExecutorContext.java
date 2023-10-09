@@ -28,10 +28,13 @@ public class LocalExecutorContext extends ExecutorContext {
 
     public LocalExecutorContext(Configuration configuration, ExecutionMode mode) {
         super(configuration, mode);
+        init();
     }
 
     @Override
     protected StreamExecutionEnvironment createEnvironment() {
-        return StreamExecutionEnvironment.createLocalEnvironment();
+        return (configuration != null)
+                ? StreamExecutionEnvironment.createLocalEnvironment(configuration)
+                : StreamExecutionEnvironment.createLocalEnvironment();
     }
 }

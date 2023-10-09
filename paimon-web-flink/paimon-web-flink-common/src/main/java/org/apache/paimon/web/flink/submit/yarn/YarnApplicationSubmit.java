@@ -111,27 +111,22 @@ public class YarnApplicationSubmit extends FlinkSubmit {
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 new ClusterSpecification.ClusterSpecificationBuilder();
 
-        if (StringUtils.isNotBlank(request.getJobManagerMemory())) {
-            String jobManagerMemorySize =
-                    StringUtils.isBlank(request.getJobManagerMemory())
-                            ? DEFAULT_MEMORY_SIZE
-                            : request.getJobManagerMemory();
-            clusterSpecificationBuilder.setMasterMemoryMB(
-                    MemorySize.parse(jobManagerMemorySize).getMebiBytes());
-        }
+        String jobManagerMemorySize =
+                StringUtils.isBlank(request.getJobManagerMemory())
+                        ? DEFAULT_MEMORY_SIZE
+                        : request.getJobManagerMemory();
+        clusterSpecificationBuilder.setMasterMemoryMB(
+                MemorySize.parse(jobManagerMemorySize).getMebiBytes());
 
-        if (StringUtils.isNotBlank(request.getTaskManagerMemory())) {
-            String taskManagerMemorySize =
-                    StringUtils.isBlank(request.getTaskManagerMemory())
-                            ? DEFAULT_MEMORY_SIZE
-                            : request.getTaskManagerMemory();
-            clusterSpecificationBuilder.setTaskManagerMemoryMB(
-                    MemorySize.parse(taskManagerMemorySize).getMebiBytes());
-        }
+        String taskManagerMemorySize =
+                StringUtils.isBlank(request.getTaskManagerMemory())
+                        ? DEFAULT_MEMORY_SIZE
+                        : request.getTaskManagerMemory();
+        clusterSpecificationBuilder.setTaskManagerMemoryMB(
+                MemorySize.parse(taskManagerMemorySize).getMebiBytes());
 
-        if (request.getTaskSlots() != null) {
-            clusterSpecificationBuilder.setSlotsPerTaskManager(request.getTaskSlots());
-        }
+        clusterSpecificationBuilder.setSlotsPerTaskManager(
+                request.getTaskSlots() == null ? 1 : request.getTaskSlots());
 
         // Execute jobs submitted to the cluster
         return executeSubmit(

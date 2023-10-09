@@ -28,13 +28,21 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 /** The ExecutorContext class provides the context for creating an Executor. */
 public abstract class ExecutorContext {
 
-    private final StreamExecutionEnvironment environment;
-    private final StreamTableEnvironment tableEnv;
+    private StreamExecutionEnvironment environment;
+    private StreamTableEnvironment tableEnv;
 
-    protected ExecutorContext(Configuration configuration, ExecutionMode mode) {
+    protected final Configuration configuration;
+
+    private final ExecutionMode executionMode;
+
+    protected ExecutorContext(Configuration configuration, ExecutionMode executionMode) {
+        this.configuration = configuration;
+        this.executionMode = executionMode;
+    }
+
+    public void init() {
         this.environment = createEnvironment();
-        this.environment.getConfig().setGlobalJobParameters(configuration);
-        EnvironmentSettings settings = createEnvironmentSettings(mode);
+        EnvironmentSettings settings = createEnvironmentSettings(executionMode);
         this.tableEnv = StreamTableEnvironment.create(environment, settings);
     }
 

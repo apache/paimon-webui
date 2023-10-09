@@ -41,7 +41,9 @@ public class FlinkJobSubmitterTest {
         Map<String, String> config = new HashMap<>();
         config.put("parallelism.default", "2");
         jobConfig.setTaskConfig(config);
-        jobConfig.setLocalMode(true);
+        jobConfig.setLocalMode(false);
+        jobConfig.setHost("hadoop201");
+        jobConfig.setPort(8081);
         jobConfig.setExecutionMode(ExecutionMode.STREAMING);
         submitter = new FlinkJobSubmitter(jobConfig);
     }

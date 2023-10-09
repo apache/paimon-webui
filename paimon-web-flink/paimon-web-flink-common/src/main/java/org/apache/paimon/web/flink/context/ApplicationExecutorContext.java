@@ -34,10 +34,13 @@ public class ApplicationExecutorContext extends ExecutorContext {
 
     public ApplicationExecutorContext(Configuration configuration, ExecutionMode mode) {
         super(configuration, mode);
+        init();
     }
 
     @Override
     protected StreamExecutionEnvironment createEnvironment() {
-        return StreamExecutionEnvironment.getExecutionEnvironment();
+        return (configuration != null)
+                ? StreamExecutionEnvironment.getExecutionEnvironment(configuration)
+                : StreamExecutionEnvironment.getExecutionEnvironment();
     }
 }

@@ -30,6 +30,7 @@ import org.apache.paimon.web.flink.executor.RemoteExecutorFactory;
 import org.apache.paimon.web.flink.handler.SqlTaskHandler;
 import org.apache.paimon.web.flink.job.FlinkJobResult;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -50,7 +51,7 @@ public class FlinkJobSubmitter {
         ExecutorContext context;
 
         Configuration configuration = new Configuration();
-        if (jobConfig.getTaskConfig() != null) {
+        if (MapUtils.isNotEmpty(jobConfig.getTaskConfig())) {
             for (Map.Entry<String, String> entry : jobConfig.getTaskConfig().entrySet()) {
                 configuration.setString(entry.getKey(), entry.getValue());
             }
