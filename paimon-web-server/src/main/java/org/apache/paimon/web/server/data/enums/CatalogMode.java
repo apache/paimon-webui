@@ -16,25 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+/** Enum representing different catalog modes. */
+public enum CatalogMode {
+    FILESYSTEM("filesystem"),
+    HIVE("hive");
 
-/** Database table model. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class DatabaseInfo {
+    private final String mode;
 
-    private String databaseName;
+    CatalogMode(String mode) {
+        this.mode = mode;
+    }
 
-    private Integer catalogId;
-
-    private String catalogName;
-
-    private String description;
+    public String getMode() {
+        return mode;
+    }
 }

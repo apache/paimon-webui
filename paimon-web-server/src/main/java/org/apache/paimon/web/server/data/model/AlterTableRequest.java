@@ -19,22 +19,16 @@
 package org.apache.paimon.web.server.data.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Database table model. */
+/** Alter table request. */
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class DatabaseInfo {
+@NoArgsConstructor
+public class AlterTableRequest {
 
-    private String databaseName;
+    private TableColumn oldColumn;
 
-    private Integer catalogId;
-
-    private String catalogName;
-
-    private String description;
+    private TableColumn newColumn;
 }

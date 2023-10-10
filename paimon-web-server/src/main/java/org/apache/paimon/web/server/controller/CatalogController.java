@@ -18,13 +18,16 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.api.catalog.CatalogCreator;
+import org.apache.paimon.web.api.catalog.PaimonServiceFactory;
+import org.apache.paimon.web.server.data.enums.CatalogMode;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,46 +48,42 @@ public class CatalogController {
     @Autowired private CatalogService catalogService;
 
     /**
-     * Create a filesystem catalog.
+     * Create a catalog.
      *
-     * @param catalogInfo The catalogInfo for the filesystem catalog.
+     * @param catalogInfo The catalogInfo for the catalog.
      * @return The created catalog.
      */
-    @PostMapping("/createFilesystemCatalog")
-    public R<Void> createFilesystemCatalog(@RequestBody CatalogInfo catalogInfo) {
+    @PostMapping("/createCatalog")
+    public R<Void> createCatalog(@RequestBody CatalogInfo catalogInfo) {
         if (!catalogService.checkCatalogNameUnique(catalogInfo)) {
             return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogInfo.getCatalogName());
         }
 
         try {
-            CatalogCreator.createFilesystemCatalog(catalogInfo.getWarehouse());
+            if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.FILESYSTEM.getMode())) {
+                PaimonServiceFactory.createFileSystemCatalogService(
+                        catalogInfo.getCatalogName(), catalogInfo.getWarehouse());
+            } else if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.HIVE.getMode())) {
+                if (StringUtils.isNotBlank(catalogInfo.getHiveConfDir())) {
+                    PaimonServiceFactory.createHiveCatalogService(
+                            catalogInfo.getCatalogName(),
+                            catalogInfo.getWarehouse(),
+                            catalogInfo.getHiveUri(),
+                            catalogInfo.getHiveConfDir());
+                } else {
+                    PaimonServiceFactory.createHiveCatalogService(
+                            catalogInfo.getCatalogName(),
+                            catalogInfo.getWarehouse(),
+                            catalogInfo.getHiveUri(),
+                            null);
+                }
+            } else {
+                PaimonServiceFactory.createFileSystemCatalogService(
+                        catalogInfo.getCatalogName(), catalogInfo.getWarehouse());
+            }
             return catalogService.save(catalogInfo) ? R.succeed() : R.failed();
         } catch (Exception e) {
-            e.printStackTrace();
-            return R.failed(Status.CATALOG_CREATE_ERROR);
-        }
-    }
-
-    /**
-     * Create a hive catalog.
-     *
-     * @param catalogInfo The information for the hive catalog.
-     * @return The created catalog.
-     */
-    @PostMapping("/createHiveCatalog")
-    public R<Void> createHiveCatalog(@RequestBody CatalogInfo catalogInfo) {
-        if (!catalogService.checkCatalogNameUnique(catalogInfo)) {
-            return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogInfo.getCatalogName());
-        }
-
-        try {
-            CatalogCreator.createHiveCatalog(
-                    catalogInfo.getWarehouse(),
-                    catalogInfo.getHiveUri(),
-                    catalogInfo.getHiveConfDir());
-            return catalogService.save(catalogInfo) ? R.succeed() : R.failed();
-        } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error occurred while creating catalog.", e);
             return R.failed(Status.CATALOG_CREATE_ERROR);
         }
     }
@@ -101,13 +100,15 @@ public class CatalogController {
     }
 
     /**
-     * Removes a catalog by its ID.
+     * Removes a catalog based on the catalog name.
      *
-     * @param catalogId The ID of the catalog to be removed.
-     * @return A response indicating the success or failure of the removal operation.
+     * @param catalogName The catalog name.
+     * @return R<Void/> indicating the success or failure of the operation.
      */
-    @DeleteMapping("/{catalogId}")
-    public R<Void> remove(@PathVariable Integer catalogId) {
-        return catalogService.removeById(catalogId) ? R.succeed() : R.failed();
+    @DeleteMapping("/removeCatalog/{catalogName}")
+    public R<Void> remove(@PathVariable String catalogName) {
+        QueryWrapper<CatalogInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("catalog_name", catalogName);
+        return catalogService.remove(queryWrapper) ? R.succeed() : R.failed();
     }
 }

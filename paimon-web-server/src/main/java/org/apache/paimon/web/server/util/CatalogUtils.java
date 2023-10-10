@@ -18,11 +18,14 @@
 
 package org.apache.paimon.web.server.util;
 
-import org.apache.paimon.catalog.Catalog;
-import org.apache.paimon.web.api.catalog.CatalogCreator;
+import org.apache.paimon.web.api.catalog.PaimonService;
+import org.apache.paimon.web.api.catalog.PaimonServiceFactory;
+import org.apache.paimon.web.server.data.enums.CatalogMode;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 
-/** catalog util. */
+import org.apache.commons.lang3.StringUtils;
+
+/** Catalog util. */
 public class CatalogUtils {
 
     /**
@@ -31,14 +34,33 @@ public class CatalogUtils {
      * @param catalogInfo The CatalogInfo object containing the catalog details.
      * @return The created Catalog object.
      */
-    public static Catalog getCatalog(CatalogInfo catalogInfo) {
-        if ("filesystem".equals(catalogInfo.getCatalogType())) {
-            return CatalogCreator.createFilesystemCatalog(catalogInfo.getWarehouse());
+    public static PaimonService getPaimonService(CatalogInfo catalogInfo) {
+        PaimonService service;
+        if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.FILESYSTEM.getMode())) {
+            service =
+                    PaimonServiceFactory.createFileSystemCatalogService(
+                            catalogInfo.getCatalogName(), catalogInfo.getWarehouse());
+        } else if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.HIVE.getMode())) {
+            if (StringUtils.isNotBlank(catalogInfo.getHiveConfDir())) {
+                service =
+                        PaimonServiceFactory.createHiveCatalogService(
+                                catalogInfo.getCatalogName(),
+                                catalogInfo.getWarehouse(),
+                                catalogInfo.getHiveUri(),
+                                catalogInfo.getHiveConfDir());
+            } else {
+                service =
+                        PaimonServiceFactory.createHiveCatalogService(
+                                catalogInfo.getCatalogName(),
+                                catalogInfo.getWarehouse(),
+                                catalogInfo.getHiveUri(),
+                                null);
+            }
         } else {
-            return CatalogCreator.createHiveCatalog(
-                    catalogInfo.getWarehouse(),
-                    catalogInfo.getHiveUri(),
-                    catalogInfo.getHiveConfDir());
+            service =
+                    PaimonServiceFactory.createFileSystemCatalogService(
+                            catalogInfo.getCatalogName(), catalogInfo.getWarehouse());
         }
+        return service;
     }
 }

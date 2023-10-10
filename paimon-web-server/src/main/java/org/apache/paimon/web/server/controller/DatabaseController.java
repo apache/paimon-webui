@@ -18,8 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.catalog.Catalog;
-import org.apache.paimon.web.api.database.DatabaseManager;
+import org.apache.paimon.web.api.catalog.PaimonService;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.result.R;
@@ -29,9 +28,11 @@ import org.apache.paimon.web.server.util.CatalogUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,15 +58,15 @@ public class DatabaseController {
     @PostMapping("/createDatabase")
     public R<Void> createDatabase(@RequestBody DatabaseInfo databaseInfo) {
         try {
-            CatalogInfo catalogInfo = getCatalogInfo(databaseInfo);
-            Catalog catalog = CatalogUtils.getCatalog(catalogInfo);
-            if (DatabaseManager.databaseExists(catalog, databaseInfo.getDatabaseName())) {
+            CatalogInfo catalogInfo = getCatalogInfo(databaseInfo.getCatalogName());
+            PaimonService service = CatalogUtils.getPaimonService(catalogInfo);
+            if (service.databaseExists(databaseInfo.getDatabaseName())) {
                 return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseInfo.getDatabaseName());
             }
-            DatabaseManager.createDatabase(catalog, databaseInfo.getDatabaseName());
+            service.createDatabase(databaseInfo.getDatabaseName());
             return R.succeed();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error occurred while creating database.", e);
             return R.failed(Status.DATABASE_CREATE_ERROR);
         }
     }
@@ -79,17 +80,18 @@ public class DatabaseController {
     public R<List<DatabaseInfo>> getAllDatabases() {
         List<DatabaseInfo> databaseInfoList = new ArrayList<>();
         List<CatalogInfo> catalogInfoList = catalogService.list();
-        if (catalogInfoList.size() > 0) {
+        if (!CollectionUtils.isEmpty(catalogInfoList)) {
             catalogInfoList.forEach(
                     item -> {
-                        Catalog catalog = CatalogUtils.getCatalog(item);
-                        List<String> list = DatabaseManager.listDatabase(catalog);
+                        PaimonService service = CatalogUtils.getPaimonService(item);
+                        List<String> list = service.listDatabases();
                         list.forEach(
                                 databaseName -> {
                                     DatabaseInfo info =
                                             DatabaseInfo.builder()
                                                     .databaseName(databaseName)
                                                     .catalogId(item.getId())
+                                                    .catalogName(item.getCatalogName())
                                                     .description("")
                                                     .build();
                                     databaseInfoList.add(info);
@@ -100,33 +102,34 @@ public class DatabaseController {
     }
 
     /**
-     * Retrieves the associated CatalogInfo object based on the given DatabaseInfo object.
-     *
-     * @param databaseInfo The DatabaseInfo object for which to retrieve the associated CatalogInfo.
-     * @return The associated CatalogInfo object, or null if it doesn't exist.
-     */
-    private CatalogInfo getCatalogInfo(DatabaseInfo databaseInfo) {
-        LambdaQueryWrapper<CatalogInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CatalogInfo::getId, databaseInfo.getCatalogId());
-        return catalogService.getOne(queryWrapper);
-    }
-
-    /**
      * Removes a database by its name.
      *
-     * @param databaseInfo The information of the database to be removed.
+     * @param databaseName The database to be removed.
      * @return A response indicating the success or failure of the removal operation.
      * @throws RuntimeException if the database is not found or it is not empty.
      */
-    @DeleteMapping("/delete")
-    public R<Void> remove(@RequestBody DatabaseInfo databaseInfo) {
+    @DeleteMapping("/delete/{databaseName}/{catalogName}")
+    public R<Void> remove(@PathVariable String databaseName, @PathVariable String catalogName) {
         try {
-            CatalogInfo catalogInfo = getCatalogInfo(databaseInfo);
-            Catalog catalog = CatalogUtils.getCatalog(catalogInfo);
-            DatabaseManager.dropDatabase(catalog, databaseInfo.getDatabaseName());
+            CatalogInfo catalogInfo = getCatalogInfo(catalogName);
+            PaimonService service = CatalogUtils.getPaimonService(catalogInfo);
+            service.dropDatabase(databaseName);
             return R.succeed();
-        } catch (Catalog.DatabaseNotEmptyException | Catalog.DatabaseNotExistException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log.error("Error occurred while dropping database.", e);
+            return R.failed(Status.DATABASE_CREATE_ERROR);
         }
+    }
+
+    /**
+     * Retrieves the associated CatalogInfo object based on the given catalog name.
+     *
+     * @param catalogName The catalog name.
+     * @return The associated CatalogInfo object, or null if it doesn't exist.
+     */
+    private CatalogInfo getCatalogInfo(String catalogName) {
+        LambdaQueryWrapper<CatalogInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CatalogInfo::getCatalogName, catalogName);
+        return catalogService.getOne(queryWrapper);
     }
 }

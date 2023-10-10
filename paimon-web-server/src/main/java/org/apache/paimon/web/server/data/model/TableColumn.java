@@ -18,10 +18,14 @@
 
 package org.apache.paimon.web.server.data.model;
 
+import org.apache.paimon.web.server.util.PaimonDataType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.annotation.Nullable;
 
 /** TableColumn model. */
 @Data
@@ -32,11 +36,11 @@ public class TableColumn {
 
     private String field;
 
-    private String dataType;
+    private PaimonDataType dataType;
 
-    private String comment;
+    @Nullable private String comment;
 
-    private boolean isPK;
+    @Nullable private boolean isPk;
 
-    private String defaultValue;
+    @Nullable private String defaultValue;
 }
