@@ -31,6 +31,10 @@ public class ColumnMetadata {
 
     private final @Nullable String description;
 
+    public ColumnMetadata(String name) {
+        this(name, null, null);
+    }
+
     public ColumnMetadata(String name, DataType type) {
         this(name, type, null);
     }
@@ -51,5 +55,13 @@ public class ColumnMetadata {
 
     public String description() {
         return this.description;
+    }
+
+    public ColumnMetadata copy(DataType newDataType) {
+        return new ColumnMetadata(this.name, newDataType, this.description);
+    }
+
+    public ColumnMetadata setComment(String comment) {
+        return comment == null ? this : new ColumnMetadata(this.name, this.type, comment);
     }
 }
