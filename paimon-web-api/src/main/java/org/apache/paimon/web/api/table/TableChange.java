@@ -405,7 +405,7 @@ public interface TableChange {
 
         @Override
         public String toString() {
-            return "ResetOption{" + "key=" + key + '}';
+            return "RemoveOption{" + "key=" + key + '}';
         }
     }
 

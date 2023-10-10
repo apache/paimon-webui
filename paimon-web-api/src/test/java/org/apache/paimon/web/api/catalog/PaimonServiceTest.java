@@ -75,6 +75,7 @@ public class PaimonServiceTest {
         service.createDatabase("db1");
         List<String> databases = service.listDatabases();
         assertThat(databases).contains("test_default_db", "db1");
+        dropDatabase("db1");
     }
 
     @Test
@@ -86,6 +87,8 @@ public class PaimonServiceTest {
         assertThatExceptionOfType(DatabaseException.DatabaseAlreadyExistsException.class)
                 .isThrownBy(() -> service.createDatabase("test_db"))
                 .withMessage("The database 'test_db' already exists in the catalog.");
+
+        dropDatabase("test_db");
     }
 
     @Test
@@ -296,5 +299,11 @@ public class PaimonServiceTest {
         columns.add(name);
         TableMetadata tableMetadata = TableMetadata.builder().columns(columns).build();
         service.createTable(databaseName, tableName, tableMetadata);
+    }
+
+    private void dropDatabase(String databaseName) {
+        if (service.databaseExists(databaseName)) {
+            service.dropDatabase(databaseName);
+        }
     }
 }
