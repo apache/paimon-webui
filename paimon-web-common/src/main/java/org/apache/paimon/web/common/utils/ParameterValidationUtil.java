@@ -18,8 +18,6 @@
 
 package org.apache.paimon.web.common.utils;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -31,15 +29,6 @@ public class ParameterValidationUtil {
         for (Map.Entry<Object, Supplier<String>> entry : entries) {
             if (entry.getKey() == null) {
                 throw new IllegalArgumentException(entry.getValue().get() + " can not be null.");
-            }
-        }
-    }
-
-    @SafeVarargs
-    public static void checkNotNull(Pair<Object, String>... entries) {
-        for (Pair<Object, String> entry : entries) {
-            if (entry.getLeft() == null) {
-                throw new IllegalArgumentException(entry.getRight() + " cannot be null.");
             }
         }
     }

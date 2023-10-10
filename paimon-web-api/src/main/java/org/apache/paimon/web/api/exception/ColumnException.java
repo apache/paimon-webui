@@ -18,14 +18,14 @@
 
 package org.apache.paimon.web.api.exception;
 
-/** column exception. */
+/** Column exception. */
 public class ColumnException extends RuntimeException {
 
     public ColumnException(String message) {
         super(message);
     }
 
-    /** column already exists exception. */
+    /** The exception that the column has already existed. */
     public static class ColumnAlreadyExistException extends ColumnException {
 
         public ColumnAlreadyExistException(String message) {
@@ -33,7 +33,7 @@ public class ColumnException extends RuntimeException {
         }
     }
 
-    /** column not exist exception. */
+    /** The exception that the column does not exist. */
     public static class ColumnNotExistException extends ColumnException {
 
         public ColumnNotExistException(String message) {

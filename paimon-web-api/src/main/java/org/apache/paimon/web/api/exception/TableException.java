@@ -18,14 +18,14 @@
 
 package org.apache.paimon.web.api.exception;
 
-/** table exception. */
+/** Table exception. */
 public class TableException extends RuntimeException {
 
     public TableException(String message) {
         super(message);
     }
 
-    /** table already exists exception. */
+    /** The exception that the table already exists. */
     public static class TableAlreadyExistException extends TableException {
 
         public TableAlreadyExistException(String message) {
@@ -33,7 +33,7 @@ public class TableException extends RuntimeException {
         }
     }
 
-    /** table not exists exception. */
+    /** The exception that the table does not exist. */
     public static class TableNotExistException extends TableException {
 
         public TableNotExistException(String message) {

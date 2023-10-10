@@ -39,11 +39,6 @@ public class PaimonServiceFactory {
     }
 
     public static PaimonService createHiveCatalogService(
-            String name, String warehouse, String uri) {
-        return createHiveCatalogService(name, warehouse, uri, null);
-    }
-
-    public static PaimonService createHiveCatalogService(
             String name, String warehouse, String uri, String hiveConfDir) {
         Options options = new Options();
         options.set(CatalogProperties.WAREHOUSE, warehouse + "/" + name);

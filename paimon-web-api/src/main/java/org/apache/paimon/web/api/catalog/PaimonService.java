@@ -31,11 +31,9 @@ import org.apache.paimon.web.api.exception.TableException;
 import org.apache.paimon.web.api.table.ColumnMetadata;
 import org.apache.paimon.web.api.table.TableChange;
 import org.apache.paimon.web.api.table.TableMetadata;
-import org.apache.paimon.web.common.utils.ParameterValidationUtil;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +63,7 @@ public class PaimonService {
     }
 
     public boolean databaseExists(String databaseName) {
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
         return catalog.databaseExists(databaseName);
     }
 
@@ -106,16 +105,16 @@ public class PaimonService {
     }
 
     public boolean tableExists(String databaseName, String tableName) {
-        ParameterValidationUtil.checkNotNull(
-                Pair.of(databaseName, "Database name"), Pair.of(tableName, "Table name"));
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
+        Preconditions.checkNotNull(tableName, "Table name cannot be null.");
 
         Identifier identifier = Identifier.create(databaseName, tableName);
         return catalog.tableExists(identifier);
     }
 
     public void createTable(String databaseName, String tableName, TableMetadata tableMetadata) {
-        ParameterValidationUtil.checkNotNull(
-                Pair.of(databaseName, "Database name"), Pair.of(tableName, "Table name"));
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
+        Preconditions.checkNotNull(tableName, "Table name cannot be null.");
 
         Schema.Builder schemaBuilder =
                 Schema.newBuilder()
@@ -151,8 +150,8 @@ public class PaimonService {
     }
 
     public Table getTable(String databaseName, String tableName) {
-        ParameterValidationUtil.checkNotNull(
-                Pair.of(databaseName, "Database name"), Pair.of(tableName, "Table name"));
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
+        Preconditions.checkNotNull(tableName, "Table name cannot be null.");
 
         Identifier identifier = Identifier.create(databaseName, tableName);
         try {
@@ -164,8 +163,8 @@ public class PaimonService {
     }
 
     public void dropTable(String databaseName, String tableName) {
-        ParameterValidationUtil.checkNotNull(
-                Pair.of(databaseName, "Database name"), Pair.of(tableName, "Table name"));
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
+        Preconditions.checkNotNull(tableName, "Table name cannot be null.");
 
         Identifier identifier = Identifier.create(databaseName, tableName);
         try {
@@ -177,10 +176,9 @@ public class PaimonService {
     }
 
     public void renameTable(String databaseName, String fromTable, String toTable) {
-        ParameterValidationUtil.checkNotNull(
-                Pair.of(databaseName, "Database name"),
-                Pair.of(fromTable, "From table"),
-                Pair.of(fromTable, "To table"));
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
+        Preconditions.checkNotNull(fromTable, "From table name cannot be null.");
+        Preconditions.checkNotNull(toTable, "To table name cannot be null.");
 
         Identifier fromTableIdentifier = Identifier.create(databaseName, fromTable);
         Identifier toTableIdentifier = Identifier.create(databaseName, toTable);
@@ -196,6 +194,9 @@ public class PaimonService {
     }
 
     public void alterTable(String databaseName, String tableName, List<TableChange> tableChanges) {
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
+        Preconditions.checkNotNull(tableName, "Table name cannot be null.");
+
         if (!tableExists(databaseName, tableName)) {
             return;
         }

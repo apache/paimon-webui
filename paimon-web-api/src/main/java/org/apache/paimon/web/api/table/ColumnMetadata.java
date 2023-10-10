@@ -61,7 +61,7 @@ public class ColumnMetadata {
         return new ColumnMetadata(this.name, newDataType, this.description);
     }
 
-    public ColumnMetadata withComment(String comment) {
+    public ColumnMetadata setComment(String comment) {
         return comment == null ? this : new ColumnMetadata(this.name, this.type, comment);
     }
 }

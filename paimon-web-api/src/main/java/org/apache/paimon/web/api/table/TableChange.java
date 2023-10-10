@@ -243,7 +243,7 @@ public interface TableChange {
         private final String newComment;
 
         private ModifyColumnComment(ColumnMetadata oldColumn, String newComment) {
-            super(oldColumn, oldColumn.withComment(newComment), null);
+            super(oldColumn, oldColumn.setComment(newComment), null);
             this.newComment = newComment;
         }
 

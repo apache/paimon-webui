@@ -18,13 +18,13 @@
 
 package org.apache.paimon.web.api.exception;
 
-/** database exception. */
+/** Database exception. */
 public class DatabaseException extends RuntimeException {
     public DatabaseException(String message) {
         super(message);
     }
 
-    /** database already exists exception. */
+    /** The exception that the database already exists. */
     public static class DatabaseAlreadyExistsException extends DatabaseException {
 
         public DatabaseAlreadyExistsException(String message) {
@@ -32,7 +32,7 @@ public class DatabaseException extends RuntimeException {
         }
     }
 
-    /** database not empty exception. */
+    /** The exception that the database is not empty. */
     public static class DatabaseNotEmptyException extends DatabaseException {
 
         public DatabaseNotEmptyException(String message) {
@@ -40,7 +40,7 @@ public class DatabaseException extends RuntimeException {
         }
     }
 
-    /** database not exist exception. */
+    /** The exception that the database does not exist. */
     public static class DatabaseNotExistException extends DatabaseException {
 
         public DatabaseNotExistException(String message) {
