@@ -31,7 +31,7 @@ import org.apache.paimon.web.server.data.model.TableInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
-import org.apache.paimon.web.server.util.CatalogUtils;
+import org.apache.paimon.web.server.util.PaimonServiceUtils;
 import org.apache.paimon.web.server.util.DataTypeConvertUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
 
@@ -71,11 +71,11 @@ public class TableController {
      * @param tableInfo The TableInfo object containing information about the table.
      * @return R<Void/> indicating the success or failure of the operation.
      */
-    @PostMapping("/createTable")
+    @PostMapping("/create")
     public R<Void> createTable(@RequestBody TableInfo tableInfo) {
         try {
             PaimonService service =
-                    CatalogUtils.getPaimonService(getCatalogInfo(tableInfo.getCatalogName()));
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableInfo.getCatalogName()));
             List<String> partitionKeys = tableInfo.getPartitionKey();
 
             Map<String, String> tableOptions = tableInfo.getTableOptions();
@@ -126,7 +126,7 @@ public class TableController {
     public R<Void> addColumn(@RequestBody TableInfo tableInfo) {
         try {
             PaimonService service =
-                    CatalogUtils.getPaimonService(getCatalogInfo(tableInfo.getCatalogName()));
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableInfo.getCatalogName()));
             List<TableColumn> tableColumns = tableInfo.getTableColumns();
             List<TableChange> tableChanges = new ArrayList<>();
             Map<String, String> options = new HashMap<>();
@@ -186,7 +186,7 @@ public class TableController {
             @PathVariable String tableName,
             @PathVariable String columnName) {
         try {
-            PaimonService service = CatalogUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             List<TableChange> tableChanges = new ArrayList<>();
             TableChange.DropColumn dropColumn = TableChange.dropColumn(columnName);
             tableChanges.add(dropColumn);
@@ -213,7 +213,7 @@ public class TableController {
             @RequestParam String tableName,
             @RequestBody AlterTableRequest alterTableRequest) {
         try {
-            PaimonService service = CatalogUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
 
             TableColumn oldColumn = alterTableRequest.getOldColumn();
             TableColumn newColumn = alterTableRequest.getNewColumn();
@@ -275,7 +275,7 @@ public class TableController {
         List<TableChange> tableChanges = new ArrayList<>();
         try {
             PaimonService service =
-                    CatalogUtils.getPaimonService(getCatalogInfo(tableInfo.getCatalogName()));
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableInfo.getCatalogName()));
             Map<String, String> tableOptions = tableInfo.getTableOptions();
             for (Map.Entry<String, String> entry : tableOptions.entrySet()) {
                 TableChange.SetOption setOption = TableChange.set(entry.getKey(), entry.getValue());
@@ -309,7 +309,7 @@ public class TableController {
             @RequestParam String key) {
         List<TableChange> tableChanges = new ArrayList<>();
         try {
-            PaimonService service = CatalogUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             TableChange.RemoveOption removeOption = TableChange.remove(key);
             tableChanges.add(removeOption);
             service.alterTable(databaseName, tableName, tableChanges);
@@ -338,7 +338,7 @@ public class TableController {
             @PathVariable String databaseName,
             @PathVariable String tableName) {
         try {
-            PaimonService service = CatalogUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             service.dropTable(databaseName, tableName);
             return R.succeed();
         } catch (Exception e) {
@@ -367,7 +367,7 @@ public class TableController {
             @RequestParam String fromTableName,
             @RequestParam String toTableName) {
         try {
-            PaimonService service = CatalogUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             service.renameTable(databaseName, fromTableName, toTableName);
             return R.succeed();
         } catch (Exception e) {
@@ -388,7 +388,7 @@ public class TableController {
         List<CatalogInfo> catalogInfoList = catalogService.list();
         if (!CollectionUtils.isEmpty(catalogInfoList)) {
             for (CatalogInfo item : catalogInfoList) {
-                PaimonService service = CatalogUtils.getPaimonService(item);
+                PaimonService service = PaimonServiceUtils.getPaimonService(item);
                 List<String> databaseList = service.listDatabases();
                 if (!CollectionUtils.isEmpty(databaseList)) {
                     for (String db : databaseList) {

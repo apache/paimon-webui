@@ -26,7 +26,7 @@ import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.commons.lang3.StringUtils;
 
 /** Catalog util. */
-public class CatalogUtils {
+public class PaimonServiceUtils {
 
     /**
      * Get a Catalog based on the provided CatalogInfo.

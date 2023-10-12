@@ -53,7 +53,7 @@ public class CatalogController {
      * @param catalogInfo The catalogInfo for the catalog.
      * @return The created catalog.
      */
-    @PostMapping("/createCatalog")
+    @PostMapping("/create")
     public R<Void> createCatalog(@RequestBody CatalogInfo catalogInfo) {
         if (!catalogService.checkCatalogNameUnique(catalogInfo)) {
             return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogInfo.getCatalogName());
@@ -77,13 +77,10 @@ public class CatalogController {
                             catalogInfo.getHiveUri(),
                             null);
                 }
-            } else {
-                PaimonServiceFactory.createFileSystemCatalogService(
-                        catalogInfo.getCatalogName(), catalogInfo.getWarehouse());
             }
             return catalogService.save(catalogInfo) ? R.succeed() : R.failed();
         } catch (Exception e) {
-            log.error("Error occurred while creating catalog.", e);
+            log.error("Exception with creating catalog.", e);
             return R.failed(Status.CATALOG_CREATE_ERROR);
         }
     }
@@ -100,15 +97,15 @@ public class CatalogController {
     }
 
     /**
-     * Removes a catalog based on the catalog name.
+     * Removes a catalog with given catalog name.
      *
      * @param catalogName The catalog name.
-     * @return R<Void/> indicating the success or failure of the operation.
+     * @return A response indicating the success or failure of the operation.
      */
-    @DeleteMapping("/removeCatalog/{catalogName}")
-    public R<Void> remove(@PathVariable String catalogName) {
+    @DeleteMapping("/remove/{catalogName}")
+    public R<Void> removeCatalog(@PathVariable String catalogName) {
         QueryWrapper<CatalogInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("catalog_name", catalogName);
-        return catalogService.remove(queryWrapper) ? R.succeed() : R.failed();
+        return catalogService.remove(queryWrapper) ? R.succeed() : R.failed(Status.CATALOG_REMOVE_ERROR);
     }
 }

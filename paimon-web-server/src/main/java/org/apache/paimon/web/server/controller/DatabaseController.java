@@ -24,7 +24,7 @@ import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
-import org.apache.paimon.web.server.util.CatalogUtils;
+import org.apache.paimon.web.server.util.PaimonServiceUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -55,18 +55,18 @@ public class DatabaseController {
      * @param databaseInfo The DatabaseInfo object containing the details of the new database.
      * @return R<Void/> indicating the result of the operation.
      */
-    @PostMapping("/createDatabase")
+    @PostMapping("/create")
     public R<Void> createDatabase(@RequestBody DatabaseInfo databaseInfo) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(databaseInfo.getCatalogName());
-            PaimonService service = CatalogUtils.getPaimonService(catalogInfo);
+            PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
             if (service.databaseExists(databaseInfo.getDatabaseName())) {
                 return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseInfo.getDatabaseName());
             }
             service.createDatabase(databaseInfo.getDatabaseName());
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while creating database.", e);
+            log.error("Exception with creating database.", e);
             return R.failed(Status.DATABASE_CREATE_ERROR);
         }
     }
@@ -83,7 +83,7 @@ public class DatabaseController {
         if (!CollectionUtils.isEmpty(catalogInfoList)) {
             catalogInfoList.forEach(
                     item -> {
-                        PaimonService service = CatalogUtils.getPaimonService(item);
+                        PaimonService service = PaimonServiceUtils.getPaimonService(item);
                         List<String> list = service.listDatabases();
                         list.forEach(
                                 databaseName -> {
@@ -105,19 +105,20 @@ public class DatabaseController {
      * Removes a database by its name.
      *
      * @param databaseName The database to be removed.
+     * @param catalogName The catalog to which the database to be removed belongs.
      * @return A response indicating the success or failure of the removal operation.
      * @throws RuntimeException if the database is not found or it is not empty.
      */
-    @DeleteMapping("/delete/{databaseName}/{catalogName}")
-    public R<Void> remove(@PathVariable String databaseName, @PathVariable String catalogName) {
+    @DeleteMapping("/drop/{databaseName}/{catalogName}")
+    public R<Void> dropDatabase(@PathVariable String databaseName, @PathVariable String catalogName) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(catalogName);
-            PaimonService service = CatalogUtils.getPaimonService(catalogInfo);
+            PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
             service.dropDatabase(databaseName);
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while dropping database.", e);
-            return R.failed(Status.DATABASE_CREATE_ERROR);
+            log.error("Exception with dropping database.", e);
+            return R.failed(Status.DATABASE_DROP_ERROR);
         }
     }
 

@@ -56,11 +56,12 @@ public enum Status {
     /** ------------catalog-----------------. */
     CATALOG_NAME_IS_EXIST(10301, "catalog.name.exist"),
     CATALOG_CREATE_ERROR(10302, "catalog.create.error"),
+    CATALOG_REMOVE_ERROR(10303, "catalog.remove.error"),
 
     /** ------------database-----------------. */
     DATABASE_NAME_IS_EXIST(10401, "database.name.exist"),
     DATABASE_CREATE_ERROR(10402, "database.create.error"),
-    DATABASE_REMOVE_ERROR(10403, "database.remove.error"),
+    DATABASE_DROP_ERROR(10403, "database.drop.error"),
 
     /** ------------table-----------------. */
     TABLE_NAME_IS_EXIST(10501, "table.name.exist"),
