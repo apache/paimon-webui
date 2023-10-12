@@ -31,9 +31,9 @@ import org.apache.paimon.web.server.data.model.TableInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
-import org.apache.paimon.web.server.util.PaimonServiceUtils;
 import org.apache.paimon.web.server.util.DataTypeConvertUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
+import org.apache.paimon.web.server.util.PaimonServiceUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -60,8 +60,8 @@ import java.util.Objects;
 @RequestMapping("/api/table")
 public class TableController {
 
-    private final String FIELDS_PREFIX = "fields";
-    private final String DEFAULT_VALUE_SUFFIX = "default-value";
+    private static final String FIELDS_PREFIX = "FIELDS";
+    private static final String DEFAULT_VALUE_SUFFIX = "default-value";
 
     @Autowired private CatalogService catalogService;
 
@@ -110,7 +110,7 @@ public class TableController {
                     tableInfo.getDatabaseName(), tableInfo.getTableName(), tableMetadata);
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while creating table.", e);
+            log.error("Exception with creating table.", e);
             return R.failed(Status.TABLE_CREATE_ERROR);
         }
     }
@@ -122,7 +122,7 @@ public class TableController {
      *     table name, and table columns.
      * @return A response indicating the success or failure of the operation.
      */
-    @PostMapping("/addColumn")
+    @PostMapping("/column/add")
     public R<Void> addColumn(@RequestBody TableInfo tableInfo) {
         try {
             PaimonService service =
@@ -165,7 +165,7 @@ public class TableController {
             service.alterTable(tableInfo.getDatabaseName(), tableInfo.getTableName(), tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while adding column.", e);
+            log.error("Exception with adding column.", e);
             return R.failed(Status.TABLE_ADD_COLUMN_ERROR);
         }
     }
@@ -179,21 +179,22 @@ public class TableController {
      * @param columnName The name of the column to be dropped.
      * @return The result indicating the success or failure of the operation.
      */
-    @DeleteMapping("/dropColumn/{catalogName}/{databaseName}/{tableName}/{columnName}")
+    @DeleteMapping("/column/drop/{catalogName}/{databaseName}/{tableName}/{columnName}")
     public R<Void> dropColumn(
             @PathVariable String catalogName,
             @PathVariable String databaseName,
             @PathVariable String tableName,
             @PathVariable String columnName) {
         try {
-            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service =
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             List<TableChange> tableChanges = new ArrayList<>();
             TableChange.DropColumn dropColumn = TableChange.dropColumn(columnName);
             tableChanges.add(dropColumn);
             service.alterTable(databaseName, tableName, tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while dropping column.", e);
+            log.error("Exception with dropping column.", e);
             return R.failed(Status.TABLE_DROP_COLUMN_ERROR);
         }
     }
@@ -204,16 +205,18 @@ public class TableController {
      * @param catalogName The name of the catalog.
      * @param databaseName The name of the database.
      * @param tableName The name of the table.
+     * @param alterTableRequest The param of the alter table request.
      * @return A response indicating the success or failure of the operation.
      */
-    @PostMapping("/alterTable")
+    @PostMapping("/alter")
     public R<Void> alterTable(
             @RequestParam String catalogName,
             @RequestParam String databaseName,
             @RequestParam String tableName,
             @RequestBody AlterTableRequest alterTableRequest) {
         try {
-            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service =
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
 
             TableColumn oldColumn = alterTableRequest.getOldColumn();
             TableColumn newColumn = alterTableRequest.getNewColumn();
@@ -237,7 +240,7 @@ public class TableController {
             service.alterTable(databaseName, tableName, tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while altering table.", e);
+            log.error("Exception with altering table.", e);
             return R.failed(Status.TABLE_AlTER_COLUMN_ERROR);
         }
     }
@@ -270,7 +273,7 @@ public class TableController {
      * @return If the options are successfully added, returns a successful result object. If an
      *     exception occurs, returns a result object with an error status.
      */
-    @PostMapping("/addOption")
+    @PostMapping("/option/add")
     public R<Void> addOption(@RequestBody TableInfo tableInfo) {
         List<TableChange> tableChanges = new ArrayList<>();
         try {
@@ -284,7 +287,7 @@ public class TableController {
             service.alterTable(tableInfo.getDatabaseName(), tableInfo.getTableName(), tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while adding option.", e);
+            log.error("Exception with adding option.", e);
             return R.failed(Status.TABLE_ADD_OPTION_ERROR);
         }
     }
@@ -301,7 +304,7 @@ public class TableController {
      *     an error occurs during the operation, the result will be a failed response with an error
      *     code. Possible error codes: {@link Status#TABLE_REMOVE_OPTION_ERROR}.
      */
-    @PostMapping("/removeOption")
+    @PostMapping("/option/remove")
     public R<Void> removeOption(
             @RequestParam String catalogName,
             @RequestParam String databaseName,
@@ -309,13 +312,14 @@ public class TableController {
             @RequestParam String key) {
         List<TableChange> tableChanges = new ArrayList<>();
         try {
-            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service =
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             TableChange.RemoveOption removeOption = TableChange.remove(key);
             tableChanges.add(removeOption);
             service.alterTable(databaseName, tableName, tableChanges);
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while removing option.", e);
+            log.error("Exception with removing option.", e);
             return R.failed(Status.TABLE_REMOVE_OPTION_ERROR);
         }
     }
@@ -332,17 +336,18 @@ public class TableController {
      * @throws RuntimeException If there is an error during the operation, a RuntimeException is
      *     thrown with the error message.
      */
-    @DeleteMapping("/delete/{catalogName}/{databaseName}/{tableName}")
+    @DeleteMapping("/drop/{catalogName}/{databaseName}/{tableName}")
     public R<Void> dropTable(
             @PathVariable String catalogName,
             @PathVariable String databaseName,
             @PathVariable String tableName) {
         try {
-            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service =
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             service.dropTable(databaseName, tableName);
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while dropping table.", e);
+            log.error("Exception with dropping table.", e);
             return R.failed(Status.TABLE_DROP_ERROR);
         }
     }
@@ -360,18 +365,19 @@ public class TableController {
      * @throws RuntimeException If there is an error during the operation, a RuntimeException is
      *     thrown with the error message.
      */
-    @PostMapping("/renameTable")
+    @PostMapping("/rename")
     public R<Void> renameTable(
             @RequestParam String catalogName,
             @RequestParam String databaseName,
             @RequestParam String fromTableName,
             @RequestParam String toTableName) {
         try {
-            PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
+            PaimonService service =
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             service.renameTable(databaseName, fromTableName, toTableName);
             return R.succeed();
         } catch (Exception e) {
-            log.error("Error occurred while renaming table.", e);
+            log.error("Exception with renaming table.", e);
             return R.failed(Status.TABLE_RENAME_ERROR);
         }
     }

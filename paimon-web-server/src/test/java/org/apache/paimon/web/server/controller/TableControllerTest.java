@@ -74,7 +74,7 @@ public class TableControllerTest extends ControllerTestBase {
 
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(tablePath + "/createTable")
+                                MockMvcRequestBuilders.post(tablePath + "/create")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(tableInfo))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -91,7 +91,7 @@ public class TableControllerTest extends ControllerTestBase {
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(
                                 tablePath
-                                        + "/delete/"
+                                        + "/drop/"
                                         + catalogName
                                         + "/"
                                         + databaseName
@@ -125,7 +125,7 @@ public class TableControllerTest extends ControllerTestBase {
 
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(tablePath + "/addColumn")
+                                MockMvcRequestBuilders.post(tablePath + "/column/add")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(tableInfo))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -146,7 +146,7 @@ public class TableControllerTest extends ControllerTestBase {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.delete(
                                                 tablePath
-                                                        + "/dropColumn/"
+                                                        + "/drop/"
                                                         + catalogName
                                                         + "/"
                                                         + databaseName
@@ -182,7 +182,7 @@ public class TableControllerTest extends ControllerTestBase {
 
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(tablePath + "/alterTable")
+                                MockMvcRequestBuilders.post(tablePath + "/alter")
                                         .cookie(cookie)
                                         .param("catalogName", catalogName)
                                         .param("databaseName", databaseName)
@@ -217,7 +217,7 @@ public class TableControllerTest extends ControllerTestBase {
 
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(tablePath + "/addOption")
+                                MockMvcRequestBuilders.post(tablePath + "/option/add")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(tableInfo))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -236,7 +236,7 @@ public class TableControllerTest extends ControllerTestBase {
     public void testRemoveOption() throws Exception {
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(tablePath + "/removeOption")
+                                MockMvcRequestBuilders.post(tablePath + "/option/remove")
                                         .cookie(cookie)
                                         .param("catalogName", catalogName)
                                         .param("databaseName", databaseName)
@@ -275,7 +275,7 @@ public class TableControllerTest extends ControllerTestBase {
                         .build();
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.post(tablePath + "/createTable")
+                        MockMvcRequestBuilders.post(tablePath + "/create")
                                 .cookie(cookie)
                                 .content(ObjectMapperUtils.toJSON(tableInfo))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -284,7 +284,7 @@ public class TableControllerTest extends ControllerTestBase {
 
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(tablePath + "/renameTable")
+                                MockMvcRequestBuilders.post(tablePath + "/rename")
                                         .cookie(cookie)
                                         .param("catalogName", catalogName)
                                         .param("databaseName", databaseName)

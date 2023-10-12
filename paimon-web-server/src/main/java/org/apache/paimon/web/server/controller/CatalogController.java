@@ -106,6 +106,8 @@ public class CatalogController {
     public R<Void> removeCatalog(@PathVariable String catalogName) {
         QueryWrapper<CatalogInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("catalog_name", catalogName);
-        return catalogService.remove(queryWrapper) ? R.succeed() : R.failed(Status.CATALOG_REMOVE_ERROR);
+        return catalogService.remove(queryWrapper)
+                ? R.succeed()
+                : R.failed(Status.CATALOG_REMOVE_ERROR);
     }
 }

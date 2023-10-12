@@ -110,7 +110,8 @@ public class DatabaseController {
      * @throws RuntimeException if the database is not found or it is not empty.
      */
     @DeleteMapping("/drop/{databaseName}/{catalogName}")
-    public R<Void> dropDatabase(@PathVariable String databaseName, @PathVariable String catalogName) {
+    public R<Void> dropDatabase(
+            @PathVariable String databaseName, @PathVariable String catalogName) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(catalogName);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);

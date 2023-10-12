@@ -24,7 +24,6 @@ import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.io.TempDir;
@@ -50,7 +49,6 @@ public class CatalogControllerTest extends ControllerTestBase {
     private static final String catalogName = "testCatalog";
 
     @Test
-    @Order(1)
     public void testCreateCatalog() throws Exception {
         CatalogInfo catalogInfo = new CatalogInfo();
         catalogInfo.setCatalogType("filesystem");
@@ -60,7 +58,7 @@ public class CatalogControllerTest extends ControllerTestBase {
 
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(catalogPath + "/createCatalog")
+                                MockMvcRequestBuilders.post(catalogPath + "/create")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(catalogInfo))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -75,14 +73,13 @@ public class CatalogControllerTest extends ControllerTestBase {
         assertEquals(200, r.getCode());
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(catalogPath + "/removeCatalog/" + catalogName)
+                MockMvcRequestBuilders.delete(catalogPath + "/remove/" + catalogName)
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));
     }
 
     @Test
-    @Order(2)
     public void testGetAllCatalogs() throws Exception {
         String responseString =
                 mockMvc.perform(

@@ -15,7 +15,7 @@
 
 spring:
   datasource:
-    url: jdbc:mysql://${MYSQL_ADDR:124.221.249.188:3887}/${MYSQL_DATABASE:paimon}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:Zhumingye520!@#.}
+    url: jdbc:mysql://${MYSQL_ADDR:127.0.0.1:3306}/${MYSQL_DATABASE:paimon}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:username}
+    password: ${MYSQL_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver

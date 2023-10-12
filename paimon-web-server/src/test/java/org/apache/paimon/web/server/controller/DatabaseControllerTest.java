@@ -50,7 +50,7 @@ public class DatabaseControllerTest extends ControllerTestBase {
 
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(databasePath + "/createDatabase")
+                                MockMvcRequestBuilders.post(databasePath + "/create")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(databaseInfo))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -65,7 +65,7 @@ public class DatabaseControllerTest extends ControllerTestBase {
         assertEquals(200, r.getCode());
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(databasePath + "/delete/" + "test_db/" + catalogName)
+                MockMvcRequestBuilders.delete(databasePath + "/drop/" + "test_db/" + catalogName)
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));

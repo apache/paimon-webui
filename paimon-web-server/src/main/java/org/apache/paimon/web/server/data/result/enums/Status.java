@@ -71,11 +71,8 @@ public enum Status {
     TABLE_REMOVE_OPTION_ERROR(10505, "table.remove.option.error"),
     TABLE_DROP_COLUMN_ERROR(10506, "table.drop.column.error"),
     TABLE_AlTER_COLUMN_ERROR(10507, "table.alter.column.error"),
-    TABLE_UPDATE_COLUMN_TYPE_ERROR(10508, "table.update.column.type.error"),
-    TABLE_UPDATE_COLUMN_COMMENT_ERROR(10509, "table.update.column.comment.error"),
     TABLE_DROP_ERROR(10510, "table.drop.error"),
-    TABLE_RENAME_ERROR(10510, "table.rename.error"),
-    ;
+    TABLE_RENAME_ERROR(10510, "table.rename.error");
 
     private final int code;
     private final String msg;

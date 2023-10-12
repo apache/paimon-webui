@@ -323,8 +323,8 @@ This file is based on the checkstyle file of Apache Beam.
 			<property name="severity" value="error"/>
 		</module>
 
-		<!--<module name="MemberNameCheck">
-			&lt;!&ndash; Validates non-static members against the supplied expression. &ndash;&gt;
+		<module name="MemberNameCheck">
+			<!-- Validates non-static members against the supplied expression. -->
 			<metadata name="altname" value="MemberName"/>
 			<property name="applyToPublic" value="true"/>
 			<property name="applyToProtected" value="true"/>
@@ -332,7 +332,7 @@ This file is based on the checkstyle file of Apache Beam.
 			<property name="applyToPrivate" value="true"/>
 			<property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
 			<property name="severity" value="error"/>
-		</module>-->
+		</module>
 
 		<module name="MethodNameCheck">
 			<!-- Validates identifiers for method names. -->

@@ -25,14 +25,14 @@ import org.apache.paimon.web.server.data.model.CatalogInfo;
 
 import org.apache.commons.lang3.StringUtils;
 
-/** Catalog util. */
+/** Paimon Service util. */
 public class PaimonServiceUtils {
 
     /**
-     * Get a Catalog based on the provided CatalogInfo.
+     * Get a Paimon Service based on the provided CatalogInfo.
      *
      * @param catalogInfo The CatalogInfo object containing the catalog details.
-     * @return The created Catalog object.
+     * @return The created PaimonService object.
      */
     public static PaimonService getPaimonService(CatalogInfo catalogInfo) {
         PaimonService service;

@@ -173,6 +173,6 @@ public class SysRoleControllerTest extends ControllerTestBase {
         assertTrue(
                 r.getData() != null
                         && ((r.getTotal() > 0 && r.getData().size() > 0)
-                        || (r.getTotal() == 0 && r.getData().size() == 0)));
+                                || (r.getTotal() == 0 && r.getData().size() == 0)));
     }
 }

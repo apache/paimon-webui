@@ -109,7 +109,7 @@ public class ControllerTestBase {
         catalogInfo.setDelete(false);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post(catalogPath + "/createCatalog")
+                MockMvcRequestBuilders.post(catalogPath + "/create")
                         .cookie(cookie)
                         .content(ObjectMapperUtils.toJSON(catalogInfo))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -121,7 +121,7 @@ public class ControllerTestBase {
         databaseInfo.setCatalogName(catalogName);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post(databasePath + "/createDatabase")
+                MockMvcRequestBuilders.post(databasePath + "/create")
                         .cookie(cookie)
                         .content(ObjectMapperUtils.toJSON(databaseInfo))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -147,7 +147,7 @@ public class ControllerTestBase {
                         .build();
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post(tablePath + "/createTable")
+                MockMvcRequestBuilders.post(tablePath + "/create")
                         .cookie(cookie)
                         .content(ObjectMapperUtils.toJSON(tableInfo))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -173,7 +173,7 @@ public class ControllerTestBase {
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(
                                 tablePath
-                                        + "/delete/"
+                                        + "/drop/"
                                         + catalogName
                                         + "/"
                                         + databaseName
@@ -185,13 +185,13 @@ public class ControllerTestBase {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(
-                                databasePath + "/delete/" + databaseName + "/" + catalogName)
+                                databasePath + "/drop/" + databaseName + "/" + catalogName)
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(catalogPath + "/removeCatalog/" + catalogName)
+                MockMvcRequestBuilders.delete(catalogPath + "/remove/" + catalogName)
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));
