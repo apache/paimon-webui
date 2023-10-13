@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.submit;
+package org.apache.paimon.web.flink.job;
 
 import org.apache.paimon.web.flink.config.FlinkJobConfiguration;
 import org.apache.paimon.web.flink.context.ExecutorContext;

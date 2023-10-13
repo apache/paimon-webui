@@ -22,7 +22,7 @@ import org.apache.paimon.web.flink.client.db.DBConfig;
 import org.apache.paimon.web.flink.client.util.FlinkJobConfUtil;
 import org.apache.paimon.web.flink.common.ExecutionMode;
 import org.apache.paimon.web.flink.config.FlinkJobConfiguration;
-import org.apache.paimon.web.flink.submit.FlinkJobSubmitter;
+import org.apache.paimon.web.flink.job.FlinkJobSubmitter;
 
 import cn.hutool.json.JSONUtil;
 import org.apache.commons.collections.MapUtils;

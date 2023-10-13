@@ -22,6 +22,7 @@ import org.apache.paimon.web.flink.common.ExecutionMode;
 import org.apache.paimon.web.flink.config.FlinkJobConfiguration;
 import org.apache.paimon.web.flink.job.FlinkJobResult;
 
+import org.apache.paimon.web.flink.job.FlinkJobSubmitter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
