@@ -34,4 +34,12 @@ export default {
   collapse: 'Collapse',
   logs: 'Logs',
   result: 'Result',
+  new_folder: 'New Folder',
+  new_file: 'New File',
+  rename: 'Rename',
+  delete: 'Delete',
+  close_all: 'Close All',
+  close_others: 'Close Others',
+  close_right: 'Close Right',
+  close_left: 'Close Left',
 }

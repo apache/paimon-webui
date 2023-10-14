@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { CodeSlash, FileTrayFullOutline, Search, ServerOutline } from '@vicons/ionicons5';
+import { FileTrayFullOutline, Search, FolderOpenOutline } from '@vicons/ionicons5';
 import styles from './index.module.scss'
 import { NIcon, type TreeOption } from 'naive-ui';
 
@@ -29,22 +29,25 @@ export default defineComponent({
         {
           key: 'paimon2',
           label: 'paimon2',
+          type: 'folder',
           prefix: () =>
             h(NIcon, null, {
-              default: () => h(ServerOutline)
+              default: () => h(FolderOpenOutline)
             }),
           children: [
             {
               key: 'user',
               label: 'user',
+              type: 'folder',
               prefix: () =>
                 h(NIcon, null, {
-                  default: () => h(ServerOutline)
+                  default: () => h(FolderOpenOutline)
                 }),
               children: [
                 {
                   label: 'user_table',
                   key: '1',
+                  type: 'file',
                   content: 'select * from abc where abc.a="abc";select * from cba where cba.a="cba";',
                   prefix: () =>
                     h(NIcon, null, {
@@ -54,6 +57,7 @@ export default defineComponent({
                 {
                   label: 'people_table',
                   key: '2',
+                  type: 'file',
                   content: 'select * from abc where abc.a="abc";',
                   prefix: () =>
                     h(NIcon, null, {
@@ -61,31 +65,28 @@ export default defineComponent({
                     })
                 }
               ]
-            },
-            {
-              key: 'role',
-              label: 'role',
-              prefix: () =>
-                h(NIcon, null, {
-                  default: () => h(ServerOutline)
-                }),
-              children: [
-                {
-                  label: 'user_table',
-                  key: '3',
-                  content: 'select * from kkk;',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                },
-              ]
             }
           ]
         }
       ],
       filterValue: '',
       selectedKeys: []
+    })
+
+    const contextMenuVariables = reactive({
+      x: 0,
+      y: 0,
+      isShow: false,
+      options: [
+        {
+          label: t('playground.new_folder'),
+          key: 'new_folder',
+        },
+        {
+          label: t('playground.new_file'),
+          key: 'new_file',
+        },
+      ]
     })
 
     const nodeProps = ({ option }: { option: TreeOption }) => {
@@ -104,6 +105,12 @@ export default defineComponent({
           })
           tabData.value.chooseTab = option.key
         },
+        onContextmenu (e: MouseEvent): void {
+          e.preventDefault()
+          contextMenuVariables.x = e.clientX
+          contextMenuVariables.y = e.clientY
+          contextMenuVariables.isShow = true
+        }
       }
     }
 
@@ -119,6 +126,12 @@ export default defineComponent({
       tabData.value = data
     })
 
+
+    const handleContextMenuSelect = () => {
+      contextMenuVariables.isShow = false
+    }
+
+
     onMounted(() => {
       mittBus.emit('initTreeData', treeVariables)
     })
@@ -127,7 +140,9 @@ export default defineComponent({
       t,
       ...toRefs(treeVariables),
       nodeProps,
-      handleTreeSelect
+      handleTreeSelect,
+      handleContextMenuSelect,
+      ...toRefs(contextMenuVariables),
     }
   },
   render() {
@@ -150,6 +165,16 @@ export default defineComponent({
               data={this.treeData}
               pattern={this.filterValue}
               node-props={this.nodeProps}
+            />
+            <n-dropdown
+              trigger="manual"
+              placement="bottom-start"
+              options={this.options}
+              show={this.isShow}
+              x={this.x}
+              y={this.y}
+              on-select={this.handleContextMenuSelect}
+              on-clickoutside={() => this.isShow = false}
             />
           </n-space>
         </n-card>

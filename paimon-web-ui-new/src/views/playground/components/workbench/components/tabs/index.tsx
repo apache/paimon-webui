@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss'
+import ContextMenu from '@/components/context-menu';
 
 export default defineComponent({
   name: 'EditorTabs',
@@ -25,6 +26,7 @@ export default defineComponent({
     const tabVariables = reactive({
       chooseTab: '',
       panelsList: [] as any,
+      row: {} as any
     })
 
     const handleAdd = () => {
@@ -59,6 +61,40 @@ export default defineComponent({
       treeData.value = data
     })
 
+    const contextMenuVariables = reactive({
+      x: 0,
+      y: 0,
+      isShow: false
+    })
+
+    const openContextMenu = (e: MouseEvent, item: any) => {
+      e.preventDefault()
+      contextMenuVariables.x = e.pageX
+      contextMenuVariables.y = e.pageY
+      contextMenuVariables.isShow = true
+      tabVariables.row = item
+      tabVariables.chooseTab = tabVariables.row.key
+    }
+
+    const handleContextMenuSelect = (keys: string) => {
+      const index = tabVariables.panelsList.findIndex((item: any) => item.key === tabVariables.row.key)
+      switch (keys) {
+        case 'close_left':
+          tabVariables.panelsList.splice(0, index)
+          break;
+        case 'close_right':
+          tabVariables.panelsList.splice(index + 1)
+          break;
+        case 'close_others':
+          tabVariables.panelsList = [tabVariables.row]
+          break;
+        case 'close_all':
+          tabVariables.panelsList = []
+          break;
+      }
+      contextMenuVariables.isShow = false
+    }
+
     onMounted(() => {
       mittBus.emit('initTabData', tabVariables)
     })
@@ -67,7 +103,10 @@ export default defineComponent({
       ...toRefs(tabVariables),
       handleAdd,
       handleClose,
-      changeTreeChoose
+      changeTreeChoose,
+      openContextMenu,
+      ...toRefs(contextMenuVariables),
+      handleContextMenuSelect
     }
   },
   render() {
@@ -92,7 +131,7 @@ export default defineComponent({
               <n-tab-pane name={item.key}
                 v-slots={{
                   tab: () => (
-                    <div class={styles.tabs}>
+                    <div class={styles.tabs} onContextmenu={(e: MouseEvent) => this.openContextMenu(e, item)}>
                       <div class={styles.dot}></div>
                       <div>{item.tableName}</div>
                       {!item.isSaved && <div class={styles.asterisk}>*</div>}
@@ -103,6 +142,14 @@ export default defineComponent({
             ))
           }
         </n-tabs>
+        <ContextMenu
+          x={this.x}
+          y={this.y}
+          visible={this.isShow}
+          type={['close_left', 'close_right', 'close_others', 'close_all']}
+          onUpdate:visible={() => this.isShow = false}
+          onSelect={this.handleContextMenuSelect}
+        />
       </div>
     );
   }
