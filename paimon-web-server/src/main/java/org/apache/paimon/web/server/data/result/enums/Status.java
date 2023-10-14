@@ -56,15 +56,23 @@ public enum Status {
     /** ------------catalog-----------------. */
     CATALOG_NAME_IS_EXIST(10301, "catalog.name.exist"),
     CATALOG_CREATE_ERROR(10302, "catalog.create.error"),
+    CATALOG_REMOVE_ERROR(10303, "catalog.remove.error"),
 
     /** ------------database-----------------. */
     DATABASE_NAME_IS_EXIST(10401, "database.name.exist"),
     DATABASE_CREATE_ERROR(10402, "database.create.error"),
+    DATABASE_DROP_ERROR(10403, "database.drop.error"),
 
     /** ------------table-----------------. */
     TABLE_NAME_IS_EXIST(10501, "table.name.exist"),
     TABLE_CREATE_ERROR(10502, "table.create.error"),
-    ;
+    TABLE_ADD_COLUMN_ERROR(10503, "table.add.column.error"),
+    TABLE_ADD_OPTION_ERROR(10504, "table.add.option.error"),
+    TABLE_REMOVE_OPTION_ERROR(10505, "table.remove.option.error"),
+    TABLE_DROP_COLUMN_ERROR(10506, "table.drop.column.error"),
+    TABLE_AlTER_COLUMN_ERROR(10507, "table.alter.column.error"),
+    TABLE_DROP_ERROR(10510, "table.drop.error"),
+    TABLE_RENAME_ERROR(10510, "table.rename.error");
 
     private final int code;
     private final String msg;

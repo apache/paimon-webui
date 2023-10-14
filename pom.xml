@@ -358,6 +358,7 @@ under the License.
                         <!-- artifacts created during release process -->
                         <exclude>release/**</exclude>
                         <exclude>paimon-web-ui/node_modules/**</exclude>
+                        <exclude>paimon-web-ui/dist/**</exclude>
                         <exclude>paimon-web-ui-new/node_modules/**</exclude>
                     </excludes>
                 </configuration>

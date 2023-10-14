@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Database table model. */
+/** Paimon data type. */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DatabaseInfo {
+public class PaimonDataType {
 
-    private String databaseName;
+    private String type;
 
-    private Integer catalogId;
+    private boolean isNullable;
 
-    private String catalogName;
+    private Integer precision;
 
-    private String description;
+    private Integer scale;
 }
