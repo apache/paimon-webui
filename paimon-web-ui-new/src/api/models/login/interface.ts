@@ -15,16 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import httpRequest from '../request'
-import type ResponseOptions from '../types'
-
-interface LoginOptions {
+export interface LoginOptions {
   ldapLogin: boolean
   password: string
   rememberMe: boolean
   username: string
-}
-
-export const onLogin = () => {
-  return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login')
 }
