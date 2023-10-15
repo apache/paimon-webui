@@ -35,14 +35,14 @@ export default defineComponent({
       workspaceList: [
         {
           icon: renderIcon(Layers),
-          title: 'Layers',
+          title: 'query',
           description: computed(() => (t('playground.query'))),
           isClick: true,
           path: '/playground/query'
         },
         {
           icon: renderIcon(CodeSlashSharp),
-          title: 'Code',
+          title: 'workbench',
           description: computed(() => (t('playground.workbench'))),
           isClick: false,
           path: '/playground/workbench'
@@ -73,9 +73,19 @@ export default defineComponent({
           sliderVariables.workspaceList[i].isClick = false
         }
         sliderVariables.workspaceList[index].isClick = true
+        configStore.setCurrentMenuActive(sliderVariables.workspaceList[index].title as any)
         router.push(sliderVariables.workspaceList[index].path)
       }
     }
+
+    onMounted(() => {
+      for (const i in sliderVariables.workspaceList) {
+        sliderVariables.workspaceList[i].isClick = false
+        if (sliderVariables.workspaceList[i].title === configStore.getCurrentMenuActive) {
+          sliderVariables.workspaceList[i].isClick = true
+        }
+      }
+    })
 
     return {
       configStore,
