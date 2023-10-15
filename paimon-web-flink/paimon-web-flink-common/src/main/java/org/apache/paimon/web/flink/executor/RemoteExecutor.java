@@ -18,10 +18,15 @@
 
 package org.apache.paimon.web.flink.executor;
 
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.paimon.web.flink.context.ExecutorContext;
 import org.apache.paimon.web.flink.context.RemoteExecutorContext;
 
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.bridge.java.StreamStatementSet;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+
+import java.util.List;
 
 /**
  * The RemoteExecutor class is an implementation of the Executor interface for remote execution
@@ -30,13 +35,27 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 public class RemoteExecutor implements Executor {
 
     private final StreamTableEnvironment tableEnv;
+    private final ExecutorContext context;
 
     public RemoteExecutor(RemoteExecutorContext context) {
         tableEnv = context.getTableEnvironment();
+        this.context = context;
     }
 
     @Override
     public TableResult executeSql(String statement) {
         return tableEnv.executeSql(statement);
+    }
+
+    @Override
+    public TableResult executeStatementSet(List<String> statements) {
+        StreamStatementSet statementSet = tableEnv.createStatementSet();
+        statements.forEach(statementSet::addInsertSql);
+        return statementSet.execute();
+    }
+
+    @Override
+    public JobGraph getJobGraph(List<String> statements) {
+        return getStreamGraph(context.getEnvironment(), tableEnv, statements).getJobGraph();
     }
 }

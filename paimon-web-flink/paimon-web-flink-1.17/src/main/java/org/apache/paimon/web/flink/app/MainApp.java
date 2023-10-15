@@ -18,23 +18,32 @@
 
 package org.apache.paimon.web.flink.app;
 
-import org.apache.paimon.web.flink.client.db.DBConfig;
-import org.apache.paimon.web.flink.client.util.FlinkJobConfUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.flink.configuration.Configuration;
+import org.apache.paimon.web.flink.config.DBConfig;
+import org.apache.paimon.web.flink.utils.FlinkJobConfUtil;
 import org.apache.paimon.web.flink.common.ExecutionMode;
 import org.apache.paimon.web.flink.config.FlinkJobConfiguration;
-import org.apache.paimon.web.flink.job.FlinkJobSubmitter;
 
-import cn.hutool.json.JSONUtil;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.configuration.CheckpointingOptions;
+import org.apache.paimon.web.flink.context.ApplicationExecutorContext;
+import org.apache.paimon.web.flink.executor.ApplicationExecutorFactory;
+import org.apache.paimon.web.flink.executor.Executor;
+import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
+import org.apache.paimon.web.flink.operation.SqlCategory;
+import org.apache.paimon.web.flink.parser.StatementParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 /** User jar package startup class. */
@@ -59,31 +68,31 @@ public class MainApp {
             }
 
             FlinkJobConfiguration jobConfig = new FlinkJobConfiguration();
-            Map<String, String> config = new HashMap<>();
+            Map<String, String> configMap = new HashMap<>();
             String jobName = taskConfig.get("job_name");
             String checkpointPath = taskConfig.get("checkpoint_path");
             if (StringUtils.isNotBlank(checkpointPath)) {
                 // enable Checkpoint
-                config.put("execution.checkpointing.enabled", "true");
+                configMap.put("execution.checkpointing.enabled", "true");
                 // Set the default Checkpoint interval to 10 minute
                 String interval = taskConfig.get("checkpoint_interval");
                 if (StringUtils.isNotBlank(interval)) {
                     interval = "600000";
                 }
-                config.put("execution.checkpointing.interval", interval);
-                config.put(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(), checkpointPath);
+                configMap.put("execution.checkpointing.interval", interval);
+                configMap.put(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(), checkpointPath);
             }
 
             String savepointPath = taskConfig.get("savepoint_path");
             if (StringUtils.isNotBlank(savepointPath)) {
-                config.put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(), savepointPath);
+                configMap.put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(), savepointPath);
             }
 
             String parallelism = taskConfig.get("parallelism");
             if (StringUtils.isBlank(parallelism)) {
                 parallelism = "1";
             }
-            config.put("parallelism.default", parallelism);
+            configMap.put("parallelism.default", parallelism);
 
             String runtimeMode = taskConfig.get("execution_runtime_mode");
             if (runtimeMode != null
@@ -93,17 +102,53 @@ public class MainApp {
                 jobConfig.setExecutionMode(ExecutionMode.STREAMING);
             }
 
-            jobConfig.setLocalMode(true);
-            String otherParams = taskConfig.get("other_params");
-            if (StringUtils.isNotBlank(otherParams)) {
-                Map<String, String> otherParamsMap = JSONUtil.parse(otherParams).toBean(Map.class);
-                jobConfig.setTaskConfig(otherParamsMap);
+            Configuration configuration = Configuration.fromMap(configMap);
+            ApplicationExecutorContext applicationExecutorContext =
+                    new ApplicationExecutorContext(configuration, jobConfig.getExecutionMode());
+            Executor executor = new ApplicationExecutorFactory().createExecutor(applicationExecutorContext);
+
+            String flinkSql = taskConfig.get("flink_sql");
+            String[] statements = StatementParser.parse(flinkSql);
+            boolean hasExecuted = false;
+            List<String> insertStatements = new ArrayList<>();
+
+            for (String statement : statements) {
+                FlinkSqlOperationType operationType = FlinkSqlOperationType.getOperationType(statement);
+
+                if (operationType.getCategory() == SqlCategory.SET) {
+                    continue;
+                }
+
+                if (operationType.getCategory() == SqlCategory.DQL) {
+                    executor.executeSql(statement);
+                    hasExecuted = true;
+                    break;
+                } else if (operationType.getCategory() == SqlCategory.DML) {
+                    if (Objects.equals(operationType.getType(), FlinkSqlOperationType.INSERT.getType())) {
+                        insertStatements.add(statement);
+                        if (!jobConfig.isUseStatementSet()) {
+                            break;
+                        }
+                    } else if (Objects.equals(operationType.getType(), FlinkSqlOperationType.UPDATE.getType()) ||
+                            Objects.equals(operationType.getType(), FlinkSqlOperationType.DELETE.getType())) {
+                        executor.executeSql(statement);
+                        hasExecuted = true;
+                        break;
+                    } else {
+                        executor.executeSql(statement);
+                    }
+                }
             }
 
-            FlinkJobSubmitter submitter = new FlinkJobSubmitter(jobConfig);
-            submitter.getEnvironment().setParallelism(Integer.parseInt(parallelism));
-            submitter.submitJob(taskConfig.get("flink_sql"));
-            submitter.getEnvironment().execute(jobName);
+            if (!hasExecuted && CollectionUtils.isNotEmpty(insertStatements)) {
+                if (jobConfig.isUseStatementSet()) {
+                    executor.executeStatementSet(insertStatements);
+                } else {
+                    executor.executeSql(insertStatements.get(0));
+                }
+            }
+
+            applicationExecutorContext.getEnvironment().execute(jobName);
         } catch (Exception e) {
             logger.error("org.apache.paimon.web.flink.app.MainApp run error:", e);
         }

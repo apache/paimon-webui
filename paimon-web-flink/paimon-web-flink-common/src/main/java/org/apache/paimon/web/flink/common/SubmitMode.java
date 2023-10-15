@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.submit;
+package org.apache.paimon.web.flink.common;
 
 /** The mode of flink job submitted. */
 public enum SubmitMode {
     LOCAL(0, "local"),
-    REMOTE(1, "remote"),
+    STANDALONE(1, "standalone"),
     YARN_PRE_JOB(2, "yarn-pre-job"),
     YARN_SESSION(3, "yarn-session"),
-    APPLICATION(4, "yarn-application"),
-    KUBERNETES_NATIVE_SESSION(5, "kubernetes-session"),
-    KUBERNETES_NATIVE_APPLICATION(6, "kubernetes-application");
+    YARN_APPLICATION(4, "yarn-application"),
+    KUBERNETES_SESSION(5, "kubernetes-session"),
+    KUBERNETES_APPLICATION(6, "kubernetes-application");
 
     private final Integer mode;
     private final String name;

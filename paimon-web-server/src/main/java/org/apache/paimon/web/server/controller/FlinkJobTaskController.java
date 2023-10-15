@@ -19,7 +19,7 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.utils.StringUtils;
-import org.apache.paimon.web.flink.submit.SubmitMode;
+import org.apache.paimon.web.flink.common.SubmitMode;
 import org.apache.paimon.web.flink.submit.Submitter;
 import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 import org.apache.paimon.web.flink.submit.result.SubmitResult;

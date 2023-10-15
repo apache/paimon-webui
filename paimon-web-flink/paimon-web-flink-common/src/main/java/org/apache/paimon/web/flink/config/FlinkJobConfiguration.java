@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.flink.config;
 
+import org.apache.paimon.web.flink.common.ContextMode;
 import org.apache.paimon.web.flink.common.ExecutionMode;
 
 import java.util.Map;
@@ -25,20 +26,14 @@ import java.util.Map;
 /** FlinkJobConfiguration is a class that holds the configuration for a Flink job. */
 public class FlinkJobConfiguration {
 
-    private boolean localMode;
+    private String executionTarget;
     private ExecutionMode executionMode;
+    private ContextMode contextMode;
     private String host;
     private int port;
-    private String jarFilePath;
+    private String[] jarFilePath;
+    private boolean isUseStatementSet;
     private Map<String, String> taskConfig;
-
-    public boolean isLocalMode() {
-        return localMode;
-    }
-
-    public void setLocalMode(boolean localMode) {
-        this.localMode = localMode;
-    }
 
     public ExecutionMode getExecutionMode() {
         return executionMode;
@@ -64,11 +59,11 @@ public class FlinkJobConfiguration {
         this.port = port;
     }
 
-    public String getJarFilePath() {
+    public String[] getJarFilePath() {
         return jarFilePath;
     }
 
-    public void setJarFilePath(String jarFilePath) {
+    public void setJarFilePath(String[] jarFilePath) {
         this.jarFilePath = jarFilePath;
     }
 
@@ -78,5 +73,29 @@ public class FlinkJobConfiguration {
 
     public void setTaskConfig(Map<String, String> taskConfig) {
         this.taskConfig = taskConfig;
+    }
+
+    public String getExecutionTarget() {
+        return executionTarget;
+    }
+
+    public void setExecutionTarget(String executionTarget) {
+        this.executionTarget = executionTarget;
+    }
+
+    public boolean isUseStatementSet() {
+        return isUseStatementSet;
+    }
+
+    public void setUseStatementSet(boolean useStatementSet) {
+        isUseStatementSet = useStatementSet;
+    }
+
+    public ContextMode getContextMode() {
+        return contextMode;
+    }
+
+    public void setContextMode(ContextMode contextMode) {
+        this.contextMode = contextMode;
     }
 }

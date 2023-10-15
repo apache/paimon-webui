@@ -44,12 +44,8 @@ public enum FlinkSqlOperationType {
     LOAD("LOAD"),
     UNLOAD("UNLOAD"),
     SET("SET"),
-    RESET("RESET"),
-    EXECUTE("EXECUTE"),
-    ADD("ADD"),
-    WITH("WITH"),
-    NO_SUPPORTED("NO_SUPPORTED"),
-    ;
+    CALL("CALL"),
+    NO_SUPPORTED("NO_SUPPORTED");
 
     private String type;
 
@@ -99,7 +95,10 @@ public enum FlinkSqlOperationType {
             case DESCRIBE:
             case EXPLAIN:
             case SHOW:
+            case CALL:
                 return SqlCategory.DQL;
+            case SET:
+                return SqlCategory.SET;
             default:
                 return SqlCategory.OTHER;
         }

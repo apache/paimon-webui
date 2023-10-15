@@ -23,9 +23,9 @@ public class RemoteParams {
 
     private final String host;
     private final int port;
-    private String jarFilePath;
+    private String[] jarFilePath;
 
-    public RemoteParams(String host, int port, String jarFilePath) {
+    public RemoteParams(String host, int port, String[] jarFilePath) {
         this.host = host;
         this.port = port;
         this.jarFilePath = jarFilePath;
@@ -44,7 +44,7 @@ public class RemoteParams {
         return port;
     }
 
-    public String getJarFilePath() {
+    public String[] getJarFilePath() {
         return jarFilePath;
     }
 }

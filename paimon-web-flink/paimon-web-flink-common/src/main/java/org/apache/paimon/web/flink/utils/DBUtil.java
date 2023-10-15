@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.client.util;
+package org.apache.paimon.web.flink.utils;
 
-import org.apache.paimon.web.flink.client.db.DBConfig;
+import org.apache.paimon.web.flink.config.DBConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

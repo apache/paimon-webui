@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.flink.submit.request;
 
-import org.apache.paimon.web.flink.submit.SubmitMode;
+import org.apache.paimon.web.flink.common.SubmitMode;
 
 import java.util.Map;
 

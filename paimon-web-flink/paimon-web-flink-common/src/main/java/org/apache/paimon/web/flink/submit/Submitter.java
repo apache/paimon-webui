@@ -1,5 +1,7 @@
 package org.apache.paimon.web.flink.submit;
 
+import com.google.common.base.Preconditions;
+import org.apache.paimon.web.flink.common.SubmitMode;
 import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 import org.apache.paimon.web.flink.submit.result.SubmitResult;
 import org.apache.paimon.web.flink.submit.yarn.YarnApplicationSubmitFactory;
@@ -14,35 +16,26 @@ public class Submitter {
                 };
 
         SubmitMode mode = SubmitMode.of(request.getExecutionTarget());
-        if (mode == null) {
-            throw new IllegalArgumentException(
-                    "Invalid execution target: " + request.getExecutionTarget());
-        }
+        Preconditions.checkNotNull(mode, "execution target can not be null.");
 
         switch (mode) {
-            case LOCAL:
-                // TODO
-                break;
-            case REMOTE:
-                // TODO
-                break;
             case YARN_PRE_JOB:
                 // TODO
                 break;
             case YARN_SESSION:
                 // TODO
                 break;
-            case APPLICATION:
+            case YARN_APPLICATION:
                 flinkSubmitFactory = YarnApplicationSubmitFactory.createFactory();
                 break;
-            case KUBERNETES_NATIVE_SESSION:
+            case KUBERNETES_SESSION:
                 // TODO
                 break;
-            case KUBERNETES_NATIVE_APPLICATION:
+            case KUBERNETES_APPLICATION:
                 // TODO
                 break;
             default:
-                throw new IllegalArgumentException("Unhandled execution target: " + mode);
+                throw new UnsupportedOperationException("Unsupported execution target: " + mode.getName());
         }
 
         return flinkSubmitFactory.createSubmit(request).submit();

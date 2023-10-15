@@ -23,5 +23,6 @@ public enum SqlCategory {
     DDL,
     DML,
     DQL,
+    SET,
     OTHER
 }

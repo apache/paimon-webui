@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.client.db;
+package org.apache.paimon.web.flink.config;
 
 import java.util.Properties;
 
