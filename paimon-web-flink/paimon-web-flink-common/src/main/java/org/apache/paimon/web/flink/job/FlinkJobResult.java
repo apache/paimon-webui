@@ -33,6 +33,12 @@ public class FlinkJobResult {
     private String status;
     private List<Map<String, Object>> data = Collections.synchronizedList(new ArrayList<>());
 
+    private boolean isSuccess;
+    private String msg;
+    private String appId;
+    private String webUrl;
+    private List<String> jobIds;
+
     public String getJobId() {
         return jobId;
     }

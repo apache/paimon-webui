@@ -21,7 +21,7 @@ package org.apache.paimon.web.flink.context;
 import org.apache.paimon.web.flink.common.ExecutionMode;
 import org.apache.paimon.web.flink.context.params.RemoteParams;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -40,12 +40,12 @@ public class RemoteExecutorContext extends ExecutorContext {
     @Override
     protected StreamExecutionEnvironment createEnvironment() {
         StreamExecutionEnvironment env;
-        String jarFilePath =
-                StringUtils.isNotBlank(parameters.getJarFilePath())
+        String[] jarFilePath =
+                ArrayUtils.isNotEmpty(parameters.getJarFilePath())
                         ? parameters.getJarFilePath()
-                        : null;
+                        : ArrayUtils.EMPTY_STRING_ARRAY;
 
-        if (configuration != null && jarFilePath != null) {
+        if (configuration != null && ArrayUtils.isNotEmpty(jarFilePath)) {
             env =
                     StreamExecutionEnvironment.createRemoteEnvironment(
                             parameters.getHost(), parameters.getPort(), configuration, jarFilePath);
@@ -53,7 +53,7 @@ public class RemoteExecutorContext extends ExecutorContext {
             env =
                     StreamExecutionEnvironment.createRemoteEnvironment(
                             parameters.getHost(), parameters.getPort(), configuration);
-        } else if (jarFilePath != null) {
+        } else if (ArrayUtils.isNotEmpty(jarFilePath)) {
             env =
                     StreamExecutionEnvironment.createRemoteEnvironment(
                             parameters.getHost(), parameters.getPort(), jarFilePath);

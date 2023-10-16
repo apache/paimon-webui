@@ -1,10 +1,11 @@
 package org.apache.paimon.web.flink.submit;
 
-import com.google.common.base.Preconditions;
 import org.apache.paimon.web.flink.common.SubmitMode;
 import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 import org.apache.paimon.web.flink.submit.result.SubmitResult;
 import org.apache.paimon.web.flink.submit.yarn.YarnApplicationSubmitFactory;
+
+import com.google.common.base.Preconditions;
 
 /** This class provides a method to submit a Flink job based on the given SubmitRequest. */
 public class Submitter {
@@ -35,7 +36,8 @@ public class Submitter {
                 // TODO
                 break;
             default:
-                throw new UnsupportedOperationException("Unsupported execution target: " + mode.getName());
+                throw new UnsupportedOperationException(
+                        "Unsupported execution target: " + mode.getName());
         }
 
         return flinkSubmitFactory.createSubmit(request).submit();

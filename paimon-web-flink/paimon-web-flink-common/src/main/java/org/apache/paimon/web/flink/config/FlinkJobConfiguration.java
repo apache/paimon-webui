@@ -20,6 +20,7 @@ package org.apache.paimon.web.flink.config;
 
 import org.apache.paimon.web.flink.common.ContextMode;
 import org.apache.paimon.web.flink.common.ExecutionMode;
+import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 
 import java.util.Map;
 
@@ -30,72 +31,375 @@ public class FlinkJobConfiguration {
     private ExecutionMode executionMode;
     private ContextMode contextMode;
     private String host;
-    private int port;
+    private Integer port;
     private String[] jarFilePath;
     private boolean isUseStatementSet;
     private Map<String, String> taskConfig;
+    private String jobName;
+    private String jmMemory;
+    private String tmMemory;
+    private Integer parallelism;
+    private String flinkVersion;
+    private String flinkConfigPath;
+    private String hadoopConfigPath;
+    private String checkpointPath;
+    private String checkpointInterval;
+    private String savepointPath;
+    private String userJarPath;
+    private String userJarMainAppClass;
+    private String flinkLibPath;
+    private String jobId;
+    private String applicationId;
+    private String flinkWebUrl;
+    private String jobStatus;
+    private String adminUser;
+    private String otherParams;
+    private String flinkSql;
+    private String userJarParams;
+    private Integer taskSlots;
 
-    public ExecutionMode getExecutionMode() {
-        return executionMode;
-    }
-
-    public void setExecutionMode(ExecutionMode executionMode) {
-        this.executionMode = executionMode;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public String[] getJarFilePath() {
-        return jarFilePath;
-    }
-
-    public void setJarFilePath(String[] jarFilePath) {
-        this.jarFilePath = jarFilePath;
-    }
-
-    public Map<String, String> getTaskConfig() {
-        return taskConfig;
-    }
-
-    public void setTaskConfig(Map<String, String> taskConfig) {
-        this.taskConfig = taskConfig;
+    private FlinkJobConfiguration(Builder builder) {
+        this.executionTarget = builder.executionTarget;
+        this.executionMode = builder.executionMode;
+        this.contextMode = builder.contextMode;
+        this.host = builder.host;
+        this.port = builder.port;
+        this.jarFilePath = builder.jarFilePath;
+        this.isUseStatementSet = builder.isUseStatementSet;
+        this.taskConfig = builder.taskConfig;
+        this.jobName = builder.jobName;
+        this.jmMemory = builder.jmMemory;
+        this.tmMemory = builder.tmMemory;
+        this.parallelism = builder.parallelism;
+        this.flinkVersion = builder.flinkVersion;
+        this.flinkConfigPath = builder.flinkConfigPath;
+        this.hadoopConfigPath = builder.hadoopConfigPath;
+        this.checkpointPath = builder.checkpointPath;
+        this.checkpointInterval = builder.checkpointInterval;
+        this.savepointPath = builder.savepointPath;
+        this.userJarPath = builder.userJarPath;
+        this.userJarMainAppClass = builder.userJarMainAppClass;
+        this.flinkLibPath = builder.flinkLibPath;
+        this.jobId = builder.jobId;
+        this.applicationId = builder.applicationId;
+        this.flinkWebUrl = builder.flinkWebUrl;
+        this.jobStatus = builder.jobStatus;
+        this.adminUser = builder.adminUser;
+        this.otherParams = builder.otherParams;
+        this.flinkSql = builder.flinkSql;
+        this.userJarParams = builder.userJarParams;
+        this.taskSlots = builder.taskSlots;
     }
 
     public String getExecutionTarget() {
         return executionTarget;
     }
 
-    public void setExecutionTarget(String executionTarget) {
-        this.executionTarget = executionTarget;
-    }
-
-    public boolean isUseStatementSet() {
-        return isUseStatementSet;
-    }
-
-    public void setUseStatementSet(boolean useStatementSet) {
-        isUseStatementSet = useStatementSet;
+    public ExecutionMode getExecutionMode() {
+        return executionMode;
     }
 
     public ContextMode getContextMode() {
         return contextMode;
     }
 
-    public void setContextMode(ContextMode contextMode) {
-        this.contextMode = contextMode;
+    public String getHost() {
+        return host;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public String[] getJarFilePath() {
+        return jarFilePath;
+    }
+
+    public boolean isUseStatementSet() {
+        return isUseStatementSet;
+    }
+
+    public Map<String, String> getTaskConfig() {
+        return taskConfig;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public String getJmMemory() {
+        return jmMemory;
+    }
+
+    public String getTmMemory() {
+        return tmMemory;
+    }
+
+    public Integer getParallelism() {
+        return parallelism;
+    }
+
+    public String getFlinkVersion() {
+        return flinkVersion;
+    }
+
+    public String getFlinkConfigPath() {
+        return flinkConfigPath;
+    }
+
+    public String getHadoopConfigPath() {
+        return hadoopConfigPath;
+    }
+
+    public String getCheckpointPath() {
+        return checkpointPath;
+    }
+
+    public String getCheckpointInterval() {
+        return checkpointInterval;
+    }
+
+    public String getSavepointPath() {
+        return savepointPath;
+    }
+
+    public String getUserJarPath() {
+        return userJarPath;
+    }
+
+    public String getUserJarMainAppClass() {
+        return userJarMainAppClass;
+    }
+
+    public String getFlinkLibPath() {
+        return flinkLibPath;
+    }
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+    public String getFlinkWebUrl() {
+        return flinkWebUrl;
+    }
+
+    public String getJobStatus() {
+        return jobStatus;
+    }
+
+    public String getAdminUser() {
+        return adminUser;
+    }
+
+    public String getOtherParams() {
+        return otherParams;
+    }
+
+    public String getFlinkSql() {
+        return flinkSql;
+    }
+
+    public String getUserJarParams() {
+        return userJarParams;
+    }
+
+    public Integer getTaskSlots() {
+        return taskSlots;
+    }
+
+    public static SubmitRequest.Builder builder() {
+        return new SubmitRequest.Builder();
+    }
+
+    /** The builder for FlinkJobConfiguration. */
+    public static class Builder {
+        private String executionTarget;
+        private ExecutionMode executionMode;
+        private ContextMode contextMode;
+        private String host;
+        private Integer port;
+        private String[] jarFilePath;
+        private boolean isUseStatementSet;
+        private Map<String, String> taskConfig;
+        private String jobName;
+        private String jmMemory;
+        private String tmMemory;
+        private Integer parallelism;
+        private String flinkVersion;
+        private String flinkConfigPath;
+        private String hadoopConfigPath;
+        private String checkpointPath;
+        private String checkpointInterval;
+        private String savepointPath;
+        private String userJarPath;
+        private String userJarMainAppClass;
+        private String flinkLibPath;
+        private String jobId;
+        private String applicationId;
+        private String flinkWebUrl;
+        private String jobStatus;
+        private String adminUser;
+        private String otherParams;
+        private String flinkSql;
+        private String userJarParams;
+        private Integer taskSlots;
+
+        public Builder executionTarget(String executionTarget) {
+            this.executionTarget = executionTarget;
+            return this;
+        }
+
+        public Builder executionMode(ExecutionMode executionMode) {
+            this.executionMode = executionMode;
+            return this;
+        }
+
+        public Builder contextMode(ContextMode contextMode) {
+            this.contextMode = contextMode;
+            return this;
+        }
+
+        public Builder host(String host) {
+            this.host = host;
+            return this;
+        }
+
+        public Builder port(Integer port) {
+            this.port = port;
+            return this;
+        }
+
+        public Builder jarFilePath(String[] jarFilePath) {
+            this.jarFilePath = jarFilePath;
+            return this;
+        }
+
+        public Builder isUseStatementSet(boolean isUseStatementSet) {
+            this.isUseStatementSet = isUseStatementSet;
+            return this;
+        }
+
+        public Builder taskConfig(Map<String, String> taskConfig) {
+            this.taskConfig = taskConfig;
+            return this;
+        }
+
+        public Builder jobName(String jobName) {
+            this.jobName = jobName;
+            return this;
+        }
+
+        public Builder jmMemory(String jmMemory) {
+            this.jmMemory = jmMemory;
+            return this;
+        }
+
+        public Builder tmMemory(String tmMemory) {
+            this.tmMemory = tmMemory;
+            return this;
+        }
+
+        public Builder parallelism(Integer parallelism) {
+            this.parallelism = parallelism;
+            return this;
+        }
+
+        public Builder flinkVersion(String flinkVersion) {
+            this.flinkVersion = flinkVersion;
+            return this;
+        }
+
+        public Builder flinkConfigPath(String flinkConfigPath) {
+            this.flinkConfigPath = flinkConfigPath;
+            return this;
+        }
+
+        public Builder hadoopConfigPath(String hadoopConfigPath) {
+            this.hadoopConfigPath = hadoopConfigPath;
+            return this;
+        }
+
+        public Builder checkpointPath(String checkpointPath) {
+            this.checkpointPath = checkpointPath;
+            return this;
+        }
+
+        public Builder checkpointInterval(String checkpointInterval) {
+            this.checkpointInterval = checkpointInterval;
+            return this;
+        }
+
+        public Builder savepointPath(String savepointPath) {
+            this.savepointPath = savepointPath;
+            return this;
+        }
+
+        public Builder userJarPath(String userJarPath) {
+            this.userJarPath = userJarPath;
+            return this;
+        }
+
+        public Builder userJarMainAppClass(String userJarMainAppClass) {
+            this.userJarMainAppClass = userJarMainAppClass;
+            return this;
+        }
+
+        public Builder flinkLibPath(String flinkLibPath) {
+            this.flinkLibPath = flinkLibPath;
+            return this;
+        }
+
+        public Builder jobId(String jobId) {
+            this.jobId = jobId;
+            return this;
+        }
+
+        public Builder applicationId(String applicationId) {
+            this.applicationId = applicationId;
+            return this;
+        }
+
+        public Builder flinkWebUrl(String flinkWebUrl) {
+            this.flinkWebUrl = flinkWebUrl;
+            return this;
+        }
+
+        public Builder jobStatus(String jobStatus) {
+            this.jobStatus = jobStatus;
+            return this;
+        }
+
+        public Builder adminUser(String adminUser) {
+            this.adminUser = adminUser;
+            return this;
+        }
+
+        public Builder otherParams(String otherParams) {
+            this.otherParams = otherParams;
+            return this;
+        }
+
+        public Builder flinkSql(String flinkSql) {
+            this.flinkSql = flinkSql;
+            return this;
+        }
+
+        public Builder userJarParams(String userJarParams) {
+            this.userJarParams = userJarParams;
+            return this;
+        }
+
+        public Builder taskSlots(Integer taskSlots) {
+            this.taskSlots = taskSlots;
+            return this;
+        }
+
+        public FlinkJobConfiguration build() {
+            return new FlinkJobConfiguration(this);
+        }
     }
 }

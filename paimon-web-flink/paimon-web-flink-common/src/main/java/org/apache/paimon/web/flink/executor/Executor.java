@@ -27,6 +27,7 @@ import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
+import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.operations.ModifyOperation;
@@ -45,9 +46,12 @@ public interface Executor {
 
     JobGraph getJobGraph(List<String> statements);
 
-    default StreamGraph getStreamGraph(StreamExecutionEnvironment env, StreamTableEnvironment tableEnv, List<String> statements) {
+    default StreamGraph getStreamGraph(
+            StreamExecutionEnvironment env,
+            StreamTableEnvironment tableEnv,
+            List<String> statements) {
         try {
-            Method getParserMethod = StreamTableEnvironment.class.getDeclaredMethod("getParser");
+            Method getParserMethod = TableEnvironmentImpl.class.getDeclaredMethod("getParser");
             getParserMethod.setAccessible(true);
             Parser parser = (Parser) getParserMethod.invoke(tableEnv);
 
@@ -74,7 +78,8 @@ public interface Executor {
 
             StreamGraph streamGraph = env.getStreamGraph();
             if (tableEnv.getConfig().getConfiguration().containsKey(PipelineOptions.NAME.key())) {
-                streamGraph.setJobName(tableEnv.getConfig().getConfiguration().getString(PipelineOptions.NAME));
+                streamGraph.setJobName(
+                        tableEnv.getConfig().getConfiguration().getString(PipelineOptions.NAME));
             }
 
             return streamGraph;

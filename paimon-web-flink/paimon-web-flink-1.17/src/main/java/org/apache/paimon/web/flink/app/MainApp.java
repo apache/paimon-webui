@@ -18,23 +18,23 @@
 
 package org.apache.paimon.web.flink.app;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.flink.configuration.Configuration;
-import org.apache.paimon.web.flink.config.DBConfig;
-import org.apache.paimon.web.flink.utils.FlinkJobConfUtil;
 import org.apache.paimon.web.flink.common.ExecutionMode;
+import org.apache.paimon.web.flink.config.DBConfig;
 import org.apache.paimon.web.flink.config.FlinkJobConfiguration;
-
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.api.common.RuntimeExecutionMode;
-import org.apache.flink.configuration.CheckpointingOptions;
 import org.apache.paimon.web.flink.context.ApplicationExecutorContext;
 import org.apache.paimon.web.flink.executor.ApplicationExecutorFactory;
 import org.apache.paimon.web.flink.executor.Executor;
 import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
 import org.apache.paimon.web.flink.operation.SqlCategory;
 import org.apache.paimon.web.flink.parser.StatementParser;
+import org.apache.paimon.web.flink.utils.FlinkJobConfUtil;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.api.common.RuntimeExecutionMode;
+import org.apache.flink.configuration.CheckpointingOptions;
+import org.apache.flink.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +105,8 @@ public class MainApp {
             Configuration configuration = Configuration.fromMap(configMap);
             ApplicationExecutorContext applicationExecutorContext =
                     new ApplicationExecutorContext(configuration, jobConfig.getExecutionMode());
-            Executor executor = new ApplicationExecutorFactory().createExecutor(applicationExecutorContext);
+            Executor executor =
+                    new ApplicationExecutorFactory().createExecutor(applicationExecutorContext);
 
             String flinkSql = taskConfig.get("flink_sql");
             String[] statements = StatementParser.parse(flinkSql);
@@ -113,7 +114,8 @@ public class MainApp {
             List<String> insertStatements = new ArrayList<>();
 
             for (String statement : statements) {
-                FlinkSqlOperationType operationType = FlinkSqlOperationType.getOperationType(statement);
+                FlinkSqlOperationType operationType =
+                        FlinkSqlOperationType.getOperationType(statement);
 
                 if (operationType.getCategory() == SqlCategory.SET) {
                     continue;
@@ -124,13 +126,17 @@ public class MainApp {
                     hasExecuted = true;
                     break;
                 } else if (operationType.getCategory() == SqlCategory.DML) {
-                    if (Objects.equals(operationType.getType(), FlinkSqlOperationType.INSERT.getType())) {
+                    if (Objects.equals(
+                            operationType.getType(), FlinkSqlOperationType.INSERT.getType())) {
                         insertStatements.add(statement);
                         if (!jobConfig.isUseStatementSet()) {
                             break;
                         }
-                    } else if (Objects.equals(operationType.getType(), FlinkSqlOperationType.UPDATE.getType()) ||
-                            Objects.equals(operationType.getType(), FlinkSqlOperationType.DELETE.getType())) {
+                    } else if (Objects.equals(
+                                    operationType.getType(), FlinkSqlOperationType.UPDATE.getType())
+                            || Objects.equals(
+                                    operationType.getType(),
+                                    FlinkSqlOperationType.DELETE.getType())) {
                         executor.executeSql(statement);
                         hasExecuted = true;
                         break;

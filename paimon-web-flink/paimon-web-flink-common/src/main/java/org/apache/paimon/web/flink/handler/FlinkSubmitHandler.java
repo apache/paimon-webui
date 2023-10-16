@@ -18,8 +18,6 @@
 
 package org.apache.paimon.web.flink.handler;
 
-import com.google.common.base.Preconditions;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.paimon.web.flink.common.ContextMode;
 import org.apache.paimon.web.flink.common.SubmitMode;
 import org.apache.paimon.web.flink.config.FlinkJobConfiguration;
@@ -35,7 +33,12 @@ import org.apache.paimon.web.flink.job.FlinkJobResult;
 import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
 import org.apache.paimon.web.flink.operation.SqlCategory;
 import org.apache.paimon.web.flink.parser.StatementParser;
+import org.apache.paimon.web.flink.submit.Submitter;
+import org.apache.paimon.web.flink.submit.request.SubmitRequest;
+import org.apache.paimon.web.flink.submit.result.SubmitResult;
 
+import com.google.common.base.Preconditions;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.flink.configuration.Configuration;
@@ -84,16 +87,39 @@ public class FlinkSubmitHandler {
     }
 
     public FlinkJobResult handle(String sql) {
-        String[] statements = StatementParser.parse(sql);
-        FlinkJobResult result = null;
-
-        if (getContextMode() != ContextMode.APPLICATION) {
-            result = handleNoneApplicationMode(statements);
-        } else {
-
+        if (executor == null) {
+            init();
         }
 
-        return result;
+        String[] statements = StatementParser.parse(sql);
+
+        return getContextMode() != ContextMode.APPLICATION
+                ? handleNoneApplicationMode(statements)
+                : handleApplicationMode(statements);
+    }
+
+    private FlinkJobResult handleApplicationMode(String[] statements) {
+        FlinkJobResult result = new FlinkJobResult();
+        SubmitRequest request =
+                SubmitRequest.builder()
+                        .flinkConfigPath(jobConfig.getFlinkConfigPath())
+                        .flinkConfigMap(jobConfig.getTaskConfig())
+                        .executionTarget(SubmitMode.of(jobConfig.getExecutionTarget()))
+                        .savepointPath(jobConfig.getSavepointPath())
+                        .checkpointPath(jobConfig.getCheckpointPath())
+                        .checkpointInterval(jobConfig.getCheckpointInterval())
+                        .flinkLibPath(jobConfig.getFlinkLibPath())
+                        .jobName(jobConfig.getJobName())
+                        .hadoopConfigPath(jobConfig.getHadoopConfigPath())
+                        .userJarPath(jobConfig.getUserJarPath())
+                        .userJarParams(jobConfig.getUserJarParams())
+                        .userJarMainAppClass(jobConfig.getUserJarMainAppClass())
+                        .jobManagerMemory(jobConfig.getJmMemory())
+                        .taskManagerMemory(jobConfig.getTmMemory())
+                        .taskSlots(jobConfig.getTaskSlots())
+                        .build();
+
+        SubmitResult submitResult = Submitter.submit(request);
     }
 
     private FlinkJobResult handleNoneApplicationMode(String[] statements) {
@@ -127,13 +153,16 @@ public class FlinkSubmitHandler {
                     throw new RuntimeException(e);
                 }
             } else if (operationType.getCategory() == SqlCategory.DML) {
-                if (Objects.equals(operationType.getType(), FlinkSqlOperationType.INSERT.getType())) {
+                if (Objects.equals(
+                        operationType.getType(), FlinkSqlOperationType.INSERT.getType())) {
                     insertStatements.add(statement);
                     if (!jobConfig.isUseStatementSet()) {
                         break;
                     }
-                } else if (Objects.equals(operationType.getType(), FlinkSqlOperationType.UPDATE.getType()) ||
-                        Objects.equals(operationType.getType(), FlinkSqlOperationType.DELETE.getType())) {
+                } else if (Objects.equals(
+                                operationType.getType(), FlinkSqlOperationType.UPDATE.getType())
+                        || Objects.equals(
+                                operationType.getType(), FlinkSqlOperationType.DELETE.getType())) {
                     try {
                         JobClient jobClient =
                                 executor.executeSql(statement)
@@ -186,7 +215,7 @@ public class FlinkSubmitHandler {
         Configuration configuration;
         if (MapUtils.isNotEmpty(jobConfig.getTaskConfig())) {
             configuration = Configuration.fromMap(jobConfig.getTaskConfig());
-        }else {
+        } else {
             configuration = new Configuration();
         }
 
@@ -231,7 +260,8 @@ public class FlinkSubmitHandler {
             case KUBERNETES_APPLICATION:
                 return ContextMode.APPLICATION;
             default:
-                throw new UnsupportedOperationException("Unsupported execution target: " + mode.getName());
+                throw new UnsupportedOperationException(
+                        "Unsupported execution target: " + mode.getName());
         }
     }
 }
