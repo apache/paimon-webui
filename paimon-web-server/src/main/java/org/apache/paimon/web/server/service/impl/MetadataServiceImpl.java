@@ -18,8 +18,9 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.data.InternalRow;
@@ -69,7 +70,7 @@ public class MetadataServiceImpl implements MetadataService {
             reader.forEachRemaining(internalRow -> {
                 SchemaInfoVo schemaInfoVo = SchemaInfoVo.builder()
                         .setSchemaId(internalRow.getLong(0))
-                        .setFields(JSONObject.parseArray(internalRow.getString(1).toString(), MetadataFieldsModel.class))
+                        .setFields(new Gson().fromJson(internalRow.getString(1).toString(), new TypeToken<LinkedList<MetadataFieldsModel>>() {}))
                         .setPartitionKeys(internalRow.getString(2).toString())
                         .setPrimaryKeys(internalRow.getString(3).toString())
                         .setOption(formatOptions(internalRow.getString(4).toString()))
@@ -167,12 +168,12 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     private List<MetadataOptionModel> formatOptions(String jsonOption) {
-        JSONObject jsonObject = JSONObject.parseObject(jsonOption);
+        Gson gson = new Gson();
+        Map<String, Object> map = gson.fromJson(jsonOption, new TypeToken<Map<String, Object>>() {
+        });
         List<MetadataOptionModel> result = new LinkedList<>();
-        Iterator<Map.Entry<String, Object>> entryIterator = jsonObject.entrySet().iterator();
-        while (entryIterator.hasNext()) {
-            Map.Entry<String, Object> map = entryIterator.next();
-            result.add(new MetadataOptionModel(map.getKey(), map.getValue()));
+        for (Object key : map.keySet()) {
+            result.add(new MetadataOptionModel(key.toString(), map.get(key)));
         }
         return result;
     }

@@ -64,7 +64,7 @@ under the License.
     <properties>
         <project.version>0.1-SNAPSHOT</project.version>
         <java.version>8</java.version>
-        <paimon.shade.version>0.6-SNAPSHOT</paimon.shade.version>
+        <paimon.shade.version>0.4.0-incubating</paimon.shade.version>
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
@@ -113,6 +113,7 @@ under the License.
         <sa-token.version>1.35.0.RC</sa-token.version>
         <common-lang3.version>3.12.0</common-lang3.version>
         <hutool.version>5.8.11</hutool.version>
+        <gson.version>2.10.1</gson.version>
     </properties>
 
     <dependencyManagement>
@@ -210,6 +211,11 @@ under the License.
                 <version>${common-lang3.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
