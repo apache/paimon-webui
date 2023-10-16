@@ -15,7 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.context-menu {
-  width: 100%;
-  height: 100%;
+export interface LoginOptions {
+  ldapLogin: boolean
+  password: string
+  rememberMe: boolean
+  username: string
 }
