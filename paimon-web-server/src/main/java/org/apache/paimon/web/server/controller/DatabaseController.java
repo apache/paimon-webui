@@ -90,7 +90,6 @@ public class DatabaseController {
                                     DatabaseInfo info =
                                             DatabaseInfo.builder()
                                                     .databaseName(databaseName)
-                                                    .catalogId(item.getId())
                                                     .catalogName(item.getCatalogName())
                                                     .description("")
                                                     .build();

@@ -38,6 +38,7 @@ import org.apache.paimon.web.server.util.PaimonServiceUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -267,24 +268,32 @@ public class TableController {
     }
 
     /**
-     * Adds options to a table.
+     * Adds options to a table in a database.
      *
-     * @param tableInfo An object containing table information.
-     * @return If the options are successfully added, returns a successful result object. If an
-     *     exception occurs, returns a result object with an error status.
+     * @param catalogName the name of the catalog where the database is located
+     * @param databaseName the name of the database where the table is located
+     * @param tableName the name of the table to which options are added
+     * @param options a map of options to add to the table
+     * @return a response indicating the success or failure of the operation
      */
     @PostMapping("/option/add")
-    public R<Void> addOption(@RequestBody TableInfo tableInfo) {
+    public R<Void> addOption(
+            @RequestParam String catalogName,
+            @RequestParam String databaseName,
+            @RequestParam String tableName,
+            @RequestBody Map<String, String> options) {
         List<TableChange> tableChanges = new ArrayList<>();
         try {
             PaimonService service =
-                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableInfo.getCatalogName()));
-            Map<String, String> tableOptions = tableInfo.getTableOptions();
-            for (Map.Entry<String, String> entry : tableOptions.entrySet()) {
-                TableChange.SetOption setOption = TableChange.set(entry.getKey(), entry.getValue());
-                tableChanges.add(setOption);
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
+            if (MapUtils.isNotEmpty(options)) {
+                for (Map.Entry<String, String> entry : options.entrySet()) {
+                    TableChange.SetOption setOption =
+                            TableChange.set(entry.getKey(), entry.getValue());
+                    tableChanges.add(setOption);
+                }
             }
-            service.alterTable(tableInfo.getDatabaseName(), tableInfo.getTableName(), tableChanges);
+            service.alterTable(databaseName, tableName, tableChanges);
             return R.succeed();
         } catch (Exception e) {
             log.error("Exception with adding option.", e);

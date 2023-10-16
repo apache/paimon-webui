@@ -33,6 +33,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -205,21 +207,17 @@ public class TableControllerTest extends ControllerTestBase {
         Map<String, String> option = new HashMap<>();
         option.put("bucket", "2");
 
-        TableInfo tableInfo =
-                TableInfo.builder()
-                        .catalogName(catalogName)
-                        .databaseName(databaseName)
-                        .tableName(tableName)
-                        .tableColumns(Lists.newArrayList())
-                        .partitionKey(Lists.newArrayList())
-                        .tableOptions(option)
-                        .build();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("catalogName", catalogName);
+        params.add("databaseName", databaseName);
+        params.add("tableName", tableName);
 
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(tablePath + "/option/add")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(tableInfo))
+                                        .params(params)
+                                        .content(ObjectMapperUtils.toJSON(option))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
