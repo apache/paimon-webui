@@ -268,7 +268,7 @@ public class TableController {
     }
 
     /**
-     * Adds options to a table in a database.
+     * Adds options to a table.
      *
      * @param catalogName the name of the catalog where the database is located
      * @param databaseName the name of the database where the table is located
