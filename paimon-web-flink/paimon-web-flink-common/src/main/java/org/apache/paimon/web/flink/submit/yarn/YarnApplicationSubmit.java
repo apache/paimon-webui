@@ -62,11 +62,11 @@ public class YarnApplicationSubmit extends FlinkSubmit {
 
     protected YarnClient yarnClient;
 
-    private final String DEFAULT_MEMORY_SIZE = "1g";
+    private static final String DEFAULT_MEMORY_SIZE = "1g";
 
-    private final int MAX_ATTEMPTS = 30;
+    private static final int MAX_ATTEMPTS = 30;
 
-    private final int DELAY_MILLIS = 1000;
+    private static final int DELAY_MILLIS = 1000;
 
     public YarnApplicationSubmit(SubmitRequest request) {
         super(request);

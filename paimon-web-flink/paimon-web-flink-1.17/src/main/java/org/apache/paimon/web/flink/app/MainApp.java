@@ -104,7 +104,8 @@ public class MainApp {
 
             Configuration configuration = Configuration.fromMap(configMap);
             ApplicationExecutorContext applicationExecutorContext =
-                    new ApplicationExecutorContext(configuration, builder.build().getExecutionMode());
+                    new ApplicationExecutorContext(
+                            configuration, builder.build().getExecutionMode());
             Executor executor =
                     new ApplicationExecutorFactory().createExecutor(applicationExecutorContext);
 

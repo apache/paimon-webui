@@ -27,9 +27,6 @@ import org.apache.paimon.web.flink.job.FlinkJobResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /** The test of {@link FlinkSubmitHandler}. */
@@ -40,9 +37,8 @@ public class FlinkSubmitHandlerTest extends TestBase {
     @BeforeEach
     public void setup() {
         FlinkJobConfiguration.Builder builder = FlinkJobConfiguration.builder();
-        FlinkJobConfiguration jobConfig = builder.executionTarget("local")
-                .executionMode(ExecutionMode.STREAMING)
-                .build();
+        FlinkJobConfiguration jobConfig =
+                builder.executionTarget("local").executionMode(ExecutionMode.STREAMING).build();
         handler = new FlinkSubmitHandler(jobConfig);
     }
 

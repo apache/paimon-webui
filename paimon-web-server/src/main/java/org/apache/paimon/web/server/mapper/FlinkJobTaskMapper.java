@@ -18,8 +18,6 @@
 
 package org.apache.paimon.web.server.mapper;
 
-import org.apache.paimon.web.server.data.model.FlinkJobTask;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
