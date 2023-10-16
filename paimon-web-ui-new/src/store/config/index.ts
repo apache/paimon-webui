@@ -19,7 +19,7 @@ import { LANGUAGES } from "@/locales"
 
 type Theme = 'dark' | 'light'
 type NavBar = 'playground' | 'cdc' | 'system' | 'settings'
-type Menu = 'query' | 'workbench'
+type Menu = 'Query' | 'Workbench'
 
 export const useConfigStore = defineStore({
   id: 'config',
@@ -27,7 +27,7 @@ export const useConfigStore = defineStore({
     theme: 'light',
     locale: LANGUAGES.ZH,
     navActive: 'playground',
-    menuActive: 'query',
+    menuActive: 'Query',
   }),
   persist: true,
   getters: {

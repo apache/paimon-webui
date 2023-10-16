@@ -35,14 +35,14 @@ export default defineComponent({
       workspaceList: [
         {
           icon: renderIcon(Layers),
-          title: 'query',
+          title: 'Query',
           description: computed(() => (t('playground.query'))),
           isClick: true,
           path: '/playground/query'
         },
         {
           icon: renderIcon(CodeSlashSharp),
-          title: 'workbench',
+          title: 'Workbench',
           description: computed(() => (t('playground.workbench'))),
           isClick: false,
           path: '/playground/workbench'
