@@ -19,6 +19,7 @@
 package org.apache.paimon.web.api.table;
 
 import org.apache.paimon.types.DataType;
+import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
 
 import javax.annotation.Nullable;
 

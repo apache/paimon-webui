@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.table;
+package org.apache.paimon.web.api.table.metadata;
 
 import javax.annotation.Nullable;
+import java.util.Date;
 
 /** schema table metadata. */
 public class SchemaTableMetadata {

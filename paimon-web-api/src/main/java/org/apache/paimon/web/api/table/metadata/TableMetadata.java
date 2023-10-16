@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.table;
+package org.apache.paimon.web.api.table.metadata;
 
 import com.google.common.base.Preconditions;
 

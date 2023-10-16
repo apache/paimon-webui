@@ -48,6 +48,7 @@ import org.apache.paimon.web.api.common.CatalogProperties;
 import org.apache.paimon.web.api.common.MetastoreType;
 import org.apache.paimon.web.api.common.OperatorKind;
 import org.apache.paimon.web.api.common.WriteMode;
+import org.apache.paimon.web.api.table.metadata.*;
 import org.apache.paimon.web.common.annotation.VisibleForTesting;
 import org.apache.paimon.web.common.utils.ParameterValidationUtil;
 
@@ -56,14 +57,12 @@ import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
 
 import java.io.IOException;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-/** paimon table manager. */
+/**
+ * paimon table manager.
+ */
 public class TableManager {
 
     private static final String SNAPSHOTS = "snapshots";
@@ -150,7 +149,7 @@ public class TableManager {
     public static void setOptions(
             Catalog catalog, String dbName, String tableName, Map<String, String> options)
             throws Catalog.ColumnAlreadyExistException, Catalog.TableNotExistException,
-                    Catalog.ColumnNotExistException {
+            Catalog.ColumnNotExistException {
         checkNotNull(catalog, dbName, tableName);
 
         Identifier identifier = Identifier.create(dbName, tableName);
@@ -169,7 +168,7 @@ public class TableManager {
     public static void removeOptions(
             Catalog catalog, String dbName, String tableName, Map<String, String> options)
             throws Catalog.ColumnAlreadyExistException, Catalog.TableNotExistException,
-                    Catalog.ColumnNotExistException {
+            Catalog.ColumnNotExistException {
         checkNotNull(catalog, dbName, tableName);
 
         Identifier identifier = Identifier.create(dbName, tableName);
@@ -288,7 +287,7 @@ public class TableManager {
     public static void alterTable(
             Catalog catalog, String dbName, String tableName, List<AlterTableEntity> entities)
             throws Catalog.TableNotExistException, IOException, Catalog.ColumnAlreadyExistException,
-                    Catalog.ColumnNotExistException {
+            Catalog.ColumnNotExistException {
         checkNotNull(catalog, dbName, tableName);
 
         Identifier identifier = Identifier.create(dbName, tableName);
@@ -361,16 +360,18 @@ public class TableManager {
         RecordReader<InternalRow> reader = getReader(table);
         reader.forEachRemaining(
                 row -> {
-                    SchemaTableMetadata schemaTableMetadata =
-                            SchemaTableMetadata.builder()
-                                    .schemaId(row.getLong(1))
-                                    .fields(row.getString(2).toString())
-                                    .partitionKeys(row.getString(3).toString())
-                                    .primaryKeys(row.getString(4).toString())
-                                    .options(row.getString(5).toString())
-                                    .comment(row.getString(6).toString())
-                                    .build();
-                    schemas.add(schemaTableMetadata);
+                    if (!Objects.isNull(row)) {
+                        SchemaTableMetadata schemaTableMetadata =
+                                SchemaTableMetadata.builder()
+                                        .schemaId(row.getLong(0))
+                                        .fields(row.getString(1).toString())
+                                        .partitionKeys(row.getString(2).toString())
+                                        .primaryKeys(row.getString(3).toString())
+                                        .options(row.getString(4).toString())
+                                        .comment(row.getString(5).toString())
+                                        .build();
+                        schemas.add(schemaTableMetadata);
+                    }
                 });
 
         return schemas;

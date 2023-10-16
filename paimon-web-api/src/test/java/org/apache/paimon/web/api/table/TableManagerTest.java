@@ -27,6 +27,8 @@ import org.apache.paimon.web.api.database.DatabaseManager;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
+import org.apache.paimon.web.api.table.metadata.TableMetadata;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

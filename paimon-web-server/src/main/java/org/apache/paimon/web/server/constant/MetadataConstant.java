@@ -15,34 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.paimon.web.server.constant;
 
-package org.apache.paimon.web.api.table;
+/**
+ * @author hunter
+ * @Description TODO
+ * @Date 2023/10/13 16:59
+ */
+public class MetadataConstant {
+    public static final String SNAPSHOTS = "snapshots";
+    public static final String SCHEMAS = "schemas";
+    public static final String OPTIONS = "options";
+    public static final String MANIFESTS = "manifests";
+    public static final String FILES = "files";
+    public static final String CONSUMER = "consumers";
+    public static final String TAGS = "tags";
+    public static final String METADATA_TABLE_FORMAT = "%s$%s";
 
-/** file table metadata. */
-public class ConsumerTableMetadata {
-
-    private String consumerId;
-
-    private Long nextSnapshotId;
-
-    public ConsumerTableMetadata(String consumerId, Long nextSnapshotId) {
-        this.consumerId = consumerId;
-        this.nextSnapshotId = nextSnapshotId;
-    }
-
-    public String getConsumerId() {
-        return consumerId;
-    }
-
-    public void setConsumerId(String consumerId) {
-        this.consumerId = consumerId;
-    }
-
-    public Long getNextSnapshotId() {
-        return nextSnapshotId;
-    }
-
-    public void setNextSnapshotId(Long nextSnapshotId) {
-        this.nextSnapshotId = nextSnapshotId;
-    }
 }
