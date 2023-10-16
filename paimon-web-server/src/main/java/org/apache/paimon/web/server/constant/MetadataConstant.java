@@ -17,11 +17,7 @@
  */
 package org.apache.paimon.web.server.constant;
 
-/**
- * @author hunter
- * @Description TODO
- * @Date 2023/10/13 16:59
- */
+
 public class MetadataConstant {
     public static final String SNAPSHOTS = "snapshots";
     public static final String SCHEMAS = "schemas";

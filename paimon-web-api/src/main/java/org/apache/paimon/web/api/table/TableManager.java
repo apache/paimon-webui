@@ -151,7 +151,7 @@ public class TableManager {
     public static void setOptions(
             Catalog catalog, String dbName, String tableName, Map<String, String> options)
             throws Catalog.ColumnAlreadyExistException, Catalog.TableNotExistException,
-                Catalog.ColumnNotExistException {
+                    Catalog.ColumnNotExistException {
         checkNotNull(catalog, dbName, tableName);
 
         Identifier identifier = Identifier.create(dbName, tableName);
@@ -170,7 +170,7 @@ public class TableManager {
     public static void removeOptions(
             Catalog catalog, String dbName, String tableName, Map<String, String> options)
             throws Catalog.ColumnAlreadyExistException, Catalog.TableNotExistException,
-                Catalog.ColumnNotExistException {
+                    Catalog.ColumnNotExistException {
         checkNotNull(catalog, dbName, tableName);
 
         Identifier identifier = Identifier.create(dbName, tableName);
@@ -289,7 +289,7 @@ public class TableManager {
     public static void alterTable(
             Catalog catalog, String dbName, String tableName, List<AlterTableEntity> entities)
             throws Catalog.TableNotExistException, IOException, Catalog.ColumnAlreadyExistException,
-                Catalog.ColumnNotExistException {
+                    Catalog.ColumnNotExistException {
         checkNotNull(catalog, dbName, tableName);
 
         Identifier identifier = Identifier.create(dbName, tableName);
