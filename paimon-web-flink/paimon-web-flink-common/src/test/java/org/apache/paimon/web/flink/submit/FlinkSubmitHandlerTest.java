@@ -39,7 +39,9 @@ public class FlinkSubmitHandlerTest extends TestBase {
         FlinkJobConfiguration.Builder builder = FlinkJobConfiguration.builder();
         FlinkJobConfiguration jobConfig =
                 builder.executionTarget("local").executionMode(ExecutionMode.STREAMING).build();
-        handler = new FlinkSubmitHandler(jobConfig);
+        handler = FlinkSubmitHandler.build(jobConfig);
+        handler.init();
+
     }
 
     @Test
