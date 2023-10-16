@@ -15,9 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.paimon.web.server.constant;
 
-
+/** metadata constant. */
 public class MetadataConstant {
     public static final String SNAPSHOTS = "snapshots";
     public static final String SCHEMAS = "schemas";
@@ -27,5 +28,4 @@ public class MetadataConstant {
     public static final String CONSUMER = "consumers";
     public static final String TAGS = "tags";
     public static final String METADATA_TABLE_FORMAT = "%s$%s";
-
 }

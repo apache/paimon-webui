@@ -28,8 +28,8 @@ import org.apache.paimon.types.DataType;
 import org.apache.paimon.web.api.exception.ColumnException;
 import org.apache.paimon.web.api.exception.DatabaseException;
 import org.apache.paimon.web.api.exception.TableException;
-import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
 import org.apache.paimon.web.api.table.TableChange;
+import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
 import org.apache.paimon.web.api.table.metadata.TableMetadata;
 
 import com.google.common.base.Preconditions;

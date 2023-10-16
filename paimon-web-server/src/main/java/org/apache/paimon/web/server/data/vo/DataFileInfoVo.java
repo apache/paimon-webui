@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.data.vo;
 
+/** metadata data file return value. */
 public class DataFileInfoVo {
 
     private final String partition;
@@ -52,6 +53,7 @@ public class DataFileInfoVo {
         return new Builder();
     }
 
+    /** DataFileInfoVo Builder. */
     public static class Builder {
         private String partition;
         private Long bucket;

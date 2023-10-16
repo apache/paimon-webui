@@ -18,17 +18,15 @@
 
 package org.apache.paimon.web.server.data.vo;
 
-import org.apache.paimon.types.DataField;
 import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
 import org.apache.paimon.web.server.data.model.MetadataOptionModel;
 
 import javax.annotation.Nullable;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * vo for getSchemaInfo
- */
+/** vo for getSchemaInfo. */
 public class SchemaInfoVo {
 
     private final Long schemaId;
@@ -88,15 +86,14 @@ public class SchemaInfoVo {
         return new Builder();
     }
 
+    /** Builder for SchemaInfoVo. */
     public static class Builder {
         private Long schemaId;
         private List<MetadataFieldsModel> fields;
         private String partitionKeys;
         private String primaryKeys;
-        @Nullable
-        private String comment;
-        @Nullable
-        private List<MetadataOptionModel> option;
+        @Nullable private String comment;
+        @Nullable private List<MetadataOptionModel> option;
         private LocalDateTime updateTime;
 
         public Builder setSchemaId(Long schemaId) {
@@ -134,11 +131,9 @@ public class SchemaInfoVo {
             return this;
         }
 
-
         public SchemaInfoVo build() {
-            return new SchemaInfoVo(schemaId, fields, partitionKeys, primaryKeys, comment, option, updateTime);
+            return new SchemaInfoVo(
+                    schemaId, fields, partitionKeys, primaryKeys, comment, option, updateTime);
         }
     }
-
-
 }

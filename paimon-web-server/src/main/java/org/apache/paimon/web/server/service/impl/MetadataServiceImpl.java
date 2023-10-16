@@ -18,10 +18,6 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.data.InternalRow;
 import org.apache.paimon.reader.RecordReader;
@@ -40,14 +36,19 @@ import org.apache.paimon.web.server.data.vo.SnapshotInfoVo;
 import org.apache.paimon.web.server.service.CatalogService;
 import org.apache.paimon.web.server.service.MetadataService;
 import org.apache.paimon.web.server.util.PaimonServiceUtils;
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/** metadata service impl. */
 @Service
 @Slf4j
 public class MetadataServiceImpl implements MetadataService {
@@ -67,18 +68,28 @@ public class MetadataServiceImpl implements MetadataService {
 
         List<SchemaInfoVo> result = new LinkedList<>();
         try {
-            reader.forEachRemaining(internalRow -> {
-                SchemaInfoVo schemaInfoVo = SchemaInfoVo.builder()
-                        .setSchemaId(internalRow.getLong(0))
-                        .setFields(new Gson().fromJson(internalRow.getString(1).toString(), new TypeToken<LinkedList<MetadataFieldsModel>>() {}))
-                        .setPartitionKeys(internalRow.getString(2).toString())
-                        .setPrimaryKeys(internalRow.getString(3).toString())
-                        .setOption(formatOptions(internalRow.getString(4).toString()))
-                        .setComment(internalRow.getString(5).toString())
-                        .setUpdateTime(internalRow.getTimestamp(6, 3).toLocalDateTime())
-                        .build();
-                result.add(schemaInfoVo);
-            });
+            reader.forEachRemaining(
+                    internalRow -> {
+                        SchemaInfoVo schemaInfoVo =
+                                SchemaInfoVo.builder()
+                                        .setSchemaId(internalRow.getLong(0))
+                                        .setFields(
+                                                new Gson()
+                                                        .fromJson(
+                                                                internalRow.getString(1).toString(),
+                                                                new TypeToken<
+                                                                        LinkedList<
+                                                                                MetadataFieldsModel>>() {}))
+                                        .setPartitionKeys(internalRow.getString(2).toString())
+                                        .setPrimaryKeys(internalRow.getString(3).toString())
+                                        .setOption(
+                                                formatOptions(internalRow.getString(4).toString()))
+                                        .setComment(internalRow.getString(5).toString())
+                                        .setUpdateTime(
+                                                internalRow.getTimestamp(6, 3).toLocalDateTime())
+                                        .build();
+                        result.add(schemaInfoVo);
+                    });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -94,15 +105,18 @@ public class MetadataServiceImpl implements MetadataService {
         List<SnapshotInfoVo> result = new LinkedList<>();
 
         try {
-            reader.forEachRemaining(internalRow -> {
-                SnapshotInfoVo build = SnapshotInfoVo.builder()
-                        .setSnapshotId(internalRow.getLong(0))
-                        .setSnapshotId(internalRow.getLong(1))
-                        .setCommitIdentifier(internalRow.getLong(3))
-                        .setCommitTime(internalRow.getTimestamp(5, 3).toLocalDateTime())
-                        .build();
-                result.add(build);
-            });
+            reader.forEachRemaining(
+                    internalRow -> {
+                        SnapshotInfoVo build =
+                                SnapshotInfoVo.builder()
+                                        .setSnapshotId(internalRow.getLong(0))
+                                        .setSnapshotId(internalRow.getLong(1))
+                                        .setCommitIdentifier(internalRow.getLong(3))
+                                        .setCommitTime(
+                                                internalRow.getTimestamp(5, 3).toLocalDateTime())
+                                        .build();
+                        result.add(build);
+                    });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -117,14 +131,16 @@ public class MetadataServiceImpl implements MetadataService {
         List<ManifestsInfoVo> result = new LinkedList<>();
 
         try {
-            reader.forEachRemaining(internalRow -> {
-                ManifestsInfoVo manifestsInfoVo = ManifestsInfoVo.builder()
-                        .setFileName(internalRow.getString(0).toString())
-                        .setFileSize(internalRow.getLong(1))
-                        .setNumAddedFiles(internalRow.getLong(2))
-                        .build();
-                result.add(manifestsInfoVo);
-            });
+            reader.forEachRemaining(
+                    internalRow -> {
+                        ManifestsInfoVo manifestsInfoVo =
+                                ManifestsInfoVo.builder()
+                                        .setFileName(internalRow.getString(0).toString())
+                                        .setFileSize(internalRow.getLong(1))
+                                        .setNumAddedFiles(internalRow.getLong(2))
+                                        .build();
+                        result.add(manifestsInfoVo);
+                    });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -140,15 +156,17 @@ public class MetadataServiceImpl implements MetadataService {
         List<DataFileInfoVo> result = new LinkedList<>();
 
         try {
-            reader.forEachRemaining(internalRow -> {
-                DataFileInfoVo dataFileInfoVo = DataFileInfoVo.builder()
-                        .setPartition(internalRow.getString(0).toString())
-                        .setBucket(internalRow.getLong(1))
-                        .setFilePath(internalRow.getString(2).toString())
-                        .setFileFormat(internalRow.getString(3).toString())
-                        .builder();
-                result.add(dataFileInfoVo);
-            });
+            reader.forEachRemaining(
+                    internalRow -> {
+                        DataFileInfoVo dataFileInfoVo =
+                                DataFileInfoVo.builder()
+                                        .setPartition(internalRow.getString(0).toString())
+                                        .setBucket(internalRow.getLong(1))
+                                        .setFilePath(internalRow.getString(2).toString())
+                                        .setFileFormat(internalRow.getString(3).toString())
+                                        .builder();
+                        result.add(dataFileInfoVo);
+                    });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -156,21 +174,30 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     private void initEnvironment(QueryMetadataInfoDto dto, String metadataConstantType) {
-        dto.setTableName(String.format(MetadataConstant.METADATA_TABLE_FORMAT, dto.getTableName(), metadataConstantType));
-        CatalogInfo catalogInfo = catalogService.getOne(Wrappers.lambdaQuery(CatalogInfo.class).eq(CatalogInfo::getCatalogName, dto.getCatalogName()).select(i -> true));
+        dto.setTableName(
+                String.format(
+                        MetadataConstant.METADATA_TABLE_FORMAT,
+                        dto.getTableName(),
+                        metadataConstantType));
+        CatalogInfo catalogInfo =
+                catalogService.getOne(
+                        Wrappers.lambdaQuery(CatalogInfo.class)
+                                .eq(CatalogInfo::getCatalogName, dto.getCatalogName())
+                                .select(i -> true));
         Catalog catalog = PaimonServiceUtils.getPaimonService(catalogInfo).catalog();
         try {
             Table table = TableManager.getTable(catalog, dto.getDatabaseName(), dto.getTableName());
             this.reader = getReader(table);
         } catch (Catalog.TableNotExistException e) {
-            throw new RuntimeException(String.format("Table [%s] not exists", dto.getTableName()), e);
+            throw new RuntimeException(
+                    String.format("Table [%s] not exists", dto.getTableName()), e);
         }
     }
 
     private List<MetadataOptionModel> formatOptions(String jsonOption) {
         Gson gson = new Gson();
-        Map<String, Object> map = gson.fromJson(jsonOption, new TypeToken<Map<String, Object>>() {
-        });
+        Map<String, Object> map =
+                gson.fromJson(jsonOption, new TypeToken<Map<String, Object>>() {});
         List<MetadataOptionModel> result = new LinkedList<>();
         for (Object key : map.keySet()) {
             result.add(new MetadataOptionModel(key.toString(), map.get(key)));
@@ -180,7 +207,8 @@ public class MetadataServiceImpl implements MetadataService {
 
     private static RecordReader<InternalRow> getReader(Table table) {
         ReadBuilder readBuilder = table.newReadBuilder();
-        try (RecordReader<InternalRow> reader = readBuilder.newRead().createReader(readBuilder.newScan().plan())) {
+        try (RecordReader<InternalRow> reader =
+                readBuilder.newRead().createReader(readBuilder.newScan().plan())) {
             return reader;
         } catch (IOException e) {
             throw new RuntimeException(e);

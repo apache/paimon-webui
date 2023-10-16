@@ -18,24 +18,22 @@
 
 package org.apache.paimon.web.server.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.apache.paimon.web.server.data.dto.QueryMetadataInfoDto;
-import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.model.TableInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.event.annotation.AfterTestClass;
-import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -45,6 +43,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/** test for MetadataController. */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MetadataControllerTest extends ControllerTestBase {
@@ -92,8 +91,7 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {
-        });
+        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
         assertEquals(200, r.getCode());
     }
 
@@ -103,7 +101,6 @@ public class MetadataControllerTest extends ControllerTestBase {
         queryMetadataInfoDto.setCatalogName(catalogName);
         queryMetadataInfoDto.setDatabaseName(databaseName);
         queryMetadataInfoDto.setTableName(tableName);
-
 
         String response =
                 mockMvc.perform(
@@ -118,10 +115,8 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {
-        });
+        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
         assertEquals(200, result.getCode());
-
     }
 
     @Test
@@ -130,7 +125,6 @@ public class MetadataControllerTest extends ControllerTestBase {
         queryMetadataInfoDto.setCatalogName(catalogName);
         queryMetadataInfoDto.setDatabaseName(databaseName);
         queryMetadataInfoDto.setTableName(tableName);
-
 
         String response =
                 mockMvc.perform(
@@ -145,10 +139,8 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {
-        });
+        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
         assertEquals(200, result.getCode());
-
     }
 
     @Test
@@ -157,7 +149,6 @@ public class MetadataControllerTest extends ControllerTestBase {
         queryMetadataInfoDto.setCatalogName(catalogName);
         queryMetadataInfoDto.setDatabaseName(databaseName);
         queryMetadataInfoDto.setTableName(tableName);
-
 
         String response =
                 mockMvc.perform(
@@ -172,10 +163,8 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {
-        });
+        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
         assertEquals(200, result.getCode());
-
     }
 
     @Test
@@ -184,7 +173,6 @@ public class MetadataControllerTest extends ControllerTestBase {
         queryMetadataInfoDto.setCatalogName(catalogName);
         queryMetadataInfoDto.setDatabaseName(databaseName);
         queryMetadataInfoDto.setTableName(tableName);
-
 
         String response =
                 mockMvc.perform(
@@ -199,12 +187,9 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {
-        });
+        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
         assertEquals(200, result.getCode());
-
     }
-
 
     @AfterTestClass
     public void dropTable() throws Exception {

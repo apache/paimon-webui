@@ -26,10 +26,11 @@ import org.apache.paimon.web.server.data.vo.SnapshotInfoVo;
 
 import java.util.List;
 
+/** metadata service. */
 public interface MetadataService {
 
     /**
-     * Retrieve a list of Metadata schema info
+     * Retrieve a list of Metadata schema info.
      *
      * @param dto query metadata info
      * @return a list of DatabaseInfo objects
@@ -37,7 +38,7 @@ public interface MetadataService {
     List<SchemaInfoVo> getSchemaInfo(QueryMetadataInfoDto dto);
 
     /**
-     * Retrieve a list of Metadata snapshot info
+     * Retrieve a list of Metadata snapshot info.
      *
      * @param dto query metadata info
      * @return a list of snapshot objects
@@ -45,7 +46,7 @@ public interface MetadataService {
     List<SnapshotInfoVo> getSnapshotInfo(QueryMetadataInfoDto dto);
 
     /**
-     * Retrieve a list of Metadata manifest info
+     * Retrieve a list of Metadata manifest info.
      *
      * @param dto query metadata info
      * @return a list of manifest info objects
@@ -53,13 +54,10 @@ public interface MetadataService {
     List<ManifestsInfoVo> getManifestInfo(QueryMetadataInfoDto dto);
 
     /**
-     * Retrieve a list of Metadata data file info
+     * Retrieve a list of Metadata data file info.
      *
      * @param dto query metadata info
      * @return a list of data file objects
      */
     List<DataFileInfoVo> getDataFileInfo(QueryMetadataInfoDto dto);
-
-
-
 }

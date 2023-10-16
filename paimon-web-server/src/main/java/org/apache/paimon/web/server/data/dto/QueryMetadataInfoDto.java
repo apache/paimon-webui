@@ -20,6 +20,7 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
+/** use for get table metadata. */
 @Data
 public class QueryMetadataInfoDto {
     private String catalogName;

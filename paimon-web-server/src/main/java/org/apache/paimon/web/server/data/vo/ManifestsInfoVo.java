@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.data.vo;
 
+/** metadata manifest return value. */
 public class ManifestsInfoVo {
     private final String fileName;
     private final Long fileSize;
@@ -45,6 +46,7 @@ public class ManifestsInfoVo {
         return new Builder();
     }
 
+    /** ManifestsInfoVo Builder. */
     public static class Builder {
         private String fileName;
         private Long fileSize;

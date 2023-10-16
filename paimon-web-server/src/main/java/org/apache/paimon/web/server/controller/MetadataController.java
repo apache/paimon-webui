@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.server.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.paimon.web.server.data.dto.QueryMetadataInfoDto;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.vo.DataFileInfoVo;
@@ -26,6 +25,8 @@ import org.apache.paimon.web.server.data.vo.ManifestsInfoVo;
 import org.apache.paimon.web.server.data.vo.SchemaInfoVo;
 import org.apache.paimon.web.server.data.vo.SnapshotInfoVo;
 import org.apache.paimon.web.server.service.MetadataService;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,9 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * metadata api controller
- */
+/** metadata api controller. */
 @Slf4j
 @RestController
 @RequestMapping("/api/metadata")
@@ -53,17 +52,17 @@ public class MetadataController {
     }
 
     @PostMapping("/querySnapshotInfo")
-    public R<List<SnapshotInfoVo>> getSnapshotInfo(@RequestBody QueryMetadataInfoDto dto){
+    public R<List<SnapshotInfoVo>> getSnapshotInfo(@RequestBody QueryMetadataInfoDto dto) {
         return R.succeed(metadataService.getSnapshotInfo(dto));
     }
 
     @PostMapping("/queryManifestInfo")
-    public R<List<ManifestsInfoVo>> getManifestInfo(@RequestBody QueryMetadataInfoDto dto){
+    public R<List<ManifestsInfoVo>> getManifestInfo(@RequestBody QueryMetadataInfoDto dto) {
         return R.succeed(metadataService.getManifestInfo(dto));
     }
 
     @PostMapping("/queryDataFileInfo")
-    public R<List<DataFileInfoVo>> getDataFileInfo(@RequestBody QueryMetadataInfoDto dto){
+    public R<List<DataFileInfoVo>> getDataFileInfo(@RequestBody QueryMetadataInfoDto dto) {
         return R.succeed(metadataService.getDataFileInfo(dto));
     }
 }

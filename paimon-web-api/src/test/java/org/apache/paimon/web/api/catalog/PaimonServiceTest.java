@@ -23,8 +23,8 @@ import org.apache.paimon.types.DataType;
 import org.apache.paimon.types.DataTypes;
 import org.apache.paimon.web.api.exception.DatabaseException;
 import org.apache.paimon.web.api.exception.TableException;
-import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
 import org.apache.paimon.web.api.table.TableChange;
+import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
 import org.apache.paimon.web.api.table.metadata.TableMetadata;
 
 import org.junit.jupiter.api.AfterEach;
