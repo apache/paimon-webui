@@ -31,13 +31,11 @@ public class FlinkJobResult {
 
     private String jobId;
     private String status;
-    private List<Map<String, Object>> data = Collections.synchronizedList(new ArrayList<>());
-
-    private boolean isSuccess;
+    private boolean success;
     private String msg;
-    private String appId;
-    private String webUrl;
+    private String jobManagerAddress;
     private List<String> jobIds;
+    private List<Map<String, Object>> data = Collections.synchronizedList(new ArrayList<>());
 
     public String getJobId() {
         return jobId;
@@ -59,11 +57,39 @@ public class FlinkJobResult {
         return new ArrayList<>(data);
     }
 
-    public void setData(List<Map<String, Object>> data) {
-        this.data = data;
+    public void setData(Map<String, Object> rowData) {
+        this.data.add(rowData);
     }
 
-    public void addData(Map<String, Object> rowData) {
-        this.data.add(rowData);
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public String getJobManagerAddress() {
+        return jobManagerAddress;
+    }
+
+    public void setJobManagerAddress(String jobManagerAddress) {
+        this.jobManagerAddress = jobManagerAddress;
+    }
+
+    public List<String> getJobIds() {
+        return jobIds;
+    }
+
+    public void setJobIds(List<String> jobIds) {
+        this.jobIds = jobIds;
     }
 }

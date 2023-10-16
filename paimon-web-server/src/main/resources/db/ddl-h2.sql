@@ -126,34 +126,3 @@ CREATE TABLE if not exists `databases`
     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
 ) engine = innodb;
-
-CREATE TABLE if not exists `flink_job_task`
-(
-    `id`                      int(11)      not null auto_increment primary key comment 'id',
-    `job_name`                varchar(100) not null comment 'flink job name',
-    `execution_runtime_mode`  varchar(10)  not null default 'STREAMING' comment 'execution.runtime-mode: STREAMING、BATCH、AUTOMATIC',
-    `execution_target`        varchar(100) not null comment 'flink job submit type.eg:yarn-application、 yarn-session、yarn-per-job、local，kubernetes-session、kubernetes-application',
-    `job_memory`              varchar(10)  not null DEFAULT '1gb' comment 'job memory',
-    `task_memory`             varchar(10)  not null DEFAULT '2gb' comment 'task memory',
-    `parallelism`             int(11)      NOT NULL DEFAULT 1 comment 'Job parallelism',
-    `flink_version`           varchar(10)  not null DEFAULT '1.17.0' comment 'flink version',
-    `flink_config_path`       varchar(100) comment 'flink deployment config dir.eg: /opt/soft/flink-1.17.0/conf',
-    `hadoop_config_path`      varchar(100) comment 'hadoop deployment config dir.eg: /opt/soft/hadoop-3.3.3/etc/hadoop/conf',
-    `checkpoint_path`         varchar(200) comment 'flink checkpoints dir. eg: 	hdfs://hacluster/flink_meta/flink-checkpoints',
-    `checkpoint_interval`     varchar(21) not null default '600000' comment 'flink checkpoint interval, in milliseconds.Default 10 minutes',
-    `savepoint_path`          varchar(200) comment 'flink savepoints dir. eg: hdfs://hacluster/flink_meta/flink-savepoints',
-    `user_jar_path`           varchar(200) comment 'user jar path. eg: hdfs://hacluster/usr/xxx.jar',
-    `user_jar_main_app_class` varchar(100) comment 'flink start class',
-    `flink_lib_path`          varchar(200) comment 'user jar path. eg: hdfs://hacluster/flink_lib',
-    `job_id`                  varchar(100) comment 'job id',
-    `application_id`          varchar(100) comment 'application id',
-    `flink_web_url`           varchar(200) comment 'flink job task web url',
-    `job_status`              varchar(200) comment 'flink job JobStatus. rg:INITIALIZING、RUNNING、FAILED、FINISHED',
-    `admin_user`              varchar(100) comment 'job admin user',
-    `other_params`            varchar(500) comment 'Other parameters required for the flink job task to run, in JSON string format',
-    `flink_sql`               longtext comment 'flink sql',
-    `create_time`             datetime(0)  NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-    `update_time`             datetime(0)  NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
-    UNIQUE INDEX `idx_job_name` (`job_name`),
-    INDEX `idx_admin_user` (`admin_user`)
-    ) ENGINE = InnoDB;

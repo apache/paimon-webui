@@ -37,7 +37,7 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** This class tests the functionality of the LocalExecutor class. */
+/** The test of {@link LocalExecutor}. */
 public class LocalExecutorTest extends TestBase {
 
     private Executor executor;

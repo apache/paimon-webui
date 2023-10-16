@@ -54,20 +54,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This class is responsible for handling SQL tasks in a Flink job. It takes SQL statements, parses
  * and executes them using a provided Executor instance, and returns the results in a FlinkJobResult
  * object.
- *
- * <p>The handle method is the main entry point for executing SQL tasks. It parses the SQL
- * statements, determines the type of each statement (DQL or DML), and executes them accordingly.
- * DQL statements are executed asynchronously and the results are collected in a separate thread.
- * DML statements are executed synchronously and the job status is returned immediately.
- *
- * <p>The class also provides methods for collecting data from a TableResult (collectData) and
- * converting a TableResult into a List of Maps (convertTableResultToData).
  */
 public class FlinkSubmitHandler {
 
@@ -100,47 +91,32 @@ public class FlinkSubmitHandler {
 
     private FlinkJobResult handleApplicationMode(String[] statements) {
         FlinkJobResult result = new FlinkJobResult();
-        SubmitRequest request =
-                SubmitRequest.builder()
-                        .flinkConfigPath(jobConfig.getFlinkConfigPath())
-                        .flinkConfigMap(jobConfig.getTaskConfig())
-                        .executionTarget(SubmitMode.of(jobConfig.getExecutionTarget()))
-                        .savepointPath(jobConfig.getSavepointPath())
-                        .checkpointPath(jobConfig.getCheckpointPath())
-                        .checkpointInterval(jobConfig.getCheckpointInterval())
-                        .flinkLibPath(jobConfig.getFlinkLibPath())
-                        .jobName(jobConfig.getJobName())
-                        .hadoopConfigPath(jobConfig.getHadoopConfigPath())
-                        .userJarPath(jobConfig.getUserJarPath())
-                        .userJarParams(jobConfig.getUserJarParams())
-                        .userJarMainAppClass(jobConfig.getUserJarMainAppClass())
-                        .jobManagerMemory(jobConfig.getJmMemory())
-                        .taskManagerMemory(jobConfig.getTmMemory())
-                        .taskSlots(jobConfig.getTaskSlots())
-                        .build();
+        SubmitRequest request = buildSubmitResult();
 
         SubmitResult submitResult = Submitter.submit(request);
+        result.setJobId(submitResult.getAppId());
+        result.setJobIds(submitResult.getJobIds());
+        result.setSuccess(submitResult.isSuccess());
+        result.setJobManagerAddress(submitResult.getWebUrl());
+        return result;
     }
 
     private FlinkJobResult handleNoneApplicationMode(String[] statements) {
         boolean hasExecuted = false;
         List<String> insertStatements = new ArrayList<>();
         FlinkJobResult result = new FlinkJobResult();
-        for (String statement : statements) {
-            FlinkSqlOperationType operationType = FlinkSqlOperationType.getOperationType(statement);
+        try {
+            for (String statement : statements) {
+                FlinkSqlOperationType operationType =
+                        FlinkSqlOperationType.getOperationType(statement);
 
-            if (operationType.getCategory() == SqlCategory.SET) {
-                continue;
-            }
+                if (operationType.getCategory() == SqlCategory.SET) {
+                    continue;
+                }
 
-            if (operationType.getCategory() == SqlCategory.DQL) {
-                try {
+                if (operationType.getCategory() == SqlCategory.DQL) {
                     TableResult tableResult = executor.executeSql(statement);
-                    Optional<JobClient> jobClient = tableResult.getJobClient();
-                    if (jobClient.isPresent()) {
-                        result.setJobId(jobClient.get().getJobID().toString());
-                        result.setStatus(jobClient.get().getJobStatus().get().toString());
-                    }
+                    setResult(tableResult, result);
                     final FlinkJobResult currentResult = result;
 
                     CompletableFuture.runAsync(
@@ -149,50 +125,51 @@ public class FlinkSubmitHandler {
                             });
                     hasExecuted = true;
                     break;
-                } catch (ExecutionException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            } else if (operationType.getCategory() == SqlCategory.DML) {
-                if (Objects.equals(
-                        operationType.getType(), FlinkSqlOperationType.INSERT.getType())) {
-                    insertStatements.add(statement);
-                    if (!jobConfig.isUseStatementSet()) {
-                        break;
-                    }
-                } else if (Objects.equals(
-                                operationType.getType(), FlinkSqlOperationType.UPDATE.getType())
-                        || Objects.equals(
-                                operationType.getType(), FlinkSqlOperationType.DELETE.getType())) {
-                    try {
-                        JobClient jobClient =
-                                executor.executeSql(statement)
-                                        .getJobClient()
-                                        .orElseThrow(
-                                                () ->
-                                                        new RuntimeException(
-                                                                "JobClient is not present."));
-                        result.setJobId(jobClient.getJobID().toString());
-                        result.setStatus(jobClient.getJobStatus().get().toString());
+                } else if (operationType.getCategory() == SqlCategory.DML) {
+                    if (Objects.equals(
+                            operationType.getType(), FlinkSqlOperationType.INSERT.getType())) {
+                        insertStatements.add(statement);
+                        if (!jobConfig.isUseStatementSet()) {
+                            break;
+                        }
+                    } else if (Objects.equals(
+                                    operationType.getType(), FlinkSqlOperationType.UPDATE.getType())
+                            || Objects.equals(
+                                    operationType.getType(),
+                                    FlinkSqlOperationType.DELETE.getType())) {
+                        TableResult tableResult = executor.executeSql(statement);
+                        setResult(tableResult, result);
+
                         hasExecuted = true;
                         break;
-                    } catch (ExecutionException | InterruptedException e) {
-                        throw new RuntimeException(e);
                     }
+                } else {
+                    executor.executeSql(statement);
                 }
-            } else {
-                executor.executeSql(statement);
             }
-        }
 
-        if (!hasExecuted && CollectionUtils.isNotEmpty(insertStatements)) {
-            if (jobConfig.isUseStatementSet()) {
-                executor.executeStatementSet(insertStatements);
-            } else {
-                executor.executeSql(insertStatements.get(0));
+            if (!hasExecuted && CollectionUtils.isNotEmpty(insertStatements)) {
+                TableResult tableResult;
+                if (jobConfig.isUseStatementSet()) {
+                    tableResult = executor.executeStatementSet(insertStatements);
+                } else {
+                    tableResult = executor.executeSql(insertStatements.get(0));
+                }
+                setResult(tableResult, result);
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return result;
+    }
+
+    private void setResult(TableResult tableResult, FlinkJobResult result) throws Exception {
+        Optional<JobClient> jobClient = tableResult.getJobClient();
+        if (jobClient.isPresent()) {
+            result.setJobId(jobClient.get().getJobID().toString());
+            result.setStatus(jobClient.get().getJobStatus().get().toString());
+        }
     }
 
     private void collectData(TableResult tableResult, FlinkJobResult result) {
@@ -204,11 +181,37 @@ public class FlinkSubmitHandler {
                 for (int i = 0; i < row.getArity(); i++) {
                     rowData.put(columnNames.get(i), row.getField(i));
                 }
-                result.addData(rowData);
+                result.setData(rowData);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private SubmitRequest buildSubmitResult() {
+        SubmitRequest.Builder builder = SubmitRequest.builder();
+
+        Optional.ofNullable(jobConfig.getFlinkConfigPath()).ifPresent(builder::flinkConfigPath);
+        Optional.ofNullable(jobConfig.getTaskConfig()).ifPresent(builder::flinkConfigMap);
+        Optional.ofNullable(jobConfig.getExecutionTarget())
+                .map(SubmitMode::of)
+                .ifPresent(builder::executionTarget);
+        Optional.ofNullable(jobConfig.getSavepointPath()).ifPresent(builder::savepointPath);
+        Optional.ofNullable(jobConfig.getCheckpointPath()).ifPresent(builder::checkpointPath);
+        Optional.ofNullable(jobConfig.getCheckpointInterval())
+                .ifPresent(builder::checkpointInterval);
+        Optional.ofNullable(jobConfig.getFlinkLibPath()).ifPresent(builder::flinkLibPath);
+        Optional.ofNullable(jobConfig.getJobName()).ifPresent(builder::jobName);
+        Optional.ofNullable(jobConfig.getHadoopConfigPath()).ifPresent(builder::hadoopConfigPath);
+        Optional.ofNullable(jobConfig.getUserJarPath()).ifPresent(builder::userJarPath);
+        Optional.ofNullable(jobConfig.getUserJarParams()).ifPresent(builder::userJarParams);
+        Optional.ofNullable(jobConfig.getUserJarMainAppClass())
+                .ifPresent(builder::userJarMainAppClass);
+        Optional.ofNullable(jobConfig.getJmMemory()).ifPresent(builder::jobManagerMemory);
+        Optional.ofNullable(jobConfig.getTmMemory()).ifPresent(builder::taskManagerMemory);
+        Optional.ofNullable(jobConfig.getTaskSlots()).ifPresent(builder::taskSlots);
+
+        return builder.build();
     }
 
     private Executor getExecutor() {

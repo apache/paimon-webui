@@ -67,7 +67,7 @@ public class MainApp {
                 return;
             }
 
-            FlinkJobConfiguration jobConfig = new FlinkJobConfiguration();
+            FlinkJobConfiguration.Builder builder = FlinkJobConfiguration.builder();
             Map<String, String> configMap = new HashMap<>();
             String jobName = taskConfig.get("job_name");
             String checkpointPath = taskConfig.get("checkpoint_path");
@@ -97,14 +97,14 @@ public class MainApp {
             String runtimeMode = taskConfig.get("execution_runtime_mode");
             if (runtimeMode != null
                     && runtimeMode.equalsIgnoreCase(RuntimeExecutionMode.BATCH.toString())) {
-                jobConfig.setExecutionMode(ExecutionMode.BATCH);
+                builder.executionMode(ExecutionMode.BATCH);
             } else {
-                jobConfig.setExecutionMode(ExecutionMode.STREAMING);
+                builder.executionMode(ExecutionMode.STREAMING);
             }
 
             Configuration configuration = Configuration.fromMap(configMap);
             ApplicationExecutorContext applicationExecutorContext =
-                    new ApplicationExecutorContext(configuration, jobConfig.getExecutionMode());
+                    new ApplicationExecutorContext(configuration, builder.build().getExecutionMode());
             Executor executor =
                     new ApplicationExecutorFactory().createExecutor(applicationExecutorContext);
 
@@ -129,7 +129,7 @@ public class MainApp {
                     if (Objects.equals(
                             operationType.getType(), FlinkSqlOperationType.INSERT.getType())) {
                         insertStatements.add(statement);
-                        if (!jobConfig.isUseStatementSet()) {
+                        if (!builder.build().isUseStatementSet()) {
                             break;
                         }
                     } else if (Objects.equals(
@@ -147,7 +147,7 @@ public class MainApp {
             }
 
             if (!hasExecuted && CollectionUtils.isNotEmpty(insertStatements)) {
-                if (jobConfig.isUseStatementSet()) {
+                if (builder.build().isUseStatementSet()) {
                     executor.executeStatementSet(insertStatements);
                 } else {
                     executor.executeSql(insertStatements.get(0));

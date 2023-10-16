@@ -21,6 +21,29 @@ package org.apache.paimon.web.flink;
 /** TestBase. */
 public class TestBase {
 
+    protected String handleStatement =
+            "CREATE TABLE IF NOT EXISTS t_order(\n"
+                    + "    --订单id\n"
+                    + "    `order_id` BIGINT,\n"
+                    + "    --产品\n"
+                    + "    `product` BIGINT,\n"
+                    + "    --金额\n"
+                    + "    `amount` BIGINT,\n"
+                    + "    --支付时间\n"
+                    + "    `order_time` as CAST(CURRENT_TIMESTAMP AS TIMESTAMP(3)),\n"
+                    + "    --WATERMARK\n"
+                    + "    WATERMARK FOR order_time AS order_time-INTERVAL '2' SECOND\n"
+                    + ") WITH(\n"
+                    + "    'connector' = 'datagen',\n"
+                    + "    'rows-per-second' = '1',\n"
+                    + "    'fields.order_id.min' = '1',\n"
+                    + "    'fields.order_id.max' = '2',\n"
+                    + "    'fields.amount.min' = '1',\n"
+                    + "    'fields.amount.max' = '10',\n"
+                    + "    'fields.product.min' = '1',\n"
+                    + "    'fields.product.max' = '2'\n"
+                    + ");\n"
+                    + "SELECT * from t_order limit 10;";
     protected String statement =
             "DROP TABLE IF EXISTS t_order;\n"
                     + "CREATE TABLE IF NOT EXISTS t_order(\n"

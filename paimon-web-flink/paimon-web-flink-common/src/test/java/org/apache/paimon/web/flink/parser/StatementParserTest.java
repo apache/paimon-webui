@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** This class tests the functionality of the StatementParser class. */
+/** The test of {@link StatementParser}. */
 public class StatementParserTest extends TestBase {
 
     @Test

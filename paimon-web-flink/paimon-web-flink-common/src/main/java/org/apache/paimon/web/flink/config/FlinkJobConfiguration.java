@@ -20,7 +20,6 @@ package org.apache.paimon.web.flink.config;
 
 import org.apache.paimon.web.flink.common.ContextMode;
 import org.apache.paimon.web.flink.common.ExecutionMode;
-import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 
 import java.util.Map;
 
@@ -211,8 +210,8 @@ public class FlinkJobConfiguration {
         return taskSlots;
     }
 
-    public static SubmitRequest.Builder builder() {
-        return new SubmitRequest.Builder();
+    public static FlinkJobConfiguration.Builder builder() {
+        return new FlinkJobConfiguration.Builder();
     }
 
     /** The builder for FlinkJobConfiguration. */

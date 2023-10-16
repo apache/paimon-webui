@@ -18,18 +18,11 @@
 
 package org.apache.paimon.web.flink.submit.result;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 /** Submit the returned result of the flink job. */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class SubmitResult {
 
     private boolean isSuccess;
@@ -37,4 +30,74 @@ public class SubmitResult {
     private String appId;
     private String webUrl;
     private List<String> jobIds;
+
+    private SubmitResult(Builder builder) {
+        this.isSuccess = builder.isSuccess;
+        this.msg = builder.msg;
+        this.appId = builder.appId;
+        this.webUrl = builder.webUrl;
+        this.jobIds = builder.jobIds;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public List<String> getJobIds() {
+        return jobIds;
+    }
+
+    public static SubmitResult.Builder builder() {
+        return new SubmitResult.Builder();
+    }
+
+    /** The builder for SubmitResult. */
+    public static class Builder {
+        private boolean isSuccess;
+        private String msg;
+        private String appId;
+        private String webUrl;
+        private List<String> jobIds;
+
+        public Builder isSuccess(boolean isSuccess) {
+            this.isSuccess = isSuccess;
+            return this;
+        }
+
+        public Builder msg(String msg) {
+            this.msg = msg;
+            return this;
+        }
+
+        public Builder appId(String appId) {
+            this.appId = appId;
+            return this;
+        }
+
+        public Builder webUrl(String webUrl) {
+            this.webUrl = webUrl;
+            return this;
+        }
+
+        public Builder jobIds(List<String> jobIds) {
+            this.jobIds = jobIds;
+            return this;
+        }
+
+        public SubmitResult build() {
+            return new SubmitResult(this);
+        }
+    }
 }
