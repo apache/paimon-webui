@@ -270,11 +270,11 @@ public class TableController {
     /**
      * Adds options to a table.
      *
-     * @param catalogName the name of the catalog where the database is located
-     * @param databaseName the name of the database where the table is located
-     * @param tableName the name of the table to which options are added
-     * @param options a map of options to add to the table
-     * @return a response indicating the success or failure of the operation
+     * @param catalogName the name of the catalog where the database is located.
+     * @param databaseName the name of the database where the table is located.
+     * @param tableName the name of the table to which options are added.
+     * @param options a map of options to add to the table.
+     * @return a response indicating the success or failure of the operation.
      */
     @PostMapping("/option/add")
     public R<Void> addOption(
