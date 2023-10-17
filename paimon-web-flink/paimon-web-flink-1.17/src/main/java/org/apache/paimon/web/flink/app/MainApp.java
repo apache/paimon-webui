@@ -76,7 +76,7 @@ public class MainApp {
                 configMap.put("execution.checkpointing.enabled", "true");
                 // Set the default Checkpoint interval to 10 minute
                 String interval = taskConfig.get("checkpoint_interval");
-                if (StringUtils.isNotBlank(interval)) {
+                if (StringUtils.isBlank(interval)) {
                     interval = "600000";
                 }
                 configMap.put("execution.checkpointing.interval", interval);
