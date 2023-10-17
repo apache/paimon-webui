@@ -34,5 +34,7 @@ public class DatabaseInfo {
 
     private Integer catalogId;
 
+    private String catalogName;
+
     private String description;
 }

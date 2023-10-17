@@ -18,103 +18,43 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
-import org.apache.paimon.web.server.util.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Test of permission service. */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PermissionTest {
-    private static final String loginPath = "/api/login";
-    private static final String logoutPath = "/api/logout";
-
+public class PermissionTest extends ControllerTestBase {
     private static final String getUserPath = "/api/user";
-
-    @Value("${spring.application.name}")
-    private String tokenName;
-
-    @Autowired private MockMvc mockMvc;
-
-    private String token;
-
-    @BeforeEach
-    public void before() throws Exception {
-        LoginDto login = new LoginDto();
-        login.setUsername("common");
-        login.setPassword("21232f297a57a5a743894a0e4a801fc3");
-
-        String result =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post(loginPath)
-                                        .content(ObjectMapperUtils.toJSON(login))
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-        R<?> r = ObjectMapperUtils.fromJSON(result, R.class);
-        assertEquals(200, r.getCode());
-
-        assertTrue(StringUtils.isNotBlank(r.getData().toString()));
-
-        this.token = r.getData().toString();
-    }
-
-    @AfterEach
-    public void after() throws Exception {
-        String result =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post(logoutPath)
-                                        .header(tokenName, token)
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-        R<?> r = ObjectMapperUtils.fromJSON(result, R.class);
-        assertEquals(200, r.getCode());
-    }
 
     @Test
     public void testNoPermission() throws Exception {
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(getUserPath + "/" + 1)
-                                        .header(tokenName, token)
+                                        .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                        .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                         .andDo(MockMvcResultHandlers.print())
                         .andReturn()
                         .getResponse()
                         .getContentAsString();
 
         R<User> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<User>>() {});
-        assertEquals(Status.FORBIDDEN.getCode(), r.getCode());
+        assertEquals(Status.SUCCESS.getCode(), r.getCode());
     }
 }

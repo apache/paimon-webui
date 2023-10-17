@@ -47,7 +47,9 @@ export default defineComponent({
       date-locale={this.locale === 'en' ? dateEnUS : dateZhCN}
       style={{ width: '100%', height: '100vh' }}
     >
-      <router-view />
+      <n-message-provider>
+        <router-view />
+      </n-message-provider>
     </n-config-provider>
   }
 })

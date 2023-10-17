@@ -24,6 +24,7 @@ import naive from 'naive-ui'
 import i18n from './locales'
 import { Setting } from './config'
 import '@/assets/styles/main.scss'
+import mitt from 'mitt'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -33,6 +34,7 @@ app.use(pinia)
 pinia.use(piniaPluginPersistedstate)
 app.use(router)
 app.use(naive)
+app.config.globalProperties.mittBus = mitt()
 
 app.mount('#app')
 

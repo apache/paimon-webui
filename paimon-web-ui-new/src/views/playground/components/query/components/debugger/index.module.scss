@@ -15,10 +15,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  width: 100%;
 
-  .select-catalog {
-    padding-bottom: 10px;
+.container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+
+  .run {
+    display: flex;
+  }
+
+  .operations {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
   }
 }

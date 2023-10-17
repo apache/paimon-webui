@@ -22,7 +22,7 @@ spring:
   application:
     name: Paimon-Web-UI
   profiles:
-    active: dev
+    active: dev-mysql
   messages:
     basename: i18n/messages
     encoding: UTF-8

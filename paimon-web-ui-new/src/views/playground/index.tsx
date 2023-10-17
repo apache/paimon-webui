@@ -16,85 +16,18 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss';
-import type { TabsProps } from 'naive-ui';
-import { Layers, CodeSlashSharp, SyncCircleOutline } from '@vicons/ionicons5';
-import CataLog from './components/catalog';
-import * as monaco from 'monaco-editor'
-import MonacoEditor from '@/components/monaco-editor';
-
+import Slider from './components/slider';
 
 export default defineComponent({
   name: 'PlaygroundPage',
-  setup() {
-    const type = ref<TabsProps['type']>('bar')
-
-    const content = ref('')
-    const language = ref('javascript')
-    const editorMounted = (editor: monaco.editor.IStandaloneCodeEditor) => {
-      console.log('Loaded editor instance.', editor)
-    }
-
-    return {
-      type,
-      content,
-      language,
-      editorMounted
-    }
-  },
+  setup() {},
   render() {
     return (
       <div class={styles.container}>
-        <n-tabs
-          type={this.type}
-          animated
-          placement="left"
-          default-value="oasis"
-        >
-          <n-tab-pane name="oasis"
-            v-slots={{
-              tab: () => (
-                <n-icon size="24">
-                  <Layers />
-                </n-icon>
-              )
-            }}
-          >
-            <div class={styles.content}>
-              <div class={styles.catalog}>
-                <CataLog />
-              </div>
-              <div class={styles.editor}>
-                <MonacoEditor
-                  v-model={this.content}
-                  language={this.language}
-                  onEditorMounted={this.editorMounted}
-                />
-              </div>
-            </div>
-          </n-tab-pane>
-          <n-tab-pane name="the beatles" tab="the Beatles"
-            v-slots={{
-              tab: () => (
-                <n-icon size="24">
-                  <CodeSlashSharp />
-                </n-icon>
-              )
-            }}
-          >
-            Saved Queries
-          </n-tab-pane>
-          <n-tab-pane name="jay chou" tab="Jay Chou"
-            v-slots={{
-              tab: () => (
-                <n-icon size="24">
-                  <SyncCircleOutline />
-                </n-icon>
-              )
-            }}
-          >
-            History
-          </n-tab-pane>
-        </n-tabs>
+        <Slider />
+        <div class={styles.content}>
+          <router-view />
+        </div>
       </div>
     );
   },

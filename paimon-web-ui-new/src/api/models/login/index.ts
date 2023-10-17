@@ -15,16 +15,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import httpRequest from '../request'
-import type ResponseOptions from '../types'
+import httpRequest from '../../request'
+import type ResponseOptions from '@/api/types'
+import type { LoginOptions } from './interface'
 
-interface LoginOptions {
-  ldapLogin: boolean
-  password: string
-  rememberMe: boolean
-  username: string
-}
+// #region login-controller
 
+/**
+ * # Login
+ * @param {LoginOptions} options
+ */
 export const onLogin = () => {
   return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login')
 }
+
+/**
+ * # Logout
+ */
+export const onLogout = () => {
+  return httpRequest.post<ResponseOptions<any>>('/logout')
+}
+
+// #endregion

@@ -16,6 +16,30 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  select_catalog: 'Select Catalog',
-  search: 'Search'
+  query: 'Query',
+  workbench: 'Workbench',
+  task_operation_and_maintenance: 'Task Operation and Maintenance',
+  settings: 'Settings',
+  terminal: 'Terminal',
+  git_branch: 'Git Branch',
+  data: 'Data',
+  saved_query: 'Saved Query',
+  query_record: 'Query Record',
+  search: 'Search',
+  run: 'Run',
+  format: 'Format',
+  save: 'Save',
+  clear: 'Clear',
+  unfold: 'Unfold',
+  collapse: 'Collapse',
+  logs: 'Logs',
+  result: 'Result',
+  new_folder: 'New Folder',
+  new_file: 'New File',
+  rename: 'Rename',
+  delete: 'Delete',
+  close_all: 'Close All',
+  close_others: 'Close Others',
+  close_right: 'Close Right',
+  close_left: 'Close Left',
 }
