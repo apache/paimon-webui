@@ -18,12 +18,12 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.QueryMetadataInfoDto;
+import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
 import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.vo.DataFileInfoVo;
-import org.apache.paimon.web.server.data.vo.ManifestsInfoVo;
-import org.apache.paimon.web.server.data.vo.SchemaInfoVo;
-import org.apache.paimon.web.server.data.vo.SnapshotInfoVo;
+import org.apache.paimon.web.server.data.vo.DataFileVo;
+import org.apache.paimon.web.server.data.vo.ManifestsVo;
+import org.apache.paimon.web.server.data.vo.SchemaVo;
+import org.apache.paimon.web.server.data.vo.SnapshotVo;
 import org.apache.paimon.web.server.service.MetadataService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +34,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/** metadata api controller. */
+/** Metadata api controller. */
 @Slf4j
 @RestController
-@RequestMapping("/api/metadata")
+@RequestMapping("/api/metadata/query")
 public class MetadataController {
 
     private final MetadataService metadataService;
@@ -46,23 +46,23 @@ public class MetadataController {
         this.metadataService = metadataService;
     }
 
-    @PostMapping("/querySchemaInfo")
-    public R<List<SchemaInfoVo>> getSchemaInfo(@RequestBody QueryMetadataInfoDto dto) {
-        return R.succeed(metadataService.getSchemaInfo(dto));
+    @PostMapping("/schema")
+    public R<List<SchemaVo>> getSchemaInfo(@RequestBody QueryMetadataDto dto) {
+        return R.succeed(metadataService.getSchema(dto));
     }
 
-    @PostMapping("/querySnapshotInfo")
-    public R<List<SnapshotInfoVo>> getSnapshotInfo(@RequestBody QueryMetadataInfoDto dto) {
-        return R.succeed(metadataService.getSnapshotInfo(dto));
+    @PostMapping("/snapshot")
+    public R<List<SnapshotVo>> getSnapshotInfo(@RequestBody QueryMetadataDto dto) {
+        return R.succeed(metadataService.getSnapshot(dto));
     }
 
-    @PostMapping("/queryManifestInfo")
-    public R<List<ManifestsInfoVo>> getManifestInfo(@RequestBody QueryMetadataInfoDto dto) {
-        return R.succeed(metadataService.getManifestInfo(dto));
+    @PostMapping("/manifest")
+    public R<List<ManifestsVo>> getManifestInfo(@RequestBody QueryMetadataDto dto) {
+        return R.succeed(metadataService.getManifest(dto));
     }
 
-    @PostMapping("/queryDataFileInfo")
-    public R<List<DataFileInfoVo>> getDataFileInfo(@RequestBody QueryMetadataInfoDto dto) {
-        return R.succeed(metadataService.getDataFileInfo(dto));
+    @PostMapping("/dataFile")
+    public R<List<DataFileVo>> getDataFileInfo(@RequestBody QueryMetadataDto dto) {
+        return R.succeed(metadataService.getDataFile(dto));
     }
 }

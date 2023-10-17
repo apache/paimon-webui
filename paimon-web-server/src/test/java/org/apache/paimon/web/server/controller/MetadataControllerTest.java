@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.QueryMetadataInfoDto;
+import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.model.TableInfo;
 import org.apache.paimon.web.server.data.result.R;
@@ -43,7 +43,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** test for MetadataController. */
+/** Tests for {@link MetadataController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MetadataControllerTest extends ControllerTestBase {
@@ -97,7 +97,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     @Test
     public void testGetSchemaInfo() throws Exception {
-        QueryMetadataInfoDto queryMetadataInfoDto = new QueryMetadataInfoDto();
+        QueryMetadataDto queryMetadataInfoDto = new QueryMetadataDto();
         queryMetadataInfoDto.setCatalogName(catalogName);
         queryMetadataInfoDto.setDatabaseName(databaseName);
         queryMetadataInfoDto.setTableName(tableName);
@@ -121,16 +121,16 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     @Test
     public void testGetManifestInfo() throws Exception {
-        QueryMetadataInfoDto queryMetadataInfoDto = new QueryMetadataInfoDto();
-        queryMetadataInfoDto.setCatalogName(catalogName);
-        queryMetadataInfoDto.setDatabaseName(databaseName);
-        queryMetadataInfoDto.setTableName(tableName);
+        QueryMetadataDto queryMetadataDto = new QueryMetadataDto();
+        queryMetadataDto.setCatalogName(catalogName);
+        queryMetadataDto.setDatabaseName(databaseName);
+        queryMetadataDto.setTableName(tableName);
 
         String response =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(METADATA_PATH + "/queryManifestInfo")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(queryMetadataInfoDto))
+                                        .content(ObjectMapperUtils.toJSON(queryMetadataDto))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -145,16 +145,16 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     @Test
     public void testGetDataFileInfo() throws Exception {
-        QueryMetadataInfoDto queryMetadataInfoDto = new QueryMetadataInfoDto();
-        queryMetadataInfoDto.setCatalogName(catalogName);
-        queryMetadataInfoDto.setDatabaseName(databaseName);
-        queryMetadataInfoDto.setTableName(tableName);
+        QueryMetadataDto queryMetadataDto = new QueryMetadataDto();
+        queryMetadataDto.setCatalogName(catalogName);
+        queryMetadataDto.setDatabaseName(databaseName);
+        queryMetadataDto.setTableName(tableName);
 
         String response =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(METADATA_PATH + "/queryDataFileInfo")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(queryMetadataInfoDto))
+                                        .content(ObjectMapperUtils.toJSON(queryMetadataDto))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -169,16 +169,16 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     @Test
     public void testGetSnapshotInfo() throws Exception {
-        QueryMetadataInfoDto queryMetadataInfoDto = new QueryMetadataInfoDto();
-        queryMetadataInfoDto.setCatalogName(catalogName);
-        queryMetadataInfoDto.setDatabaseName(databaseName);
-        queryMetadataInfoDto.setTableName(tableName);
+        QueryMetadataDto queryMetadataDto = new QueryMetadataDto();
+        queryMetadataDto.setCatalogName(catalogName);
+        queryMetadataDto.setDatabaseName(databaseName);
+        queryMetadataDto.setTableName(tableName);
 
         String response =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(METADATA_PATH + "/querySnapshotInfo")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(queryMetadataInfoDto))
+                                        .content(ObjectMapperUtils.toJSON(queryMetadataDto))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())

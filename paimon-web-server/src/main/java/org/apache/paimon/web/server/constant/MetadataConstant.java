@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.constant;
 
-/** metadata constant. */
+/** Metadata constant. */
 public class MetadataConstant {
     public static final String SNAPSHOTS = "snapshots";
     public static final String SCHEMAS = "schemas";

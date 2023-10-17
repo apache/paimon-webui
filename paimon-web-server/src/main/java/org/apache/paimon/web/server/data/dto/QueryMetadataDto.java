@@ -20,9 +20,9 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
-/** use for get table metadata. */
+/** DTO of query metadata is used for getting table metadata. */
 @Data
-public class QueryMetadataInfoDto {
+public class QueryMetadataDto {
     private String catalogName;
     private String databaseName;
     private String tableName;

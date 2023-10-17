@@ -20,7 +20,7 @@ package org.apache.paimon.web.server.data.model;
 
 import lombok.Data;
 
-/** table metadata fields model. */
+/** Model of metadata fields. */
 @Data
 public class MetadataFieldsModel {
     private int id;

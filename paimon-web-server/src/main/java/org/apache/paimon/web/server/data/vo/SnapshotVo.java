@@ -20,14 +20,14 @@ package org.apache.paimon.web.server.data.vo;
 
 import java.time.LocalDateTime;
 
-/** metadata snapshot return value. */
-public class SnapshotInfoVo {
+/** VO of metadata snapshot. */
+public class SnapshotVo {
     private final Long snapshotId;
     private final Long schemaId;
     private final Long commitIdentifier;
     private final LocalDateTime commitTime;
 
-    public SnapshotInfoVo(
+    public SnapshotVo(
             Long snapshotId, Long schemaId, Long commitIdentifier, LocalDateTime commitTime) {
         this.snapshotId = snapshotId;
         this.schemaId = schemaId;
@@ -82,8 +82,8 @@ public class SnapshotInfoVo {
             return this;
         }
 
-        public SnapshotInfoVo build() {
-            return new SnapshotInfoVo(snapshotId, schemaId, commitIdentifier, commitTime);
+        public SnapshotVo build() {
+            return new SnapshotVo(snapshotId, schemaId, commitIdentifier, commitTime);
         }
     }
 }

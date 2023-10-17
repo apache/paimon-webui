@@ -26,8 +26,8 @@ import javax.annotation.Nullable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** vo for getSchemaInfo. */
-public class SchemaInfoVo {
+/** VO of metadata schema. */
+public class SchemaVo {
 
     private final Long schemaId;
     private final List<MetadataFieldsModel> fields;
@@ -37,7 +37,7 @@ public class SchemaInfoVo {
     private final List<MetadataOptionModel> option;
     private final LocalDateTime updateTime;
 
-    public SchemaInfoVo(
+    public SchemaVo(
             Long schemaId,
             List<MetadataFieldsModel> fields,
             String partitionKeys,
@@ -82,7 +82,7 @@ public class SchemaInfoVo {
         return option;
     }
 
-    public static SchemaInfoVo.Builder builder() {
+    public static SchemaVo.Builder builder() {
         return new Builder();
     }
 
@@ -131,8 +131,8 @@ public class SchemaInfoVo {
             return this;
         }
 
-        public SchemaInfoVo build() {
-            return new SchemaInfoVo(
+        public SchemaVo build() {
+            return new SchemaVo(
                     schemaId, fields, partitionKeys, primaryKeys, comment, option, updateTime);
         }
     }

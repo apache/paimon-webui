@@ -18,46 +18,46 @@
 
 package org.apache.paimon.web.server.service;
 
-import org.apache.paimon.web.server.data.dto.QueryMetadataInfoDto;
-import org.apache.paimon.web.server.data.vo.DataFileInfoVo;
-import org.apache.paimon.web.server.data.vo.ManifestsInfoVo;
-import org.apache.paimon.web.server.data.vo.SchemaInfoVo;
-import org.apache.paimon.web.server.data.vo.SnapshotInfoVo;
+import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
+import org.apache.paimon.web.server.data.vo.DataFileVo;
+import org.apache.paimon.web.server.data.vo.ManifestsVo;
+import org.apache.paimon.web.server.data.vo.SchemaVo;
+import org.apache.paimon.web.server.data.vo.SnapshotVo;
 
 import java.util.List;
 
-/** metadata service. */
+/** Metadata service includes the service interfaces of metadata. */
 public interface MetadataService {
 
     /**
-     * Retrieve a list of Metadata schema info.
+     * Retrieves a list of Metadata schema.
      *
      * @param dto query metadata info
      * @return a list of DatabaseInfo objects
      */
-    List<SchemaInfoVo> getSchemaInfo(QueryMetadataInfoDto dto);
+    List<SchemaVo> getSchema(QueryMetadataDto dto);
 
     /**
-     * Retrieve a list of Metadata snapshot info.
+     * Retrieves a list of Metadata snapshot.
      *
      * @param dto query metadata info
      * @return a list of snapshot objects
      */
-    List<SnapshotInfoVo> getSnapshotInfo(QueryMetadataInfoDto dto);
+    List<SnapshotVo> getSnapshot(QueryMetadataDto dto);
 
     /**
-     * Retrieve a list of Metadata manifest info.
+     * Retrieves a list of Metadata manifest.
      *
      * @param dto query metadata info
      * @return a list of manifest info objects
      */
-    List<ManifestsInfoVo> getManifestInfo(QueryMetadataInfoDto dto);
+    List<ManifestsVo> getManifest(QueryMetadataDto dto);
 
     /**
-     * Retrieve a list of Metadata data file info.
+     * Retrieves a list of Metadata data file.
      *
      * @param dto query metadata info
      * @return a list of data file objects
      */
-    List<DataFileInfoVo> getDataFileInfo(QueryMetadataInfoDto dto);
+    List<DataFileVo> getDataFile(QueryMetadataDto dto);
 }

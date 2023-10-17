@@ -18,15 +18,15 @@
 
 package org.apache.paimon.web.server.data.vo;
 
-/** metadata data file return value. */
-public class DataFileInfoVo {
+/** VO of metadata data file. */
+public class DataFileVo {
 
     private final String partition;
-    private final Long bucket;
+    private final long bucket;
     private final String filePath;
     private final String fileFormat;
 
-    public DataFileInfoVo(String partition, Long bucket, String filePath, String fileFormat) {
+    public DataFileVo(String partition, long bucket, String filePath, String fileFormat) {
         this.partition = partition;
         this.bucket = bucket;
         this.filePath = filePath;
@@ -37,7 +37,7 @@ public class DataFileInfoVo {
         return partition;
     }
 
-    public Long getBucket() {
+    public long getBucket() {
         return bucket;
     }
 
@@ -56,7 +56,7 @@ public class DataFileInfoVo {
     /** DataFileInfoVo Builder. */
     public static class Builder {
         private String partition;
-        private Long bucket;
+        private long bucket;
         private String filePath;
         private String fileFormat;
 
@@ -65,7 +65,7 @@ public class DataFileInfoVo {
             return this;
         }
 
-        public Builder setBucket(Long bucket) {
+        public Builder setBucket(long bucket) {
             this.bucket = bucket;
             return this;
         }
@@ -80,8 +80,8 @@ public class DataFileInfoVo {
             return this;
         }
 
-        public DataFileInfoVo builder() {
-            return new DataFileInfoVo(partition, bucket, filePath, fileFormat);
+        public DataFileVo build() {
+            return new DataFileVo(partition, bucket, filePath, fileFormat);
         }
     }
 }

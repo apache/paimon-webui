@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** table metadata options model. */
+/** Model of metadata options. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

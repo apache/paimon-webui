@@ -25,14 +25,14 @@ import org.apache.paimon.table.Table;
 import org.apache.paimon.table.source.ReadBuilder;
 import org.apache.paimon.web.api.table.TableManager;
 import org.apache.paimon.web.server.constant.MetadataConstant;
-import org.apache.paimon.web.server.data.dto.QueryMetadataInfoDto;
+import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
 import org.apache.paimon.web.server.data.model.MetadataOptionModel;
-import org.apache.paimon.web.server.data.vo.DataFileInfoVo;
-import org.apache.paimon.web.server.data.vo.ManifestsInfoVo;
-import org.apache.paimon.web.server.data.vo.SchemaInfoVo;
-import org.apache.paimon.web.server.data.vo.SnapshotInfoVo;
+import org.apache.paimon.web.server.data.vo.DataFileVo;
+import org.apache.paimon.web.server.data.vo.ManifestsVo;
+import org.apache.paimon.web.server.data.vo.SchemaVo;
+import org.apache.paimon.web.server.data.vo.SnapshotVo;
 import org.apache.paimon.web.server.service.CatalogService;
 import org.apache.paimon.web.server.service.MetadataService;
 import org.apache.paimon.web.server.util.PaimonServiceUtils;
@@ -48,7 +48,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/** metadata service impl. */
+/** The implementation of {@link MetadataService} */
 @Service
 @Slf4j
 public class MetadataServiceImpl implements MetadataService {
@@ -62,16 +62,16 @@ public class MetadataServiceImpl implements MetadataService {
     private RecordReader<InternalRow> reader;
 
     @Override
-    public List<SchemaInfoVo> getSchemaInfo(QueryMetadataInfoDto dto) {
+    public List<SchemaVo> getSchema(QueryMetadataDto dto) {
 
         initEnvironment(dto, MetadataConstant.SCHEMAS);
 
-        List<SchemaInfoVo> result = new LinkedList<>();
+        List<SchemaVo> result = new LinkedList<>();
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        SchemaInfoVo schemaInfoVo =
-                                SchemaInfoVo.builder()
+                        SchemaVo schemaVo =
+                                SchemaVo.builder()
                                         .setSchemaId(internalRow.getLong(0))
                                         .setFields(
                                                 new Gson()
@@ -88,7 +88,7 @@ public class MetadataServiceImpl implements MetadataService {
                                         .setUpdateTime(
                                                 internalRow.getTimestamp(6, 3).toLocalDateTime())
                                         .build();
-                        result.add(schemaInfoVo);
+                        result.add(schemaVo);
                     });
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -98,17 +98,17 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<SnapshotInfoVo> getSnapshotInfo(QueryMetadataInfoDto dto) {
+    public List<SnapshotVo> getSnapshot(QueryMetadataDto dto) {
 
         initEnvironment(dto, MetadataConstant.SNAPSHOTS);
 
-        List<SnapshotInfoVo> result = new LinkedList<>();
+        List<SnapshotVo> result = new LinkedList<>();
 
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        SnapshotInfoVo build =
-                                SnapshotInfoVo.builder()
+                        SnapshotVo build =
+                                SnapshotVo.builder()
                                         .setSnapshotId(internalRow.getLong(0))
                                         .setSnapshotId(internalRow.getLong(1))
                                         .setCommitIdentifier(internalRow.getLong(3))
@@ -125,21 +125,21 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<ManifestsInfoVo> getManifestInfo(QueryMetadataInfoDto dto) {
+    public List<ManifestsVo> getManifest(QueryMetadataDto dto) {
         initEnvironment(dto, MetadataConstant.MANIFESTS);
 
-        List<ManifestsInfoVo> result = new LinkedList<>();
+        List<ManifestsVo> result = new LinkedList<>();
 
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        ManifestsInfoVo manifestsInfoVo =
-                                ManifestsInfoVo.builder()
+                        ManifestsVo manifestsVo =
+                                ManifestsVo.builder()
                                         .setFileName(internalRow.getString(0).toString())
                                         .setFileSize(internalRow.getLong(1))
                                         .setNumAddedFiles(internalRow.getLong(2))
                                         .build();
-                        result.add(manifestsInfoVo);
+                        result.add(manifestsVo);
                     });
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -149,23 +149,23 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<DataFileInfoVo> getDataFileInfo(QueryMetadataInfoDto dto) {
+    public List<DataFileVo> getDataFile(QueryMetadataDto dto) {
 
         initEnvironment(dto, MetadataConstant.FILES);
 
-        List<DataFileInfoVo> result = new LinkedList<>();
+        List<DataFileVo> result = new LinkedList<>();
 
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        DataFileInfoVo dataFileInfoVo =
-                                DataFileInfoVo.builder()
+                        DataFileVo dataFileVo =
+                                DataFileVo.builder()
                                         .setPartition(internalRow.getString(0).toString())
                                         .setBucket(internalRow.getLong(1))
                                         .setFilePath(internalRow.getString(2).toString())
                                         .setFileFormat(internalRow.getString(3).toString())
-                                        .builder();
-                        result.add(dataFileInfoVo);
+                                        .build();
+                        result.add(dataFileVo);
                     });
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -173,7 +173,7 @@ public class MetadataServiceImpl implements MetadataService {
         return result;
     }
 
-    private void initEnvironment(QueryMetadataInfoDto dto, String metadataConstantType) {
+    private void initEnvironment(QueryMetadataDto dto, String metadataConstantType) {
         dto.setTableName(
                 String.format(
                         MetadataConstant.METADATA_TABLE_FORMAT,
