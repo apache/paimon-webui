@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.flink.submit;
 
+import org.apache.paimon.web.flink.constant.Constants;
 import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 import org.apache.paimon.web.flink.submit.result.SubmitResult;
 
@@ -78,10 +79,9 @@ public abstract class FlinkSubmit {
 
         if (StringUtils.isNotBlank(request.getCheckpointPath())) {
             // enable Checkpoint
-            configuration.setString("execution.checkpointing.enabled", "true");
-            // Set the Checkpoint interval to 10 minute
+            configuration.setString(Constants.EXECUTION_CHECKPOINTING_ENABLED, "true");
             configuration.setString(
-                    "execution.checkpointing.interval", request.getCheckpointInterval());
+                    Constants.EXECUTION_CHECKPOINTING_INTERVAL, request.getCheckpointInterval());
             configuration.setString(
                     CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(), request.getCheckpointPath());
         }

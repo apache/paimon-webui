@@ -28,4 +28,6 @@ public class Constants {
     public static final String DEFAULT_MEMORY_SIZE = "1g";
     public static final int MAX_ATTEMPTS = 30;
     public static final int DELAY_MILLIS = 1000;
+    public static final String EXECUTION_CHECKPOINTING_ENABLED = "execution.checkpointing.enabled";
+    public static final String EXECUTION_CHECKPOINTING_INTERVAL = "execution.checkpointing.interval";
 }
