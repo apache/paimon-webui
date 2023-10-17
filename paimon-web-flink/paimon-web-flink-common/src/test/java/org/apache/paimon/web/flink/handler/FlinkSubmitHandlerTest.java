@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.submit;
+package org.apache.paimon.web.flink.handler;
 
 import org.apache.paimon.web.flink.TestBase;
 import org.apache.paimon.web.flink.common.ExecutionMode;
@@ -45,7 +45,7 @@ public class FlinkSubmitHandlerTest extends TestBase {
 
     @Test
     public void testSubmitJob() {
-        FlinkJobResult result = handler.handle(handleStatement);
+        FlinkJobResult result = handler.handleExecuteSql(handleStatement);
         System.out.println(result.getJobId());
         System.out.println(result.getStatus());
         assertThat(result).isNotNull();

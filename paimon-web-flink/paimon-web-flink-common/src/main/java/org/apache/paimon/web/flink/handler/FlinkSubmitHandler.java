@@ -65,7 +65,7 @@ public class FlinkSubmitHandler {
     private Executor executor;
     private final FlinkJobConfiguration jobConfig;
 
-    public FlinkSubmitHandler(FlinkJobConfiguration jobConfig) {
+    private FlinkSubmitHandler(FlinkJobConfiguration jobConfig) {
         this.jobConfig = jobConfig;
     }
 
@@ -77,7 +77,7 @@ public class FlinkSubmitHandler {
         executor = getExecutor();
     }
 
-    public FlinkJobResult handle(String sql) {
+    public FlinkJobResult handleExecuteSql(String sql) {
         if (executor == null) {
             init();
         }
