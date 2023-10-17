@@ -16,11 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink.common;
+package org.apache.paimon.web.flink.constant;
 
-/** The mode for specifying the execution context. */
-public enum ContextMode {
-    LOCAL,
-    REMOTE,
-    APPLICATION
+/** Constants. */
+public class Constants {
+
+    public static final String YARN_SITE_CONF = "yarn-site.xml";
+    public static final String CORE_SITE_CONF = "core-site.xml";
+    public static final String HDFS_SITE_CONF = "hdfs-site.xml";
+    public static final String FS_HDFS_HADOOP_CONF = "fs.hdfs.hadoopconf";
+    public static final String DEFAULT_MEMORY_SIZE = "1g";
+    public static final int MAX_ATTEMPTS = 30;
+    public static final int DELAY_MILLIS = 1000;
 }

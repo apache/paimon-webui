@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.paimon.web.server.constant;
+package org.apache.paimon.web.flink.job;
 
 /** Possible states of a job once it has been accepted by the dispatcher. */
 public enum JobStatus {

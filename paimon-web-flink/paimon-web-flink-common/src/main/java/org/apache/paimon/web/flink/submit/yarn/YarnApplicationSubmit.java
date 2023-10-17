@@ -19,6 +19,7 @@
 
 package org.apache.paimon.web.flink.submit.yarn;
 
+import org.apache.paimon.web.flink.constant.Constants;
 import org.apache.paimon.web.flink.submit.FlinkSubmit;
 import org.apache.paimon.web.flink.submit.request.SubmitRequest;
 import org.apache.paimon.web.flink.submit.result.SubmitResult;
@@ -62,12 +63,6 @@ public class YarnApplicationSubmit extends FlinkSubmit {
 
     protected YarnClient yarnClient;
 
-    private static final String DEFAULT_MEMORY_SIZE = "1g";
-
-    private static final int MAX_ATTEMPTS = 30;
-
-    private static final int DELAY_MILLIS = 1000;
-
     public YarnApplicationSubmit(SubmitRequest request) {
         super(request);
     }
@@ -77,9 +72,12 @@ public class YarnApplicationSubmit extends FlinkSubmit {
         YarnLogConfigUtil.setLogConfigFileInConfig(configuration, request.getFlinkConfigPath());
         yarnConfiguration = new YarnConfiguration();
         String hadoopConfigPath = request.getHadoopConfigPath();
-        yarnConfiguration.addResource(new Path(URI.create(hadoopConfigPath + "/yarn-site.xml")));
-        yarnConfiguration.addResource(new Path(URI.create(hadoopConfigPath + "/core-site.xml")));
-        yarnConfiguration.addResource(new Path(URI.create(hadoopConfigPath + "/hdfs-site.xml")));
+        yarnConfiguration.addResource(
+                new Path(URI.create(hadoopConfigPath + "/" + Constants.YARN_SITE_CONF)));
+        yarnConfiguration.addResource(
+                new Path(URI.create(hadoopConfigPath + "/" + Constants.CORE_SITE_CONF)));
+        yarnConfiguration.addResource(
+                new Path(URI.create(hadoopConfigPath + "/" + Constants.HDFS_SITE_CONF)));
         yarnClient = YarnClient.createYarnClient();
         yarnClient.init(yarnConfiguration);
         yarnClient.start();
@@ -88,7 +86,7 @@ public class YarnApplicationSubmit extends FlinkSubmit {
     @Override
     protected void buildPlatformSpecificConf() {
         String hadoopConfigPath = request.getHadoopConfigPath();
-        configuration.setString("fs.hdfs.hadoopconf", hadoopConfigPath);
+        configuration.setString(Constants.FS_HDFS_HADOOP_CONF, hadoopConfigPath);
     }
 
     @Override
@@ -113,14 +111,14 @@ public class YarnApplicationSubmit extends FlinkSubmit {
 
         String jobManagerMemorySize =
                 StringUtils.isBlank(request.getJobManagerMemory())
-                        ? DEFAULT_MEMORY_SIZE
+                        ? Constants.DEFAULT_MEMORY_SIZE
                         : request.getJobManagerMemory();
         clusterSpecificationBuilder.setMasterMemoryMB(
                 MemorySize.parse(jobManagerMemorySize).getMebiBytes());
 
         String taskManagerMemorySize =
                 StringUtils.isBlank(request.getTaskManagerMemory())
-                        ? DEFAULT_MEMORY_SIZE
+                        ? Constants.DEFAULT_MEMORY_SIZE
                         : request.getTaskManagerMemory();
         clusterSpecificationBuilder.setTaskManagerMemoryMB(
                 MemorySize.parse(taskManagerMemorySize).getMebiBytes());
@@ -176,8 +174,8 @@ public class YarnApplicationSubmit extends FlinkSubmit {
             throws Exception {
         int attempt = 0;
         Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
-        while (jobStatusMessages.size() == 0 && attempt < MAX_ATTEMPTS) {
-            Thread.sleep(DELAY_MILLIS);
+        while (jobStatusMessages.size() == 0 && attempt < Constants.MAX_ATTEMPTS) {
+            Thread.sleep(Constants.DELAY_MILLIS);
             jobStatusMessages = clusterClient.listJobs().get();
             attempt++;
             if (jobStatusMessages.size() > 0) {
