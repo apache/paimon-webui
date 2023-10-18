@@ -49,7 +49,10 @@ import java.util.Properties;
 public class MainApp {
 
     private static final Logger logger = LoggerFactory.getLogger(MainApp.class);
-
+    /**
+     * default Checkpoint interval.
+     */
+    private static final String CHECKPOINT_INTERVAL = "600000";
     public static void main(String[] args) {
         InputStream inputStream =
                 MainApp.class.getClassLoader().getResourceAsStream("application.properties");
@@ -76,7 +79,7 @@ public class MainApp {
                 // Set the default Checkpoint interval to 10 minute
                 String interval = taskConfig.get("checkpoint_interval");
                 if (StringUtils.isBlank(interval)) {
-                    interval = "600000";
+                    interval = CHECKPOINT_INTERVAL;
                 }
                 configMap.put("execution.checkpointing.interval", interval);
                 configMap.put(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(), checkpointPath);
