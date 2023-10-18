@@ -18,6 +18,6 @@ under the License. */
 export default {
   path: '/metadata',
   name: 'metadata',
-  meta: { title: '元数据查询' },
+  meta: { title: 'Metadata' },
   component: () => import('@/views/metadata')
 }
