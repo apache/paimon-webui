@@ -18,9 +18,11 @@ under the License. */
 import layout from './modules/layout'
 import login from './modules/login'
 import playground from './modules/playground'
+import metadata from './modules/metadata'
 
 export default {
   login,
   layout,
-  playground
+  playground,
+  metadata
 }

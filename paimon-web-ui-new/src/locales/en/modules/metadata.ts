@@ -15,24 +15,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss'
-import MenuTree from "./components/menu-tree"
-import Breadcrumb from './components/breadcrumb'
-import Tabs from './components/metadata-tabs'
-
-export default defineComponent({
-  name: 'MetadataPage',
-  setup() { },
-  render() {
-    return (
-      <div class={styles.container}>
-        <MenuTree />
-        <div class={styles.content}>
-          <Breadcrumb />
-          <Tabs />
-          <router-view />
-        </div>
-      </div>
-    );
-  },
-});
+export default {
+  table_info: 'Table',
+  option_info: 'Option',
+  schema_info: 'Schema',
+  snapshot_file: 'Snapshot',
+  manifests_file: 'Manifests',
+  data_file: 'Data File'
+}

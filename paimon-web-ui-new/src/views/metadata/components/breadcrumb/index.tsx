@@ -15,24 +15,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss'
-import MenuTree from "./components/menu-tree"
-import Breadcrumb from './components/breadcrumb'
-import Tabs from './components/metadata-tabs'
+import { Folder } from '@vicons/ionicons5'
 
 export default defineComponent({
-  name: 'MetadataPage',
+  name: 'MetaDataBreadcrumb',
   setup() { },
   render() {
     return (
-      <div class={styles.container}>
-        <MenuTree />
-        <div class={styles.content}>
-          <Breadcrumb />
-          <Tabs />
-          <router-view />
-        </div>
-      </div>
+      <n-breadcrumb>
+        <n-breadcrumb-item>
+          <n-icon component={Folder} /> 北京总行</n-breadcrumb-item>
+        <n-breadcrumb-item>
+          <n-icon component={Folder} /> 天津分行</n-breadcrumb-item>
+        <n-breadcrumb-item>
+          <n-icon component={Folder} /> 平山道支行</n-breadcrumb-item>
+      </n-breadcrumb>
     );
-  },
+  }
 });

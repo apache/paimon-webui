@@ -16,8 +16,10 @@ specific language governing permissions and limitations
 under the License. */
 
 .container {
-  width: 100%;
+  width: 20%;
   height: 100%;
+  box-sizing: border-box;
+  background-color: var(--n-color);
 
   .card {
     height: 100%;

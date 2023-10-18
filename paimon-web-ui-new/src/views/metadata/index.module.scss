@@ -22,7 +22,11 @@ under the License. */
 
   .content {
     display: flex;
+    flex-direction: column;
+    
     width: calc(100% - 60px);
     height: 100%;
+
+    padding: 14px 20px;
   }
 }
