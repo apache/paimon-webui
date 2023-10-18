@@ -15,24 +15,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/playground',
-  name: 'playground',
-  meta: { title: 'Playground' },
-  redirect: { name: 'playground-query' },
-  component: () => import('@/views/playground'),
-  children: [
-    {
-      path: '/playground/query',
-      name: 'playground-query',
-      meta: { title: 'Query' },
-      component: () => import('@/views/playground/components/query')
-    },
-    {
-      path: '/playground/workbench',
-      name: 'playground-workbench',
-      meta: { title: 'Workbench' },
-      component: () => import('@/views/playground/components/workbench')
-    },
-  ]
-}
+import styles from './index.module.scss'
+import MenuTree from "./components/menu-tree"
+
+export default defineComponent({
+  name: 'MetadataPage',
+  setup() { },
+  render() {
+    return (
+      <div class={styles.container}>
+        <MenuTree />
+        <div class={styles.content}>
+          <router-view />
+        </div>
+      </div>
+    );
+  },
+});
