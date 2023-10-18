@@ -36,7 +36,7 @@ under the License.
         <module>paimon-web-flink-common</module>
         <module>paimon-web-flink-app-1.17</module>
         <module>paimon-web-flink-1.17</module>
-        <module>Paimon-web-flink-1.16</module>
+        <module>paimon-web-flink-1.16</module>
         <module>paimon-web-flink-app-1.16</module>
     </modules>
 
