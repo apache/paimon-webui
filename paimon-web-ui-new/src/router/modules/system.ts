@@ -16,23 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  path: '/playground',
-  name: 'playground',
-  meta: { title: 'Playground' },
-  redirect: { name: 'playground-query' },
-  component: () => import('@/views/playground'),
-  children: [
-    {
-      path: '/playground/query',
-      name: 'playground-query',
-      meta: { title: 'Query' },
-      component: () => import('@/views/playground/components/query')
-    },
-    {
-      path: '/playground/workbench',
-      name: 'playground-workbench',
-      meta: { title: 'Workbench' },
-      component: () => import('@/views/playground/components/workbench')
-    },
-  ]
+  path: '/system',
+  name: 'system',
+  meta: { title: 'System' },
+  component: () => import('@/layouts/content'),
 }

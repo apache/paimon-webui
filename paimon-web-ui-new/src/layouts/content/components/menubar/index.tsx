@@ -15,26 +15,38 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { RouterLink } from "vue-router"
+
 export default defineComponent({
   name: 'MenuBar',
   setup() {
     const { t } = useLocaleHooks()
 
+    const renderLabel = (label: string, link: string) => {
+      return h(
+        RouterLink,
+        {
+          to: {name: link}
+        },
+        { default: () => label }
+      )
+    }
+
     const menuOptions = computed(() => ([
       {
-        label: t('layout.playground'),
+        label: () => renderLabel(t('layout.playground'), 'playground'),
         key: 'playground',
       },
       {
-        label: t('layout.metadata'),
+        label: () => renderLabel(t('layout.metadata'), 'metadata'),
         key: 'metadata',
       },
       {
-        label: t('layout.cdc_ingestion'),
+        label: () => renderLabel(t('layout.cdc_ingestion'), 'cdc_ingestion'),
         key: 'cdc_ingestion',
       },
       {
-        label: t('layout.system'),
+        label: () => renderLabel(t('layout.system'), 'system'),
         key: 'system',
       },
     ]))
