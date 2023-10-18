@@ -22,7 +22,7 @@ package org.apache.paimon.web.flink.common;
 public enum SubmitMode {
     LOCAL(0, "local"),
     STANDALONE(1, "standalone"),
-    YARN_PRE_JOB(2, "yarn-pre-job"),
+    YARN_PER_JOB(2, "yarn-per-job"),
     YARN_SESSION(3, "yarn-session"),
     YARN_APPLICATION(4, "yarn-application"),
     KUBERNETES_SESSION(5, "kubernetes-session"),

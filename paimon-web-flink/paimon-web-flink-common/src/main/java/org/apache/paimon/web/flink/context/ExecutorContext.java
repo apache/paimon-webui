@@ -18,12 +18,11 @@
 
 package org.apache.paimon.web.flink.context;
 
-import org.apache.paimon.web.flink.common.ExecutionMode;
-
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.paimon.web.flink.common.ExecutionMode;
 
 /** The ExecutorContext class provides the context for creating an Executor. */
 public abstract class ExecutorContext {

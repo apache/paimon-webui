@@ -91,7 +91,7 @@ public class FlinkSubmitHandler {
 
     private FlinkJobResult handleApplicationMode(String[] statements) {
         FlinkJobResult result = new FlinkJobResult();
-        SubmitRequest request = buildSubmitResult();
+        SubmitRequest request = buildSubmitRequest();
 
         SubmitResult submitResult = Submitter.submit(request);
         result.setJobId(submitResult.getAppId());
@@ -188,7 +188,7 @@ public class FlinkSubmitHandler {
         }
     }
 
-    private SubmitRequest buildSubmitResult() {
+    private SubmitRequest buildSubmitRequest() {
         SubmitRequest.Builder builder = SubmitRequest.builder();
 
         Optional.ofNullable(jobConfig.getFlinkConfigPath()).ifPresent(builder::flinkConfigPath);
@@ -256,7 +256,7 @@ public class FlinkSubmitHandler {
                 return ContextMode.LOCAL;
             case STANDALONE:
                 return ContextMode.REMOTE;
-            case YARN_PRE_JOB:
+            case YARN_PER_JOB:
             case YARN_SESSION:
             case YARN_APPLICATION:
             case KUBERNETES_SESSION:

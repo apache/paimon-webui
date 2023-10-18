@@ -20,7 +20,7 @@ public class Submitter {
         Preconditions.checkNotNull(mode, "execution target can not be null.");
 
         switch (mode) {
-            case YARN_PRE_JOB:
+            case YARN_PER_JOB:
                 // TODO
                 break;
             case YARN_SESSION:
