@@ -1,0 +1,41 @@
+package org.apache.paimon.web.flink.submit;
+
+import org.apache.paimon.web.flink.common.SubmitMode;
+import org.apache.paimon.web.flink.submit.request.SubmitRequest;
+import org.apache.paimon.web.flink.submit.result.SubmitResult;
+import org.apache.paimon.web.flink.submit.yarn.YarnApplicationSubmitFactory;
+
+import com.google.common.base.Preconditions;
+
+/** This class provides a method to submit a Flink job based on the given SubmitRequest. */
+public class Submitter {
+
+    public static SubmitResult submit(SubmitRequest request) {
+        FlinkSubmitFactory flinkSubmitFactory =
+                submitRequest -> {
+                    throw new UnsupportedOperationException("Factory not supported.");
+                };
+
+        SubmitMode mode = SubmitMode.of(request.getExecutionTarget());
+        Preconditions.checkNotNull(mode, "execution target can not be null.");
+
+        switch (mode) {
+            case YARN_PER_JOB:
+                break;
+            case YARN_SESSION:
+                break;
+            case YARN_APPLICATION:
+                flinkSubmitFactory = YarnApplicationSubmitFactory.createFactory();
+                break;
+            case KUBERNETES_SESSION:
+                break;
+            case KUBERNETES_APPLICATION:
+                break;
+            default:
+                throw new UnsupportedOperationException(
+                        "Unsupported execution target: " + mode.getName());
+        }
+
+        return flinkSubmitFactory.createSubmit(request).submit();
+    }
+}
