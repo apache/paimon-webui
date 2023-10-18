@@ -21,7 +21,6 @@ package org.apache.paimon.web.flink.handler;
 import org.apache.paimon.web.flink.TestBase;
 import org.apache.paimon.web.flink.common.ExecutionMode;
 import org.apache.paimon.web.flink.config.FlinkJobConfiguration;
-import org.apache.paimon.web.flink.handler.FlinkSubmitHandler;
 import org.apache.paimon.web.flink.job.FlinkJobResult;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** The test of {@link FlinkSubmitHandler}. */
+/** The test of {@link org.apache.paimon.web.flink.handler.FlinkSubmitHandler}. */
 public class FlinkSubmitHandlerTest extends TestBase {
 
     private FlinkSubmitHandler handler;

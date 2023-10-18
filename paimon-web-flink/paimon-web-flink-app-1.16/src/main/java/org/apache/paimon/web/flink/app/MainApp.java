@@ -18,12 +18,6 @@
 
 package org.apache.paimon.web.flink.app;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.api.common.RuntimeExecutionMode;
-import org.apache.flink.configuration.CheckpointingOptions;
-import org.apache.flink.configuration.Configuration;
 import org.apache.paimon.web.flink.common.ExecutionMode;
 import org.apache.paimon.web.flink.config.DBConfig;
 import org.apache.paimon.web.flink.config.FlinkJobConfiguration;
@@ -34,6 +28,13 @@ import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
 import org.apache.paimon.web.flink.operation.SqlCategory;
 import org.apache.paimon.web.flink.parser.StatementParser;
 import org.apache.paimon.web.flink.utils.FlinkJobConfUtil;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.api.common.RuntimeExecutionMode;
+import org.apache.flink.configuration.CheckpointingOptions;
+import org.apache.flink.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
