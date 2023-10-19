@@ -71,3 +71,6 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# paimon-web-ui-new
+paimon-web-ui-new/auto-imports.d.ts
