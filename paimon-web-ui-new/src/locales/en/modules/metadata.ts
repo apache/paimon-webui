@@ -19,7 +19,7 @@ export default {
   table_info: 'Table',
   option_info: 'Option',
   schema_info: 'Schema',
-  snapshot_file: 'Snapshot',
-  manifests_file: 'Manifests',
+  snapshot_file: 'Snapshot File',
+  manifests_file: 'Manifest File',
   data_file: 'Data File'
 }

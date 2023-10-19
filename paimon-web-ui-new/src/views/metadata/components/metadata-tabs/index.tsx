@@ -55,7 +55,7 @@ export default defineComponent({
             Snapshot 文件
           </n-tab-pane>
           <n-tab-pane name='manifest' tab={this.t('metadata.manifests_file')}>
-            Manifests 文件
+            Manifest 文件
           </n-tab-pane>
           <n-tab-pane name='datafile' tab={this.t('metadata.data_file')}>
             数据文件

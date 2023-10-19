@@ -20,6 +20,6 @@ export default {
   option_info: 'Option 信息',
   schema_info: 'Schema 信息',
   snapshot_file: 'Snapshot 文件',
-  manifests_file: 'Manifests 文件',
+  manifests_file: 'Manifest 文件',
   data_file: '数据文件'
 }

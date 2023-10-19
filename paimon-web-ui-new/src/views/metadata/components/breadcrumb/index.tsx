@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Folder } from '@vicons/ionicons5'
+import { Folder, FileTray } from '@vicons/ionicons5'
 
 export default defineComponent({
   name: 'MetaDataBreadcrumb',
@@ -24,11 +24,11 @@ export default defineComponent({
     return (
       <n-breadcrumb>
         <n-breadcrumb-item>
-          <n-icon component={Folder} /> 北京总行</n-breadcrumb-item>
+          <n-icon component={Folder} /> paimon2</n-breadcrumb-item>
         <n-breadcrumb-item>
-          <n-icon component={Folder} /> 天津分行</n-breadcrumb-item>
+          <n-icon component={Folder} /> user</n-breadcrumb-item>
         <n-breadcrumb-item>
-          <n-icon component={Folder} /> 平山道支行</n-breadcrumb-item>
+          <n-icon component={FileTray} /> user_table</n-breadcrumb-item>
       </n-breadcrumb>
     );
   }
