@@ -19,6 +19,8 @@ import type { TabsInst } from 'naive-ui'
 
 import { useConfigStore } from '@/store/config'
 
+import MetaDataSchema from '../schema';
+
 import styles from './index.module.scss'
 
 
@@ -49,7 +51,7 @@ export default defineComponent({
             Option 信息
           </n-tab-pane>
           <n-tab-pane name='schema' tab={this.t('metadata.schema_info')}>
-            Schema 信息
+            <MetaDataSchema />
           </n-tab-pane>
           <n-tab-pane name='snapshot' tab={this.t('metadata.snapshot_file')}>
             Snapshot 文件
