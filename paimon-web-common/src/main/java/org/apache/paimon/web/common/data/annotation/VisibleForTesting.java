@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.annotation;
+package org.apache.paimon.web.common.data.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

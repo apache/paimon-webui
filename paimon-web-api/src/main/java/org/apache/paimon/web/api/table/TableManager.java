@@ -48,7 +48,7 @@ import org.apache.paimon.web.api.common.CatalogProperties;
 import org.apache.paimon.web.api.common.MetastoreType;
 import org.apache.paimon.web.api.common.OperatorKind;
 import org.apache.paimon.web.api.common.WriteMode;
-import org.apache.paimon.web.common.annotation.VisibleForTesting;
+import org.apache.paimon.web.common.data.annotation.VisibleForTesting;
 import org.apache.paimon.web.common.utils.ParameterValidationUtil;
 
 import com.google.common.collect.ImmutableList;

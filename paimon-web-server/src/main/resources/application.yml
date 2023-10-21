@@ -15,14 +15,14 @@
 
 # Paimon Web Service Port
 server:
-  port: 10088
+  port: 9999
 
 spring:
   # Paimon Web Service Name
   application:
     name: Paimon-Web-UI
   profiles:
-    active: dev-mysql
+    active: dev-h2
   messages:
     basename: i18n/messages
     encoding: UTF-8

@@ -28,6 +28,8 @@ under the License.
         <module>paimon-web-common</module>
         <module>paimon-web-gateway</module>
         <module>paimon-web-api</module>
+        <module>paimon-web-flink</module>
+        <module>paimon-web-spark</module>
     </modules>
 
     <parent>
