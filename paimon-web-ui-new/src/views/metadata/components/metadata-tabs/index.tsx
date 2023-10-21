@@ -43,7 +43,7 @@ export default defineComponent({
   render() {
     return (
       <div class={styles.tabs}>
-        <n-tabs ref="tabsInstRef" type='bar' animated>
+        <n-tabs ref="tabsInstRef" type='bar' animated default-value="table">
           <n-tab-pane name='table' tab={this.t('metadata.table_info')}>
             Table 信息
           </n-tab-pane>

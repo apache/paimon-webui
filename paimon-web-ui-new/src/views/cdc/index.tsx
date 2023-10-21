@@ -15,9 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/system',
-  name: 'system',
-  meta: { title: 'System' },
-  component: () => import('@/views/system'),
-}
+import styles from './index.module.scss';
+
+export default defineComponent({
+  name: 'CDCPage',
+  setup() {
+    return {}
+  },
+  render() {
+    return (
+      <div class={styles.container}>CDCPage</div>
+    )
+  }
+})

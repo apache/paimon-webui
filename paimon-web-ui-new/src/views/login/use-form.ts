@@ -15,6 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { onLogin } from '@/api'
 import type { FormValidationError } from 'naive-ui'
 import type { Router } from 'vue-router'
 

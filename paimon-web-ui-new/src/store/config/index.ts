@@ -16,10 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import { LANGUAGES } from "@/locales"
-
-type Theme = 'dark' | 'light'
-type NavBar = 'playground' | 'cdc' | 'system' | 'settings'
-type Menu = 'Query' | 'Workbench'
+import type { Menu, NavBar, Theme } from "./type"
 
 export const useConfigStore = defineStore({
   id: 'config',
