@@ -20,6 +20,7 @@ import type { TabsInst } from 'naive-ui'
 import { useConfigStore } from '@/store/config'
 
 import MetaDataSchema from '../schema';
+import MetaDataTable from '../table';
 
 import styles from './index.module.scss'
 
@@ -45,7 +46,7 @@ export default defineComponent({
       <div class={styles.tabs}>
         <n-tabs ref="tabsInstRef" type='bar' animated>
           <n-tab-pane name='table' tab={this.t('metadata.table_info')}>
-            Table 信息
+            <MetaDataTable />
           </n-tab-pane>
           <n-tab-pane name='option' tab={this.t('metadata.option_info')}>
             Option 信息
