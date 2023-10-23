@@ -18,10 +18,14 @@
 
 package org.apache.paimon.web.server.data.dto;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 @Data
 public class CatalogDto {
+
+    private Integer id;
+
     private String catalogType;
 
     private String catalogName;
@@ -31,4 +35,6 @@ public class CatalogDto {
     private String hiveUri;
 
     private String hiveConfDir;
+
+    @TableLogic private boolean isDelete;
 }

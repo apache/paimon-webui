@@ -22,7 +22,7 @@ import org.apache.paimon.web.server.data.dto.LoginDto;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
-import org.apache.paimon.web.server.data.model.TableInfo;
+import org.apache.paimon.web.server.data.model.TableDto;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
@@ -136,8 +136,8 @@ public class ControllerTestBase {
                         "name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
         tableColumns.add(id);
         tableColumns.add(name);
-        TableInfo tableInfo =
-                TableInfo.builder()
+        TableDto tableDto =
+                TableDto.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
                         .tableName(tableName)
@@ -149,7 +149,7 @@ public class ControllerTestBase {
         mockMvc.perform(
                 MockMvcRequestBuilders.post(tablePath + "/create")
                         .cookie(cookie)
-                        .content(ObjectMapperUtils.toJSON(tableInfo))
+                        .content(ObjectMapperUtils.toJSON(tableDto))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));
     }

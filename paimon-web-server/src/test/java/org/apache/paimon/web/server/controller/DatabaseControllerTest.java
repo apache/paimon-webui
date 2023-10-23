@@ -18,7 +18,8 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.model.DatabaseInfo;
+import org.apache.paimon.web.server.data.dto.CreateDatabaseDto;
+import org.apache.paimon.web.server.data.dto.DropDatabaseDto;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
@@ -40,19 +41,23 @@ public class DatabaseControllerTest extends ControllerTestBase {
 
     private static final String databasePath = "/api/database";
 
+    private static final String databaseName = "test_db";
+
     private static final String catalogName = "paimon_catalog";
 
     @Test
     public void testCreateDatabase() throws Exception {
-        DatabaseInfo databaseInfo = new DatabaseInfo();
-        databaseInfo.setDatabaseName("test_db");
-        databaseInfo.setCatalogName(catalogName);
+        CreateDatabaseDto createDatabaseDto = new CreateDatabaseDto();
+        createDatabaseDto.setDatabaseName(databaseName);
+        createDatabaseDto.setCatalogName(catalogName);
+        createDatabaseDto.setCatalogId("1");
+        createDatabaseDto.setIgnoreIfExists(true);
 
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(databasePath + "/create")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(databaseInfo))
+                                        .content(ObjectMapperUtils.toJSON(createDatabaseDto))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -64,11 +69,27 @@ public class DatabaseControllerTest extends ControllerTestBase {
         R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
         assertEquals(200, r.getCode());
 
+        DropDatabaseDto dropDatabaseDto = new DropDatabaseDto();
+        dropDatabaseDto.setCatalogName(catalogName);
+        dropDatabaseDto.setCatalogId("1");
+        dropDatabaseDto.setIgnoreIfExists(true);
+        dropDatabaseDto.setCascade(true);
+
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(databasePath + "/drop/" + "test_db/" + catalogName)
-                        .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE));
+                        MockMvcRequestBuilders.post(databasePath + "/drop")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(dropDatabaseDto))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        R<Void> remove =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, remove.getCode());
     }
 
     @Test

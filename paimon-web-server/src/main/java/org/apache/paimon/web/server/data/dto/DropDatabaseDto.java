@@ -16,25 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-/** Database table model. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class DatabaseInfo {
+@Getter
+public class DropDatabaseDto extends DatabaseDto {
+    private boolean cascade;
 
-    private String databaseName;
-
-    private Integer catalogId;
-
-    private String catalogName;
-
-    private String description;
+    public void setCascade(boolean cascade) {
+        this.cascade = cascade;
+    }
 }

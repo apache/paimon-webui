@@ -23,18 +23,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Database table model. */
+import java.util.List;
+import java.util.Map;
+
+/** Table model. */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DatabaseInfo {
-
-    private String databaseName;
-
-    private Integer catalogId;
+public class TableDto {
 
     private String catalogName;
 
+    private String databaseName;
+
+    private String tableName;
+
     private String description;
+
+    private List<TableColumn> tableColumns;
+
+    private List<String> partitionKey;
+
+    private Map<String, String> tableOptions;
 }

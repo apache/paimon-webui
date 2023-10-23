@@ -16,25 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-/** Database table model. */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class DatabaseInfo {
-
-    private String databaseName;
-
-    private Integer catalogId;
-
+public class RemoveCatalogDto {
+    private String catalogId;
     private String catalogName;
-
-    private String description;
 }

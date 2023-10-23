@@ -57,6 +57,7 @@ public enum Status {
     CATALOG_NAME_IS_EXIST(10301, "catalog.name.exist"),
     CATALOG_CREATE_ERROR(10302, "catalog.create.error"),
     CATALOG_REMOVE_ERROR(10303, "catalog.remove.error"),
+    CATALOG_NOT_EXIST(10304, "catalog.not.exists"),
 
     /** ------------database-----------------. */
     DATABASE_NAME_IS_EXIST(10401, "database.name.exist"),

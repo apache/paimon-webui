@@ -35,7 +35,7 @@ import java.util.Map;
 public abstract class BaseModel implements Serializable {
 
     /** id. */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Integer id;
 
     /** create time. */

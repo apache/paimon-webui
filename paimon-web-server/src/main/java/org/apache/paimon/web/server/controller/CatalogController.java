@@ -19,22 +19,20 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.CatalogDto;
+import org.apache.paimon.web.server.data.dto.RemoveCatalogDto;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -44,7 +42,11 @@ import java.util.List;
 @RequestMapping("/api/catalog")
 public class CatalogController {
 
-    @Autowired private CatalogService catalogService;
+    private final CatalogService catalogService;
+
+    public CatalogController(CatalogService catalogService) {
+        this.catalogService = catalogService;
+    }
 
     /**
      * Create a catalog.
@@ -74,17 +76,27 @@ public class CatalogController {
     }
 
     /**
-     * Removes a catalog with given catalog name.
+     * Removes a catalog with given catalog name or catalog id.
      *
-     * @param catalogId The catalog id.
+     * @param removeCatalogDto Given the catalog name or catalog id to remove catalog.
      * @return A response indicating the success or failure of the operation.
      */
-    @DeleteMapping("/remove/{catalogId}")
-    public R<Void> removeCatalog(@PathVariable String catalogId) {
-        LambdaQueryWrapper<CatalogInfo> lambadaQueryWrapper =
-                Wrappers.lambdaQuery(CatalogInfo.class).eq(CatalogInfo::getId, catalogId);
-        return catalogService.remove(lambadaQueryWrapper)
-                ? R.succeed()
-                : R.failed(Status.CATALOG_REMOVE_ERROR);
+    @PostMapping("/remove")
+    public R<Void> removeCatalog(@RequestBody RemoveCatalogDto removeCatalogDto) {
+        boolean remove;
+        if (StringUtils.isNotBlank(removeCatalogDto.getCatalogName())) {
+            remove =
+                    catalogService.remove(
+                            Wrappers.lambdaQuery(CatalogInfo.class)
+                                    .eq(
+                                            CatalogInfo::getCatalogName,
+                                            removeCatalogDto.getCatalogName()));
+        } else {
+            remove =
+                    catalogService.remove(
+                            Wrappers.lambdaQuery(CatalogInfo.class)
+                                    .eq(CatalogInfo::getId, removeCatalogDto.getCatalogId()));
+        }
+        return remove ? R.succeed() : R.failed(Status.CATALOG_REMOVE_ERROR);
     }
 }

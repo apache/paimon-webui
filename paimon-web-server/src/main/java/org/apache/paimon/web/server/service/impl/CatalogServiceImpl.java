@@ -43,12 +43,12 @@ public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo>
                 this.lambdaQuery()
                         .eq(CatalogInfo::getCatalogName, catalogDto.getCatalogName())
                         .one();
-        return Objects.isNull(info);
+        return Objects.nonNull(info);
     }
 
     @Override
     public R<Void> createCatalog(CatalogDto catalogDto) {
-        if (!checkCatalogNameUnique(catalogDto)) {
+        if (checkCatalogNameUnique(catalogDto)) {
             return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogDto.getCatalogName());
         }
 
