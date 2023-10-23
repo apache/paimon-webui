@@ -113,8 +113,8 @@ export default defineComponent({
         },
       },
       {
-        title: 'Operate',
-        key: 'actions',
+        title: 'Operation',
+        key: 'operation',
         render() {
           return <n-space>
             <n-button strong secondary circle>
