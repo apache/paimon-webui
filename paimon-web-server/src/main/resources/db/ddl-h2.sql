@@ -105,7 +105,7 @@ CREATE TABLE if not exists `role_menu`
 
 CREATE TABLE if not exists `catalog`
 (
-    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `id`          int(11)     not null primary key comment 'id',
     `catalog_type`     varchar(50)  not null comment 'catalog type',
     `catalog_name`     varchar(100)     not null comment 'catalog name',
     `warehouse`     varchar(200)     not null comment 'warehouse',
