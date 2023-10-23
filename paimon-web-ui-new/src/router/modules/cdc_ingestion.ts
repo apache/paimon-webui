@@ -19,5 +19,5 @@ export default {
   path: '/cdc_ingestion',
   name: 'cdc_ingestion',
   meta: { title: 'CDC Ingestion' },
-  component: () => import('@/layouts/content'),
+  component: () => import('@/views/cdc'),
 }

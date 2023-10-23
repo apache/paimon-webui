@@ -15,9 +15,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/system',
-  name: 'system',
-  meta: { title: 'System' },
-  component: () => import('@/views/system'),
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  .content {
+    display: flex;
+    width: calc(100% - 60px);
+    height: 100%;
+  }
 }

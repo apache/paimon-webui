@@ -15,12 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { useConfigStore } from "@/store/config"
 import { RouterLink } from "vue-router"
+import type { NavBar } from "@/store/config/type"
 
 export default defineComponent({
   name: 'MenuBar',
   setup() {
     const { t } = useLocaleHooks()
+    const configStore = useConfigStore()
 
     const renderLabel = (label: string, link: string) => {
       return h(
@@ -51,9 +54,21 @@ export default defineComponent({
       },
     ]))
 
+    const activeKey = ref<string>('playground')
+
+    const handleUpdateValue = (value: string) => {
+      activeKey.value = value
+      configStore.setCurrentNavActive(value as NavBar)
+    }
+
+    onMounted(() => {
+      activeKey.value = configStore.getCurrentNavActive
+    })
+
     return {
-      activeKey: ref<string | null>('playground'),
-      menuOptions
+      activeKey,
+      menuOptions,
+      handleUpdateValue
     }
   },
   render () {
@@ -62,6 +77,7 @@ export default defineComponent({
         v-model:value={this.activeKey}
         mode="horizontal"
         options={this.menuOptions}
+        on-update:value={this.handleUpdateValue}
       />
     )
   }
