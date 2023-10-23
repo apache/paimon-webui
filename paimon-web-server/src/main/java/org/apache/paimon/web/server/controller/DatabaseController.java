@@ -58,7 +58,7 @@ public class DatabaseController {
     @PostMapping("/create")
     public R<Void> createDatabase(@RequestBody DatabaseInfo databaseInfo) {
         try {
-            CatalogInfo catalogInfo = getCatalogInfo(databaseInfo.getCatalogName());
+            CatalogInfo catalogInfo = getCatalogInfo(databaseInfo.getCatalogId());
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
             if (service.databaseExists(databaseInfo.getDatabaseName())) {
                 return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseInfo.getDatabaseName());
@@ -105,15 +105,14 @@ public class DatabaseController {
      * Removes a database by its name.
      *
      * @param databaseName The database to be removed.
-     * @param catalogName The catalog to which the database to be removed belongs.
+     * @param catalogId The catalog to which the database to be removed belongs.
      * @return A response indicating the success or failure of the removal operation.
      * @throws RuntimeException if the database is not found or it is not empty.
      */
-    @DeleteMapping("/drop/{databaseName}/{catalogName}")
-    public R<Void> dropDatabase(
-            @PathVariable String databaseName, @PathVariable String catalogName) {
+    @DeleteMapping("/drop/{databaseName}/{catalogId}")
+    public R<Void> dropDatabase(@PathVariable String databaseName, @PathVariable String catalogId) {
         try {
-            CatalogInfo catalogInfo = getCatalogInfo(catalogName);
+            CatalogInfo catalogInfo = getCatalogInfo(catalogId);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
             service.dropDatabase(databaseName);
             return R.succeed();
@@ -124,14 +123,14 @@ public class DatabaseController {
     }
 
     /**
-     * Retrieves the associated CatalogInfo object based on the given catalog name.
+     * Retrieves the associated CatalogInfo object based on the given catalog id.
      *
-     * @param catalogName The catalog name.
+     * @param catalogId The catalog id.
      * @return The associated CatalogInfo object, or null if it doesn't exist.
      */
-    private CatalogInfo getCatalogInfo(String catalogName) {
+    private CatalogInfo getCatalogInfo(String catalogId) {
         LambdaQueryWrapper<CatalogInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CatalogInfo::getCatalogName, catalogName);
+        queryWrapper.eq(CatalogInfo::getId, catalogId);
         return catalogService.getOne(queryWrapper);
     }
 }

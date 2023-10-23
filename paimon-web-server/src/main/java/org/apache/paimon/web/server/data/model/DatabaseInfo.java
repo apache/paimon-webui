@@ -32,7 +32,7 @@ public class DatabaseInfo {
 
     private String databaseName;
 
-    private Integer catalogId;
+    private String catalogId;
 
     private String catalogName;
 
