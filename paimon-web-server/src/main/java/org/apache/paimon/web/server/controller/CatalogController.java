@@ -43,7 +43,7 @@ public class CatalogController {
     /**
      * Create a catalog.
      *
-     * @param catalogDto The catalogInfo for the catalog.
+     * @param catalogDto The catalogDto for the catalog.
      * @return The created catalog.
      */
     @PostMapping("/create")
