@@ -24,7 +24,7 @@ type RowData = {
   columnName: string
   dataType: string
   nullAble: boolean
-  pk: boolean
+  primaryKey: boolean
   partitionKey: boolean
   defaultValue?: string
   description?: string
@@ -41,7 +41,7 @@ export default defineComponent({
         columnName: 'ID',
         dataType: 'INT',
         nullAble: true,
-        pk: false,
+        primaryKey: false,
         partitionKey: false,
       },
       {
@@ -49,15 +49,15 @@ export default defineComponent({
         columnName: 'Name',
         dataType: 'STRING',
         nullAble: false,
-        pk: true,
+        primaryKey: true,
         partitionKey: false
       },
       {
         key: 2,
-        columnName: 'Desc',
+        columnName: 'Description',
         dataType: 'STRING',
         nullAble: false,
-        pk: true,
+        primaryKey: true,
         partitionKey: false,
         defaultValue: '123'
       }
@@ -81,11 +81,11 @@ export default defineComponent({
         },
       },
       {
-        title: 'Pk',
-        key: 'pk',
+        title: 'Primary Key',
+        key: 'primaryKey',
         align: 'center',
         render(rowData) {
-          return <n-checkbox v-model:checked={rowData.pk} />
+          return <n-checkbox v-model:checked={rowData.primaryKey} />
        },
       },
       {
