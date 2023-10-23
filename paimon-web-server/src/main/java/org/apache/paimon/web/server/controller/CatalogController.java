@@ -18,24 +18,17 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.api.catalog.PaimonServiceFactory;
-import org.apache.paimon.web.server.data.enums.CatalogMode;
+import org.apache.paimon.web.server.data.dto.CatalogDto;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -50,35 +43,13 @@ public class CatalogController {
     /**
      * Create a catalog.
      *
-     * @param catalogInfo The catalogInfo for the catalog.
+     * @param catalogDto The catalogInfo for the catalog.
      * @return The created catalog.
      */
     @PostMapping("/create")
-    public R<Void> createCatalog(@RequestBody CatalogInfo catalogInfo) {
-        if (!catalogService.checkCatalogNameUnique(catalogInfo)) {
-            return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogInfo.getCatalogName());
-        }
-
+    public R<Void> createCatalog(@RequestBody CatalogDto catalogDto) {
         try {
-            if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.FILESYSTEM.getMode())) {
-                PaimonServiceFactory.createFileSystemCatalogService(
-                        catalogInfo.getCatalogName(), catalogInfo.getWarehouse());
-            } else if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.HIVE.getMode())) {
-                if (StringUtils.isNotBlank(catalogInfo.getHiveConfDir())) {
-                    PaimonServiceFactory.createHiveCatalogService(
-                            catalogInfo.getCatalogName(),
-                            catalogInfo.getWarehouse(),
-                            catalogInfo.getHiveUri(),
-                            catalogInfo.getHiveConfDir());
-                } else {
-                    PaimonServiceFactory.createHiveCatalogService(
-                            catalogInfo.getCatalogName(),
-                            catalogInfo.getWarehouse(),
-                            catalogInfo.getHiveUri(),
-                            null);
-                }
-            }
-            return catalogService.save(catalogInfo) ? R.succeed() : R.failed();
+            return catalogService.createCatalog(catalogDto);
         } catch (Exception e) {
             log.error("Exception with creating catalog.", e);
             return R.failed(Status.CATALOG_CREATE_ERROR);
@@ -99,14 +70,14 @@ public class CatalogController {
     /**
      * Removes a catalog with given catalog name.
      *
-     * @param catalogName The catalog name.
+     * @param catalogId The catalog id.
      * @return A response indicating the success or failure of the operation.
      */
-    @DeleteMapping("/remove/{catalogName}")
-    public R<Void> removeCatalog(@PathVariable String catalogName) {
-        QueryWrapper<CatalogInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("catalog_name", catalogName);
-        return catalogService.remove(queryWrapper)
+    @DeleteMapping("/remove/{catalogId}")
+    public R<Void> removeCatalog(@PathVariable String catalogId) {
+        LambdaQueryWrapper<CatalogInfo> lambadaQueryWrapper =
+                Wrappers.lambdaQuery(CatalogInfo.class).eq(CatalogInfo::getId, catalogId);
+        return catalogService.remove(lambadaQueryWrapper)
                 ? R.succeed()
                 : R.failed(Status.CATALOG_REMOVE_ERROR);
     }

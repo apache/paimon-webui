@@ -16,30 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.server.data.dto;
 
-import org.apache.paimon.web.server.data.dto.CatalogDto;
-import org.apache.paimon.web.server.data.model.CatalogInfo;
-import org.apache.paimon.web.server.data.result.R;
+import lombok.Data;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+@Data
+public class CatalogDto {
+    private String catalogType;
 
-/** Catalog Service. */
-public interface CatalogService extends IService<CatalogInfo> {
+    private String catalogName;
 
-    /**
-     * Verify if the catalog name is unique.
-     *
-     * @param catalog catalog info
-     * @return result
-     */
-    boolean checkCatalogNameUnique(CatalogDto catalog);
+    private String warehouse;
 
-    /**
-     * Create a catalog.
-     *
-     * @param catalogDto catalogInfo for the catalog.
-     * @return The created catalog.
-     */
-    R<Void> createCatalog(CatalogDto catalogDto);
+    private String hiveUri;
+
+    private String hiveConfDir;
 }

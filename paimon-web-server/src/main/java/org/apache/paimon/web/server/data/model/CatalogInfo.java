@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.server.data.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -34,6 +36,9 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @TableName("catalog")
 public class CatalogInfo extends BaseModel {
+
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
 
     private String catalogType;
 
