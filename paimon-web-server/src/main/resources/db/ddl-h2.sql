@@ -15,7 +15,7 @@
 
 CREATE TABLE if not exists `user`
 (
-    `id`          int(11)      NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    `id`          int(11)      NOT NULL PRIMARY KEY COMMENT 'ID',
     `username`    varchar(50)  NOT NULL COMMENT 'username',
     `password`    varchar(50)  NULL     DEFAULT NULL COMMENT 'password',
     `nickname`    varchar(50)  NULL     DEFAULT NULL COMMENT 'nickname',
@@ -31,7 +31,7 @@ CREATE TABLE if not exists `user`
 
 CREATE TABLE if not exists `tenant`
 (
-    `id`          int(11)      NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    `id`          int(11)      NOT NULL PRIMARY KEY COMMENT 'ID',
     `name`        varchar(64)  NULL     DEFAULT NULL COMMENT 'tenant name',
     `description` varchar(255) NULL     DEFAULT NULL COMMENT 'tenant description',
     `is_delete`   tinyint(1)   NOT NULL DEFAULT 0 COMMENT 'is delete',
@@ -41,7 +41,7 @@ CREATE TABLE if not exists `tenant`
 
 CREATE TABLE if not exists `user_tenant`
 (
-    `id`          int(11)     NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    `id`          int(11)     NOT NULL PRIMARY KEY COMMENT 'ID',
     `user_id`     int(11)     NOT NULL COMMENT 'user id',
     `tenant_id`   int(11)     NOT NULL COMMENT 'tenant id',
     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
@@ -50,7 +50,7 @@ CREATE TABLE if not exists `user_tenant`
 
 CREATE TABLE if not exists `sys_role`
 (
-    `id`          int(11)      not null auto_increment primary key comment 'id',
+    `id`          int(11)      not null primary key comment 'id',
     `role_name`   varchar(30)  not null comment 'role name',
     `role_key`    varchar(100) not null comment 'role key',
     `sort`        int(4)       not null comment 'sort',
@@ -63,7 +63,7 @@ CREATE TABLE if not exists `sys_role`
 
 CREATE TABLE if not exists `sys_menu`
 (
-    `id`          int(11)  not null auto_increment primary key comment 'id',
+    `id`          int(11)  not null primary key comment 'id',
     `menu_name`   varchar(50) not null comment 'menu name',
     `parent_id`   int(11)           default 0 comment 'parent id',
     `sort`        int(4)               default 0 comment 'sort',
@@ -85,7 +85,7 @@ CREATE TABLE if not exists `sys_menu`
 
 CREATE TABLE if not exists `user_role`
 (
-    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `id`          int(11)     not null primary key comment 'id',
     `user_id`     int(11)     not null comment 'user id',
     `role_id`     int(11)     not null comment 'role id',
     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
@@ -95,7 +95,7 @@ CREATE TABLE if not exists `user_role`
 
 CREATE TABLE if not exists `role_menu`
 (
-    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `id`          int(11)     not null primary key comment 'id',
     `role_id`     int(11)     not null comment 'role id',
     `menu_id`     int(11)     not null comment 'menu id',
     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
@@ -105,7 +105,7 @@ CREATE TABLE if not exists `role_menu`
 
 CREATE TABLE if not exists `catalog`
 (
-    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `id`          int(11)     not null primary key comment 'id',
     `catalog_type`     varchar(50)  not null comment 'catalog type',
     `catalog_name`     varchar(100)     not null comment 'catalog name',
     `warehouse`     varchar(200)     not null comment 'warehouse',
@@ -118,7 +118,7 @@ CREATE TABLE if not exists `catalog`
 
 CREATE TABLE if not exists `databases`
 (
-    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `id`          int(11)     not null primary key comment 'id',
     `database_name`     varchar(50)  not null comment 'database name',
     `catalog_id`     int(11)     not null comment 'catalog id',
     `description`     varchar(200)  comment 'description',

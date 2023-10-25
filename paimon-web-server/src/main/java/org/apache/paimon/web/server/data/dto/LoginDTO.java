@@ -16,30 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.server.data.dto;
 
-import org.apache.paimon.web.server.data.dto.CatalogDTO;
-import org.apache.paimon.web.server.data.model.CatalogInfo;
-import org.apache.paimon.web.server.data.result.R;
+import lombok.Data;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import javax.validation.constraints.NotBlank;
 
-/** Catalog Service. */
-public interface CatalogService extends IService<CatalogInfo> {
-
-    /**
-     * Verify if the catalog name is unique.
-     *
-     * @param catalog catalog info
-     * @return result
-     */
-    boolean checkCatalogNameUnique(CatalogDTO catalog);
-
-    /**
-     * Create a catalog.
-     *
-     * @param catalogDTO catalog for the catalog.
-     * @return The created catalog.
-     */
-    R<Void> createCatalog(CatalogDTO catalogDTO);
+/** The DTO of login. */
+@Data
+public class LoginDTO {
+    /** login username. */
+    @NotBlank(message = "username is required")
+    private String username;
+    /** login password. */
+    @NotBlank(message = "password is required")
+    private String password;
+    /** remember me flag. */
+    private boolean rememberMe;
+    /** ldap login flag. */
+    private boolean ldapLogin;
 }

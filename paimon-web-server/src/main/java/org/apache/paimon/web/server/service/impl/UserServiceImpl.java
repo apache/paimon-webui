@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import org.apache.paimon.web.server.data.dto.LoginDto;
+import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.RoleMenu;
 import org.apache.paimon.web.server.data.model.SysMenu;
@@ -65,16 +65,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * login by username and password.
      *
-     * @param loginDto login info
+     * @param loginDTO login info
      * @return {@link String}
      */
     @Override
-    public UserInfoVo login(LoginDto loginDto) throws BaseException {
-        String username = loginDto.getUsername();
-        String password = loginDto.getPassword();
+    public UserInfoVo login(LoginDTO loginDTO) throws BaseException {
+        String username = loginDTO.getUsername();
+        String password = loginDTO.getPassword();
 
         User user =
-                loginDto.isLdapLogin()
+                loginDTO.isLdapLogin()
                         ? ldapLogin(username, password)
                         : localLogin(username, password);
         if (!user.getEnabled()) {
@@ -87,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new UserNotBindTenantException();
         }*/
 
-        StpUtil.login(user.getId(), loginDto.isRememberMe());
+        StpUtil.login(user.getId(), loginDTO.isRememberMe());
 
         return userInfoVo;
     }

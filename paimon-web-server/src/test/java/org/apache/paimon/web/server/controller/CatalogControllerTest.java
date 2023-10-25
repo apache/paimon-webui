@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.model.CatalogInfo;
+import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
@@ -50,17 +50,17 @@ public class CatalogControllerTest extends ControllerTestBase {
 
     @Test
     public void testCreateCatalog() throws Exception {
-        CatalogInfo catalogInfo = new CatalogInfo();
-        catalogInfo.setCatalogType("filesystem");
-        catalogInfo.setCatalogName(catalogName);
-        catalogInfo.setWarehouse(tempFile.toUri().toString());
-        catalogInfo.setDelete(false);
+        CatalogDTO catalog = new CatalogDTO();
+        catalog.setType("filesystem");
+        catalog.setName(catalogName);
+        catalog.setWarehouse(tempFile.toUri().toString());
+        catalog.setDelete(false);
 
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(catalogPath + "/create")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(catalogInfo))
+                                        .content(ObjectMapperUtils.toJSON(catalog))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -72,11 +72,25 @@ public class CatalogControllerTest extends ControllerTestBase {
         R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
         assertEquals(200, r.getCode());
 
+        CatalogDTO removeCatalog = new CatalogDTO();
+        removeCatalog.setId(1);
+        removeCatalog.setName(catalogName);
+
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(catalogPath + "/remove/" + catalogName)
-                        .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE));
+                        MockMvcRequestBuilders.post(catalogPath + "/remove")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(removeCatalog))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        R<Void> remove =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, remove.getCode());
     }
 
     @Test
