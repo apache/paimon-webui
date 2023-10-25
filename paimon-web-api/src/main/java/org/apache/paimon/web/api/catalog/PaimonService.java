@@ -79,10 +79,50 @@ public class PaimonService {
         }
     }
 
+    public void createDatabase(String databaseName, boolean ignoreIfExists) {
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
+
+        try {
+            catalog.createDatabase(databaseName, ignoreIfExists);
+        } catch (Catalog.DatabaseAlreadyExistException e) {
+            throw new DatabaseException.DatabaseAlreadyExistsException(
+                    String.format(
+                            "The database '%s' already exists in the catalog.", databaseName));
+        }
+    }
+
     public void dropDatabase(String databaseName) {
         Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
         try {
             catalog.dropDatabase(databaseName, false, true);
+        } catch (Catalog.DatabaseNotExistException e) {
+            throw new DatabaseException.DatabaseNotExistException(
+                    String.format(
+                            "The database '%s' does not exist in the catalog.", databaseName));
+        } catch (Catalog.DatabaseNotEmptyException e) {
+            throw new DatabaseException.DatabaseNotEmptyException(
+                    String.format("The database '%s' is not empty.", databaseName));
+        }
+    }
+
+    public void dropDatabase(String databaseName, boolean ignoreIfNotExists) {
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
+        try {
+            catalog.dropDatabase(databaseName, ignoreIfNotExists, true);
+        } catch (Catalog.DatabaseNotExistException e) {
+            throw new DatabaseException.DatabaseNotExistException(
+                    String.format(
+                            "The database '%s' does not exist in the catalog.", databaseName));
+        } catch (Catalog.DatabaseNotEmptyException e) {
+            throw new DatabaseException.DatabaseNotEmptyException(
+                    String.format("The database '%s' is not empty.", databaseName));
+        }
+    }
+
+    public void dropDatabase(String databaseName, boolean ignoreIfNotExists, boolean cascade) {
+        Preconditions.checkNotNull(databaseName, "Database name cannot be null.");
+        try {
+            catalog.dropDatabase(databaseName, ignoreIfNotExists, cascade);
         } catch (Catalog.DatabaseNotExistException e) {
             throw new DatabaseException.DatabaseNotExistException(
                     String.format(

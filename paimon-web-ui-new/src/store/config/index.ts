@@ -16,14 +16,15 @@ specific language governing permissions and limitations
 under the License. */
 
 import { LANGUAGES } from "@/locales"
-
-type Theme = 'dark' | 'light'
+import type { Menu, NavBar, Theme } from "./type"
 
 export const useConfigStore = defineStore({
   id: 'config',
-  state: (): { theme: Theme, locale: LANGUAGES } => ({
+  state: (): { theme: Theme, locale: LANGUAGES, navActive: NavBar, menuActive: Menu } => ({
     theme: 'light',
-    locale: LANGUAGES.ZH
+    locale: LANGUAGES.ZH,
+    navActive: 'playground',
+    menuActive: 'Query',
   }),
   persist: true,
   getters: {
@@ -32,6 +33,12 @@ export const useConfigStore = defineStore({
     },
     getCurrentTheme(): Theme {
       return this.theme
+    },
+    getCurrentNavActive(): NavBar {
+      return this.navActive
+    },
+    getCurrentMenuActive(): Menu {
+      return this.menuActive
     }
   },
   actions: {
@@ -40,6 +47,12 @@ export const useConfigStore = defineStore({
     },
     setCurrentTheme(theme: Theme): void {
       this.theme = theme
+    },
+    setCurrentNavActive(navActive: NavBar ): void {
+      this.navActive = navActive
+    },
+    setCurrentMenuActive(menuActive: Menu): void {
+      this.menuActive = menuActive
     }
   }
 })

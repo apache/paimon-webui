@@ -18,20 +18,16 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.api.catalog.PaimonServiceFactory;
-import org.apache.paimon.web.server.data.enums.CatalogMode;
+import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,40 +41,22 @@ import java.util.List;
 @RequestMapping("/api/catalog")
 public class CatalogController {
 
-    @Autowired private CatalogService catalogService;
+    private final CatalogService catalogService;
+
+    public CatalogController(CatalogService catalogService) {
+        this.catalogService = catalogService;
+    }
 
     /**
      * Create a catalog.
      *
-     * @param catalogInfo The catalogInfo for the catalog.
+     * @param catalogDTO The catalogDTO for the catalog.
      * @return The created catalog.
      */
     @PostMapping("/create")
-    public R<Void> createCatalog(@RequestBody CatalogInfo catalogInfo) {
-        if (!catalogService.checkCatalogNameUnique(catalogInfo)) {
-            return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogInfo.getCatalogName());
-        }
-
+    public R<Void> createCatalog(@RequestBody CatalogDTO catalogDTO) {
         try {
-            if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.FILESYSTEM.getMode())) {
-                PaimonServiceFactory.createFileSystemCatalogService(
-                        catalogInfo.getCatalogName(), catalogInfo.getWarehouse());
-            } else if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.HIVE.getMode())) {
-                if (StringUtils.isNotBlank(catalogInfo.getHiveConfDir())) {
-                    PaimonServiceFactory.createHiveCatalogService(
-                            catalogInfo.getCatalogName(),
-                            catalogInfo.getWarehouse(),
-                            catalogInfo.getHiveUri(),
-                            catalogInfo.getHiveConfDir());
-                } else {
-                    PaimonServiceFactory.createHiveCatalogService(
-                            catalogInfo.getCatalogName(),
-                            catalogInfo.getWarehouse(),
-                            catalogInfo.getHiveUri(),
-                            null);
-                }
-            }
-            return catalogService.save(catalogInfo) ? R.succeed() : R.failed();
+            return catalogService.createCatalog(catalogDTO);
         } catch (Exception e) {
             log.error("Exception with creating catalog.", e);
             return R.failed(Status.CATALOG_CREATE_ERROR);
@@ -97,17 +75,25 @@ public class CatalogController {
     }
 
     /**
-     * Removes a catalog with given catalog name.
+     * Removes a catalog with given catalog name or catalog id.
      *
-     * @param catalogName The catalog name.
+     * @param catalogDTO Given the catalog name or catalog id to remove catalog.
      * @return A response indicating the success or failure of the operation.
      */
-    @DeleteMapping("/remove/{catalogName}")
-    public R<Void> removeCatalog(@PathVariable String catalogName) {
-        QueryWrapper<CatalogInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("catalog_name", catalogName);
-        return catalogService.remove(queryWrapper)
-                ? R.succeed()
-                : R.failed(Status.CATALOG_REMOVE_ERROR);
+    @PostMapping("/remove")
+    public R<Void> removeCatalog(@RequestBody CatalogDTO catalogDTO) {
+        boolean remove;
+        if (StringUtils.isNotBlank(catalogDTO.getName())) {
+            remove =
+                    catalogService.remove(
+                            Wrappers.lambdaQuery(CatalogInfo.class)
+                                    .eq(CatalogInfo::getCatalogName, catalogDTO.getName()));
+        } else {
+            remove =
+                    catalogService.remove(
+                            Wrappers.lambdaQuery(CatalogInfo.class)
+                                    .eq(CatalogInfo::getId, catalogDTO.getId()));
+        }
+        return remove ? R.succeed() : R.failed(Status.CATALOG_REMOVE_ERROR);
     }
 }

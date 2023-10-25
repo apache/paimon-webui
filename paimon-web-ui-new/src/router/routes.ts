@@ -17,14 +17,26 @@ under the License. */
 
 import type { RouteRecordRaw } from 'vue-router'
 import playground_routes from './modules/playground'
+import metadata_routes from './modules/metadata'
+import cdc_ingestion_routes from './modules/cdc_ingestion'
+import system from './modules/system'
 
 /**
  * Basic page
  */
-const basePage: RouteRecordRaw[] = [
-  ...playground_routes,
-]
-
+const basePage: RouteRecordRaw = {
+  path: '/',
+  name: 'homepage',
+  meta: { title: 'Home' },
+  redirect: { name: 'playground' },
+  component: () => import('@/layouts/content'),
+  children: [
+    playground_routes,
+    metadata_routes,
+    cdc_ingestion_routes,
+    system,
+  ]
+}
 /**
  * Login page
  */
@@ -37,6 +49,6 @@ const loginPage: RouteRecordRaw[] = [
 ]
 
 
-const routes: RouteRecordRaw[] = [...basePage, ...loginPage]
+const routes: RouteRecordRaw[] = [basePage, ...loginPage]
 
 export default routes

@@ -19,8 +19,8 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
+import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.TableColumn;
-import org.apache.paimon.web.server.data.model.TableInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
@@ -68,8 +68,8 @@ public class MetadataControllerTest extends ControllerTestBase {
                         "name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
         tableColumns.add(id);
         tableColumns.add(name);
-        TableInfo tableInfo =
-                TableInfo.builder()
+        TableDTO tableInfo =
+                TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
                         .tableName(tableName)
