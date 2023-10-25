@@ -68,7 +68,7 @@ public class MetadataControllerTest extends ControllerTestBase {
                         "name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
         tableColumns.add(id);
         tableColumns.add(name);
-        TableDTO tableInfo =
+        TableDTO table =
                 TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
@@ -82,7 +82,7 @@ public class MetadataControllerTest extends ControllerTestBase {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(tablePath + "/create")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(tableInfo))
+                                        .content(ObjectMapperUtils.toJSON(table))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
