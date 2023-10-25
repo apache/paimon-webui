@@ -19,9 +19,7 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.api.catalog.PaimonService;
-import org.apache.paimon.web.server.data.dto.CreateDatabaseDto;
 import org.apache.paimon.web.server.data.dto.DatabaseDto;
-import org.apache.paimon.web.server.data.dto.DropDatabaseDto;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.result.R;
@@ -63,7 +61,7 @@ public class DatabaseController {
      * @return R<Void/> indicating the result of the operation.
      */
     @PostMapping("/create")
-    public R<Void> createDatabase(@RequestBody CreateDatabaseDto databaseDto) {
+    public R<Void> createDatabase(@RequestBody DatabaseDto databaseDto) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(databaseDto);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
@@ -118,7 +116,7 @@ public class DatabaseController {
      * @throws RuntimeException if the database is not found, or it is not empty.
      */
     @PostMapping("/drop")
-    public R<Void> dropDatabase(@RequestBody DropDatabaseDto databaseDto) {
+    public R<Void> dropDatabase(@RequestBody DatabaseDto databaseDto) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(databaseDto);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);

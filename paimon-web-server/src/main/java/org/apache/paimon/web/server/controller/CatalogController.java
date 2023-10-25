@@ -19,7 +19,6 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.CatalogDto;
-import org.apache.paimon.web.server.data.dto.RemoveCatalogDto;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
@@ -78,24 +77,24 @@ public class CatalogController {
     /**
      * Removes a catalog with given catalog name or catalog id.
      *
-     * @param removeCatalogDto Given the catalog name or catalog id to remove catalog.
+     * @param catalogDto Given the catalog name or catalog id to remove catalog.
      * @return A response indicating the success or failure of the operation.
      */
     @PostMapping("/remove")
-    public R<Void> removeCatalog(@RequestBody RemoveCatalogDto removeCatalogDto) {
+    public R<Void> removeCatalog(@RequestBody CatalogDto catalogDto) {
         boolean remove;
-        if (StringUtils.isNotBlank(removeCatalogDto.getCatalogName())) {
+        if (StringUtils.isNotBlank(catalogDto.getName())) {
             remove =
                     catalogService.remove(
                             Wrappers.lambdaQuery(CatalogInfo.class)
                                     .eq(
                                             CatalogInfo::getCatalogName,
-                                            removeCatalogDto.getCatalogName()));
+                                            catalogDto.getName()));
         } else {
             remove =
                     catalogService.remove(
                             Wrappers.lambdaQuery(CatalogInfo.class)
-                                    .eq(CatalogInfo::getId, removeCatalogDto.getCatalogId()));
+                                    .eq(CatalogInfo::getId, catalogDto.getId()));
         }
         return remove ? R.succeed() : R.failed(Status.CATALOG_REMOVE_ERROR);
     }

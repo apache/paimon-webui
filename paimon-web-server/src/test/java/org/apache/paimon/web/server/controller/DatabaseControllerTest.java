@@ -18,8 +18,6 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.CreateDatabaseDto;
-import org.apache.paimon.web.server.data.dto.DropDatabaseDto;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 

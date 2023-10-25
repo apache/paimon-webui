@@ -26,9 +26,9 @@ public class CatalogDto {
 
     private Integer id;
 
-    private String catalogType;
+    private String type;
 
-    private String catalogName;
+    private String name;
 
     private String warehouse;
 

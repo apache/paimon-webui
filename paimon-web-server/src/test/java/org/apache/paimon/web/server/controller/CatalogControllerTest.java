@@ -19,7 +19,6 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.CatalogDto;
-import org.apache.paimon.web.server.data.dto.RemoveCatalogDto;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
@@ -52,8 +51,8 @@ public class CatalogControllerTest extends ControllerTestBase {
     @Test
     public void testCreateCatalog() throws Exception {
         CatalogDto catalogDto = new CatalogDto();
-        catalogDto.setCatalogType("filesystem");
-        catalogDto.setCatalogName(catalogName);
+        catalogDto.setType("filesystem");
+        catalogDto.setName(catalogName);
         catalogDto.setWarehouse(tempFile.toUri().toString());
         catalogDto.setDelete(false);
 
@@ -73,9 +72,9 @@ public class CatalogControllerTest extends ControllerTestBase {
         R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
         assertEquals(200, r.getCode());
 
-        RemoveCatalogDto removeCatalogDto = new RemoveCatalogDto();
-        removeCatalogDto.setCatalogId("1");
-        removeCatalogDto.setCatalogName(catalogName);
+        CatalogDto removeCatalogDto = new CatalogDto();
+        removeCatalogDto.setId(1);
+        removeCatalogDto.setName(catalogName);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.post(catalogPath + "/remove")

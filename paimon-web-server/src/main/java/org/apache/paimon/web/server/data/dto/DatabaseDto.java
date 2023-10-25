@@ -22,8 +22,16 @@ import lombok.Data;
 
 @Data
 public class DatabaseDto {
+
     private String databaseName;
+
     private String catalogId;
+
     private String catalogName;
+
     private boolean ignoreIfExists;
+
+    private boolean cascade;
+
+    private String description;
 }
