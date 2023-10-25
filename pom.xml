@@ -516,7 +516,9 @@ under the License.
                             <importOrder>
                                 <order>org.apache.paimon,org.apache.paimon.shaded,,javax,java,scala,\#</order>
                             </importOrder>
-
+                            <licenseHeader>
+                                <file>tools/maven/license_header</file>
+                            </licenseHeader>
                             <removeUnusedImports/>
                         </java>
                     </configuration>
