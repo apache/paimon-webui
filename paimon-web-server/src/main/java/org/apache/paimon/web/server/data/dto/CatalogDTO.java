@@ -21,6 +21,7 @@ package org.apache.paimon.web.server.data.dto;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
+/** The DTO of catalog. */
 @Data
 public class CatalogDTO {
 

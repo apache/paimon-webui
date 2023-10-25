@@ -87,9 +87,7 @@ public class CatalogController {
             remove =
                     catalogService.remove(
                             Wrappers.lambdaQuery(CatalogInfo.class)
-                                    .eq(
-                                            CatalogInfo::getCatalogName,
-                                            catalogDTO.getName()));
+                                    .eq(CatalogInfo::getCatalogName, catalogDTO.getName()));
         } else {
             remove =
                     catalogService.remove(

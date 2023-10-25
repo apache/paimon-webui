@@ -40,9 +40,7 @@ public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo>
     @Override
     public boolean checkCatalogNameUnique(CatalogDTO catalogDTO) {
         CatalogInfo info =
-                this.lambdaQuery()
-                        .eq(CatalogInfo::getCatalogName, catalogDTO.getName())
-                        .one();
+                this.lambdaQuery().eq(CatalogInfo::getCatalogName, catalogDTO.getName()).one();
         return Objects.nonNull(info);
     }
 

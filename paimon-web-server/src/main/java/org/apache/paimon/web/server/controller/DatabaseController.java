@@ -65,11 +65,11 @@ public class DatabaseController {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(databaseDTO);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
-            if (service.databaseExists(databaseDTO.getDatabaseName())) {
-                return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseDTO.getDatabaseName());
+            if (service.databaseExists(databaseDTO.getName())) {
+                return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseDTO.getName());
             }
             service.createDatabase(
-                    databaseDTO.getDatabaseName(),
+                    databaseDTO.getName(),
                     BooleanUtils.toBooleanDefaultIfNull(databaseDTO.isIgnoreIfExists(), false));
             return R.succeed();
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class DatabaseController {
             CatalogInfo catalogInfo = getCatalogInfo(databaseDTO);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
             service.dropDatabase(
-                    databaseDTO.getDatabaseName(),
+                    databaseDTO.getName(),
                     BooleanUtils.toBooleanDefaultIfNull(databaseDTO.isIgnoreIfExists(), false),
                     BooleanUtils.toBooleanDefaultIfNull(databaseDTO.isCascade(), true));
             return R.succeed();

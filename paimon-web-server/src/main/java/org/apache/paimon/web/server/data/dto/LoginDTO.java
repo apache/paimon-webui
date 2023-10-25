@@ -22,7 +22,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
-/** login dto. */
+/** The DTO of login. */
 @Data
 public class LoginDTO {
     /** login username. */

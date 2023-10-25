@@ -20,10 +20,11 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
+/** The DTO of database. */
 @Data
 public class DatabaseDTO {
 
-    private String databaseName;
+    private String name;
 
     private String catalogId;
 

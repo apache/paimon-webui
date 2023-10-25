@@ -44,12 +44,12 @@ public class LoginController {
     /**
      * login by username and password.
      *
-     * @param loginDto login info
+     * @param loginDTO login info
      * @return token string
      */
     @PostMapping("/login")
-    public R<UserInfoVo> login(@RequestBody LoginDTO loginDto) {
-        return R.succeed(userService.login(loginDto));
+    public R<UserInfoVo> login(@RequestBody LoginDTO loginDTO) {
+        return R.succeed(userService.login(loginDTO));
     }
 
     /**

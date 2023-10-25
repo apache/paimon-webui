@@ -47,7 +47,7 @@ public class DatabaseControllerTest extends ControllerTestBase {
     @Test
     public void testCreateDatabase() throws Exception {
         DatabaseDTO createDatabase = new DatabaseDTO();
-        createDatabase.setDatabaseName(databaseName);
+        createDatabase.setName(databaseName);
         createDatabase.setCatalogName(catalogName);
         createDatabase.setCatalogId("1");
         createDatabase.setIgnoreIfExists(true);

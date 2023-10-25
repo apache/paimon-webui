@@ -19,10 +19,10 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.LoginDTO;
+import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
-import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;

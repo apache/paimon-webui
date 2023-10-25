@@ -18,16 +18,17 @@
 
 package org.apache.paimon.web.server.data.dto;
 
+import org.apache.paimon.web.server.data.model.TableColumn;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.paimon.web.server.data.model.TableColumn;
 
 import java.util.List;
 import java.util.Map;
 
-/** Table model. */
+/** The DTO of table. */
 @Data
 @Builder
 @NoArgsConstructor
