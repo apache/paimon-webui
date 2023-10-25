@@ -68,7 +68,7 @@ public class TableController {
     /**
      * Creates a table in the database based on the provided TableInfo.
      *
-     * @param tableDTO The TableInfo object containing information about the table.
+     * @param tableDTO The tableDTO object containing information about the table.
      * @return R<Void/> indicating the success or failure of the operation.
      */
     @PostMapping("/create")
