@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.DatabaseDto;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
@@ -45,7 +46,7 @@ public class DatabaseControllerTest extends ControllerTestBase {
 
     @Test
     public void testCreateDatabase() throws Exception {
-        CreateDatabaseDto createDatabaseDto = new CreateDatabaseDto();
+        DatabaseDto createDatabaseDto = new DatabaseDto();
         createDatabaseDto.setDatabaseName(databaseName);
         createDatabaseDto.setCatalogName(catalogName);
         createDatabaseDto.setCatalogId("1");
@@ -67,7 +68,7 @@ public class DatabaseControllerTest extends ControllerTestBase {
         R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
         assertEquals(200, r.getCode());
 
-        DropDatabaseDto dropDatabaseDto = new DropDatabaseDto();
+        DatabaseDto dropDatabaseDto = new DatabaseDto();
         dropDatabaseDto.setCatalogName(catalogName);
         dropDatabaseDto.setCatalogId("1");
         dropDatabaseDto.setIgnoreIfExists(true);
