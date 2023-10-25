@@ -15,18 +15,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.cdc-page {
-  display: flex;
-  width: 100%;
-  height: 100%;
-
-  .title {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-
-    .operation {
-      display: flex;
-    }
-  }
+export default {
+  synchronous_job_definition: 'Synchronous Job Definition',
+  create_synchronous_job: 'Create Synchronous Job',
+  job_name: 'Job Name',
+  synchronization_type: 'Synchronization type',
+  job_description: 'Job Description',
+  create_user: 'Create User',
+  create_time: 'Create Time',
+  update_time: 'Update Time',
+  operation: 'Operation',
+  edit: 'Edit',
+  run: 'Run',
+  delete: 'Delete',
 }
