@@ -18,11 +18,11 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.LoginDto;
+import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
-import org.apache.paimon.web.server.data.model.TableDto;
+import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
@@ -79,7 +79,7 @@ public class ControllerTestBase {
 
     @BeforeEach
     public void before() throws Exception {
-        LoginDto login = new LoginDto();
+        LoginDTO login = new LoginDTO();
         login.setUsername("admin");
         login.setPassword("admin");
 
@@ -136,8 +136,8 @@ public class ControllerTestBase {
                         "name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
         tableColumns.add(id);
         tableColumns.add(name);
-        TableDto tableDto =
-                TableDto.builder()
+        TableDTO table =
+                TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
                         .tableName(tableName)
@@ -149,7 +149,7 @@ public class ControllerTestBase {
         mockMvc.perform(
                 MockMvcRequestBuilders.post(tablePath + "/create")
                         .cookie(cookie)
-                        .content(ObjectMapperUtils.toJSON(tableDto))
+                        .content(ObjectMapperUtils.toJSON(table))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));
     }

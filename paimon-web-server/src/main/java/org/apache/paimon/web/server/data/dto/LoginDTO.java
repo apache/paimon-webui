@@ -16,34 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.Map;
+import javax.validation.constraints.NotBlank;
 
-/** Table model. */
+/** login dto. */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class TableDto {
-
-    private String catalogName;
-
-    private String databaseName;
-
-    private String tableName;
-
-    private String description;
-
-    private List<TableColumn> tableColumns;
-
-    private List<String> partitionKey;
-
-    private Map<String, String> tableOptions;
+public class LoginDTO {
+    /** login username. */
+    @NotBlank(message = "username is required")
+    private String username;
+    /** login password. */
+    @NotBlank(message = "password is required")
+    private String password;
+    /** remember me flag. */
+    private boolean rememberMe;
+    /** ldap login flag. */
+    private boolean ldapLogin;
 }

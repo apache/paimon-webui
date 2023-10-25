@@ -18,23 +18,20 @@
 
 package org.apache.paimon.web.server.data.dto;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 @Data
-public class CatalogDto {
+public class DatabaseDTO {
 
-    private Integer id;
+    private String databaseName;
 
-    private String type;
+    private String catalogId;
 
-    private String name;
+    private String catalogName;
 
-    private String warehouse;
+    private boolean ignoreIfExists;
 
-    private String hiveUri;
+    private boolean cascade;
 
-    private String hiveConfDir;
-
-    @TableLogic private boolean isDelete;
+    private String description;
 }

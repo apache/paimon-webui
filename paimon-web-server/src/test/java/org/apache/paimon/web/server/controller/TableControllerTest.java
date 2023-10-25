@@ -20,7 +20,7 @@ package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.model.AlterTableRequest;
 import org.apache.paimon.web.server.data.model.TableColumn;
-import org.apache.paimon.web.server.data.model.TableDto;
+import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
@@ -62,8 +62,8 @@ public class TableControllerTest extends ControllerTestBase {
                         "name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
         tableColumns.add(id);
         tableColumns.add(name);
-        TableDto tableDto =
-                TableDto.builder()
+        TableDTO table =
+                TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
                         .tableName("test_table")
@@ -76,7 +76,7 @@ public class TableControllerTest extends ControllerTestBase {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(tablePath + "/create")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(tableDto))
+                                        .content(ObjectMapperUtils.toJSON(table))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -113,8 +113,8 @@ public class TableControllerTest extends ControllerTestBase {
                         false,
                         "0");
         tableColumns.add(age);
-        TableDto tableDto =
-                TableDto.builder()
+        TableDTO table =
+                TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
                         .tableName(tableName)
@@ -127,7 +127,7 @@ public class TableControllerTest extends ControllerTestBase {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(tablePath + "/column/add")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(tableDto))
+                                        .content(ObjectMapperUtils.toJSON(table))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -205,8 +205,8 @@ public class TableControllerTest extends ControllerTestBase {
         Map<String, String> option = new HashMap<>();
         option.put("bucket", "2");
 
-        TableDto tableDto =
-                TableDto.builder()
+        TableDTO table =
+                TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
                         .tableName(tableName)
@@ -219,7 +219,7 @@ public class TableControllerTest extends ControllerTestBase {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(tablePath + "/option/add")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(tableDto))
+                                        .content(ObjectMapperUtils.toJSON(table))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -264,8 +264,8 @@ public class TableControllerTest extends ControllerTestBase {
                         "name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
         tableColumns.add(id);
         tableColumns.add(name);
-        TableDto tableDto =
-                TableDto.builder()
+        TableDTO table =
+                TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
                         .tableName("test_table_01")
@@ -277,7 +277,7 @@ public class TableControllerTest extends ControllerTestBase {
         mockMvc.perform(
                         MockMvcRequestBuilders.post(tablePath + "/create")
                                 .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(tableDto))
+                                .content(ObjectMapperUtils.toJSON(table))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk());

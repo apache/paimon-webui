@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.CatalogDto;
+import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
@@ -54,7 +54,7 @@ public class CatalogController {
      * @return The created catalog.
      */
     @PostMapping("/create")
-    public R<Void> createCatalog(@RequestBody CatalogDto catalogDto) {
+    public R<Void> createCatalog(@RequestBody CatalogDTO catalogDto) {
         try {
             return catalogService.createCatalog(catalogDto);
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class CatalogController {
      * @return A response indicating the success or failure of the operation.
      */
     @PostMapping("/remove")
-    public R<Void> removeCatalog(@RequestBody CatalogDto catalogDto) {
+    public R<Void> removeCatalog(@RequestBody CatalogDTO catalogDto) {
         boolean remove;
         if (StringUtils.isNotBlank(catalogDto.getName())) {
             remove =

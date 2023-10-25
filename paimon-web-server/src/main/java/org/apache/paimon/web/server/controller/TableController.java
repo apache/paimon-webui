@@ -27,7 +27,7 @@ import org.apache.paimon.web.api.table.TableMetadata;
 import org.apache.paimon.web.server.data.model.AlterTableRequest;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
-import org.apache.paimon.web.server.data.model.TableDto;
+import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.CatalogService;
@@ -72,7 +72,7 @@ public class TableController {
      * @return R<Void/> indicating the success or failure of the operation.
      */
     @PostMapping("/create")
-    public R<Void> createTable(@RequestBody TableDto tableDto) {
+    public R<Void> createTable(@RequestBody TableDTO tableDto) {
         try {
             PaimonService service =
                     PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDto.getCatalogName()));
@@ -122,7 +122,7 @@ public class TableController {
      * @return A response indicating the success or failure of the operation.
      */
     @PostMapping("/column/add")
-    public R<Void> addColumn(@RequestBody TableDto tableDto) {
+    public R<Void> addColumn(@RequestBody TableDTO tableDto) {
         try {
             PaimonService service =
                     PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDto.getCatalogName()));
@@ -273,7 +273,7 @@ public class TableController {
      *     exception occurs, returns a result object with an error status.
      */
     @PostMapping("/option/add")
-    public R<Void> addOption(@RequestBody TableDto tableDto) {
+    public R<Void> addOption(@RequestBody TableDTO tableDto) {
         List<TableChange> tableChanges = new ArrayList<>();
         try {
             PaimonService service =
@@ -385,11 +385,11 @@ public class TableController {
      * Handler method for the "/getAllTables" endpoint. Retrieves information about all tables and
      * returns a response containing the table details.
      *
-     * @return Response object containing a list of {@link TableDto} representing the tables.
+     * @return Response object containing a list of {@link TableDTO} representing the tables.
      */
     @GetMapping("/getAllTables")
-    public R<List<TableDto>> getAllTables() {
-        List<TableDto> tableDtoList = new ArrayList<>();
+    public R<List<TableDTO>> getAllTables() {
+        List<TableDTO> tableDTOList = new ArrayList<>();
         List<CatalogInfo> catalogInfoList = catalogService.list();
         if (!CollectionUtils.isEmpty(catalogInfoList)) {
             for (CatalogInfo item : catalogInfoList) {
@@ -434,8 +434,8 @@ public class TableController {
                                                     tableColumns.add(builder.build());
                                                 }
                                             }
-                                            TableDto tableDto =
-                                                    TableDto.builder()
+                                            TableDTO tableDTO =
+                                                    TableDTO.builder()
                                                             .catalogName(item.getCatalogName())
                                                             .databaseName(db)
                                                             .tableName(table.name())
@@ -443,7 +443,7 @@ public class TableController {
                                                             .tableOptions(table.options())
                                                             .tableColumns(tableColumns)
                                                             .build();
-                                            tableDtoList.add(tableDto);
+                                            tableDTOList.add(tableDTO);
                                         }
                                     } catch (Exception e) {
                                         throw new RuntimeException(e);
@@ -457,7 +457,7 @@ public class TableController {
                 }
             }
         }
-        return R.succeed(tableDtoList);
+        return R.succeed(tableDTOList);
     }
 
     /**
@@ -466,7 +466,7 @@ public class TableController {
      * @param tableDto The TableInfo object representing the table.
      * @return A list of primary keys as strings.
      */
-    private List<String> buildPrimaryKeys(TableDto tableDto) {
+    private List<String> buildPrimaryKeys(TableDTO tableDto) {
         List<String> primaryKeys = new ArrayList<>();
         List<TableColumn> tableColumns = tableDto.getTableColumns();
         if (!CollectionUtils.isEmpty(tableColumns)) {
@@ -486,7 +486,7 @@ public class TableController {
      * @param tableDto The TableInfo object representing the table.
      * @return A list of ColumnMetadata objects.
      */
-    private List<ColumnMetadata> buildColumns(TableDto tableDto) {
+    private List<ColumnMetadata> buildColumns(TableDTO tableDto) {
         List<ColumnMetadata> columns = new ArrayList<>();
         List<TableColumn> tableColumns = tableDto.getTableColumns();
         if (!CollectionUtils.isEmpty(tableColumns)) {

@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.DatabaseDto;
+import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
@@ -46,17 +46,17 @@ public class DatabaseControllerTest extends ControllerTestBase {
 
     @Test
     public void testCreateDatabase() throws Exception {
-        DatabaseDto createDatabaseDto = new DatabaseDto();
-        createDatabaseDto.setDatabaseName(databaseName);
-        createDatabaseDto.setCatalogName(catalogName);
-        createDatabaseDto.setCatalogId("1");
-        createDatabaseDto.setIgnoreIfExists(true);
+        DatabaseDTO createDatabase = new DatabaseDTO();
+        createDatabase.setDatabaseName(databaseName);
+        createDatabase.setCatalogName(catalogName);
+        createDatabase.setCatalogId("1");
+        createDatabase.setIgnoreIfExists(true);
 
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(databasePath + "/create")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(createDatabaseDto))
+                                        .content(ObjectMapperUtils.toJSON(createDatabase))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -68,16 +68,16 @@ public class DatabaseControllerTest extends ControllerTestBase {
         R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
         assertEquals(200, r.getCode());
 
-        DatabaseDto dropDatabaseDto = new DatabaseDto();
-        dropDatabaseDto.setCatalogName(catalogName);
-        dropDatabaseDto.setCatalogId("1");
-        dropDatabaseDto.setIgnoreIfExists(true);
-        dropDatabaseDto.setCascade(true);
+        DatabaseDTO dropDatabase = new DatabaseDTO();
+        dropDatabase.setCatalogName(catalogName);
+        dropDatabase.setCatalogId("1");
+        dropDatabase.setIgnoreIfExists(true);
+        dropDatabase.setCascade(true);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.post(databasePath + "/drop")
                                 .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(dropDatabaseDto))
+                                .content(ObjectMapperUtils.toJSON(dropDatabase))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())

@@ -18,20 +18,33 @@
 
 package org.apache.paimon.web.server.data.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.paimon.web.server.data.model.TableColumn;
 
+import java.util.List;
+import java.util.Map;
+
+/** Table model. */
 @Data
-public class DatabaseDto {
-
-    private String databaseName;
-
-    private String catalogId;
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class TableDTO {
 
     private String catalogName;
 
-    private boolean ignoreIfExists;
+    private String databaseName;
 
-    private boolean cascade;
+    private String tableName;
 
     private String description;
+
+    private List<TableColumn> tableColumns;
+
+    private List<String> partitionKey;
+
+    private Map<String, String> tableOptions;
 }

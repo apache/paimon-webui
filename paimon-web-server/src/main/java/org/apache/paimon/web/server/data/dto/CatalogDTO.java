@@ -18,21 +18,23 @@
 
 package org.apache.paimon.web.server.data.dto;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-
-/** login dto. */
 @Data
-public class LoginDto {
-    /** login username. */
-    @NotBlank(message = "username is required")
-    private String username;
-    /** login password. */
-    @NotBlank(message = "password is required")
-    private String password;
-    /** remember me flag. */
-    private boolean rememberMe;
-    /** ldap login flag. */
-    private boolean ldapLogin;
+public class CatalogDTO {
+
+    private Integer id;
+
+    private String type;
+
+    private String name;
+
+    private String warehouse;
+
+    private String hiveUri;
+
+    private String hiveConfDir;
+
+    @TableLogic private boolean isDelete;
 }

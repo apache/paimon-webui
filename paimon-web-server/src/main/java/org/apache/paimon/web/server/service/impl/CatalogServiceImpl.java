@@ -19,7 +19,7 @@
 package org.apache.paimon.web.server.service.impl;
 
 import org.apache.paimon.web.api.catalog.PaimonServiceFactory;
-import org.apache.paimon.web.server.data.dto.CatalogDto;
+import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.enums.CatalogMode;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
@@ -38,7 +38,7 @@ import java.util.Objects;
 public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo>
         implements CatalogService {
     @Override
-    public boolean checkCatalogNameUnique(CatalogDto catalogDto) {
+    public boolean checkCatalogNameUnique(CatalogDTO catalogDto) {
         CatalogInfo info =
                 this.lambdaQuery()
                         .eq(CatalogInfo::getCatalogName, catalogDto.getName())
@@ -47,7 +47,7 @@ public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo>
     }
 
     @Override
-    public R<Void> createCatalog(CatalogDto catalogDto) {
+    public R<Void> createCatalog(CatalogDTO catalogDto) {
         if (checkCatalogNameUnique(catalogDto)) {
             return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogDto.getName());
         }

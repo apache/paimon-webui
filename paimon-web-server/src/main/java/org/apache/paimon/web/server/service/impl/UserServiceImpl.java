@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import org.apache.paimon.web.server.data.dto.LoginDto;
+import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.RoleMenu;
 import org.apache.paimon.web.server.data.model.SysMenu;
@@ -69,7 +69,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return {@link String}
      */
     @Override
-    public UserInfoVo login(LoginDto loginDto) throws BaseException {
+    public UserInfoVo login(LoginDTO loginDto) throws BaseException {
         String username = loginDto.getUsername();
         String password = loginDto.getPassword();
 
