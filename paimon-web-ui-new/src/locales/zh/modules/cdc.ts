@@ -16,8 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  synchronous_job_definition: '同步任务定义',
-  create_synchronous_job: '创建同步作业',
+  synchronization_job_definition: '同步任务定义',
+  create_synchronization_job: '创建同步作业',
   job_name: '作业名称',
   synchronization_type: '同步类型',
   job_description: '作业描述',

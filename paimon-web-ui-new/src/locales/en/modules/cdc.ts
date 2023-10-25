@@ -16,8 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  synchronous_job_definition: 'Synchronous Job Definition',
-  create_synchronous_job: 'Create Synchronous Job',
+  synchronization_job_definition: 'Synchronization Job Definition',
+  create_synchronization_job: 'Create Synchronization Job',
   job_name: 'Job Name',
   synchronization_type: 'Synchronization type',
   job_description: 'Job Description',

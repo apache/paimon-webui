@@ -65,7 +65,7 @@ export default defineComponent({
       ],
       data: [
         { name: 1, type: 'Single table synchronization', create_user: 'admin' },
-        { name: 2, type: "Whole library synchronization", create_user: 'admin' },
+        { name: 2, type: "Whole database synchronization", create_user: 'admin' },
       ],
       pagination: {
         pageSize: 10

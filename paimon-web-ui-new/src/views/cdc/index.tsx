@@ -36,12 +36,12 @@ export default defineComponent({
               <div class={styles.title}>
                 <n-space align="center">
                   <n-icon component={Leaf} color="#2F7BEA" size="18" />
-                  <span>{this.t('cdc.synchronous_job_definition')}</span>
+                  <span>{this.t('cdc.synchronization_job_definition')}</span>
                 </n-space>
                 <div class={styles.operation}>
                   <n-space>
                     <n-input placeholder={this.t('cdc.job_name')}></n-input>
-                    <n-button type="primary">{this.t('cdc.create_synchronous_job')}</n-button>
+                    <n-button type="primary">{this.t('cdc.create_synchronization_job')}</n-button>
                   </n-space>
                 </div>
               </div>
