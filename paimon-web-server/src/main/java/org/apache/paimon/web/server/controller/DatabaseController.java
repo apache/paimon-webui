@@ -57,20 +57,20 @@ public class DatabaseController {
     /**
      * Creates a new database based on the provided DatabaseInfo.
      *
-     * @param databaseDto The DatabaseInfo object containing the details of the new database.
+     * @param databaseDTO The DatabaseInfo object containing the details of the new database.
      * @return R<Void/> indicating the result of the operation.
      */
     @PostMapping("/create")
-    public R<Void> createDatabase(@RequestBody DatabaseDTO databaseDto) {
+    public R<Void> createDatabase(@RequestBody DatabaseDTO databaseDTO) {
         try {
-            CatalogInfo catalogInfo = getCatalogInfo(databaseDto);
+            CatalogInfo catalogInfo = getCatalogInfo(databaseDTO);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
-            if (service.databaseExists(databaseDto.getDatabaseName())) {
-                return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseDto.getDatabaseName());
+            if (service.databaseExists(databaseDTO.getDatabaseName())) {
+                return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseDTO.getDatabaseName());
             }
             service.createDatabase(
-                    databaseDto.getDatabaseName(),
-                    BooleanUtils.toBooleanDefaultIfNull(databaseDto.isIgnoreIfExists(), false));
+                    databaseDTO.getDatabaseName(),
+                    BooleanUtils.toBooleanDefaultIfNull(databaseDTO.isIgnoreIfExists(), false));
             return R.succeed();
         } catch (Exception e) {
             log.error("Exception with creating database.", e);
@@ -111,19 +111,19 @@ public class DatabaseController {
     /**
      * Removes a database by its name.
      *
-     * @param databaseDto The drop database DTO.
+     * @param databaseDTO The drop database DTO.
      * @return A response indicating the success or failure of the removal operation.
      * @throws RuntimeException if the database is not found, or it is not empty.
      */
     @PostMapping("/drop")
-    public R<Void> dropDatabase(@RequestBody DatabaseDTO databaseDto) {
+    public R<Void> dropDatabase(@RequestBody DatabaseDTO databaseDTO) {
         try {
-            CatalogInfo catalogInfo = getCatalogInfo(databaseDto);
+            CatalogInfo catalogInfo = getCatalogInfo(databaseDTO);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
             service.dropDatabase(
-                    databaseDto.getDatabaseName(),
-                    BooleanUtils.toBooleanDefaultIfNull(databaseDto.isIgnoreIfExists(), false),
-                    BooleanUtils.toBooleanDefaultIfNull(databaseDto.isCascade(), true));
+                    databaseDTO.getDatabaseName(),
+                    BooleanUtils.toBooleanDefaultIfNull(databaseDTO.isIgnoreIfExists(), false),
+                    BooleanUtils.toBooleanDefaultIfNull(databaseDTO.isCascade(), true));
             return R.succeed();
         } catch (Exception e) {
             log.error("Exception with dropping database.", e);
@@ -134,25 +134,25 @@ public class DatabaseController {
     /**
      * Retrieves the associated CatalogInfo object based on the given catalog id.
      *
-     * @param databaseDto The database DTO.
+     * @param databaseDTO The database DTO.
      * @return The associated CatalogInfo object, or null if it doesn't exist.
      */
-    private CatalogInfo getCatalogInfo(DatabaseDTO databaseDto) {
+    private CatalogInfo getCatalogInfo(DatabaseDTO databaseDTO) {
         CatalogInfo catalogInfo;
-        if (StringUtils.isNotBlank(databaseDto.getCatalogId())) {
+        if (StringUtils.isNotBlank(databaseDTO.getCatalogId())) {
             catalogInfo =
                     catalogService.getOne(
                             Wrappers.lambdaQuery(CatalogInfo.class)
-                                    .eq(CatalogInfo::getId, databaseDto.getCatalogId()));
+                                    .eq(CatalogInfo::getId, databaseDTO.getCatalogId()));
         } else {
             catalogInfo =
                     catalogService.getOne(
                             Wrappers.lambdaQuery(CatalogInfo.class)
-                                    .eq(CatalogInfo::getCatalogName, databaseDto.getCatalogName()));
+                                    .eq(CatalogInfo::getCatalogName, databaseDTO.getCatalogName()));
         }
         Objects.requireNonNull(
                 catalogInfo,
-                String.format("CatalogName: [%s] not found.", databaseDto.getCatalogName()));
+                String.format("CatalogName: [%s] not found.", databaseDTO.getCatalogName()));
         return catalogInfo;
     }
 }

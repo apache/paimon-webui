@@ -68,18 +68,18 @@ public class TableController {
     /**
      * Creates a table in the database based on the provided TableInfo.
      *
-     * @param tableDto The TableInfo object containing information about the table.
+     * @param tableDTO The TableInfo object containing information about the table.
      * @return R<Void/> indicating the success or failure of the operation.
      */
     @PostMapping("/create")
-    public R<Void> createTable(@RequestBody TableDTO tableDto) {
+    public R<Void> createTable(@RequestBody TableDTO tableDTO) {
         try {
             PaimonService service =
-                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDto.getCatalogName()));
-            List<String> partitionKeys = tableDto.getPartitionKey();
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDTO.getCatalogName()));
+            List<String> partitionKeys = tableDTO.getPartitionKey();
 
-            Map<String, String> tableOptions = tableDto.getTableOptions();
-            List<TableColumn> tableColumns = tableDto.getTableColumns();
+            Map<String, String> tableOptions = tableDTO.getTableOptions();
+            List<TableColumn> tableColumns = tableDTO.getTableColumns();
             if (!CollectionUtils.isEmpty(tableColumns)) {
                 for (TableColumn tableColumn : tableColumns) {
                     if (tableColumn.getDefaultValue() != null
@@ -97,16 +97,16 @@ public class TableController {
 
             TableMetadata tableMetadata =
                     TableMetadata.builder()
-                            .columns(buildColumns(tableDto))
+                            .columns(buildColumns(tableDTO))
                             .partitionKeys(partitionKeys)
-                            .primaryKeys(buildPrimaryKeys(tableDto))
+                            .primaryKeys(buildPrimaryKeys(tableDTO))
                             .options(tableOptions)
-                            .comment(tableDto.getDescription())
+                            .comment(tableDTO.getDescription())
                             .build();
-            if (service.tableExists(tableDto.getDatabaseName(), tableDto.getTableName())) {
-                return R.failed(Status.TABLE_NAME_IS_EXIST, tableDto.getTableName());
+            if (service.tableExists(tableDTO.getDatabaseName(), tableDTO.getTableName())) {
+                return R.failed(Status.TABLE_NAME_IS_EXIST, tableDTO.getTableName());
             }
-            service.createTable(tableDto.getDatabaseName(), tableDto.getTableName(), tableMetadata);
+            service.createTable(tableDTO.getDatabaseName(), tableDTO.getTableName(), tableMetadata);
             return R.succeed();
         } catch (Exception e) {
             log.error("Exception with creating table.", e);
@@ -117,16 +117,16 @@ public class TableController {
     /**
      * Adds a column to the table.
      *
-     * @param tableDto The information of the table, including the catalog name, database name,
+     * @param tableDTO The information of the table, including the catalog name, database name,
      *     table name, and table columns.
      * @return A response indicating the success or failure of the operation.
      */
     @PostMapping("/column/add")
-    public R<Void> addColumn(@RequestBody TableDTO tableDto) {
+    public R<Void> addColumn(@RequestBody TableDTO tableDTO) {
         try {
             PaimonService service =
-                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDto.getCatalogName()));
-            List<TableColumn> tableColumns = tableDto.getTableColumns();
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDTO.getCatalogName()));
+            List<TableColumn> tableColumns = tableDTO.getTableColumns();
             List<TableChange> tableChanges = new ArrayList<>();
             Map<String, String> options = new HashMap<>();
             for (TableColumn tableColumn : tableColumns) {
@@ -161,7 +161,7 @@ public class TableController {
                     tableChanges.add(setOption);
                 }
             }
-            service.alterTable(tableDto.getDatabaseName(), tableDto.getTableName(), tableChanges);
+            service.alterTable(tableDTO.getDatabaseName(), tableDTO.getTableName(), tableChanges);
             return R.succeed();
         } catch (Exception e) {
             log.error("Exception with adding column.", e);
@@ -268,22 +268,22 @@ public class TableController {
     /**
      * Adds options to a table.
      *
-     * @param tableDto An object containing table information.
+     * @param tableDTO An object containing table information.
      * @return If the options are successfully added, returns a successful result object. If an
      *     exception occurs, returns a result object with an error status.
      */
     @PostMapping("/option/add")
-    public R<Void> addOption(@RequestBody TableDTO tableDto) {
+    public R<Void> addOption(@RequestBody TableDTO tableDTO) {
         List<TableChange> tableChanges = new ArrayList<>();
         try {
             PaimonService service =
-                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDto.getCatalogName()));
-            Map<String, String> tableOptions = tableDto.getTableOptions();
+                    PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDTO.getCatalogName()));
+            Map<String, String> tableOptions = tableDTO.getTableOptions();
             for (Map.Entry<String, String> entry : tableOptions.entrySet()) {
                 TableChange.SetOption setOption = TableChange.set(entry.getKey(), entry.getValue());
                 tableChanges.add(setOption);
             }
-            service.alterTable(tableDto.getDatabaseName(), tableDto.getTableName(), tableChanges);
+            service.alterTable(tableDTO.getDatabaseName(), tableDTO.getTableName(), tableChanges);
             return R.succeed();
         } catch (Exception e) {
             log.error("Exception with adding option.", e);
@@ -463,12 +463,12 @@ public class TableController {
     /**
      * Builds a list of primary keys for the given table.
      *
-     * @param tableDto The TableInfo object representing the table.
+     * @param tableDTO The TableInfo object representing the table.
      * @return A list of primary keys as strings.
      */
-    private List<String> buildPrimaryKeys(TableDTO tableDto) {
+    private List<String> buildPrimaryKeys(TableDTO tableDTO) {
         List<String> primaryKeys = new ArrayList<>();
-        List<TableColumn> tableColumns = tableDto.getTableColumns();
+        List<TableColumn> tableColumns = tableDTO.getTableColumns();
         if (!CollectionUtils.isEmpty(tableColumns)) {
             tableColumns.forEach(
                     item -> {
@@ -483,12 +483,12 @@ public class TableController {
     /**
      * Builds a list of ColumnMetadata objects for the given table.
      *
-     * @param tableDto The TableInfo object representing the table.
+     * @param tableDTO The TableInfo object representing the table.
      * @return A list of ColumnMetadata objects.
      */
-    private List<ColumnMetadata> buildColumns(TableDTO tableDto) {
+    private List<ColumnMetadata> buildColumns(TableDTO tableDTO) {
         List<ColumnMetadata> columns = new ArrayList<>();
-        List<TableColumn> tableColumns = tableDto.getTableColumns();
+        List<TableColumn> tableColumns = tableDTO.getTableColumns();
         if (!CollectionUtils.isEmpty(tableColumns)) {
             tableColumns.forEach(
                     item -> {

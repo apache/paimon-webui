@@ -38,8 +38,8 @@ public interface CatalogService extends IService<CatalogInfo> {
     /**
      * Create a catalog.
      *
-     * @param catalogDto catalog for the catalog.
+     * @param catalogDTO catalog for the catalog.
      * @return The created catalog.
      */
-    R<Void> createCatalog(CatalogDTO catalogDto);
+    R<Void> createCatalog(CatalogDTO catalogDTO);
 }

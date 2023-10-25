@@ -38,48 +38,48 @@ import java.util.Objects;
 public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo>
         implements CatalogService {
     @Override
-    public boolean checkCatalogNameUnique(CatalogDTO catalogDto) {
+    public boolean checkCatalogNameUnique(CatalogDTO catalogDTO) {
         CatalogInfo info =
                 this.lambdaQuery()
-                        .eq(CatalogInfo::getCatalogName, catalogDto.getName())
+                        .eq(CatalogInfo::getCatalogName, catalogDTO.getName())
                         .one();
         return Objects.nonNull(info);
     }
 
     @Override
-    public R<Void> createCatalog(CatalogDTO catalogDto) {
-        if (checkCatalogNameUnique(catalogDto)) {
-            return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogDto.getName());
+    public R<Void> createCatalog(CatalogDTO catalogDTO) {
+        if (checkCatalogNameUnique(catalogDTO)) {
+            return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogDTO.getName());
         }
 
-        if (catalogDto.getType().equalsIgnoreCase(CatalogMode.FILESYSTEM.getMode())) {
+        if (catalogDTO.getType().equalsIgnoreCase(CatalogMode.FILESYSTEM.getMode())) {
             PaimonServiceFactory.createFileSystemCatalogService(
-                    catalogDto.getName(), catalogDto.getWarehouse());
-        } else if (catalogDto.getType().equalsIgnoreCase(CatalogMode.HIVE.getMode())) {
-            if (StringUtils.isNotBlank(catalogDto.getHiveConfDir())) {
+                    catalogDTO.getName(), catalogDTO.getWarehouse());
+        } else if (catalogDTO.getType().equalsIgnoreCase(CatalogMode.HIVE.getMode())) {
+            if (StringUtils.isNotBlank(catalogDTO.getHiveConfDir())) {
                 PaimonServiceFactory.createHiveCatalogService(
-                        catalogDto.getName(),
-                        catalogDto.getWarehouse(),
-                        catalogDto.getHiveUri(),
-                        catalogDto.getHiveConfDir());
+                        catalogDTO.getName(),
+                        catalogDTO.getWarehouse(),
+                        catalogDTO.getHiveUri(),
+                        catalogDTO.getHiveConfDir());
             } else {
                 PaimonServiceFactory.createHiveCatalogService(
-                        catalogDto.getName(),
-                        catalogDto.getWarehouse(),
-                        catalogDto.getHiveUri(),
+                        catalogDTO.getName(),
+                        catalogDTO.getWarehouse(),
+                        catalogDTO.getHiveUri(),
                         null);
             }
         }
 
-        CatalogInfo catalogInfo =
+        CatalogInfo catalog =
                 CatalogInfo.builder()
-                        .catalogName(catalogDto.getName())
-                        .catalogType(catalogDto.getType())
-                        .hiveUri(catalogDto.getHiveUri())
-                        .warehouse(catalogDto.getWarehouse())
+                        .catalogName(catalogDTO.getName())
+                        .catalogType(catalogDTO.getType())
+                        .hiveUri(catalogDTO.getHiveUri())
+                        .warehouse(catalogDTO.getWarehouse())
                         .isDelete(false)
                         .build();
 
-        return this.save(catalogInfo) ? R.succeed() : R.failed();
+        return this.save(catalog) ? R.succeed() : R.failed();
     }
 }

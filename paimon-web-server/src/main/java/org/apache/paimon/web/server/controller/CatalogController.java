@@ -50,13 +50,13 @@ public class CatalogController {
     /**
      * Create a catalog.
      *
-     * @param catalogDto The catalogDto for the catalog.
+     * @param catalogDTO The catalogDTO for the catalog.
      * @return The created catalog.
      */
     @PostMapping("/create")
-    public R<Void> createCatalog(@RequestBody CatalogDTO catalogDto) {
+    public R<Void> createCatalog(@RequestBody CatalogDTO catalogDTO) {
         try {
-            return catalogService.createCatalog(catalogDto);
+            return catalogService.createCatalog(catalogDTO);
         } catch (Exception e) {
             log.error("Exception with creating catalog.", e);
             return R.failed(Status.CATALOG_CREATE_ERROR);
@@ -77,24 +77,24 @@ public class CatalogController {
     /**
      * Removes a catalog with given catalog name or catalog id.
      *
-     * @param catalogDto Given the catalog name or catalog id to remove catalog.
+     * @param catalogDTO Given the catalog name or catalog id to remove catalog.
      * @return A response indicating the success or failure of the operation.
      */
     @PostMapping("/remove")
-    public R<Void> removeCatalog(@RequestBody CatalogDTO catalogDto) {
+    public R<Void> removeCatalog(@RequestBody CatalogDTO catalogDTO) {
         boolean remove;
-        if (StringUtils.isNotBlank(catalogDto.getName())) {
+        if (StringUtils.isNotBlank(catalogDTO.getName())) {
             remove =
                     catalogService.remove(
                             Wrappers.lambdaQuery(CatalogInfo.class)
                                     .eq(
                                             CatalogInfo::getCatalogName,
-                                            catalogDto.getName()));
+                                            catalogDTO.getName()));
         } else {
             remove =
                     catalogService.remove(
                             Wrappers.lambdaQuery(CatalogInfo.class)
-                                    .eq(CatalogInfo::getId, catalogDto.getId()));
+                                    .eq(CatalogInfo::getId, catalogDTO.getId()));
         }
         return remove ? R.succeed() : R.failed(Status.CATALOG_REMOVE_ERROR);
     }
