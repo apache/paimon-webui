@@ -68,10 +68,11 @@ class HttpRequest {
     return useAxle(options)
   }
 
-  get<R = any, P = any>(url: string, options: AxleConfigOptions<R, P>) {
+  get<R = any, P = any>(url: string, options?: AxleConfigOptions<R, P>) {
     return this.request<R, P>({
       url,
       runner: axle.get,
+      data: null as any,
       ...options
     })
   }
