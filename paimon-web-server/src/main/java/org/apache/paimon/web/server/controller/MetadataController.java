@@ -20,10 +20,10 @@ package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
 import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.vo.DataFileVo;
-import org.apache.paimon.web.server.data.vo.ManifestsVo;
-import org.apache.paimon.web.server.data.vo.SchemaVo;
-import org.apache.paimon.web.server.data.vo.SnapshotVo;
+import org.apache.paimon.web.server.data.vo.DataFileVO;
+import org.apache.paimon.web.server.data.vo.ManifestsVO;
+import org.apache.paimon.web.server.data.vo.SchemaVO;
+import org.apache.paimon.web.server.data.vo.SnapshotVO;
 import org.apache.paimon.web.server.service.MetadataService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,22 +47,22 @@ public class MetadataController {
     }
 
     @PostMapping("/schema")
-    public R<List<SchemaVo>> getSchemaInfo(@RequestBody QueryMetadataDto dto) {
+    public R<List<SchemaVO>> getSchemaInfo(@RequestBody QueryMetadataDto dto) {
         return R.succeed(metadataService.getSchema(dto));
     }
 
     @PostMapping("/snapshot")
-    public R<List<SnapshotVo>> getSnapshotInfo(@RequestBody QueryMetadataDto dto) {
+    public R<List<SnapshotVO>> getSnapshotInfo(@RequestBody QueryMetadataDto dto) {
         return R.succeed(metadataService.getSnapshot(dto));
     }
 
     @PostMapping("/manifest")
-    public R<List<ManifestsVo>> getManifestInfo(@RequestBody QueryMetadataDto dto) {
+    public R<List<ManifestsVO>> getManifestInfo(@RequestBody QueryMetadataDto dto) {
         return R.succeed(metadataService.getManifest(dto));
     }
 
     @PostMapping("/dataFile")
-    public R<List<DataFileVo>> getDataFileInfo(@RequestBody QueryMetadataDto dto) {
+    public R<List<DataFileVO>> getDataFileInfo(@RequestBody QueryMetadataDto dto) {
         return R.succeed(metadataService.getDataFile(dto));
     }
 }

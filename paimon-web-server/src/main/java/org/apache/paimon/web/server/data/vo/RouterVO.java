@@ -24,7 +24,7 @@ import java.util.List;
 
 /** route config info. */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class RouterVo {
+public class RouterVO {
     /** route name. */
     private String name;
 
@@ -56,10 +56,10 @@ public class RouterVo {
     private Boolean alwaysShow;
 
     /** other meta info. */
-    private MetaVo meta;
+    private MetaVO meta;
 
     /** children route. */
-    private List<RouterVo> children;
+    private List<RouterVO> children;
 
     public String getName() {
         return name;
@@ -117,19 +117,19 @@ public class RouterVo {
         this.alwaysShow = alwaysShow;
     }
 
-    public MetaVo getMeta() {
+    public MetaVO getMeta() {
         return meta;
     }
 
-    public void setMeta(MetaVo meta) {
+    public void setMeta(MetaVO meta) {
         this.meta = meta;
     }
 
-    public List<RouterVo> getChildren() {
+    public List<RouterVO> getChildren() {
         return children;
     }
 
-    public void setChildren(List<RouterVo> children) {
+    public void setChildren(List<RouterVO> children) {
         this.children = children;
     }
 }

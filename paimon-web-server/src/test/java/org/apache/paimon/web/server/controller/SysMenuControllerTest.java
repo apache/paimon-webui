@@ -21,7 +21,7 @@ package org.apache.paimon.web.server.controller;
 import org.apache.paimon.web.server.data.model.SysMenu;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.tree.TreeSelect;
-import org.apache.paimon.web.server.data.vo.RoleMenuTreeselectVo;
+import org.apache.paimon.web.server.data.vo.RoleMenuTreeselectVO;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -118,8 +118,8 @@ public class SysMenuControllerTest extends ControllerTestBase {
                         .andReturn()
                         .getResponse()
                         .getContentAsString();
-        R<RoleMenuTreeselectVo> r =
-                ObjectMapperUtils.fromJSON(result, new TypeReference<R<RoleMenuTreeselectVo>>() {});
+        R<RoleMenuTreeselectVO> r =
+                ObjectMapperUtils.fromJSON(result, new TypeReference<R<RoleMenuTreeselectVO>>() {});
         assertEquals(200, r.getCode());
         assertNotNull(r.getData());
         assertNotNull(r.getData().getMenus());

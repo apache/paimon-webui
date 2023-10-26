@@ -19,12 +19,12 @@
 package org.apache.paimon.web.server.data.vo;
 
 /** VO of metadata manifest. */
-public class ManifestsVo {
+public class ManifestsVO {
     private final String fileName;
     private final Long fileSize;
     private final Long numAddedFiles;
 
-    public ManifestsVo(String fileName, Long fileSize, Long numAddedFiles) {
+    public ManifestsVO(String fileName, Long fileSize, Long numAddedFiles) {
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.numAddedFiles = numAddedFiles;
@@ -67,8 +67,8 @@ public class ManifestsVo {
             return this;
         }
 
-        public ManifestsVo build() {
-            return new ManifestsVo(fileName, fileSize, numAddedFiles);
+        public ManifestsVO build() {
+            return new ManifestsVO(fileName, fileSize, numAddedFiles);
         }
     }
 }

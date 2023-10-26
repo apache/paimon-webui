@@ -27,11 +27,11 @@ import java.util.List;
 
 /** Role Menu List Tree Vo. */
 @Getter
-public class RoleMenuTreeselectVo {
+public class RoleMenuTreeselectVO {
     private final List<Integer> checkedKeys;
     private final List<TreeSelect> menus;
 
-    public RoleMenuTreeselectVo(
+    public RoleMenuTreeselectVO(
             @JsonProperty("checkedKeys") List<Integer> checkedKeys,
             @JsonProperty("menus") List<TreeSelect> menus) {
         this.checkedKeys = checkedKeys;

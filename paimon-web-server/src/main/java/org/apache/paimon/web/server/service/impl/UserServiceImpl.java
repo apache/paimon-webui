@@ -29,7 +29,7 @@ import org.apache.paimon.web.server.data.result.exception.BaseException;
 import org.apache.paimon.web.server.data.result.exception.user.UserDisabledException;
 import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
 import org.apache.paimon.web.server.data.result.exception.user.UserPasswordNotMatchException;
-import org.apache.paimon.web.server.data.vo.UserInfoVo;
+import org.apache.paimon.web.server.data.vo.UserInfoVO;
 import org.apache.paimon.web.server.mapper.UserMapper;
 import org.apache.paimon.web.server.service.LdapService;
 import org.apache.paimon.web.server.service.RoleMenuService;
@@ -69,7 +69,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return {@link String}
      */
     @Override
-    public UserInfoVo login(LoginDTO loginDTO) throws BaseException {
+    public UserInfoVO login(LoginDTO loginDTO) throws BaseException {
         String username = loginDTO.getUsername();
         String password = loginDTO.getPassword();
 
@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new UserDisabledException();
         }
         // query user info
-        UserInfoVo userInfoVo = getUserInfoVo(user);
+        UserInfoVO userInfoVo = getUserInfoVo(user);
         // todo: Currently do not bind tenants
         /*if (CollectionUtils.isEmpty(userInfoVo.getTenantList())) {
             throw new UserNotBindTenantException();
@@ -96,10 +96,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * get user info. include user, role, menu. tenant.
      *
      * @param user user
-     * @return {@link UserInfoVo}
+     * @return {@link UserInfoVO}
      */
-    private UserInfoVo getUserInfoVo(User user) {
-        UserInfoVo userInfoVo = new UserInfoVo();
+    private UserInfoVO getUserInfoVo(User user) {
+        UserInfoVO userInfoVo = new UserInfoVO();
         userInfoVo.setUser(user);
         userInfoVo.setSaTokenInfo(StpUtil.getTokenInfo());
 

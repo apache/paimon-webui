@@ -21,7 +21,7 @@ package org.apache.paimon.web.server.data.vo;
 import org.apache.paimon.web.server.util.StringUtils;
 
 /** Route display information. */
-public class MetaVo {
+public class MetaVO {
     /** Set the name of the route displayed in the sidebar and Bread crumbs. */
     private String title;
 
@@ -34,26 +34,26 @@ public class MetaVo {
     /** link path. */
     private String link;
 
-    public MetaVo() {}
+    public MetaVO() {}
 
-    public MetaVo(String title, String icon) {
+    public MetaVO(String title, String icon) {
         this.title = title;
         this.icon = icon;
     }
 
-    public MetaVo(String title, String icon, boolean noCache) {
+    public MetaVO(String title, String icon, boolean noCache) {
         this.title = title;
         this.icon = icon;
         this.noCache = noCache;
     }
 
-    public MetaVo(String title, String icon, String link) {
+    public MetaVO(String title, String icon, String link) {
         this.title = title;
         this.icon = icon;
         this.link = link;
     }
 
-    public MetaVo(String title, String icon, boolean noCache, String link) {
+    public MetaVO(String title, String icon, boolean noCache, String link) {
         this.title = title;
         this.icon = icon;
         this.noCache = noCache;

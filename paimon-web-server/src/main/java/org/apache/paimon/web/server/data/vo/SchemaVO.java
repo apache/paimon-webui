@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /** VO of metadata schema. */
-public class SchemaVo {
+public class SchemaVO {
 
     private final Long schemaId;
     private final List<MetadataFieldsModel> fields;
@@ -37,7 +37,7 @@ public class SchemaVo {
     private final List<MetadataOptionModel> option;
     private final LocalDateTime updateTime;
 
-    public SchemaVo(
+    public SchemaVO(
             Long schemaId,
             List<MetadataFieldsModel> fields,
             String partitionKeys,
@@ -82,7 +82,7 @@ public class SchemaVo {
         return option;
     }
 
-    public static SchemaVo.Builder builder() {
+    public static SchemaVO.Builder builder() {
         return new Builder();
     }
 
@@ -131,8 +131,8 @@ public class SchemaVo {
             return this;
         }
 
-        public SchemaVo build() {
-            return new SchemaVo(
+        public SchemaVO build() {
+            return new SchemaVO(
                     schemaId, fields, partitionKeys, primaryKeys, comment, option, updateTime);
         }
     }

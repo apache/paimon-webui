@@ -19,10 +19,10 @@
 package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
-import org.apache.paimon.web.server.data.vo.DataFileVo;
-import org.apache.paimon.web.server.data.vo.ManifestsVo;
-import org.apache.paimon.web.server.data.vo.SchemaVo;
-import org.apache.paimon.web.server.data.vo.SnapshotVo;
+import org.apache.paimon.web.server.data.vo.DataFileVO;
+import org.apache.paimon.web.server.data.vo.ManifestsVO;
+import org.apache.paimon.web.server.data.vo.SchemaVO;
+import org.apache.paimon.web.server.data.vo.SnapshotVO;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public interface MetadataService {
      * @param dto query metadata info
      * @return a list of DatabaseInfo objects
      */
-    List<SchemaVo> getSchema(QueryMetadataDto dto);
+    List<SchemaVO> getSchema(QueryMetadataDto dto);
 
     /**
      * Retrieves a list of Metadata snapshot.
@@ -43,7 +43,7 @@ public interface MetadataService {
      * @param dto query metadata info
      * @return a list of snapshot objects
      */
-    List<SnapshotVo> getSnapshot(QueryMetadataDto dto);
+    List<SnapshotVO> getSnapshot(QueryMetadataDto dto);
 
     /**
      * Retrieves a list of Metadata manifest.
@@ -51,7 +51,7 @@ public interface MetadataService {
      * @param dto query metadata info
      * @return a list of manifest info objects
      */
-    List<ManifestsVo> getManifest(QueryMetadataDto dto);
+    List<ManifestsVO> getManifest(QueryMetadataDto dto);
 
     /**
      * Retrieves a list of Metadata data file.
@@ -59,5 +59,5 @@ public interface MetadataService {
      * @param dto query metadata info
      * @return a list of data file objects
      */
-    List<DataFileVo> getDataFile(QueryMetadataDto dto);
+    List<DataFileVO> getDataFile(QueryMetadataDto dto);
 }

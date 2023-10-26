@@ -19,14 +19,14 @@
 package org.apache.paimon.web.server.data.vo;
 
 /** VO of metadata data file. */
-public class DataFileVo {
+public class DataFileVO {
 
     private final String partition;
     private final long bucket;
     private final String filePath;
     private final String fileFormat;
 
-    public DataFileVo(String partition, long bucket, String filePath, String fileFormat) {
+    public DataFileVO(String partition, long bucket, String filePath, String fileFormat) {
         this.partition = partition;
         this.bucket = bucket;
         this.filePath = filePath;
@@ -80,8 +80,8 @@ public class DataFileVo {
             return this;
         }
 
-        public DataFileVo build() {
-            return new DataFileVo(partition, bucket, filePath, fileFormat);
+        public DataFileVO build() {
+            return new DataFileVO(partition, bucket, filePath, fileFormat);
         }
     }
 }

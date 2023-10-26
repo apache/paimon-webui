@@ -29,10 +29,10 @@ import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
 import org.apache.paimon.web.server.data.model.MetadataOptionModel;
-import org.apache.paimon.web.server.data.vo.DataFileVo;
-import org.apache.paimon.web.server.data.vo.ManifestsVo;
-import org.apache.paimon.web.server.data.vo.SchemaVo;
-import org.apache.paimon.web.server.data.vo.SnapshotVo;
+import org.apache.paimon.web.server.data.vo.DataFileVO;
+import org.apache.paimon.web.server.data.vo.ManifestsVO;
+import org.apache.paimon.web.server.data.vo.SchemaVO;
+import org.apache.paimon.web.server.data.vo.SnapshotVO;
 import org.apache.paimon.web.server.service.CatalogService;
 import org.apache.paimon.web.server.service.MetadataService;
 import org.apache.paimon.web.server.util.PaimonServiceUtils;
@@ -62,16 +62,16 @@ public class MetadataServiceImpl implements MetadataService {
     private RecordReader<InternalRow> reader;
 
     @Override
-    public List<SchemaVo> getSchema(QueryMetadataDto dto) {
+    public List<SchemaVO> getSchema(QueryMetadataDto dto) {
 
         initEnvironment(dto, MetadataConstant.SCHEMAS);
 
-        List<SchemaVo> result = new LinkedList<>();
+        List<SchemaVO> result = new LinkedList<>();
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        SchemaVo schemaVo =
-                                SchemaVo.builder()
+                        SchemaVO schemaVo =
+                                SchemaVO.builder()
                                         .setSchemaId(internalRow.getLong(0))
                                         .setFields(
                                                 new Gson()
@@ -98,17 +98,17 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<SnapshotVo> getSnapshot(QueryMetadataDto dto) {
+    public List<SnapshotVO> getSnapshot(QueryMetadataDto dto) {
 
         initEnvironment(dto, MetadataConstant.SNAPSHOTS);
 
-        List<SnapshotVo> result = new LinkedList<>();
+        List<SnapshotVO> result = new LinkedList<>();
 
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        SnapshotVo build =
-                                SnapshotVo.builder()
+                        SnapshotVO build =
+                                SnapshotVO.builder()
                                         .setSnapshotId(internalRow.getLong(0))
                                         .setSnapshotId(internalRow.getLong(1))
                                         .setCommitIdentifier(internalRow.getLong(3))
@@ -125,16 +125,16 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<ManifestsVo> getManifest(QueryMetadataDto dto) {
+    public List<ManifestsVO> getManifest(QueryMetadataDto dto) {
         initEnvironment(dto, MetadataConstant.MANIFESTS);
 
-        List<ManifestsVo> result = new LinkedList<>();
+        List<ManifestsVO> result = new LinkedList<>();
 
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        ManifestsVo manifestsVo =
-                                ManifestsVo.builder()
+                        ManifestsVO manifestsVo =
+                                ManifestsVO.builder()
                                         .setFileName(internalRow.getString(0).toString())
                                         .setFileSize(internalRow.getLong(1))
                                         .setNumAddedFiles(internalRow.getLong(2))
@@ -149,17 +149,17 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<DataFileVo> getDataFile(QueryMetadataDto dto) {
+    public List<DataFileVO> getDataFile(QueryMetadataDto dto) {
 
         initEnvironment(dto, MetadataConstant.FILES);
 
-        List<DataFileVo> result = new LinkedList<>();
+        List<DataFileVO> result = new LinkedList<>();
 
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        DataFileVo dataFileVo =
-                                DataFileVo.builder()
+                        DataFileVO dataFileVo =
+                                DataFileVO.builder()
                                         .setPartition(internalRow.getString(0).toString())
                                         .setBucket(internalRow.getLong(1))
                                         .setFilePath(internalRow.getString(2).toString())

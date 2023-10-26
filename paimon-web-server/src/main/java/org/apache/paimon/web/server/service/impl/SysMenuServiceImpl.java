@@ -23,8 +23,8 @@ import org.apache.paimon.web.server.data.enums.MenuType;
 import org.apache.paimon.web.server.data.model.SysMenu;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.tree.TreeSelect;
-import org.apache.paimon.web.server.data.vo.MetaVo;
-import org.apache.paimon.web.server.data.vo.RouterVo;
+import org.apache.paimon.web.server.data.vo.MetaVO;
+import org.apache.paimon.web.server.data.vo.RouterVO;
 import org.apache.paimon.web.server.mapper.RoleMenuMapper;
 import org.apache.paimon.web.server.mapper.SysMenuMapper;
 import org.apache.paimon.web.server.mapper.SysRoleMapper;
@@ -157,17 +157,17 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      * @return router list
      */
     @Override
-    public List<RouterVo> buildMenus(List<SysMenu> menus) {
-        List<RouterVo> routers = new LinkedList<RouterVo>();
+    public List<RouterVO> buildMenus(List<SysMenu> menus) {
+        List<RouterVO> routers = new LinkedList<RouterVO>();
         for (SysMenu menu : menus) {
-            RouterVo router = new RouterVo();
+            RouterVO router = new RouterVO();
             router.setHidden("1".equals(menu.getVisible()));
             router.setName(getRouteName(menu));
             router.setPath(getRouterPath(menu));
             router.setComponent(getComponent(menu));
             router.setQuery(menu.getQuery());
             router.setMeta(
-                    new MetaVo(
+                    new MetaVO(
                             menu.getMenuName(),
                             menu.getIcon(),
                             menu.getIsCache() == 1,
@@ -179,13 +179,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
                 router.setChildren(buildMenus(cMenus));
             } else if (isMenuFrame(menu)) {
                 router.setMeta(null);
-                List<RouterVo> childrenList = new ArrayList<RouterVo>();
-                RouterVo children = new RouterVo();
+                List<RouterVO> childrenList = new ArrayList<RouterVO>();
+                RouterVO children = new RouterVO();
                 children.setPath(menu.getPath());
                 children.setComponent(menu.getComponent());
                 children.setName(StringUtils.capitalize(menu.getPath()));
                 children.setMeta(
-                        new MetaVo(
+                        new MetaVO(
                                 menu.getMenuName(),
                                 menu.getIcon(),
                                 menu.getIsCache() == 1,
@@ -194,15 +194,15 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
                 childrenList.add(children);
                 router.setChildren(childrenList);
             } else if (menu.getParentId() == 0 && isInnerLink(menu)) {
-                router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon()));
+                router.setMeta(new MetaVO(menu.getMenuName(), menu.getIcon()));
                 router.setPath("/");
-                List<RouterVo> childrenList = new ArrayList<RouterVo>();
-                RouterVo children = new RouterVo();
+                List<RouterVO> childrenList = new ArrayList<RouterVO>();
+                RouterVO children = new RouterVO();
                 String routerPath = innerLinkReplaceEach(menu.getPath());
                 children.setPath(routerPath);
                 children.setComponent(Constants.INNER_LINK);
                 children.setName(StringUtils.capitalize(routerPath));
-                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), menu.getPath()));
+                children.setMeta(new MetaVO(menu.getMenuName(), menu.getIcon(), menu.getPath()));
                 childrenList.add(children);
                 router.setChildren(childrenList);
             }
