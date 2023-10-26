@@ -25,7 +25,7 @@ import org.apache.paimon.table.Table;
 import org.apache.paimon.table.source.ReadBuilder;
 import org.apache.paimon.web.api.table.TableManager;
 import org.apache.paimon.web.server.constant.MetadataConstant;
-import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
+import org.apache.paimon.web.server.data.dto.QueryMetadataDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
 import org.apache.paimon.web.server.data.model.MetadataOptionModel;
@@ -62,7 +62,7 @@ public class MetadataServiceImpl implements MetadataService {
     private RecordReader<InternalRow> reader;
 
     @Override
-    public List<SchemaVO> getSchema(QueryMetadataDto dto) {
+    public List<SchemaVO> getSchema(QueryMetadataDTO dto) {
 
         initEnvironment(dto, MetadataConstant.SCHEMAS);
 
@@ -98,7 +98,7 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<SnapshotVO> getSnapshot(QueryMetadataDto dto) {
+    public List<SnapshotVO> getSnapshot(QueryMetadataDTO dto) {
 
         initEnvironment(dto, MetadataConstant.SNAPSHOTS);
 
@@ -125,7 +125,7 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<ManifestsVO> getManifest(QueryMetadataDto dto) {
+    public List<ManifestsVO> getManifest(QueryMetadataDTO dto) {
         initEnvironment(dto, MetadataConstant.MANIFESTS);
 
         List<ManifestsVO> result = new LinkedList<>();
@@ -149,7 +149,7 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<DataFileVO> getDataFile(QueryMetadataDto dto) {
+    public List<DataFileVO> getDataFile(QueryMetadataDTO dto) {
 
         initEnvironment(dto, MetadataConstant.FILES);
 
@@ -173,7 +173,7 @@ public class MetadataServiceImpl implements MetadataService {
         return result;
     }
 
-    private void initEnvironment(QueryMetadataDto dto, String metadataConstantType) {
+    private void initEnvironment(QueryMetadataDTO dto, String metadataConstantType) {
         dto.setTableName(
                 String.format(
                         MetadataConstant.METADATA_TABLE_FORMAT,

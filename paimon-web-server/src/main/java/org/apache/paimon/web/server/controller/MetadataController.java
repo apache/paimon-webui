@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.QueryMetadataDto;
+import org.apache.paimon.web.server.data.dto.QueryMetadataDTO;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.vo.DataFileVO;
 import org.apache.paimon.web.server.data.vo.ManifestsVO;
@@ -47,22 +47,22 @@ public class MetadataController {
     }
 
     @PostMapping("/schema")
-    public R<List<SchemaVO>> getSchemaInfo(@RequestBody QueryMetadataDto dto) {
+    public R<List<SchemaVO>> getSchemaInfo(@RequestBody QueryMetadataDTO dto) {
         return R.succeed(metadataService.getSchema(dto));
     }
 
     @PostMapping("/snapshot")
-    public R<List<SnapshotVO>> getSnapshotInfo(@RequestBody QueryMetadataDto dto) {
+    public R<List<SnapshotVO>> getSnapshotInfo(@RequestBody QueryMetadataDTO dto) {
         return R.succeed(metadataService.getSnapshot(dto));
     }
 
     @PostMapping("/manifest")
-    public R<List<ManifestsVO>> getManifestInfo(@RequestBody QueryMetadataDto dto) {
+    public R<List<ManifestsVO>> getManifestInfo(@RequestBody QueryMetadataDTO dto) {
         return R.succeed(metadataService.getManifest(dto));
     }
 
     @PostMapping("/dataFile")
-    public R<List<DataFileVO>> getDataFileInfo(@RequestBody QueryMetadataDto dto) {
+    public R<List<DataFileVO>> getDataFileInfo(@RequestBody QueryMetadataDTO dto) {
         return R.succeed(metadataService.getDataFile(dto));
     }
 }
