@@ -92,7 +92,7 @@ export default defineComponent({
       }
     }
 
-    onMounted(catalogStore.getAllCatalog)
+    onMounted(catalogStore.getAllCatalogs)
 
     return {
       menuLoading: catalogStoreRef.catalogLoading,

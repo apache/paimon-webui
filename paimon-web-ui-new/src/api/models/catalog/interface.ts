@@ -19,11 +19,9 @@ export interface Catalog {
   id: number;
   createTime: string;
   updateTime?: string;
-  catalogType: string;
-  catalogName: string;
+  type: string;
+  name: string;
   warehouse: string;
   hiveUri?: string;
   hiveConfDir?: string;
-  isDelete: boolean;
-  delete: boolean;
 }

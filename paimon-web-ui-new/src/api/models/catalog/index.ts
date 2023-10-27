@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '@/api/request'
-import type { CatalogType } from './interface'
+import type { Catalog } from './interface'
 
 export * from './interface'
 
@@ -25,8 +25,8 @@ export * from './interface'
 /**
  * # Get all catalog
  */
-export const getAllCatalogApi = () => {
-  return httpRequest.get<any, CatalogType[]>('/catalog/getAllCatalogs')
+export const getAllCatalogs = () => {
+  return httpRequest.get<any, Catalog[]>('/catalog/getAllCatalogs')
 }
 
 // #endregion

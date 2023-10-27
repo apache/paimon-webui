@@ -19,7 +19,7 @@ import { NIcon, type TreeOption } from 'naive-ui'
 import { FolderOpenOutline } from '@vicons/ionicons5'
 
 
-import { getAllCatalogApi, type Catalog } from "@/api/models/catalog"
+import { getAllCatalogs, type Catalog } from "@/api/models/catalog"
 
 export interface CatalogState {
   _catalogs: Catalog[];
@@ -41,8 +41,8 @@ export const useCatalogStore = defineStore('catalog', {
     }
   },
   actions: {
-    async getAllCatalog(): Promise<void> {
-      const [, useAllCatalog] = getAllCatalogApi()
+    async getAllCatalogs(): Promise<void> {
+      const [, useAllCatalog] = getAllCatalogs()
 
       this._catalogLoading = true
       const res = await useAllCatalog()
@@ -54,8 +54,8 @@ export const useCatalogStore = defineStore('catalog', {
 
 const transformCatalog = (catalogs: Catalog[]): TreeOption[] => {
   return catalogs.map(catalog => ({
-    label: catalog.catalogName,
-    type: catalog.catalogType,
+    label: catalog.name,
+    type: catalog.type,
     key: catalog.id,
     isLeaf: false,
     children: [],
