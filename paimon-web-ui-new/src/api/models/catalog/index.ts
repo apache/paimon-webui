@@ -15,9 +15,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/metadata',
-  name: 'metadata',
-  meta: { title: 'Metadata' },
-  component: () => import('@/views/metadata')
+import httpRequest from '@/api/request'
+import type { Catalog } from './interface'
+
+export * from './interface'
+
+// #region catalog-controller
+
+/**
+ * # Get all catalog
+ */
+export const getAllCatalogs = () => {
+  return httpRequest.get<any, Catalog[]>('/catalog/getAllCatalogs')
 }
+
+// #endregion

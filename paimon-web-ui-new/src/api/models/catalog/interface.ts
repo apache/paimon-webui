@@ -15,9 +15,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/metadata',
-  name: 'metadata',
-  meta: { title: 'Metadata' },
-  component: () => import('@/views/metadata')
+export interface Catalog {
+  id: number;
+  createTime: string;
+  updateTime?: string;
+  type: string;
+  name: string;
+  warehouse: string;
+  hiveUri?: string;
+  hiveConfDir?: string;
 }
