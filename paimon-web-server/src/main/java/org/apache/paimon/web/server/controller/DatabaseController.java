@@ -79,7 +79,7 @@ public class DatabaseController {
     }
 
     /**
-     * /** Get all database information.
+     * Get all database information.
      *
      * @return The list of all databases.
      */

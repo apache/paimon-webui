@@ -16,40 +16,49 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.table;
+package org.apache.paimon.web.server.data.vo;
+
+import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
+import org.apache.paimon.web.server.data.model.MetadataOptionModel;
 
 import javax.annotation.Nullable;
 
-/** schema table metadata. */
-public class SchemaTableMetadata {
+import java.time.LocalDateTime;
+import java.util.List;
+
+/** VO of metadata schema. */
+public class SchemaVO {
 
     private final Long schemaId;
-    private final String fields;
+    private final List<MetadataFieldsModel> fields;
     private final String partitionKeys;
     private final String primaryKeys;
-    private final String options;
     private final String comment;
+    private final List<MetadataOptionModel> option;
+    private final LocalDateTime updateTime;
 
-    public SchemaTableMetadata(
+    public SchemaVO(
             Long schemaId,
-            String fields,
+            List<MetadataFieldsModel> fields,
             String partitionKeys,
             String primaryKeys,
-            String options,
-            String comment) {
+            String comment,
+            List<MetadataOptionModel> option,
+            LocalDateTime updateTime) {
         this.schemaId = schemaId;
         this.fields = fields;
         this.partitionKeys = partitionKeys;
         this.primaryKeys = primaryKeys;
-        this.options = options;
         this.comment = comment;
+        this.option = option;
+        this.updateTime = updateTime;
     }
 
     public Long getSchemaId() {
         return schemaId;
     }
 
-    public String getFields() {
+    public List<MetadataFieldsModel> getFields() {
         return fields;
     }
 
@@ -61,60 +70,70 @@ public class SchemaTableMetadata {
         return primaryKeys;
     }
 
-    public String getOptions() {
-        return options;
-    }
-
     public String getComment() {
         return comment;
     }
 
-    public static SchemaTableMetadata.Builder builder() {
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public List<MetadataOptionModel> getOption() {
+        return option;
+    }
+
+    public static SchemaVO.Builder builder() {
         return new Builder();
     }
 
-    /** The builder for SchemaTableMetadata. */
-    public static final class Builder {
+    /** Builder for SchemaInfoVo. */
+    public static class Builder {
         private Long schemaId;
-        private String fields;
+        private List<MetadataFieldsModel> fields;
         private String partitionKeys;
         private String primaryKeys;
-        private String options;
         @Nullable private String comment;
+        @Nullable private List<MetadataOptionModel> option;
+        private LocalDateTime updateTime;
 
-        public Builder schemaId(Long schemaId) {
+        public Builder setSchemaId(Long schemaId) {
             this.schemaId = schemaId;
             return this;
         }
 
-        public Builder fields(String fields) {
+        public Builder setFields(List<MetadataFieldsModel> fields) {
             this.fields = fields;
             return this;
         }
 
-        public Builder partitionKeys(String partitionKeys) {
+        public Builder setPartitionKeys(String partitionKeys) {
             this.partitionKeys = partitionKeys;
             return this;
         }
 
-        public Builder primaryKeys(String primaryKeys) {
+        public Builder setPrimaryKeys(String primaryKeys) {
             this.primaryKeys = primaryKeys;
             return this;
         }
 
-        public Builder options(String options) {
-            this.options = options;
-            return this;
-        }
-
-        public Builder comment(String comment) {
+        public Builder setComment(String comment) {
             this.comment = comment;
             return this;
         }
 
-        public SchemaTableMetadata build() {
-            return new SchemaTableMetadata(
-                    schemaId, fields, partitionKeys, primaryKeys, options, comment);
+        public Builder setOption(List<MetadataOptionModel> option) {
+            this.option = option;
+            return this;
+        }
+
+        public Builder setUpdateTime(LocalDateTime updateTime) {
+            this.updateTime = updateTime;
+            return this;
+        }
+
+        public SchemaVO build() {
+            return new SchemaVO(
+                    schemaId, fields, partitionKeys, primaryKeys, comment, option, updateTime);
         }
     }
 }

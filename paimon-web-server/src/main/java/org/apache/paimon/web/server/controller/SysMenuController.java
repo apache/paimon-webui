@@ -23,8 +23,8 @@ import org.apache.paimon.web.server.data.model.SysMenu;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.tree.TreeSelect;
-import org.apache.paimon.web.server.data.vo.RoleMenuTreeselectVo;
-import org.apache.paimon.web.server.data.vo.RouterVo;
+import org.apache.paimon.web.server.data.vo.RoleMenuTreeselectVO;
+import org.apache.paimon.web.server.data.vo.RouterVO;
 import org.apache.paimon.web.server.service.SysMenuService;
 import org.apache.paimon.web.server.util.StringUtils;
 
@@ -73,12 +73,12 @@ public class SysMenuController {
 
     /** Load the corresponding character menu list tree. */
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
-    public R<RoleMenuTreeselectVo> roleMenuTreeselect(@PathVariable("roleId") Integer roleId) {
+    public R<RoleMenuTreeselectVO> roleMenuTreeselect(@PathVariable("roleId") Integer roleId) {
         List<SysMenu> menus = menuService.selectMenuList();
 
         List<TreeSelect> treeMenus = menuService.buildMenuTreeSelect(menus);
         List<Integer> checkedKeys = menuService.selectMenuListByRoleId(roleId);
-        return R.succeed(new RoleMenuTreeselectVo(checkedKeys, treeMenus));
+        return R.succeed(new RoleMenuTreeselectVO(checkedKeys, treeMenus));
     }
 
     /** add new menu. */
@@ -119,7 +119,7 @@ public class SysMenuController {
 
     /** Get router list. */
     @GetMapping("/getRouters")
-    public R<List<RouterVo>> getRouters() {
+    public R<List<RouterVO>> getRouters() {
         int userId = StpUtil.getLoginIdAsInt();
         List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
         return R.succeed(menuService.buildMenus(menus));

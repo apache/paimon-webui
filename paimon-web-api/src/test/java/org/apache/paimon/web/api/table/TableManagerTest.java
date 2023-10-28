@@ -23,6 +23,8 @@ import org.apache.paimon.table.Table;
 import org.apache.paimon.types.DataTypes;
 import org.apache.paimon.web.api.catalog.CatalogCreator;
 import org.apache.paimon.web.api.database.DatabaseManager;
+import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
+import org.apache.paimon.web.api.table.metadata.TableMetadata;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
