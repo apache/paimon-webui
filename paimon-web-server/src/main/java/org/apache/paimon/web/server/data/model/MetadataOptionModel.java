@@ -27,6 +27,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MetadataOptionModel {
+
     private String key;
+
     private Object value;
 }
