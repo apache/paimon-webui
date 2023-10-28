@@ -21,5 +21,7 @@ export default {
   cdc_ingestion: 'CDC 集成',
   system: '系统管理',
   light: '浅色',
-  dark: '暗色'
+  dark: '暗色',
+  cancel: '取消',
+  confirm: '确认',
 }

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "dart-sass": "^1.25.0",
+    "lodash": "^4.17.21",
     "mitt": "^3.0.1",
     "monaco-editor": "^0.43.0",
     "pinia": "^2.1.6",
@@ -27,6 +28,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.3.3",
     "@tsconfig/node18": "^18.2.2",
+    "@types/lodash": "^4.14.200",
     "@types/node": "^18.17.15",
     "@varlet/axle": "^0.1.2",
     "@vicons/ionicons5": "^0.12.0",
