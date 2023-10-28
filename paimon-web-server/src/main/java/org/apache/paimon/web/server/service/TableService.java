@@ -26,9 +26,7 @@ import org.apache.paimon.web.server.data.vo.TableVO;
 
 import java.util.List;
 
-/**
- * Table service.
- **/
+/** Table service. */
 public interface TableService {
 
     /**

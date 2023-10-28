@@ -211,7 +211,7 @@ public class TableController {
      * @return Response object containing a list of {@link TableVO} representing the tables.
      */
     @GetMapping("/queryTables/{tableName}")
-    public R<List<TableVO>> queryTablesByCondition(@PathVariable String tableName){
+    public R<List<TableVO>> queryTablesByCondition(@PathVariable String tableName) {
         return tableService.queryTablesByCondition(tableName);
     }
 }

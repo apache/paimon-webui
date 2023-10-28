@@ -21,9 +21,9 @@ package org.apache.paimon.web.server.service.impl;
 import org.apache.paimon.table.Table;
 import org.apache.paimon.types.DataField;
 import org.apache.paimon.web.api.catalog.PaimonService;
-import org.apache.paimon.web.api.table.ColumnMetadata;
 import org.apache.paimon.web.api.table.TableChange;
-import org.apache.paimon.web.api.table.TableMetadata;
+import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
+import org.apache.paimon.web.api.table.metadata.TableMetadata;
 import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.AlterTableRequest;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
@@ -42,11 +42,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-/**
- * Table service.
- **/
+/** Table service. */
 @Slf4j
 @Service
 public class TableServiceImpl implements TableService {
