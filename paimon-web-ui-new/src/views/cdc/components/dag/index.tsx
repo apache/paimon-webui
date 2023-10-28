@@ -15,23 +15,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/cdc_ingestion',
-  name: 'cdc_ingestion',
-  meta: { title: 'CDC Ingestion' },
-  redirect: { name: 'cdc-list' },
-  children: [
-    {
-      path: '/cdc_ingestion/list',
-      name: 'cdc-list',
-      meta: { title: 'CDCList' },
-      component: () => import('@/views/cdc')
-    },
-    {
-      path: '/cdc_ingestion/dag',
-      name: 'cdc-dag',
-      meta: { title: 'CDCDag' },
-      component: () => import('@/views/cdc/components/dag')
-    },
-  ]
-}
+export default defineComponent({
+  name: 'DagPage',
+  setup() {
+    const { t } = useLocaleHooks()
+    
+    return {
+      t,
+    }
+  },
+  render() {
+    return (
+      <div>
+        DAG
+      </div>
+    )
+  }
+})

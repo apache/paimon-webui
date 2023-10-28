@@ -16,13 +16,15 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss';
-import TableAction from '../../../../components/table-action';
-import Modal from '@/components/modal';
+import TableAction from '@/components/table-action';
+import type { Router } from 'vue-router';
 
 export default defineComponent({
   name: 'ListPage',
   setup() {
     const { t } = useLocaleHooks()
+    const router: Router = useRouter()
+
     const tableVariables = reactive({
       columns: [
         {
@@ -62,8 +64,8 @@ export default defineComponent({
             h(TableAction, {
               row,
               onHandleEdit: (row) => {
-                tableVariables.showModal = true
                 tableVariables.row = row
+                router.push({ path: '/cdc_ingestion/dag' })
               },
             })
         }
@@ -75,9 +77,9 @@ export default defineComponent({
       pagination: {
         pageSize: 10
       },
-      showModal: false,
       row: {}
     })
+    
     return {
       t,
       ...toRefs(tableVariables)
@@ -91,12 +93,6 @@ export default defineComponent({
           data={this.data}
           pagination={this.pagination}
           bordered={false}
-        />
-        <Modal
-          showModal={this.showModal}
-          title={this.t('cdc.edit_synchronization_job')}
-          formType="CDCLIST"
-          onCancel={() => this.showModal = false}
         />
       </div>
     )

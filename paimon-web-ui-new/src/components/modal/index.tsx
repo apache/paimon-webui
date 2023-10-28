@@ -96,7 +96,7 @@ export default defineComponent({
               <Form
                 ref={this.formRef}
                 meta={{
-                  ...this.model,
+                  model: this.model,
                   rules: this.rulesRef,
                   elements: this.elementsRef,
                 }}
