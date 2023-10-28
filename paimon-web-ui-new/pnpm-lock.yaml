@@ -23,6 +23,9 @@ dependencies:
   dart-sass:
     specifier: ^1.25.0
     version: 1.25.0
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
   mitt:
     specifier: ^3.0.1
     version: 3.0.1
@@ -61,6 +64,9 @@ devDependencies:
   '@tsconfig/node18':
     specifier: ^18.2.2
     version: 18.2.2
+  '@types/lodash':
+    specifier: ^4.14.200
+    version: 4.14.200
   '@types/node':
     specifier: ^18.17.15
     version: 18.17.15
@@ -845,11 +851,11 @@ packages:
   /@types/lodash-es@4.17.9:
     resolution: {integrity: sha512-ZTcmhiI3NNU7dEvWLZJkzG6ao49zOIjEgIE0RgV7wbPxU0f2xT3VSAHw2gmst8swH6V0YkLRGp4qPlX/6I90MQ==}
     dependencies:
-      '@types/lodash': 4.14.198
+      '@types/lodash': 4.14.200
     dev: true
 
-  /@types/lodash@4.14.198:
-    resolution: {integrity: sha512-trNJ/vtMZYMLhfN45uLq4ShQSw0/S7xCTLLVM+WM1rmFpba/VS42jVUgaO3w/NOLiWR/09lnYk0yMaA/atdIsg==}
+  /@types/lodash@4.14.200:
+    resolution: {integrity: sha512-YI/M/4HRImtNf3pJgbF+W6FrXovqj+T+/HpENLTooK9PnkacBsDpeP3IpHab40CClUfhNmdM2WTNP2sa2dni5Q==}
     dev: true
 
   /@types/node@18.17.15:
@@ -2709,7 +2715,6 @@ packages:
 
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
@@ -2821,7 +2826,7 @@ packages:
       '@css-render/plugin-bem': 0.15.12(css-render@0.15.12)
       '@css-render/vue3-ssr': 0.15.12(vue@3.3.4)
       '@types/katex': 0.14.0
-      '@types/lodash': 4.14.198
+      '@types/lodash': 4.14.200
       '@types/lodash-es': 4.17.9
       async-validator: 4.2.5
       css-render: 0.15.12

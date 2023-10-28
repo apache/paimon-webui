@@ -16,7 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss';
-import TableAction from '../table-action';
+import TableAction from '../../../../components/table-action';
+import Modal from '@/components/modal';
 
 export default defineComponent({
   name: 'ListPage',
@@ -60,6 +61,10 @@ export default defineComponent({
           render: (row: any) =>
             h(TableAction, {
               row,
+              onHandleEdit: (row) => {
+                tableVariables.showModal = true
+                tableVariables.row = row
+              },
             })
         }
       ],
@@ -69,7 +74,9 @@ export default defineComponent({
       ],
       pagination: {
         pageSize: 10
-      }
+      },
+      showModal: false,
+      row: {}
     })
     return {
       t,
@@ -83,7 +90,13 @@ export default defineComponent({
           columns={this.columns}
           data={this.data}
           pagination={this.pagination}
-          bordered="false"
+          bordered={false}
+        />
+        <Modal
+          showModal={this.showModal}
+          title={this.t('cdc.edit_synchronization_job')}
+          formType="CDCLIST"
+          onCancel={() => this.showModal = false}
         />
       </div>
     )
