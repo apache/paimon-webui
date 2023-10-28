@@ -97,16 +97,16 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     @Test
     public void testGetSchemaInfo() throws Exception {
-        QueryMetadataDTO MetadataInfo = new QueryMetadataDTO();
-        MetadataInfo.setCatalogName(catalogName);
-        MetadataInfo.setDatabaseName(databaseName);
-        MetadataInfo.setTableName(tableName);
+        QueryMetadataDTO metadata = new QueryMetadataDTO();
+        metadata.setCatalogName(catalogName);
+        metadata.setDatabaseName(databaseName);
+        metadata.setTableName(tableName);
 
         String response =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(METADATA_PATH + "/querySchemaInfo")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(MetadataInfo))
+                                        .content(ObjectMapperUtils.toJSON(metadata))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
