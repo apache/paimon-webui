@@ -158,13 +158,11 @@ public class MetadataServiceImpl implements MetadataService {
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        DataFileVO dataFileVo =
-                                DataFileVO.builder()
-                                        .setPartition(internalRow.getString(0).toString())
-                                        .setBucket(internalRow.getLong(1))
-                                        .setFilePath(internalRow.getString(2).toString())
-                                        .setFileFormat(internalRow.getString(3).toString())
-                                        .build();
+                        DataFileVO dataFileVo = new DataFileVO();
+                        dataFileVo.setPartition(internalRow.getString(0).toString());
+                        dataFileVo.setBucket(internalRow.getLong(1));
+                        dataFileVo.setFilePath(internalRow.getString(2).toString());
+                        dataFileVo.setFileFormat(internalRow.getString(3).toString());
                         result.add(dataFileVo);
                     });
         } catch (IOException e) {

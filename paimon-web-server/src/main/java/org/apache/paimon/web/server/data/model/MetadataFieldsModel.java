@@ -23,8 +23,12 @@ import lombok.Data;
 /** Model of metadata fields. */
 @Data
 public class MetadataFieldsModel {
+
     private int id;
+
     private String name;
+
     private String type;
+
     private String comment;
 }

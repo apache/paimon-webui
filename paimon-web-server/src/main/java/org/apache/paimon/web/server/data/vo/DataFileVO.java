@@ -18,70 +18,21 @@
 
 package org.apache.paimon.web.server.data.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /** VO of metadata data file. */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DataFileVO {
 
-    private final String partition;
-    private final long bucket;
-    private final String filePath;
-    private final String fileFormat;
+    private String partition;
 
-    public DataFileVO(String partition, long bucket, String filePath, String fileFormat) {
-        this.partition = partition;
-        this.bucket = bucket;
-        this.filePath = filePath;
-        this.fileFormat = fileFormat;
-    }
+    private long bucket;
 
-    public String getPartition() {
-        return partition;
-    }
+    private String filePath;
 
-    public long getBucket() {
-        return bucket;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public String getFileFormat() {
-        return fileFormat;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    /** DataFileInfoVo Builder. */
-    public static class Builder {
-        private String partition;
-        private long bucket;
-        private String filePath;
-        private String fileFormat;
-
-        public Builder setPartition(String partition) {
-            this.partition = partition;
-            return this;
-        }
-
-        public Builder setBucket(long bucket) {
-            this.bucket = bucket;
-            return this;
-        }
-
-        public Builder setFilePath(String filePath) {
-            this.filePath = filePath;
-            return this;
-        }
-
-        public Builder setFileFormat(String fileFormat) {
-            this.fileFormat = fileFormat;
-            return this;
-        }
-
-        public DataFileVO build() {
-            return new DataFileVO(partition, bucket, filePath, fileFormat);
-        }
-    }
+    private String fileFormat;
 }

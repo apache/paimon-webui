@@ -23,7 +23,10 @@ import lombok.Data;
 /** DTO of query metadata is used for getting table metadata. */
 @Data
 public class QueryMetadataDTO {
+
     private String catalogName;
+
     private String databaseName;
+
     private String tableName;
 }
