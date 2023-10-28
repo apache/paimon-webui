@@ -48,6 +48,15 @@ import org.apache.paimon.web.api.common.CatalogProperties;
 import org.apache.paimon.web.api.common.MetastoreType;
 import org.apache.paimon.web.api.common.OperatorKind;
 import org.apache.paimon.web.api.common.WriteMode;
+import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
+import org.apache.paimon.web.api.table.metadata.ConsumerTableMetadata;
+import org.apache.paimon.web.api.table.metadata.FileTableMetadata;
+import org.apache.paimon.web.api.table.metadata.ManifestTableMetadata;
+import org.apache.paimon.web.api.table.metadata.OptionTableMetadata;
+import org.apache.paimon.web.api.table.metadata.SchemaTableMetadata;
+import org.apache.paimon.web.api.table.metadata.SnapshotTableMetadata;
+import org.apache.paimon.web.api.table.metadata.TableMetadata;
+import org.apache.paimon.web.api.table.metadata.TagTableMetadata;
 import org.apache.paimon.web.common.annotation.VisibleForTesting;
 import org.apache.paimon.web.common.utils.ParameterValidationUtil;
 

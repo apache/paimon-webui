@@ -16,33 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.table;
+package org.apache.paimon.web.server.data.dto;
 
-/** file table metadata. */
-public class ConsumerTableMetadata {
+import lombok.Data;
 
-    private String consumerId;
+/** DTO of query metadata is used for getting table metadata. */
+@Data
+public class QueryMetadataDTO {
 
-    private Long nextSnapshotId;
+    private String catalogName;
 
-    public ConsumerTableMetadata(String consumerId, Long nextSnapshotId) {
-        this.consumerId = consumerId;
-        this.nextSnapshotId = nextSnapshotId;
-    }
+    private String databaseName;
 
-    public String getConsumerId() {
-        return consumerId;
-    }
-
-    public void setConsumerId(String consumerId) {
-        this.consumerId = consumerId;
-    }
-
-    public Long getNextSnapshotId() {
-        return nextSnapshotId;
-    }
-
-    public void setNextSnapshotId(Long nextSnapshotId) {
-        this.nextSnapshotId = nextSnapshotId;
-    }
+    private String tableName;
 }

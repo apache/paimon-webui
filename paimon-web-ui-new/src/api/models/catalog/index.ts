@@ -15,22 +15,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  synchronization_job_definition: 'Synchronization Job Definition',
-  create_synchronization_job: 'Create Synchronization Job',
-  job_name: 'Job Name',
-  synchronization_type: 'Synchronization type',
-  job_description: 'Job Description',
-  create_user: 'Create User',
-  create_time: 'Create Time',
-  update_time: 'Update Time',
-  operation: 'Operation',
-  edit: 'Edit',
-  run: 'Run',
-  delete: 'Delete',
-  synchronization_job_name: 'Synchronization Job Name',
-  edit_synchronization_job: 'Edit Synchronization Job',
-  task_description: 'Task Description',
-  single_table_synchronization: 'Single Table Synchronization',
-  whole_database_synchronization: 'Whole Database Synchronization',
+import httpRequest from '@/api/request'
+import type { Catalog } from './interface'
+
+export * from './interface'
+
+// #region catalog-controller
+
+/**
+ * # Get all catalog
+ */
+export const getAllCatalogs = () => {
+  return httpRequest.get<any, Catalog[]>('/catalog/getAllCatalogs')
 }
+
+// #endregion

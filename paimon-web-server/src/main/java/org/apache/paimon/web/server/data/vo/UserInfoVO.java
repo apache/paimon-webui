@@ -31,17 +31,23 @@ import java.util.List;
 
 /** user data transfer object. */
 @Data
-public class UserInfoVo {
+public class UserInfoVO {
+
     /** current user info. */
     private User user;
+
     /** current user's tenant list. */
     private List<Tenant> tenantList;
+
     /** current user's role list. */
     private List<SysRole> roleList;
+
     /** current user's token info. */
     private SaTokenInfo saTokenInfo;
+
     /** current user's menu list. */
     private List<SysMenu> sysMenuList;
+
     /** current user's tenant. */
     private Tenant currentTenant;
 }

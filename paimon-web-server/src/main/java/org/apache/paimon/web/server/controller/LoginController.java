@@ -20,7 +20,7 @@ package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.vo.UserInfoVo;
+import org.apache.paimon.web.server.data.vo.UserInfoVO;
 import org.apache.paimon.web.server.service.UserService;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
@@ -48,7 +48,7 @@ public class LoginController {
      * @return token string
      */
     @PostMapping("/login")
-    public R<UserInfoVo> login(@RequestBody LoginDTO loginDTO) {
+    public R<UserInfoVO> login(@RequestBody LoginDTO loginDTO) {
         return R.succeed(userService.login(loginDTO));
     }
 
