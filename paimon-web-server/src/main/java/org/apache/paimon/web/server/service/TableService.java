@@ -16,38 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.controller;
+package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.AlterTableRequest;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.TableVO;
-import org.apache.paimon.web.server.service.TableService;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/** Table api controller. */
-@Slf4j
-@RestController
-@RequestMapping("/api/table")
-public class TableController {
-
-    private final TableService tableService;
-
-    public TableController(TableService tableService) {
-        this.tableService = tableService;
-    }
+/**
+ * Table service.
+ **/
+public interface TableService {
 
     /**
      * Creates a table in the database based on the provided TableInfo.
@@ -55,10 +37,7 @@ public class TableController {
      * @param tableDTO The TableDTO object containing information about the table.
      * @return R<Void/> indicating the success or failure of the operation.
      */
-    @PostMapping("/create")
-    public R<Void> createTable(@RequestBody TableDTO tableDTO) {
-        return tableService.createTable(tableDTO);
-    }
+    R<Void> createTable(TableDTO tableDTO);
 
     /**
      * Adds a column to the table.
@@ -67,10 +46,7 @@ public class TableController {
      *     table name, and table columns.
      * @return A response indicating the success or failure of the operation.
      */
-    @PostMapping("/column/add")
-    public R<Void> addColumn(@RequestBody TableDTO tableDTO) {
-        return tableService.addColumn(tableDTO);
-    }
+    R<Void> addColumn(TableDTO tableDTO);
 
     /**
      * Drops a column from a table.
@@ -81,14 +57,8 @@ public class TableController {
      * @param columnName The name of the column to be dropped.
      * @return The result indicating the success or failure of the operation.
      */
-    @DeleteMapping("/column/drop/{catalogName}/{databaseName}/{tableName}/{columnName}")
-    public R<Void> dropColumn(
-            @PathVariable String catalogName,
-            @PathVariable String databaseName,
-            @PathVariable String tableName,
-            @PathVariable String columnName) {
-        return tableService.dropColumn(catalogName, databaseName, tableName, columnName);
-    }
+    R<Void> dropColumn(
+            String catalogName, String databaseName, String tableName, String columnName);
 
     /**
      * Modify a column in a table.
@@ -99,14 +69,11 @@ public class TableController {
      * @param alterTableRequest The param of the alter table request.
      * @return A response indicating the success or failure of the operation.
      */
-    @PostMapping("/alter")
-    public R<Void> alterTable(
-            @RequestParam String catalogName,
-            @RequestParam String databaseName,
-            @RequestParam String tableName,
-            @RequestBody AlterTableRequest alterTableRequest) {
-        return tableService.alterTable(catalogName, databaseName, tableName, alterTableRequest);
-    }
+    R<Void> alterTable(
+            String catalogName,
+            String databaseName,
+            String tableName,
+            AlterTableRequest alterTableRequest);
 
     /**
      * Adds options to a table.
@@ -115,10 +82,7 @@ public class TableController {
      * @return If the options are successfully added, returns a successful result object. If an
      *     exception occurs, returns a result object with an error status.
      */
-    @PostMapping("/option/add")
-    public R<Void> addOption(@RequestBody TableDTO tableDTO) {
-        return tableService.addOption(tableDTO);
-    }
+    R<Void> addOption(TableDTO tableDTO);
 
     /**
      * Removes an option from a table.
@@ -132,14 +96,7 @@ public class TableController {
      *     an error occurs during the operation, the result will be a failed response with an error
      *     code. Possible error codes: {@link Status#TABLE_REMOVE_OPTION_ERROR}.
      */
-    @PostMapping("/option/remove")
-    public R<Void> removeOption(
-            @RequestParam String catalogName,
-            @RequestParam String databaseName,
-            @RequestParam String tableName,
-            @RequestParam String key) {
-        return tableService.removeOption(catalogName, databaseName, tableName, key);
-    }
+    R<Void> removeOption(String catalogName, String databaseName, String tableName, String key);
 
     /**
      * Drops a table from the specified database in the given catalog.
@@ -153,13 +110,7 @@ public class TableController {
      * @throws RuntimeException If there is an error during the operation, a RuntimeException is
      *     thrown with the error message.
      */
-    @DeleteMapping("/drop/{catalogName}/{databaseName}/{tableName}")
-    public R<Void> dropTable(
-            @PathVariable String catalogName,
-            @PathVariable String databaseName,
-            @PathVariable String tableName) {
-        return tableService.dropTable(catalogName, databaseName, tableName);
-    }
+    R<Void> dropTable(String catalogName, String databaseName, String tableName);
 
     /**
      * Renames a table in the specified database of the given catalog.
@@ -174,14 +125,8 @@ public class TableController {
      * @throws RuntimeException If there is an error during the operation, a RuntimeException is
      *     thrown with the error message.
      */
-    @PostMapping("/rename")
-    public R<Void> renameTable(
-            @RequestParam String catalogName,
-            @RequestParam String databaseName,
-            @RequestParam String fromTableName,
-            @RequestParam String toTableName) {
-        return tableService.renameTable(catalogName, databaseName, fromTableName, toTableName);
-    }
+    R<Void> renameTable(
+            String catalogName, String databaseName, String fromTableName, String toTableName);
 
     /**
      * Handler method for the "/getAllTables" endpoint. Retrieves information about all tables and
@@ -189,29 +134,19 @@ public class TableController {
      *
      * @return Response object containing a list of {@link TableDTO} representing the tables.
      */
-    @GetMapping("/getAllTables")
-    public R<List<TableDTO>> getAllTables() {
-        return tableService.getAllTables();
-    }
+    R<List<TableDTO>> getAllTables();
 
     /**
      * Query tables by catalog id and database name.
      *
      * @return Response object containing a list of {@link TableVO} representing the tables.
      */
-    @GetMapping("/queryTables/{catalogId}/{databaseName}")
-    public R<List<TableVO>> getTables(
-            @PathVariable Integer catalogId, @PathVariable String databaseName) {
-        return tableService.getTablesByCondition(catalogId, databaseName);
-    }
+    R<List<TableVO>> getTablesByCondition(Integer catalogId, String databaseName);
 
     /**
-     * Query all tables by tableName fuzzy.
+     * Query all tables by name fuzzy.
      *
      * @return Response object containing a list of {@link TableVO} representing the tables.
      */
-    @GetMapping("/queryTables/{tableName}")
-    public R<List<TableVO>> queryTablesByCondition(@PathVariable String tableName){
-        return tableService.queryTablesByCondition(tableName);
-    }
+    R<List<TableVO>> queryTablesByCondition(String name);
 }

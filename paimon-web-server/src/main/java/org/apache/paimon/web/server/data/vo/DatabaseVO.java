@@ -16,13 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.mapper;
+package org.apache.paimon.web.server.data.vo;
 
-import org.apache.paimon.web.server.data.vo.DatabaseVO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+/** Database table model. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class DatabaseVO {
 
-/** Database table mapper. */
-@Mapper
-public interface DatabaseMapper extends BaseMapper<DatabaseVO> {}
+    private String name;
+
+    private Integer catalogId;
+
+    private String catalogName;
+
+    private String description;
+}

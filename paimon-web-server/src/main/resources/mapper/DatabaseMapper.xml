@@ -23,9 +23,9 @@ under the License.
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.apache.paimon.web.server.mapper.DatabaseMapper">
 
-    <resultMap type="org.apache.paimon.web.server.data.model.DatabaseInfo" id="BaseResultMap">
+    <resultMap type="org.apache.paimon.web.server.data.vo.DatabaseVO" id="BaseResultMap">
         <id property="id" column="id" />
-        <result property="databaseName" column="database_name" />
+        <result property="name" column="database_name" />
         <result property="catalogId" column="catalog_id" />
     </resultMap>
 

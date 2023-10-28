@@ -21,9 +21,9 @@ package org.apache.paimon.web.server.controller;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
-import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.vo.DatabaseVO;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
 import org.apache.paimon.web.server.util.StringUtils;
@@ -116,14 +116,14 @@ public class ControllerTestBase {
                         .accept(MediaType.APPLICATION_JSON_VALUE));
 
         // create default database
-        DatabaseInfo databaseInfo = new DatabaseInfo();
-        databaseInfo.setDatabaseName(databaseName);
-        databaseInfo.setCatalogName(catalogName);
+        DatabaseVO database = new DatabaseVO();
+        database.setName(databaseName);
+        database.setCatalogName(catalogName);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post(databasePath + "/create")
                         .cookie(cookie)
-                        .content(ObjectMapperUtils.toJSON(databaseInfo))
+                        .content(ObjectMapperUtils.toJSON(database))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));
 

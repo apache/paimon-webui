@@ -15,26 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.vo;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Database table model. */
+/**
+ * Table VO.
+ **/
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DatabaseInfo {
-
-    private String databaseName;
+public class TableVO {
 
     private Integer catalogId;
 
     private String catalogName;
 
-    private String description;
+    private String databaseName;
+
+    private String name;
 }
