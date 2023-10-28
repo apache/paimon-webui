@@ -48,7 +48,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/** The implementation of {@link MetadataService} */
+/** The implementation of {@link MetadataService}. */
 @Service
 @Slf4j
 public class MetadataServiceImpl implements MetadataService {
