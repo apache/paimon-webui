@@ -15,6 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import Modal from '@/components/modal';
 import List from './components/list';
 import styles from './index.module.scss';
 import { Leaf } from '@vicons/ionicons5';
@@ -23,8 +24,22 @@ export default defineComponent({
   name: 'CDCPage',
   setup() {
     const { t } = useLocaleHooks()
+
+    const showModalRef = ref(false)
+
+    const handleOpenModal = () => {
+      showModalRef.value = true
+    }
+
+    const handleConfirm = () => {
+      showModalRef.value = false
+    }
+
     return {
-      t
+      t,
+      showModalRef,
+      handleOpenModal,
+      handleConfirm
     }
   },
   render() {
@@ -41,12 +56,19 @@ export default defineComponent({
                 <div class={styles.operation}>
                   <n-space>
                     <n-input placeholder={this.t('cdc.job_name')}></n-input>
-                    <n-button type="primary">{this.t('cdc.create_synchronization_job')}</n-button>
+                    <n-button type="primary" onClick={this.handleOpenModal}>{this.t('cdc.create_synchronization_job')}</n-button>
                   </n-space>
                 </div>
               </div>
             </n-card>
             <List></List>
+            <Modal
+              showModal={this.showModalRef}
+              title={this.t('cdc.create_synchronization_job')}
+              formType="CDCLIST"
+              onCancel={() => this.showModalRef = false}
+              onConfirm={this.handleConfirm}
+            />
           </n-space>
         </n-card>
       </div>
