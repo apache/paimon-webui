@@ -19,5 +19,5 @@ export default {
   path: '/system',
   name: 'system',
   meta: { title: 'System' },
-  component: () => import('@/layouts/content'),
+  component: () => import('@/views/system'),
 }

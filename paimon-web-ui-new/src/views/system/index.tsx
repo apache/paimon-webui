@@ -15,16 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import layout from './modules/layout'
-import login from './modules/login'
-import playground from './modules/playground'
-import metadata from './modules/metadata'
-import cdc from './modules/cdc'
+import styles from './index.module.scss';
 
-export default {
-  login,
-  layout,
-  playground,
-  metadata,
-  cdc,
-}
+export default defineComponent({
+  name: 'SystemPage',
+  setup() {
+    return {}
+  },
+  render() {
+    return (
+      <div class={styles.container}>SystemPage</div>
+    )
+  }
+})

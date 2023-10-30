@@ -15,16 +15,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import layout from './modules/layout'
-import login from './modules/login'
-import playground from './modules/playground'
-import metadata from './modules/metadata'
-import cdc from './modules/cdc'
-
 export default {
-  login,
-  layout,
-  playground,
-  metadata,
-  cdc,
+  synchronization_job_definition: '同步任务定义',
+  create_synchronization_job: '创建同步作业',
+  job_name: '作业名称',
+  synchronization_type: '同步类型',
+  job_description: '作业描述',
+  create_user: '创建用户',
+  create_time: '创建时间',
+  update_time: '更新时间',
+  operation: '操作',
+  edit: '编辑',
+  run: '运行',
+  delete: '删除',
 }

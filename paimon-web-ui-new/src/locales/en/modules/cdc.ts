@@ -15,16 +15,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import layout from './modules/layout'
-import login from './modules/login'
-import playground from './modules/playground'
-import metadata from './modules/metadata'
-import cdc from './modules/cdc'
-
 export default {
-  login,
-  layout,
-  playground,
-  metadata,
-  cdc,
+  synchronization_job_definition: 'Synchronization Job Definition',
+  create_synchronization_job: 'Create Synchronization Job',
+  job_name: 'Job Name',
+  synchronization_type: 'Synchronization type',
+  job_description: 'Job Description',
+  create_user: 'Create User',
+  create_time: 'Create Time',
+  update_time: 'Update Time',
+  operation: 'Operation',
+  edit: 'Edit',
+  run: 'Run',
+  delete: 'Delete',
 }

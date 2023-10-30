@@ -16,34 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.Map;
-
-/** Table model. */
+/** The DTO of database. */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class TableInfo {
+public class DatabaseDTO {
+
+    private String name;
+
+    private String catalogId;
 
     private String catalogName;
 
-    private String databaseName;
+    private boolean ignoreIfExists;
 
-    private String tableName;
+    private boolean cascade;
 
     private String description;
-
-    private List<TableColumn> tableColumns;
-
-    private List<String> partitionKey;
-
-    private Map<String, String> tableOptions;
 }

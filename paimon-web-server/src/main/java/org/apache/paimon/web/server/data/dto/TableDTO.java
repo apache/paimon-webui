@@ -16,30 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.server.data.dto;
 
-import org.apache.paimon.web.server.data.dto.CatalogDTO;
-import org.apache.paimon.web.server.data.model.CatalogInfo;
-import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.model.TableColumn;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/** Catalog Service. */
-public interface CatalogService extends IService<CatalogInfo> {
+import java.util.List;
+import java.util.Map;
 
-    /**
-     * Verify if the catalog name is unique.
-     *
-     * @param catalog catalog info
-     * @return result
-     */
-    boolean checkCatalogNameUnique(CatalogDTO catalog);
+/** The DTO of table. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class TableDTO {
 
-    /**
-     * Create a catalog.
-     *
-     * @param catalogDTO catalog for the catalog.
-     * @return The created catalog.
-     */
-    R<Void> createCatalog(CatalogDTO catalogDTO);
+    private String catalogName;
+
+    private String databaseName;
+
+    private String tableName;
+
+    private String description;
+
+    private List<TableColumn> tableColumns;
+
+    private List<String> partitionKey;
+
+    private Map<String, String> tableOptions;
 }

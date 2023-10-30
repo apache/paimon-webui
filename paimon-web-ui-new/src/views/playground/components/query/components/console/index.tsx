@@ -46,7 +46,7 @@ export default defineComponent({
           size="large"
           default-value="logs"
           tabs-padding={20}
-          pane-style="padding: 20px;"
+          pane-style="padding: 20px;box-sizing: border-box;"
         >
           <n-tab-pane name="logs" tab={this.t('playground.logs')}>
             {this.t('playground.logs')}

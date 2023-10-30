@@ -19,10 +19,12 @@ import layout from './modules/layout'
 import login from './modules/login'
 import playground from './modules/playground'
 import metadata from './modules/metadata'
+import cdc from './modules/cdc'
 
 export default {
   login,
   layout,
   playground,
-  metadata
+  metadata,
+  cdc
 }
