@@ -30,7 +30,7 @@ import java.util.List;
 
 /** user data transfer object. */
 @Data
-public class UserInfoVo {
+public class UserInfoVO {
     /** current user info. */
     private User user;
     /** current user's tenant list. */

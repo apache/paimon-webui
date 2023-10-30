@@ -16,28 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.table;
+package org.apache.paimon.web.server.data.vo;
 
-/** manifest table metadata. */
-public class ManifestTableMetadata {
-
+/** VO of metadata manifest. */
+public class ManifestsVO {
     private final String fileName;
     private final Long fileSize;
     private final Long numAddedFiles;
-    private final Long numDeletedFiles;
-    private final Long schemaId;
 
-    public ManifestTableMetadata(
-            String fileName,
-            Long fileSize,
-            Long numAddedFiles,
-            Long numDeletedFiles,
-            Long schemaId) {
+    public ManifestsVO(String fileName, Long fileSize, Long numAddedFiles) {
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.numAddedFiles = numAddedFiles;
-        this.numDeletedFiles = numDeletedFiles;
-        this.schemaId = schemaId;
     }
 
     public String getFileName() {
@@ -52,54 +42,33 @@ public class ManifestTableMetadata {
         return numAddedFiles;
     }
 
-    public Long getNumDeletedFiles() {
-        return numDeletedFiles;
-    }
-
-    public Long getSchemaId() {
-        return schemaId;
-    }
-
-    public static ManifestTableMetadata.Builder builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    /** The builder for ManifestTableMetadata. */
-    public static final class Builder {
+    /** ManifestsInfoVo Builder. */
+    public static class Builder {
         private String fileName;
         private Long fileSize;
         private Long numAddedFiles;
-        private Long numDeletedFiles;
-        private Long schemaId;
 
-        public Builder fileName(String fileName) {
+        public Builder setFileName(String fileName) {
             this.fileName = fileName;
             return this;
         }
 
-        public Builder fileSize(Long fileSize) {
+        public Builder setFileSize(Long fileSize) {
             this.fileSize = fileSize;
             return this;
         }
 
-        public Builder numAddedFiles(Long numAddedFiles) {
+        public Builder setNumAddedFiles(Long numAddedFiles) {
             this.numAddedFiles = numAddedFiles;
             return this;
         }
 
-        public Builder numDeletedFiles(Long numDeletedFiles) {
-            this.numDeletedFiles = numDeletedFiles;
-            return this;
-        }
-
-        public Builder schemaId(Long schemaId) {
-            this.schemaId = schemaId;
-            return this;
-        }
-
-        public ManifestTableMetadata build() {
-            return new ManifestTableMetadata(
-                    fileName, fileSize, numAddedFiles, numDeletedFiles, schemaId);
+        public ManifestsVO build() {
+            return new ManifestsVO(fileName, fileSize, numAddedFiles);
         }
     }
 }

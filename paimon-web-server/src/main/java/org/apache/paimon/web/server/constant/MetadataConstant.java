@@ -16,25 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.vo;
+package org.apache.paimon.web.server.constant;
 
-import org.apache.paimon.web.server.data.tree.TreeSelect;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-
-import java.util.List;
-
-/** Role Menu List Tree Vo. */
-@Getter
-public class RoleMenuTreeselectVo {
-    private final List<Integer> checkedKeys;
-    private final List<TreeSelect> menus;
-
-    public RoleMenuTreeselectVo(
-            @JsonProperty("checkedKeys") List<Integer> checkedKeys,
-            @JsonProperty("menus") List<TreeSelect> menus) {
-        this.checkedKeys = checkedKeys;
-        this.menus = menus;
-    }
+/** Metadata constant. */
+public class MetadataConstant {
+    public static final String SNAPSHOTS = "snapshots";
+    public static final String SCHEMAS = "schemas";
+    public static final String OPTIONS = "options";
+    public static final String MANIFESTS = "manifests";
+    public static final String FILES = "files";
+    public static final String CONSUMER = "consumers";
+    public static final String TAGS = "tags";
+    public static final String METADATA_TABLE_FORMAT = "%s$%s";
 }

@@ -21,5 +21,7 @@ export default {
   cdc_ingestion: 'CDC Ingestion',
   system: 'System',
   light: 'Light',
-  dark: 'Dark'
+  dark: 'Dark',
+  cancel: 'Cancel',
+  confirm: 'Confirm',
 }

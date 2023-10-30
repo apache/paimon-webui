@@ -21,4 +21,3 @@ export default {
   meta: { title: 'Metadata' },
   component: () => import('@/views/metadata')
 }
-

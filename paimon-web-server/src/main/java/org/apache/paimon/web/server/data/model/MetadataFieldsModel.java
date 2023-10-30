@@ -16,33 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.table;
+package org.apache.paimon.web.server.data.model;
 
-/** options table metadata. */
-public class OptionTableMetadata {
+import lombok.Data;
 
-    private String key;
+/** Model of metadata fields. */
+@Data
+public class MetadataFieldsModel {
 
-    private String value;
+    private int id;
 
-    public OptionTableMetadata(String key, String value) {
-        this.key = key;
-        this.value = value;
-    }
+    private String name;
 
-    public String getKey() {
-        return key;
-    }
+    private String type;
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+    private String comment;
 }

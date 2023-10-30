@@ -15,14 +15,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { FileTrayFullOutline, Search, FolderOpenOutline } from '@vicons/ionicons5';
+import { FileTrayFullOutline, Search, FolderOpenOutline } from '@vicons/ionicons5'
+import { NIcon } from 'naive-ui'
+
+import { useCatalogStore } from '@/store/catalog'
+
 import styles from './index.module.scss'
-import { NIcon } from 'naive-ui';
 
 export default defineComponent({
   name: 'MenuTree',
   setup() {
     const { t } = useLocaleHooks()
+
+    const catalogStore = useCatalogStore()
+    const catalogStoreRef = storeToRefs(catalogStore)
 
     const treeVariables = reactive({
       treeData: [
@@ -30,10 +36,6 @@ export default defineComponent({
           key: 'paimon2',
           label: 'paimon2',
           type: 'folder',
-          prefix: () =>
-            h(NIcon, null, {
-              default: () => h(FolderOpenOutline)
-            }),
           children: [
             {
               key: 'user',
@@ -70,7 +72,6 @@ export default defineComponent({
         }
       ],
       filterValue: '',
-      selectedKeys: []
     })
 
     const dropdownMenu = [
@@ -91,17 +92,15 @@ export default defineComponent({
       }
     }
 
-    const handleTreeSelect = (value: never[], option: { children: any; }[]) => {
-      if (option[0]?.children) return
-      treeVariables.selectedKeys = value
-    }
+    onMounted(catalogStore.getAllCatalogs)
 
     return {
+      menuLoading: catalogStoreRef.catalogLoading,
+      menuList: catalogStoreRef.catalogs,
       dropdownMenu,
       t,
       ...toRefs(treeVariables),
       nodeProps,
-      handleTreeSelect,
     }
   },
   render() {
@@ -116,15 +115,15 @@ export default defineComponent({
               }}
             >
             </n-input>
-            <n-tree
-              block-line
-              expand-on-click
-              selected-keys={this.selectedKeys}
-              on-update:selected-keys={this.handleTreeSelect}
-              data={this.treeData}
-              pattern={this.filterValue}
-              node-props={this.nodeProps}
-            />
+            <n-spin show={this.menuLoading}>
+              <n-tree
+                block-line
+                on-load={() => {}}
+                data={this.menuList}
+                pattern={this.filterValue}
+                node-props={this.nodeProps}
+              />
+            </n-spin>
           </n-space>
         </n-card>
       </div>

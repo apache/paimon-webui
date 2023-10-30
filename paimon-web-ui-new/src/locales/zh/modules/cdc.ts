@@ -28,4 +28,9 @@ export default {
   edit: '编辑',
   run: '运行',
   delete: '删除',
+  synchronization_job_name: '同步作业名称',
+  edit_synchronization_job: '编辑同步作业',
+  task_description: '任务描述',
+  single_table_synchronization: '单表同步',
+  whole_database_synchronization: '整库同步',
 }

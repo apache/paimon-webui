@@ -20,7 +20,7 @@ package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.model.SysMenu;
 import org.apache.paimon.web.server.data.tree.TreeSelect;
-import org.apache.paimon.web.server.data.vo.RouterVo;
+import org.apache.paimon.web.server.data.vo.RouterVO;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -82,7 +82,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param menus menu list
      * @return router list
      */
-    List<RouterVo> buildMenus(List<SysMenu> menus);
+    List<RouterVO> buildMenus(List<SysMenu> menus);
 
     /**
      * Builder menu tree.
