@@ -15,8 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { FileTrayFullOutline, Search, FolderOpenOutline } from '@vicons/ionicons5'
-import { NIcon } from 'naive-ui'
+import { Search } from '@vicons/ionicons5'
 
 import { useCatalogStore } from '@/store/catalog'
 
@@ -30,49 +29,7 @@ export default defineComponent({
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
 
-    const treeVariables = reactive({
-      treeData: [
-        {
-          key: 'paimon2',
-          label: 'paimon2',
-          type: 'folder',
-          children: [
-            {
-              key: 'user',
-              label: 'user',
-              type: 'folder',
-              prefix: () =>
-                h(NIcon, null, {
-                  default: () => h(FolderOpenOutline)
-                }),
-              children: [
-                {
-                  label: 'user_table',
-                  key: '1',
-                  type: 'file',
-                  content: 'select * from abc where abc.a="abc";select * from cba where cba.a="cba";',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                },
-                {
-                  label: 'people_table',
-                  key: '2',
-                  type: 'file',
-                  content: 'select * from abc where abc.a="abc";',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      filterValue: '',
-    })
+    const filterValue = ref('')
 
     const dropdownMenu = [
       {
@@ -98,8 +55,8 @@ export default defineComponent({
       menuLoading: catalogStoreRef.catalogLoading,
       menuList: catalogStoreRef.catalogs,
       dropdownMenu,
+      filterValue,
       t,
-      ...toRefs(treeVariables),
       nodeProps,
     }
   },
@@ -118,6 +75,7 @@ export default defineComponent({
             <n-spin show={this.menuLoading}>
               <n-tree
                 block-line
+                expand-on-click
                 on-load={() => {}}
                 data={this.menuList}
                 pattern={this.filterValue}
