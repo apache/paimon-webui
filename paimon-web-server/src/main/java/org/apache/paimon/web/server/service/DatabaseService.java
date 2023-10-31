@@ -40,7 +40,8 @@ public interface DatabaseService extends IService<DatabaseVO> {
     /**
      * Creates a new database given {@link DatabaseDTO}.
      *
-     * @param databaseDTO The {@link DatabaseDTO} object that contains the detail of the created database.
+     * @param databaseDTO The {@link DatabaseDTO} object that contains the detail of the created
+     *     database.
      * @return void indicating the result of the operation.
      */
     R<Void> createDatabase(DatabaseDTO databaseDTO);
