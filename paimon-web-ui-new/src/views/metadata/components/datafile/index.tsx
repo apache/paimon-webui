@@ -35,7 +35,7 @@ export default defineComponent({
         partition: '[1]',
         bucket: 0,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'PARQUET'
+        fileFormat: 'ORC'
       },
       {
         partition: '[2]',
@@ -47,7 +47,7 @@ export default defineComponent({
         partition: '[3]',
         bucket: 1,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'PARQUET'
+        fileFormat: 'ORC'
       },
       {
         partition: '[4]',
