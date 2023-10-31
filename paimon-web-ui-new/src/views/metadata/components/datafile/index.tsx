@@ -18,7 +18,7 @@ under the License. */
 import { type DataTableColumns } from 'naive-ui'
 
 type RowData = {
-  partiTion: string
+  partition: string
   bucket: number
   filePath: string
   fileFormat: string
@@ -32,25 +32,25 @@ export default defineComponent({
 
     const data: RowData[] = [
       {
-        partiTion: '[1]',
+        partition: '[1]',
         bucket: 0,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
         fileFormat: 'ORC'
       },
       {
-        partiTion: '[2]',
+        partition: '[2]',
         bucket: 0,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
         fileFormat: 'ORC'
       },
       {
-        partiTion: '[3]',
+        partition: '[3]',
         bucket: 1,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
         fileFormat: 'ORC'
       },
       {
-        partiTion: '[4]',
+        partition: '[4]',
         bucket: 1,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
         fileFormat: 'ORC'
@@ -60,7 +60,7 @@ export default defineComponent({
     const columns: DataTableColumns<RowData> = [
       {
         title: 'Partition',
-        key: 'partiTion'
+        key: 'partition'
       },
       {
         title: 'Bucket',
