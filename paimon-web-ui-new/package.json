@@ -12,6 +12,9 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@antv/x6": "^2.15.3",
+    "@antv/x6-plugin-dnd": "^2.1.1",
+    "@antv/x6-vue-shape": "^2.1.1",
     "dart-sass": "^1.25.0",
     "lodash": "^4.17.21",
     "mitt": "^3.0.1",

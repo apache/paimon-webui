@@ -15,23 +15,35 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  synchronization_job_definition: 'Synchronization Job Definition',
-  create_synchronization_job: 'Create Synchronization Job',
-  job_name: 'Job Name',
-  synchronization_type: 'Synchronization type',
-  job_description: 'Job Description',
-  create_user: 'Create User',
-  create_time: 'Create Time',
-  update_time: 'Update Time',
-  operation: 'Operation',
-  edit: 'Edit',
-  run: 'Run',
-  delete: 'Delete',
-  synchronization_job_name: 'Synchronization Job Name',
-  edit_synchronization_job: 'Edit Synchronization Job',
-  task_description: 'Task Description',
-  single_table_synchronization: 'Single Table Synchronization',
-  whole_database_synchronization: 'Whole Database Synchronization',
-  save: 'Save',
-}
+import { useCanvasInit } from './use-canvas-init'
+import styles from './index.module.scss'
+import DagSlider from './dag-slider'
+
+export default defineComponent({
+  name: 'DagCanvasPage',
+  setup() {
+    const { t } = useLocaleHooks()
+
+    const { graph, dnd } = useCanvasInit()
+
+    return {
+      t,
+      graph,
+      dnd
+    }
+  },
+  render() {
+    return (
+      <div class={styles.dag}>
+        <div
+          class={styles['dag-container']}
+          id="dag-container"
+        />
+        <DagSlider
+          graph={this.graph}
+          dnd={this.dnd}
+        />
+      </div>
+    )
+  }
+})

@@ -37,16 +37,3 @@ app.use(naive)
 app.config.globalProperties.mittBus = mitt()
 
 app.mount('#app')
-
-console.clear();
-
-console.log(
-  `%c© Msi%c(Integration)\n%c${Setting.version}`,
-  `padding:24px 0px 12px 0px;
-  font-size:24px;
-  color:#66CCFF;`,
-  'font-size:24px;color:#FFE212;',
-  'font-size:12px;color:#FFBFCB;padding-bottom:24px;',
-);
-
-console.group('%cConsole', 'font-size:12px;color:#39C5BB;font-weight:300;');
