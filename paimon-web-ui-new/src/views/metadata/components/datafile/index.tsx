@@ -35,25 +35,25 @@ export default defineComponent({
         partition: '[1]',
         bucket: 0,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'ORC'
+        fileFormat: 'PARQUET'
       },
       {
         partition: '[2]',
         bucket: 0,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'ORC'
+        fileFormat: 'PARQUET'
       },
       {
         partition: '[3]',
         bucket: 1,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'ORC'
+        fileFormat: 'PARQUET'
       },
       {
         partition: '[4]',
         bucket: 1,
         filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'ORC'
+        fileFormat: 'PARQUET'
       },
     ]
 
