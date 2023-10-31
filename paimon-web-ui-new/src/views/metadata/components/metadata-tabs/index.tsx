@@ -19,8 +19,11 @@ import type { TabsInst } from 'naive-ui'
 
 import { useConfigStore } from '@/store/config'
 
-import MetaDataSchema from '../schema';
-import MetaDataTable from '../table';
+import Table from '../table'
+import Schema from '../schema'
+import SnapShot from '../snapshot'
+import Manifest from '../manifest'
+import DataFile from '../datafile'
 
 import styles from './index.module.scss'
 
@@ -46,22 +49,22 @@ export default defineComponent({
       <div class={styles.tabs}>
         <n-tabs ref="tabsInstRef" type='bar' animated default-value="table">
           <n-tab-pane name='table' tab={this.t('metadata.table_info')}>
-            <MetaDataTable />
+            <Table />
           </n-tab-pane>
           <n-tab-pane name='option' tab={this.t('metadata.option_info')}>
-            Option 信息
+            Option
           </n-tab-pane>
           <n-tab-pane name='schema' tab={this.t('metadata.schema_info')}>
-            <MetaDataSchema />
+            <Schema />
           </n-tab-pane>
           <n-tab-pane name='snapshot' tab={this.t('metadata.snapshot_file')}>
-            Snapshot 文件
+            <SnapShot />
           </n-tab-pane>
           <n-tab-pane name='manifest' tab={this.t('metadata.manifests_file')}>
-            Manifest 文件
+            <Manifest />
           </n-tab-pane>
           <n-tab-pane name='datafile' tab={this.t('metadata.data_file')}>
-            数据文件
+            <DataFile />
           </n-tab-pane>
         </n-tabs>
       </div>
