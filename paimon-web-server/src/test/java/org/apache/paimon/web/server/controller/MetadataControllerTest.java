@@ -54,6 +54,8 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     private static final String catalogName = "paimon_catalog";
 
+    private static final Integer catalogId = 1;
+
     private static final String databaseName = "paimon_database";
 
     private static final String tableName = "paimon_table";
@@ -98,7 +100,7 @@ public class MetadataControllerTest extends ControllerTestBase {
     @Test
     public void testGetSchemaInfo() throws Exception {
         QueryMetadataDTO metadata = new QueryMetadataDTO();
-        metadata.setCatalogName(catalogName);
+        metadata.setCatalogId(catalogId);
         metadata.setDatabaseName(databaseName);
         metadata.setTableName(tableName);
 
@@ -122,7 +124,7 @@ public class MetadataControllerTest extends ControllerTestBase {
     @Test
     public void testGetManifestInfo() throws Exception {
         QueryMetadataDTO metadata = new QueryMetadataDTO();
-        metadata.setCatalogName(catalogName);
+        metadata.setCatalogId(catalogId);
         metadata.setDatabaseName(databaseName);
         metadata.setTableName(tableName);
 
@@ -146,7 +148,7 @@ public class MetadataControllerTest extends ControllerTestBase {
     @Test
     public void testGetDataFileInfo() throws Exception {
         QueryMetadataDTO metadata = new QueryMetadataDTO();
-        metadata.setCatalogName(catalogName);
+        metadata.setCatalogId(catalogId);
         metadata.setDatabaseName(databaseName);
         metadata.setTableName(tableName);
 
@@ -170,7 +172,7 @@ public class MetadataControllerTest extends ControllerTestBase {
     @Test
     public void testGetSnapshotInfo() throws Exception {
         QueryMetadataDTO metadata = new QueryMetadataDTO();
-        metadata.setCatalogName(catalogName);
+        metadata.setCatalogId(catalogId);
         metadata.setDatabaseName(databaseName);
         metadata.setTableName(tableName);
 
