@@ -33,4 +33,5 @@ export default {
   task_description: '任务描述',
   single_table_synchronization: '单表同步',
   whole_database_synchronization: '整库同步',
+  save: '保存',
 }

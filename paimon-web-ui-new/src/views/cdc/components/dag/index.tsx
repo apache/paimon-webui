@@ -15,6 +15,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { Leaf, Save } from "@vicons/ionicons5"
+import styles from './index.module.scss';
+import DagCanvas from "./dag-canvas";
+
 export default defineComponent({
   name: 'DagPage',
   setup() {
@@ -26,9 +30,36 @@ export default defineComponent({
   },
   render() {
     return (
-      <div>
-        DAG
-      </div>
+      <n-card>
+        <n-space vertical size={24}>
+          <n-card>
+            <div class={styles.title}>
+              <n-space align="center">
+                <n-icon component={Leaf} color="#2F7BEA" size="18" />
+                <span>{this.t('cdc.synchronization_job_definition')}</span>
+              </n-space>
+              <div class={styles.operation}>
+                <n-space>
+                  <n-popover trigger="hover" placement="bottom"
+                    v-slots={{
+                      trigger: () => (
+                        <n-button
+                          v-slots={{
+                            icon: () => <n-icon component={Save}></n-icon>
+                          }}
+                        >
+                        </n-button>
+                      )
+                    }}>
+                    <span>{this.t('cdc.save')}</span>
+                  </n-popover>
+                </n-space>
+              </div>
+            </div>
+          </n-card>
+          <DagCanvas></DagCanvas>
+        </n-space>
+      </n-card>
     )
   }
 })
