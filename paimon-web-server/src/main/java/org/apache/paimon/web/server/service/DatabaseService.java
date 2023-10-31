@@ -38,33 +38,32 @@ public interface DatabaseService extends IService<DatabaseVO> {
     boolean checkCatalogNameUnique(DatabaseVO databaseVO);
 
     /**
-     * Creates a new database based on the provided DatabaseInfo.
+     * Creates a new database given {@link DatabaseDTO}.
      *
-     * @param databaseDTO The DatabaseInfo object containing the details of the new database.
+     * @param databaseDTO The {@link DatabaseDTO} object that contains the detail of the created database.
      * @return void indicating the result of the operation.
      */
     R<Void> createDatabase(DatabaseDTO databaseDTO);
 
     /**
-     * Get all database information.
+     * Lists all databases.
      *
      * @return The list of all databases.
      */
-    R<List<DatabaseVO>> getAllDatabases();
+    R<List<DatabaseVO>> listDatabases();
 
     /**
      * Get database information by catalog id.
      *
      * @return The list of databases.
      */
-    R<List<DatabaseVO>> getDatabaseById(Integer catalogId);
+    R<List<DatabaseVO>> getDatabasesById(Integer catalogId);
 
     /**
      * Remove a database by its name.
      *
-     * @param databaseDTO The drop database DTO.
+     * @param databaseDTO The dropping database.
      * @return A response indicating the success or failure of the removal operation.
-     * @throws RuntimeException if the database is not found, or it is not empty.
      */
     R<Void> dropDatabase(DatabaseDTO databaseDTO);
 }

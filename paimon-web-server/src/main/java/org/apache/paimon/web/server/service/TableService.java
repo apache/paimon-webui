@@ -30,7 +30,7 @@ import java.util.List;
 public interface TableService {
 
     /**
-     * Creates a table in the database based on the provided TableInfo.
+     * Creates a table in the database given ${@link TableDTO}.
      *
      * @param tableDTO The TableDTO object containing information about the table.
      * @return R<Void/> indicating the success or failure of the operation.
@@ -59,7 +59,7 @@ public interface TableService {
             String catalogName, String databaseName, String tableName, String columnName);
 
     /**
-     * Modify a column in a table.
+     * Alter a table.
      *
      * @param catalogName The name of the catalog.
      * @param databaseName The name of the database.

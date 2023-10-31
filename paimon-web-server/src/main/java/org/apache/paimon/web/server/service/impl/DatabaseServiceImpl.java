@@ -76,7 +76,7 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
     }
 
     @Override
-    public R<List<DatabaseVO>> getAllDatabases() {
+    public R<List<DatabaseVO>> listDatabases() {
         List<DatabaseVO> databaseVOList = new ArrayList<>();
         List<CatalogInfo> catalogInfoList = catalogService.list();
         if (!CollectionUtils.isEmpty(catalogInfoList)) {
@@ -101,7 +101,7 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
     }
 
     @Override
-    public R<List<DatabaseVO>> getDatabaseById(Integer catalogId) {
+    public R<List<DatabaseVO>> getDatabasesById(Integer catalogId) {
         List<DatabaseVO> resultList = new LinkedList<>();
         CatalogInfo catalog = catalogService.getById(catalogId);
         PaimonService service = PaimonServiceUtils.getPaimonService(catalog);

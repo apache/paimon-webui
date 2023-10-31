@@ -62,7 +62,7 @@ public class DatabaseController {
      */
     @GetMapping("/getAllDatabases")
     public R<List<DatabaseVO>> getAllDatabases() {
-        return databaseService.getAllDatabases();
+        return databaseService.listDatabases();
     }
 
     /**
