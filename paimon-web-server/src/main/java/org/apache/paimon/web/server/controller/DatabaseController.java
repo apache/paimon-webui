@@ -25,6 +25,7 @@ import org.apache.paimon.web.server.service.DatabaseService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +64,16 @@ public class DatabaseController {
     @GetMapping("/getAllDatabases")
     public R<List<DatabaseVO>> getAllDatabases() {
         return databaseService.listDatabases();
+    }
+
+    /**
+     * Get databases given catalog id.
+     *
+     * @return The list of databases of given catalog id.
+     */
+    @GetMapping("/getDatabasesById/{catalogId}")
+    public R<List<DatabaseVO>> getDatabasesById(@PathVariable Integer catalogId) {
+        return databaseService.getDatabasesById(catalogId);
     }
 
     /**
