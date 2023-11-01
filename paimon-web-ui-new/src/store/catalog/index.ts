@@ -53,39 +53,43 @@ export const useCatalogStore = defineStore('catalog', {
       // const [, useDatabaseByCatalogId] = getDatabaseByCatalogId(id)
       // return useDatabaseByCatalogId()
       return new Promise((resolve) => {
-        resolve([
-          {
-            label: 'database',
-            type: 'database',
-            key: ++id,
-            isLeaf: false,
-            prefix: () =>
-              h(NIcon, null, {
-                default: () => h(FolderOutline)
-              }),
-          }
-        ])
+        setTimeout(() => {
+          resolve([
+            {
+              label: 'database',
+              type: 'database',
+              key: ++id,
+              isLeaf: false,
+              prefix: () =>
+                h(NIcon, null, {
+                  default: () => h(FolderOutline)
+                }),
+            }
+          ])
+        }, 1000)
       })
     },
     getTableByDataBaseId(id: number): Promise<any> {
       // TODO: fetch table list by catalog id and database name
       // Waiting for the deployment of the back end interface
-      
+
       // const [, useDatabaseByCatalogId] = getDatabaseByCatalogId(id)
       // return useDatabaseByCatalogId()
       return new Promise((resolve) => {
-        resolve([
-          {
-            label: 'table',
-            type: 'table',
-            key: ++id,
-            isLeaf: true,
-            prefix: () =>
-              h(NIcon, null, {
-                default: () => h(FileTrayOutline)
-              }),
-          }
-        ])
+        setTimeout(() => {
+          resolve([
+            {
+              label: 'table',
+              type: 'table',
+              key: ++id,
+              isLeaf: true,
+              prefix: () =>
+                h(NIcon, null, {
+                  default: () => h(FileTrayOutline)
+                }),
+            }
+          ])
+        }, 1000)
       })
     }
   }
