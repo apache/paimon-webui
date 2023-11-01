@@ -47,6 +47,9 @@ export const useCatalogStore = defineStore('catalog', {
       this._catalogLoading = false
     },
     getDatabaseByCatalogId(id: number): Promise<any> {
+      // TODO: fetch database list by catalog id
+      // Waiting for the deployment of the back end interface
+
       // const [, useDatabaseByCatalogId] = getDatabaseByCatalogId(id)
       // return useDatabaseByCatalogId()
       return new Promise((resolve) => {
@@ -65,6 +68,9 @@ export const useCatalogStore = defineStore('catalog', {
       })
     },
     getTableByDataBaseId(id: number): Promise<any> {
+      // TODO: fetch table list by catalog id and database name
+      // Waiting for the deployment of the back end interface
+      
       // const [, useDatabaseByCatalogId] = getDatabaseByCatalogId(id)
       // return useDatabaseByCatalogId()
       return new Promise((resolve) => {
