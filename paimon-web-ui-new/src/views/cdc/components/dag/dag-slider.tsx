@@ -36,29 +36,29 @@ export default defineComponent({
       sourceList: [
         {
           name: 'MySQL',
-          value: 'mysql',
+          value: 'MYSQL',
           type: 'INPUT'
         },
         {
           name: 'Kafka',
-          value: 'kafka',
+          value: 'KAFKA',
           type: 'INPUT'
         },
         {
           name: 'MongoDB',
-          value: 'mongodb',
+          value: 'MONGODB',
           type: 'INPUT'
         },
         {
           name: 'PostgreSQL',
-          value: 'postgresql',
+          value: 'POSTGRESQL',
           type: 'INPUT'
         }
       ],
       sinkList: [
         {
           name: 'Paimon',
-          value: 'paimon',
+          value: 'PAIMON',
           type: 'OUTPUT'
         }
       ]

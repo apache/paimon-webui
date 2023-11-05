@@ -19,6 +19,8 @@ import Modal from '@/components/modal';
 import List from './components/list';
 import styles from './index.module.scss';
 import { Leaf } from '@vicons/ionicons5';
+import { useCDCStore } from '@/store/cdc';
+import type { Router } from 'vue-router';
 
 export default defineComponent({
   name: 'CDCPage',
@@ -31,15 +33,22 @@ export default defineComponent({
       showModalRef.value = true
     }
 
-    const handleConfirm = () => {
+    const CDCStore = useCDCStore()
+    const router: Router = useRouter()
+    const CDCModalRef = ref()
+    const handleConfirm = async(model: any) => {
+      CDCStore.setModel(model)
+      await CDCModalRef.value.formRef.validate()
       showModalRef.value = false
+      router.push({ path: '/cdc_ingestion/dag' })
     }
 
     return {
       t,
       showModalRef,
       handleOpenModal,
-      handleConfirm
+      handleConfirm,
+      CDCModalRef
     }
   },
   render() {
@@ -62,13 +71,17 @@ export default defineComponent({
               </div>
             </n-card>
             <List></List>
-            <Modal
-              showModal={this.showModalRef}
-              title={this.t('cdc.create_synchronization_job')}
-              formType="CDCLIST"
-              onCancel={() => this.showModalRef = false}
-              onConfirm={this.handleConfirm}
-            />
+            {
+              this.showModalRef &&
+              <Modal
+                ref='CDCModalRef'
+                showModal={this.showModalRef}
+                title={this.t('cdc.create_synchronization_job')}
+                formType="CDCLIST"
+                onCancel={() => this.showModalRef = false}
+                onConfirm={this.handleConfirm}
+              />
+            }
           </n-space>
         </n-card>
       </div>

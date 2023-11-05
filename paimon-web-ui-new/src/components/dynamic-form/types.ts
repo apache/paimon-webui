@@ -40,7 +40,7 @@ interface IJsonItemParams {
   value?: any
   props?: any
   options?: IOption[] | Ref<IOption[]>
-  span?: number
+  span?: number | Ref<number>
   children?: IJsonItem[]
   validate?: IFormItemRule
   slots?: object

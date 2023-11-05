@@ -21,29 +21,29 @@ import { register } from '@antv/x6-vue-shape'
 import CustomNode from './custom-node'
 import { EDGE, PORT } from './node-config'
 
-register({
-  shape: 'custom-node',
-  width: 150,
-  height: 40,
-  component: CustomNode,
-  ports: {
-    ...PORT
-  }
-})
-
 export function useCanvasInit() {
   const graph = ref<Graph>()
   const dnd = ref<Dnd>()
 
   const graphInit = () => {
+    register({
+      shape: 'custom-node',
+      width: 150,
+      height: 40,
+      component: CustomNode,
+      ports: {
+        ...PORT
+      }
+    })
+
     return new Graph({
       container: document.getElementById('dag-container') || undefined,
       // background: {
       //   color: '#F2F7FA',
       // },
       autoResize: true,
-      panning: true,
-      mousewheel: true,
+      panning: false,
+      mousewheel: false,
       grid: {
         visible: true,
         type: 'dot',
@@ -76,6 +76,32 @@ export function useCanvasInit() {
         anchor: {
           name: 'left',
         },
+        validateConnection(data: any) {
+          const { sourceCell, targetCell, sourceView, targetView } = data
+          // Prevent loop edges
+          if (sourceView === targetView) {
+            return false
+          }
+          if (
+            sourceCell &&
+            targetCell &&
+            sourceCell.isNode() &&
+            targetCell.isNode()
+          ) {
+            const sourceData = sourceCell.getData()
+            // Prevent edges from being created from the output port
+            if (sourceData.type === 'OUTPUT') return false
+            // Prevent edges from being created from the input port to the input port
+            if (targetCell.getData().type === 'INPUT') return false
+            // Prevent multiple edges from being created between the same start node and end node
+            const edges = graph.value?.getConnectedEdges(targetCell)
+            if (edges!.length > 0) {
+              return false
+            }
+            
+          }
+          return true
+        }
       }
     })
   }
