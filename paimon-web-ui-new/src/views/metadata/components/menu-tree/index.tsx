@@ -86,7 +86,7 @@ export default defineComponent({
     onMounted(catalogStore.getAllCatalogs)
 
     const onLoadMenu = async (node: TreeOption) => {
-      const loadFn = node.type === 'catalog' ? catalogStore.getDatabaseByCatalogId : catalogStore.getTableByDataBaseId
+      const loadFn = node.type === 'catalog' ? catalogStore.getDatabasesByCatalogId : catalogStore.getTablesByDataBaseId
       node.children = await loadFn(node.key as number)
 
       return Promise.resolve()

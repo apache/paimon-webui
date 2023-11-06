@@ -46,11 +46,11 @@ export const useCatalogStore = defineStore('catalog', {
       this.catalogs = transformCatalog(res.data)
       this._catalogLoading = false
     },
-    getDatabaseByCatalogId(id: number): Promise<any> {
+    getDatabasesByCatalogId(id: number): Promise<any> {
       // TODO: fetch database list by catalog id
       // Waiting for the deployment of the back end interface
 
-      // const [, useDatabaseByCatalogId] = getDatabaseByCatalogId(id)
+      // const [, useDatabaseByCatalogId] = getDatabasesByCatalogId(id)
       // return useDatabaseByCatalogId()
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -69,11 +69,11 @@ export const useCatalogStore = defineStore('catalog', {
         }, 1000)
       })
     },
-    getTableByDataBaseId(id: number): Promise<any> {
+    getTablesByDataBaseId(id: number): Promise<any> {
       // TODO: fetch table list by catalog id and database name
       // Waiting for the deployment of the back end interface
 
-      // const [, useDatabaseByCatalogId] = getDatabaseByCatalogId(id)
+      // const [, useDatabaseByCatalogId] = getDatabasesByCatalogId(id)
       // return useDatabaseByCatalogId()
       return new Promise((resolve) => {
         setTimeout(() => {
