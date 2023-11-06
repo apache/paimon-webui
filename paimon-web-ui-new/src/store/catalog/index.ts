@@ -16,26 +16,23 @@ specific language governing permissions and limitations
 under the License. */
 
 import { NIcon, type TreeOption } from 'naive-ui'
-import { FolderOpenOutline } from '@vicons/ionicons5'
+import { FileTrayOutline, FolderOutline } from '@vicons/ionicons5'
 
 
-import { getAllCatalogs, type Catalog } from "@/api/models/catalog"
+import { getAllCatalogs, type Catalog } from '@/api/models/catalog'
 
 export interface CatalogState {
-  _catalogs: Catalog[];
+  catalogs: TreeOption[];
   _catalogLoading: boolean;
 }
 
 export const useCatalogStore = defineStore('catalog', {
   state: (): CatalogState => ({
-    _catalogs: [],
+    catalogs: [],
     _catalogLoading: false
   }),
   persist: true,
   getters: {
-    catalogs: (state): TreeOption[] => {
-      return transformCatalog(state._catalogs)
-    },
     catalogLoading: (state): boolean => {
       return state._catalogLoading
     }
@@ -46,22 +43,67 @@ export const useCatalogStore = defineStore('catalog', {
 
       this._catalogLoading = true
       const res = await useAllCatalog()
-      this._catalogs = res.data
+      this.catalogs = transformCatalog(res.data)
       this._catalogLoading = false
+    },
+    getDatabasesByCatalogId(id: number): Promise<any> {
+      // TODO: fetch database list by catalog id
+      // Waiting for the deployment of the back end interface
+
+      // const [, useDatabaseByCatalogId] = getDatabasesByCatalogId(id)
+      // return useDatabaseByCatalogId()
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve([
+            {
+              label: 'database',
+              type: 'database',
+              key: ++id,
+              isLeaf: false,
+              prefix: () =>
+                h(NIcon, null, {
+                  default: () => h(FolderOutline)
+                }),
+            }
+          ])
+        }, 1000)
+      })
+    },
+    getTablesByDataBaseId(id: number): Promise<any> {
+      // TODO: fetch table list by catalog id and database name
+      // Waiting for the deployment of the back end interface
+
+      // const [, useDatabaseByCatalogId] = getDatabasesByCatalogId(id)
+      // return useDatabaseByCatalogId()
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve([
+            {
+              label: 'table',
+              type: 'table',
+              key: ++id,
+              isLeaf: true,
+              prefix: () =>
+                h(NIcon, null, {
+                  default: () => h(FileTrayOutline)
+                }),
+            }
+          ])
+        }, 1000)
+      })
     }
   }
 })
 
 const transformCatalog = (catalogs: Catalog[]): TreeOption[] => {
   return catalogs.map(catalog => ({
-    label: catalog.name,
-    type: catalog.type,
+    label: catalog.name || 'paimon',
+    type: catalog.type || 'catalog',
     key: catalog.id,
     isLeaf: false,
-    children: [],
     prefix: () =>
       h(NIcon, null, {
-        default: () => h(FolderOpenOutline)
+        default: () => h(FolderOutline)
       }),
   }))
 }
