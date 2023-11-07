@@ -15,40 +15,38 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormValidationError } from 'naive-ui'
-import type { Router } from 'vue-router'
+import { type JobCardProps, JobMapping } from '../../constant'
 
-export function useForm() {
-  const router: Router = useRouter()
-  const [userInfo, onSubmit] = onLogin()
+export default defineComponent({
+  name: 'JobStatisticCard',
+  props: {
+    type: {
+      type: String as PropType<JobCardProps>,
+      required: true,
+    },
+    value: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup(props) {
+    const { t } = useLocaleHooks()
+    console.log('this.props.type', props);
 
-  const state = reactive({
-    loginForm: ref(),
-    model: {
-      username: '',
-      password: ''
+    return {
+      t,
+      props
     }
-  })
-
-  const handleLogin = () => {
-    state.loginForm.validate(async (errors: Array<FormValidationError>) => {
-      if (!errors) {
-        await onSubmit({
-          params: {
-            username: state.model.username,
-            password: state.model.password,
-            ldapLogin: false,
-            rememberMe: true
-          }
-        })
-        console.log(userInfo)
-        router.push({ path: '/' })
-      }
-    })
+  },
+  render() {
+    return (
+      <div>
+        <div>{this.props.type} icon</div>
+        <div>
+          <div>{(JobMapping[this.props.type])}</div>
+        </div>
+        <div>{this.props.value}</div>
+      </div>
+    )
   }
-
-  return {
-    state,
-    handleLogin
-  }
-}
+})
