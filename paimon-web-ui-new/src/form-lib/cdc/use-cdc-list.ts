@@ -69,7 +69,8 @@ export function useCDCList(item:any) {
 				type: 'radio',
 				field: 'synchronizationType',
 				name: t('cdc.synchronization_type'),
-				options: synchronizationTypeOptions
+				options: synchronizationTypeOptions,
+				value: 0,
 			},
 		] as IJsonItem[], model
 	}

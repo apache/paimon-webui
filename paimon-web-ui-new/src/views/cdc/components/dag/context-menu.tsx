@@ -19,46 +19,36 @@ import { NButton } from 'naive-ui'
 import styles from './index.module.scss'
 
 export default defineComponent({
-  name: 'CustomNode',
-  setup() {
-    const getNode = inject('getNode') as any
-    const node = getNode()
-    const data = node.data
-    
-    const onMainMouseEnter = () => {
-      const ports = node.getPorts() || []
-      ports.forEach((port: { id: any }) => {
-        node.setPortProp(port.id, 'attrs/circle', {
-          fill: '#fff',
-          stroke: '#85A5FF',
-        })
-      })
+  name: 'ContextMenuTool',
+  emits: ['delete'],
+  props: {
+    x: {
+      type: Number,
+      default: 0
+    },
+    y: {
+      type: Number,
+      default: 0
     }
-
-    const onMainMouseLeave = () => {
-      const ports = node.getPorts() || []
-      ports.forEach((port: { id: any }) => {
-        node.setPortProp(port.id, 'attrs/circle', {
-          fill: 'transparent',
-          stroke: 'transparent',
-        })
-      })
+  },
+  setup(props, { emit }) {
+    const { t } = useLocaleHooks()
+    const handleDelete = () => {
+      emit('delete')
     }
 
     return {
-      data,
-      onMainMouseEnter,
-      onMainMouseLeave,
+      t,
+      handleDelete
     }
   },
   render() {
     return (
       <div
-        class={styles['custom-node']}
-        onMouseenter={this.onMainMouseEnter}
-        onMouseleave={this.onMainMouseLeave}
+        class={styles['context-menu']}
+        style={{ left: `${this.x}px`, top: `${this.y}px` }}
       >
-        <NButton text>{this.data.name}</NButton>
+        <NButton type='primary' style={'width: 100%'} onClick={this.handleDelete}>{this.t('cdc.delete')}</NButton>
       </div>
     )
   }

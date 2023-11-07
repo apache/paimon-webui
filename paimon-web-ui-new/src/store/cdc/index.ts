@@ -15,12 +15,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { useCDCList } from "./cdc/use-cdc-list";
-import { useMYSQL } from './cdc/use-mysql'
-import { usePaimon } from "./cdc/use-paimon";
-
-export default {
-  CDCLIST: useCDCList,
-  MYSQL: useMYSQL,
-  PAIMON: usePaimon
+export interface CDCState {
+  model: object
 }
+
+export const useCDCStore = defineStore({
+  id: 'cdc',
+  state: (): CDCState => ({
+    model: {}
+  }),
+  persist: true,
+  getters: {
+    getModel(): any {
+      return this.model
+    }
+  },
+  actions: {
+    setModel(model: object): void {
+      this.model = model
+    }
+  }
+})

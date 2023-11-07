@@ -52,7 +52,7 @@ export default defineComponent({
   setup(props, { expose, emit }) {
     const { t } = useLocaleHooks()
     const formRef = ref()
-    expose({formRef})
+    expose({ formRef })
 
     const { elementsRef, rulesRef, model } = useTask({
       data: props.row,
@@ -60,7 +60,7 @@ export default defineComponent({
     })
 
     const handleConfirm = () => {
-      emit('confirm')
+      emit('confirm', model)
     }
 
     const handleCancel = () => {
@@ -94,7 +94,7 @@ export default defineComponent({
           {{
             default: () => (
               <Form
-                ref={this.formRef}
+                ref='formRef'
                 meta={{
                   model: this.model,
                   rules: this.rulesRef,

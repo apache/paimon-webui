@@ -18,14 +18,44 @@ under the License. */
 import { Leaf, Save } from "@vicons/ionicons5"
 import styles from './index.module.scss';
 import DagCanvas from "./dag-canvas";
+import { useCDCStore } from "@/store/cdc";
+import type { Router } from "vue-router";
 
 export default defineComponent({
   name: 'DagPage',
   setup() {
     const { t } = useLocaleHooks()
+    const CDCStore = useCDCStore()
+    const title = ref('')
+    onMounted(() => {
+      title.value = CDCStore.getModel.name
+    })
+
+    const dagRef = ref() as any
+    const handleSave = () => {
+      // console.log('dagRef', dagRef.value.graph.toJSON())
+      router.push({ path: '/cdc_ingestion' })
+    }
+
+    const router: Router = useRouter()
+    const handleJump = () => {
+      router.push({ path: '/cdc_ingestion' })
+    }
+
+    onMounted(() => {
+      if (dagRef.value && dagRef.value.graph) {
+        dagRef.value.graph.fromJSON({
+          cells: CDCStore.getModel.cells
+        })
+      }
+    })
     
     return {
       t,
+      title,
+      handleSave,
+      dagRef,
+      handleJump
     }
   },
   render() {
@@ -33,10 +63,12 @@ export default defineComponent({
       <n-card>
         <n-space vertical size={24}>
           <n-card>
-            <div class={styles.title}>
+            <div class={styles['title-bar']}>
               <n-space align="center">
                 <n-icon component={Leaf} color="#2F7BEA" size="18" />
-                <span>{this.t('cdc.synchronization_job_definition')}</span>
+                <span class={styles.title} onClick={this.handleJump}>{this.t('cdc.synchronization_job_definition')} {
+                  this.title ? ` - ${this.title}` : ''
+                }</span>
               </n-space>
               <div class={styles.operation}>
                 <n-space>
@@ -44,6 +76,7 @@ export default defineComponent({
                     v-slots={{
                       trigger: () => (
                         <n-button
+                          onClick={this.handleSave}
                           v-slots={{
                             icon: () => <n-icon component={Save}></n-icon>
                           }}
@@ -57,7 +90,7 @@ export default defineComponent({
               </div>
             </div>
           </n-card>
-          <DagCanvas></DagCanvas>
+          <DagCanvas ref='dagRef'></DagCanvas>
         </n-space>
       </n-card>
     )
