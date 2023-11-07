@@ -46,8 +46,6 @@ export default defineComponent({
         graph.value.on('node:contextmenu', ({ e, node }) => {
           nodeVariables.showContextMenu = true
           nodeVariables.row = node.data
-          // 获取鼠标位置
-
           nodeVariables.x = e.clientX - 20
           nodeVariables.y = e.clientY - 178
         })
