@@ -58,7 +58,7 @@ public interface DatabaseService extends IService<DatabaseVO> {
      *
      * @return The list of databases of given catalog.
      */
-    R<List<DatabaseVO>> getDatabasesById(Integer catalogId);
+    R<List<DatabaseVO>> getDatabasesByCatalogId(Integer id);
 
     /**
      * Drops database given database name.

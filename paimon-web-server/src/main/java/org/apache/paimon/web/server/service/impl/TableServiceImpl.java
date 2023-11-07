@@ -96,10 +96,10 @@ public class TableServiceImpl implements TableService {
                             .options(tableOptions)
                             .comment(tableDTO.getDescription())
                             .build();
-            if (service.tableExists(tableDTO.getDatabaseName(), tableDTO.getTableName())) {
-                return R.failed(Status.TABLE_NAME_IS_EXIST, tableDTO.getTableName());
+            if (service.tableExists(tableDTO.getDatabaseName(), tableDTO.getName())) {
+                return R.failed(Status.TABLE_NAME_IS_EXIST, tableDTO.getName());
             }
-            service.createTable(tableDTO.getDatabaseName(), tableDTO.getTableName(), tableMetadata);
+            service.createTable(tableDTO.getDatabaseName(), tableDTO.getName(), tableMetadata);
             return R.succeed();
         } catch (Exception e) {
             log.error("Exception with creating table.", e);
@@ -147,7 +147,7 @@ public class TableServiceImpl implements TableService {
                     tableChanges.add(setOption);
                 }
             }
-            service.alterTable(tableDTO.getDatabaseName(), tableDTO.getTableName(), tableChanges);
+            service.alterTable(tableDTO.getDatabaseName(), tableDTO.getName(), tableChanges);
             return R.succeed();
         } catch (Exception e) {
             log.error("Exception with adding column.", e);
@@ -220,7 +220,7 @@ public class TableServiceImpl implements TableService {
                 TableChange.SetOption setOption = TableChange.set(entry.getKey(), entry.getValue());
                 tableChanges.add(setOption);
             }
-            service.alterTable(tableDTO.getDatabaseName(), tableDTO.getTableName(), tableChanges);
+            service.alterTable(tableDTO.getDatabaseName(), tableDTO.getName(), tableChanges);
             return R.succeed();
         } catch (Exception e) {
             log.error("Exception with adding option.", e);
@@ -323,7 +323,7 @@ public class TableServiceImpl implements TableService {
                                                     TableDTO.builder()
                                                             .catalogName(item.getCatalogName())
                                                             .databaseName(db)
-                                                            .tableName(table.name())
+                                                            .name(table.name())
                                                             .partitionKey(table.partitionKeys())
                                                             .tableOptions(table.options())
                                                             .tableColumns(tableColumns)
@@ -346,47 +346,47 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
-    public R<List<TableVO>> getTablesByCondition(Integer catalogId, String databaseName) {
-        List<TableVO> resultList = new LinkedList<>();
-        CatalogInfo catalog = catalogService.getById(catalogId);
-        PaimonService paimonService = PaimonServiceUtils.getPaimonService(catalog);
-        List<String> tables = paimonService.listTables(databaseName);
-        tables.forEach(
-                name -> {
-                    TableVO table = new TableVO();
-                    table.setCatalogId(catalogId);
-                    table.setCatalogName(catalog.getCatalogName());
-                    table.setName(name);
-                    table.setDatabaseName(databaseName);
-                    resultList.add(table);
-                });
-        return R.succeed(resultList);
-    }
-
-    @Override
-    public R<List<TableVO>> queryTablesByCondition(String name) {
+    public List<TableVO> queryTablesByCondition(TableDTO tableDTO) {
         List<TableVO> resultList = new LinkedList<>();
         List<CatalogInfo> catalogInfoList = catalogService.list();
         PaimonService paimonService;
         for (CatalogInfo catalog : catalogInfoList) {
-            paimonService = PaimonServiceUtils.getPaimonService(catalog);
-            List<String> databaseList = paimonService.listDatabases();
-            for (String database : databaseList) {
-                List<String> tables = paimonService.listTables(database);
+            if (Objects.nonNull(tableDTO.getCatalogId())
+                    && Objects.nonNull(tableDTO.getDatabaseName())
+                    && catalog.getId().equals(tableDTO.getCatalogId())) {
+                paimonService = PaimonServiceUtils.getPaimonService(catalog);
+                List<String> tables = paimonService.listTables(tableDTO.getDatabaseName());
                 tables.forEach(
-                        tableName -> {
-                            if (tableName.contains(name)) {
-                                TableVO table = new TableVO();
-                                table.setCatalogId(catalog.getId());
-                                table.setCatalogName(catalog.getCatalogName());
-                                table.setDatabaseName(database);
-                                table.setName(tableName);
-                                resultList.add(table);
-                            }
+                        name -> {
+                            TableVO table = new TableVO();
+                            table.setCatalogId(catalog.getId());
+                            table.setCatalogName(catalog.getCatalogName());
+                            table.setName(name);
+                            table.setDatabaseName(table.getDatabaseName());
+                            resultList.add(table);
                         });
+                break;
+            } else {
+                paimonService = PaimonServiceUtils.getPaimonService(catalog);
+                List<String> databaseList = paimonService.listDatabases();
+                for (String database : databaseList) {
+                    List<String> tables = paimonService.listTables(database);
+                    tables.forEach(
+                            tableName -> {
+                                if (tableName.contains(tableDTO.getName())) {
+                                    TableVO table = new TableVO();
+                                    table.setCatalogId(catalog.getId());
+                                    table.setCatalogName(catalog.getCatalogName());
+                                    table.setDatabaseName(database);
+                                    table.setName(tableName);
+                                    resultList.add(table);
+                                }
+                            });
+                }
             }
         }
-        return R.succeed(resultList);
+
+        return resultList;
     }
 
     private List<TableChange> createTableChanges(TableColumn oldColumn, TableColumn newColumn) {

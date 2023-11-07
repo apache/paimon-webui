@@ -33,7 +33,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -101,9 +100,9 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
     }
 
     @Override
-    public R<List<DatabaseVO>> getDatabasesById(Integer catalogId) {
+    public R<List<DatabaseVO>> getDatabasesByCatalogId(Integer id) {
         List<DatabaseVO> resultList = new LinkedList<>();
-        CatalogInfo catalog = catalogService.getById(catalogId);
+        CatalogInfo catalog = catalogService.getById(id);
         PaimonService service = PaimonServiceUtils.getPaimonService(catalog);
         List<String> databases = service.listDatabases();
         databases.forEach(
@@ -142,7 +141,7 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
      */
     private CatalogInfo getCatalogInfo(DatabaseDTO databaseDTO) {
         CatalogInfo catalogInfo;
-        if (StringUtils.isNotBlank(databaseDTO.getCatalogId())) {
+        if (databaseDTO.getCatalogId() != null) {
             catalogInfo =
                     catalogService.getOne(
                             Wrappers.lambdaQuery(CatalogInfo.class)

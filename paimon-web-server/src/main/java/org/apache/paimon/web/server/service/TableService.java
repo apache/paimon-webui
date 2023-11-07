@@ -135,16 +135,9 @@ public interface TableService {
     R<List<TableDTO>> getAllTables();
 
     /**
-     * Query tables by catalog id and database name.
+     * Query all tables by {@link TableDTO}.
      *
      * @return Response object containing a list of {@link TableVO} representing the tables.
      */
-    R<List<TableVO>> getTablesByCondition(Integer catalogId, String databaseName);
-
-    /**
-     * Query all tables by name fuzzy.
-     *
-     * @return Response object containing a list of {@link TableVO} representing the tables.
-     */
-    R<List<TableVO>> queryTablesByCondition(String name);
+    List<TableVO> queryTablesByCondition(TableDTO tableDTO);
 }

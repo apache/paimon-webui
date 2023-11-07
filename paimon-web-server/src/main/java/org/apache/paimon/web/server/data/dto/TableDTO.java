@@ -35,11 +35,13 @@ import java.util.Map;
 @AllArgsConstructor
 public class TableDTO {
 
+    private Integer catalogId;
+
     private String catalogName;
 
     private String databaseName;
 
-    private String tableName;
+    private String name;
 
     private String description;
 

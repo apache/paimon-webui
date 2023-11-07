@@ -72,7 +72,7 @@ public class MetadataControllerTest extends ControllerTestBase {
                 TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
-                        .tableName(tableName)
+                        .name(tableName)
                         .tableColumns(tableColumns)
                         .partitionKey(Lists.newArrayList())
                         .tableOptions(Maps.newHashMap())

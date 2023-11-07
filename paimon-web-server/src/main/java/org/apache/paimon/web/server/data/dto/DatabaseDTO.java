@@ -26,7 +26,7 @@ public class DatabaseDTO {
 
     private String name;
 
-    private String catalogId;
+    private Integer catalogId;
 
     private String catalogName;
 

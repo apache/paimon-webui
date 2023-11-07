@@ -36,6 +36,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /** Table api controller. */
 @Slf4j
@@ -195,23 +199,25 @@ public class TableController {
     }
 
     /**
-     * Query tables by catalog id and database name.
+     * Query all tables by {@link TableDTO}.
      *
      * @return Response object containing a list of {@link TableVO} representing the tables.
      */
-    @GetMapping("/queryTables/{catalogId}/{databaseName}")
-    public R<List<TableVO>> getTables(
-            @PathVariable Integer catalogId, @PathVariable String databaseName) {
-        return tableService.getTablesByCondition(catalogId, databaseName);
-    }
-
-    /**
-     * Query all tables by tableName fuzzy.
-     *
-     * @return Response object containing a list of {@link TableVO} representing the tables.
-     */
-    @GetMapping("/queryTables/{tableName}")
-    public R<List<TableVO>> queryTablesByCondition(@PathVariable String tableName) {
-        return tableService.queryTablesByCondition(tableName);
+    @PostMapping("/queryTablesByCondition")
+    public R<Object> queryTablesByCondition(@RequestBody TableDTO tableDTO) {
+        List<TableVO> tables = tableService.queryTablesByCondition(tableDTO);
+        if (Objects.nonNull(tableDTO.getCatalogId())
+                && Objects.nonNull(tableDTO.getDatabaseName())) {
+            return R.succeed(tables);
+        } else {
+            TreeMap<Integer, Map<String, List<TableVO>>> collect =
+                    tables.stream()
+                            .collect(
+                                    Collectors.groupingBy(
+                                            TableVO::getCatalogId,
+                                            TreeMap::new,
+                                            Collectors.groupingBy(TableVO::getDatabaseName)));
+            return R.succeed(collect);
+        }
     }
 }

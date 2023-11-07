@@ -71,9 +71,9 @@ public class DatabaseController {
      *
      * @return The list of databases of given catalog id.
      */
-    @GetMapping("/getDatabasesById/{catalogId}")
-    public R<List<DatabaseVO>> getDatabasesById(@PathVariable Integer catalogId) {
-        return databaseService.getDatabasesById(catalogId);
+    @GetMapping("/getDatabasesByCatalogId/{id}")
+    public R<List<DatabaseVO>> getDatabasesByCatalogId(@PathVariable Integer id) {
+        return databaseService.getDatabasesByCatalogId(id);
     }
 
     /**
