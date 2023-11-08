@@ -20,7 +20,7 @@ package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.gateway.task.TaskFactory;
 import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.task.SubmitTask;
+import org.apache.paimon.web.task.SubmitJob;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +33,9 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/task")
+@RequestMapping("/api/job")
 @AllArgsConstructor
-public class TaskController {
+public class JobController {
     /**
      * Execute sql query
      *
@@ -45,7 +45,7 @@ public class TaskController {
      */
     @PostMapping("/executeSql")
     public R<List<Map<String, Object>>> submitExecuteSql(String sql, String taskType) {
-        SubmitTask task = getTask(taskType);
+        SubmitJob task = getTask(taskType);
         try {
             return R.succeed(task.execute(sql).getData());
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class TaskController {
         }
     }
 
-    private SubmitTask getTask(String taskType) {
+    private SubmitJob getTask(String taskType) {
         return TaskFactory.getTask(taskType);
     }
 }

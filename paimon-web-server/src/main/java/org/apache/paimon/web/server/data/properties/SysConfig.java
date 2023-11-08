@@ -21,11 +21,14 @@ package org.apache.paimon.web.server.data.properties;
 import org.apache.paimon.web.common.data.propertis.SysEnv;
 import org.apache.paimon.web.gateway.task.TaskFactory;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
+
+import java.lang.reflect.InvocationTargetException;
 
 @ConfigurationProperties(prefix = SysConfig.PREFIX)
 @EnableConfigurationProperties(SysConfig.class)
@@ -34,8 +37,8 @@ public class SysConfig extends SysEnv {
     public static final String PREFIX = "sys-config";
 
     @PostConstruct
-    public void init() {
-        SysConfig.INSTANCE = this;
+    public void init() throws InvocationTargetException, IllegalAccessException {
+        BeanUtils.copyProperties(SysConfig.INSTANCE, this);
         TaskFactory.init();
     }
 }

@@ -16,23 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink;
+package org.apache.paimon.web.common.func;
 
-import org.apache.paimon.web.flink.task.FlinkTask;
-import org.apache.paimon.web.task.BaseTaskTests;
-
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.TableEnvironment;
-import org.junit.jupiter.api.Test;
-
-public class FlinkTaskTests extends BaseTaskTests {
-    @Test
-    public void taskExecutorTest() throws Exception {
-        FlinkTask flinkTask =
-                new FlinkTask(
-                        StreamExecutionEnvironment.getExecutionEnvironment(),
-                        TableEnvironment.create(new Configuration()));
-        assertTask(flinkTask);
-    }
+/** Supplier Functional interface that can use exceptions */
+@FunctionalInterface
+public interface Supplier<T> {
+    T call() throws Exception;
 }

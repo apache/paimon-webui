@@ -19,7 +19,7 @@
 package org.apache.paimon.web.server.data.enums;
 
 public enum TaskType {
-    SPARK(),
-    FLINK(),
-    FLINK_SQL_GATEWAY();
+    SPARK,
+    FLINK,
+    FLINK_SQL_GATEWAY;
 }

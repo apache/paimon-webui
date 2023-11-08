@@ -16,20 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.data.vo;
+package org.apache.paimon.web.task;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.apache.paimon.web.common.data.vo.SubmitResult;
 
-@Getter
-@Builder
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Table {
-    private String column;
-    private Object data;
+/**
+ * Task submission interface, the new SQL calculation framework needs to implement this interface
+ */
+public interface SubmitJob {
+    SubmitResult execute(String statement) throws Exception;
+
+    boolean stop(String statement) throws Exception;
+
+    boolean checkStatus() throws Exception;
 }

@@ -18,10 +18,12 @@
 
 package org.apache.paimon.web.flink.task;
 
+import org.apache.paimon.web.common.data.constant.SqlConstants;
 import org.apache.paimon.web.common.data.vo.SubmitResult;
-import org.apache.paimon.web.task.SubmitTask;
+import org.apache.paimon.web.task.SubmitJob;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.types.StructField;
@@ -32,7 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
-public class SparkTask implements SubmitTask {
+@Slf4j
+public class SparkTask implements SubmitJob {
     private final SparkSession sparkSession;
 
     @Override
@@ -58,11 +61,18 @@ public class SparkTask implements SubmitTask {
 
     @Override
     public boolean stop(String statement) throws Exception {
+        // todo Need to be implemented here
         return false;
     }
 
     @Override
     public boolean checkStatus() {
-        return false;
+        try {
+            sparkSession.sql(SqlConstants.VALIDATE_SQL);
+            return true;
+        } catch (Exception e) {
+            log.error("SparkTask checkStatus error", e);
+            return false;
+        }
     }
 }

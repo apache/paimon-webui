@@ -16,26 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.data.propertis;
+package org.apache.paimon.web.flink.task;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.apache.paimon.web.task.BaseTaskTests;
 
-import java.io.Serializable;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.TableEnvironment;
+import org.junit.jupiter.api.Test;
 
-@Getter
-@Setter
-public class SysEnv implements Serializable {
-    private static final long serialVersionUID = 1L;
-    public static final SysEnv INSTANCE = new SysEnv();
-    private JobProperties flinkConf;
-    private JobProperties sparkConf;
-    private JobProperties flinkSqlGatewayConf;
-
-    @Getter
-    @Setter
-    public static class JobProperties {
-        private String remoteAddr;
-        private String confPath;
+public class FlinkTaskTests extends BaseTaskTests {
+    @Test
+    public void taskExecutorTest() throws Exception {
+        FlinkTask flinkTask =
+                new FlinkTask(
+                        StreamExecutionEnvironment.getExecutionEnvironment(),
+                        TableEnvironment.create(new Configuration()));
+        assertTask(flinkTask);
     }
 }

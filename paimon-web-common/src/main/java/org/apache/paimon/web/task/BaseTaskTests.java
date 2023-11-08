@@ -18,31 +18,52 @@
 
 package org.apache.paimon.web.task;
 
+import org.apache.paimon.shade.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.paimon.web.common.data.constant.SqlConstants;
 import org.apache.paimon.web.common.data.vo.SubmitResult;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.json.JSONArray;
+import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BaseTaskTests {
-    List<Map<String, Object>> data = new ArrayList<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    List<Map<String, String>> data = new ArrayList<>();
 
     {
-        data.add(Dict.create().set("order_id", "1").set("price", "2.0"));
-        data.add(Dict.create().set("order_id", "2").set("price", "3.1"));
+        data.add(
+                new HashMap<String, String>() {
+                    {
+                        put("order_id", "1");
+                        put("price", "2.0");
+                    }
+                });
+        data.add(
+                new HashMap<String, String>() {
+                    {
+                        put("order_id", "2");
+                        put("price", "3.1");
+                    }
+                });
     }
 
-    protected void assertTask(SubmitTask submitTask) throws Exception {
-        SubmitResult submitResult = submitTask.execute(SqlConstants.VALIDATE_SQL);
+    protected void assertTask(SubmitJob submitJob) throws Exception {
+        SubmitResult submitResult = submitJob.execute(SqlConstants.VALIDATE_SQL);
         verifyData(submitResult.getData());
     }
 
     protected void verifyData(List<Map<String, Object>> dataList) {
-        Assert.equals(new JSONArray(dataList).toString(), new JSONArray(data).toString());
+        try {
+            // Verify data is consistent
+            Validate.isTrue(
+                    objectMapper
+                            .writeValueAsString(dataList)
+                            .equalsIgnoreCase(objectMapper.writeValueAsString(data)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

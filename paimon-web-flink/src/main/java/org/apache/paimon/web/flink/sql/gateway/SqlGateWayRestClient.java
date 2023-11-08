@@ -18,8 +18,8 @@
 
 package org.apache.paimon.web.flink.sql.gateway;
 
-import cn.hutool.core.lang.func.Func0;
-import cn.hutool.core.thread.ThreadUtil;
+import org.apache.paimon.web.common.func.Supplier;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.rest.FileUpload;
@@ -32,6 +32,7 @@ import org.apache.flink.runtime.rest.messages.RequestBody;
 import org.apache.flink.runtime.rest.messages.ResponseBody;
 import org.apache.flink.runtime.rest.versioning.RestAPIVersion;
 import org.apache.flink.util.ConfigurationException;
+import org.apache.flink.util.concurrent.Executors;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -43,7 +44,7 @@ public class SqlGateWayRestClient extends RestClient {
 
     public SqlGateWayRestClient(String targetAddress, Integer targetPort)
             throws ConfigurationException {
-        super(new Configuration(), ThreadUtil.newExecutor());
+        super(new Configuration(), Executors.newDirectExecutorService());
         this.targetAddress = targetAddress;
         this.targetPort = targetPort;
     }
@@ -116,11 +117,10 @@ public class SqlGateWayRestClient extends RestClient {
                 () -> super.sendRequest(targetAddress, targetPort, messageHeaders));
     }
 
-    private <T> T throwExceptionHandler(Func0<T> func0) {
+    private <T> T throwExceptionHandler(Supplier<T> func0) {
         try {
             return func0.call();
         } catch (Exception e) {
-            log.error("requests failed!", e);
             throw new RuntimeException(e);
         }
     }

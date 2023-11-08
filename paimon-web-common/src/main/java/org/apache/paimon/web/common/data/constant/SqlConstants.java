@@ -18,7 +18,9 @@
 
 package org.apache.paimon.web.common.data.constant;
 
+/** Commonly used sql statements Used for sql task verification or sql regular expression use */
 public class SqlConstants {
+    /** Validate sql */
     public static final String VALIDATE_SQL =
             "SELECT order_id, price FROM (VALUES (1, 2.0), (2, 3.1))  AS t (order_id, price)\n";
 }

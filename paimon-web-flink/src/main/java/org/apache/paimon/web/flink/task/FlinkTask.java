@@ -18,9 +18,11 @@
 
 package org.apache.paimon.web.flink.task;
 
+import org.apache.paimon.web.common.data.constant.SqlConstants;
 import org.apache.paimon.web.common.data.vo.SubmitResult;
-import org.apache.paimon.web.task.SubmitTask;
+import org.apache.paimon.web.task.SubmitJob;
 
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.TableResult;
@@ -34,10 +36,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FlinkTask implements SubmitTask {
+public class FlinkTask implements SubmitJob {
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     private final StreamExecutionEnvironment env;
     private final TableEnvironment tEnv;
-    private static final String nullColumn = "";
+    private static final String NULL_COLUMN = "";
 
     public FlinkTask(StreamExecutionEnvironment env, TableEnvironment tEnv) {
         this.env = env;
@@ -50,6 +53,7 @@ public class FlinkTask implements SubmitTask {
 
     @Override
     public SubmitResult execute(String statement) throws Exception {
+        // todo Statement analysis has not been written yet
         TableResult tableResult = tEnv.executeSql(statement);
         List<String> columns = tableResult.getResolvedSchema().getColumnNames();
         try (CloseableIterator<Row> it = tableResult.collect()) {
@@ -67,7 +71,7 @@ public class FlinkTask implements SubmitTask {
             for (int i = 0; i < row.getArity(); ++i) {
                 Object field = row.getField(i);
                 if (field == null) {
-                    map.put(columns.get(i), nullColumn);
+                    map.put(columns.get(i), NULL_COLUMN);
                 } else {
                     map.put(columns.get(i), field.toString());
                 }
@@ -87,7 +91,7 @@ public class FlinkTask implements SubmitTask {
                     GenericRowData data = (GenericRowData) rowData;
                     Object field = data.getField(i);
                     if (field == null) {
-                        map.put(columns.get(i), nullColumn);
+                        map.put(columns.get(i), NULL_COLUMN);
                     } else {
                         map.put(columns.get(i), field.toString());
                     }
@@ -102,13 +106,14 @@ public class FlinkTask implements SubmitTask {
 
     @Override
     public boolean stop(String statement) throws Exception {
+        // todo Need to be implemented here
         return false;
     }
 
     @Override
     public boolean checkStatus() {
         try {
-            execute("select 1");
+            execute(SqlConstants.VALIDATE_SQL);
             return true;
         } catch (Exception e) {
             return false;

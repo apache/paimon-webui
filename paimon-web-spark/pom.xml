@@ -15,6 +15,7 @@
     <properties>
         <spark.version>3.3.2</spark.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <janino.version>3.0.8</janino.version>
     </properties>
     <dependencies>
         <dependency>
@@ -59,7 +60,7 @@
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
-            <version>3.0.8</version>
+            <version>${janino.version}</version>
         </dependency>
     </dependencies>
 </project>

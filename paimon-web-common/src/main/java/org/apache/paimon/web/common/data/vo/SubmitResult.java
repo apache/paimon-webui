@@ -36,5 +36,7 @@ import java.util.Map;
 @Setter
 @ToString
 public class SubmitResult implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private List<Map<String, Object>> data;
 }

@@ -40,8 +40,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TaskControllerTest {
-    @Resource private TaskController taskController;
+public class JobControllerTest {
+    @Resource private JobController jobController;
     List<Map<String, Object>> data = new ArrayList<>();
 
     @BeforeEach
@@ -55,14 +55,14 @@ public class TaskControllerTest {
         String sql =
                 "SELECT order_id, price FROM (VALUES (1, 2.0), (2, 3.1))  AS t (order_id, price)\n";
         List<Map<String, Object>> flinkData =
-                taskController.submitExecuteSql(sql, "flink").getData();
+                jobController.submitExecuteSql(sql, "flink").getData();
         List<Map<String, Object>> sparkData =
-                taskController.submitExecuteSql(sql, "spark").getData();
+                jobController.submitExecuteSql(sql, "spark").getData();
         ThreadUtil.sleep(100000 * 1000);
         verifyData(flinkData);
         verifyData(sparkData);
-        taskController.submitExecuteSql(sql, "flink").getData();
-        taskController.submitExecuteSql(sql, "spark").getData();
+        jobController.submitExecuteSql(sql, "flink").getData();
+        jobController.submitExecuteSql(sql, "spark").getData();
     }
 
     private void verifyData(List<Map<String, Object>> dataList) {

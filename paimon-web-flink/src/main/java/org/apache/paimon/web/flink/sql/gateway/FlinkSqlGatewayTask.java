@@ -21,9 +21,8 @@ package org.apache.paimon.web.flink.sql.gateway;
 import org.apache.paimon.web.common.data.constant.SqlConstants;
 import org.apache.paimon.web.common.data.vo.SubmitResult;
 import org.apache.paimon.web.flink.task.FlinkTask;
-import org.apache.paimon.web.task.SubmitTask;
+import org.apache.paimon.web.task.SubmitJob;
 
-import cn.hutool.core.thread.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.runtime.rest.messages.EmptyMessageParameters;
 import org.apache.flink.runtime.rest.messages.EmptyRequestBody;
@@ -48,7 +47,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
-public class FlinkSqlGatewayTask implements SubmitTask {
+public class FlinkSqlGatewayTask implements SubmitJob {
+    private static final int REQUEST_WAITE_TIME = 1000;
 
     private final SqlGateWayRestClient sqlGateWayRestClient;
     private final SessionHandle sessionHandle;
@@ -101,7 +101,7 @@ public class FlinkSqlGatewayTask implements SubmitTask {
                                     EmptyRequestBody.getInstance())
                             .get();
             resultType = fetchResultsResponseBody.getResultType();
-            ThreadUtil.sleep(3000);
+            Thread.sleep(REQUEST_WAITE_TIME);
         }
         // to convert data
         ResultSet results = fetchResultsResponseBody.getResults();
@@ -113,6 +113,7 @@ public class FlinkSqlGatewayTask implements SubmitTask {
 
     @Override
     public boolean stop(String statement) throws Exception {
+        // todo Need to be implemented here
         return false;
     }
 
@@ -122,7 +123,7 @@ public class FlinkSqlGatewayTask implements SubmitTask {
             execute(SqlConstants.VALIDATE_SQL);
             return true;
         } catch (Exception e) {
-            log.error("checkStatus error", e);
+            log.error("Flink checkStatus error", e);
         }
         return false;
     }

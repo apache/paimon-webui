@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.flink;
+package org.apache.paimon.web.flink.task;
 
+import org.apache.paimon.web.common.utils.ReflectUtil;
 import org.apache.paimon.web.flink.sql.gateway.FlinkSqlGatewayTask;
 import org.apache.paimon.web.task.BaseTaskTests;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
-import cn.hutool.core.util.ReflectUtil;
+import com.google.common.io.Resources;
+import org.apache.commons.io.FileUtils;
 import org.apache.flink.configuration.ConfigConstants;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.RestOptions;
@@ -33,6 +33,7 @@ import org.apache.flink.runtime.minicluster.RpcServiceSharing;
 import org.apache.flink.table.gateway.SqlGateway;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 
@@ -60,11 +61,12 @@ public class FlinkSqlGatewayTests extends BaseTaskTests {
         miniCluster.start();
 
         // start sql gateway
+        File confFile = new File(Resources.getResource("flink-conf.yaml").getFile());
+        FileUtils.forceMkdirParent(confFile);
         getSysEnv()
                 .put(
                         ConfigConstants.ENV_FLINK_CONF_DIR,
-                        FileUtil.mkParentDirs(ResourceUtil.getResource("flink-conf.yaml").getFile())
-                                .getAbsolutePath());
+                        confFile.getParentFile().getAbsolutePath());
         configuration.setInteger("sql-gateway.endpoint.rest.port", sqlGatewayPort);
         configuration.setString("sql-gateway.endpoint.rest.address", localAddress);
         Properties dynamicConfig = new Properties();
@@ -81,10 +83,7 @@ public class FlinkSqlGatewayTests extends BaseTaskTests {
     }
 
     private static Map<String, String> getSysEnv() throws Exception {
-        return (Map<String, String>)
-                ReflectUtil.getStaticFieldValue(
-                        ReflectUtil.getField(
-                                Class.forName("java.lang.ProcessEnvironment"),
-                                "theCaseInsensitiveEnvironment"));
+        return ReflectUtil.getStaticFieldValue(
+                Class.forName("java.lang.ProcessEnvironment"), "theCaseInsensitiveEnvironment");
     }
 }

@@ -16,14 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.task;
+package org.apache.paimon.web.common.data.vo;
 
-import org.apache.paimon.web.common.data.vo.SubmitResult;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public interface SubmitTask {
-    SubmitResult execute(String statement) throws Exception;
-
-    boolean stop(String statement) throws Exception;
-
-    boolean checkStatus() throws Exception;
+@Getter
+@Builder
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class TableVO {
+    private String column;
+    private Object data;
 }
