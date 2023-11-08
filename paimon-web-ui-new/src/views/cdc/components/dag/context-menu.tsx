@@ -15,25 +15,41 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import httpRequest from '@/api/request'
-import type { Catalog } from './interface'
+import { NButton } from 'naive-ui'
+import styles from './index.module.scss'
 
-export * from './interface'
+export default defineComponent({
+  name: 'ContextMenuTool',
+  emits: ['delete'],
+  props: {
+    x: {
+      type: Number,
+      default: 0
+    },
+    y: {
+      type: Number,
+      default: 0
+    }
+  },
+  setup(props, { emit }) {
+    const { t } = useLocaleHooks()
+    const handleDelete = () => {
+      emit('delete')
+    }
 
-// #region catalog-controller
-
-/**
- * # Get all catalog
- */
-export const getAllCatalogs = () => {
-  return httpRequest.get<any, Catalog[]>('/catalog/getAllCatalogs')
-}
-
-/**
- * # Get database by catalog id
- */
-export const getDatabasesByCatalogId = (id: number) => {
-  return httpRequest.get<any, Catalog[]>(`/database/getDatabasesByCatalogId/${id}`)
-}
-
-// #endregion
+    return {
+      t,
+      handleDelete
+    }
+  },
+  render() {
+    return (
+      <div
+        class={styles['context-menu']}
+        style={{ left: `${this.x}px`, top: `${this.y}px` }}
+      >
+        <NButton type='primary' style={'width: 100%'} onClick={this.handleDelete}>{this.t('cdc.delete')}</NButton>
+      </div>
+    )
+  }
+})

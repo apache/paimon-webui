@@ -15,8 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { FileTrayFullOutline, Search, FolderOpenOutline } from '@vicons/ionicons5'
-import { NIcon } from 'naive-ui'
+import { Add, FolderOutline, FolderOpenOutline, Search } from '@vicons/ionicons5'
+import { NButton, NIcon, type TreeOption } from 'naive-ui';
 
 import { useCatalogStore } from '@/store/catalog'
 
@@ -30,49 +30,7 @@ export default defineComponent({
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
 
-    const treeVariables = reactive({
-      treeData: [
-        {
-          key: 'paimon2',
-          label: 'paimon2',
-          type: 'folder',
-          children: [
-            {
-              key: 'user',
-              label: 'user',
-              type: 'folder',
-              prefix: () =>
-                h(NIcon, null, {
-                  default: () => h(FolderOpenOutline)
-                }),
-              children: [
-                {
-                  label: 'user_table',
-                  key: '1',
-                  type: 'file',
-                  content: 'select * from abc where abc.a="abc";select * from cba where cba.a="cba";',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                },
-                {
-                  label: 'people_table',
-                  key: '2',
-                  type: 'file',
-                  content: 'select * from abc where abc.a="abc";',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      filterValue: '',
-    })
+    const filterValue = ref('')
 
     const dropdownMenu = [
       {
@@ -85,22 +43,64 @@ export default defineComponent({
       },
     ]
 
-    const nodeProps = () => {
-      return {
-        onClick () {
-        },
+    const updatePrefixWithExpanded = (
+      _keys: Array<string | number>,
+      _option: Array<TreeOption | null>,
+      meta: {
+        node: TreeOption | null
+        action: 'expand' | 'collapse' | 'filter'
+      }
+    ) => {
+      if (!meta.node) return
+      switch (meta.action) {
+        case 'expand':
+          meta.node.prefix = () =>
+            h(NIcon, null, {
+              default: () => h(FolderOpenOutline)
+            })
+          break
+        case 'collapse':
+          meta.node.prefix = () =>
+            h(NIcon, null, {
+              default: () => h(FolderOutline)
+            })
+          break
       }
     }
 
+    const renderSuffix = ({ option }: { option: TreeOption }) => {
+      return option.type !== 'table' ? h(NButton, {
+        quaternary: true,
+        circle: true,
+        size: 'tiny',
+        onClick: (e) => {
+          e.stopPropagation()
+        }
+      }, {
+        default: () => h(NIcon, null, {
+          default: () => h(Add)
+        })
+      }) : undefined
+    }
+
     onMounted(catalogStore.getAllCatalogs)
+
+    const onLoadMenu = async (node: TreeOption) => {
+      const loadFn = node.type === 'catalog' ? catalogStore.getDatabasesByCatalogId : catalogStore.getTablesByDataBaseId
+      node.children = await loadFn(node.key as number)
+
+      return Promise.resolve()
+    }
 
     return {
       menuLoading: catalogStoreRef.catalogLoading,
       menuList: catalogStoreRef.catalogs,
       dropdownMenu,
+      filterValue,
       t,
-      ...toRefs(treeVariables),
-      nodeProps,
+      onLoadMenu,
+      updatePrefixWithExpanded,
+      renderSuffix
     }
   },
   render() {
@@ -108,6 +108,14 @@ export default defineComponent({
       <div class={styles.container}>
         <n-card class={styles.card} content-style={'padding:20px 18px;'}>
           <n-space vertical>
+            <n-space justify='space-between' align='enter'>
+              <article>Catalog</article>
+              <n-button size='small' quaternary circle>
+                <n-icon>
+                  <Add />
+                </n-icon>
+              </n-button>
+            </n-space>
             <n-input placeholder={this.t('playground.search')} style="width: 100%;"
               v-model:value={this.filterValue}
               v-slots={{
@@ -118,10 +126,12 @@ export default defineComponent({
             <n-spin show={this.menuLoading}>
               <n-tree
                 block-line
-                on-load={() => {}}
+                expand-on-click
+                renderSuffix={this.renderSuffix}
+                onUpdate:expandedKeys={this.updatePrefixWithExpanded}
+                onLoad={this.onLoadMenu}
                 data={this.menuList}
                 pattern={this.filterValue}
-                node-props={this.nodeProps}
               />
             </n-spin>
           </n-space>

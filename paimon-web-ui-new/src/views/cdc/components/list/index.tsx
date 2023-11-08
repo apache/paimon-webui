@@ -16,13 +16,16 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss';
-import TableAction from '../../../../components/table-action';
-import Modal from '@/components/modal';
+import TableAction from '@/components/table-action';
+import { useCDCStore } from '@/store/cdc';
+import type { Router } from 'vue-router';
 
 export default defineComponent({
   name: 'ListPage',
   setup() {
     const { t } = useLocaleHooks()
+    const router: Router = useRouter()
+
     const tableVariables = reactive({
       columns: [
         {
@@ -62,22 +65,180 @@ export default defineComponent({
             h(TableAction, {
               row,
               onHandleEdit: (row) => {
-                tableVariables.showModal = true
-                tableVariables.row = row
+                const CDCStore = useCDCStore()
+                CDCStore.setModel(row)
+                router.push({ path: '/cdc_ingestion/dag' })
               },
             })
         }
       ],
       data: [
-        { name: 1, type: 'Single table synchronization', create_user: 'admin' },
-        { name: 2, type: "Whole database synchronization", create_user: 'admin' },
+        {
+          name: 1,
+          type: 'Single table synchronization',
+          create_user: 'admin',
+          cells: [
+            {
+                "position": {
+                    "x": 300,
+                    "y": 40
+                },
+                "size": {
+                    "width": 150,
+                    "height": 40
+                },
+                "view": "vue-shape-view",
+                "shape": "custom-node",
+                "ports": {
+                    "groups": {
+                        "in": {
+                            "position": "left",
+                            "attrs": {
+                                "circle": {
+                                    "r": 4,
+                                    "magnet": true,
+                                    "stroke": "transparent",
+                                    "strokeWidth": 1,
+                                    "fill": "transparent"
+                                }
+                            }
+                        },
+                        "out": {
+                            "position": {
+                                "name": "right",
+                                "args": {
+                                    "dx": 5
+                                }
+                            },
+                            "attrs": {
+                                "circle": {
+                                    "r": 4,
+                                    "magnet": true,
+                                    "stroke": "transparent",
+                                    "strokeWidth": 1,
+                                    "fill": "transparent"
+                                }
+                            }
+                        }
+                    },
+                    "items": [
+                        {
+                            "id": "MySQL-out",
+                            "group": "out",
+                            "attrs": {
+                                "circle": {
+                                    "fill": "transparent",
+                                    "stroke": "transparent"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "id": "MySQL",
+                "data": {
+                    "name": "MySQL",
+                    "value": "MYSQL",
+                    "type": "INPUT",
+                    "host": "1",
+                    "port": "2",
+                    "username": "3",
+                    "password": "4",
+                    "other_configs": "5",
+                    "database": "",
+                    "table_name": "",
+                    "type_mapping": "",
+                    "metadata_column": "",
+                    "computed_column": ""
+                },
+                "zIndex": 1
+            },
+            {
+                "position": {
+                    "x": 640,
+                    "y": 40
+                },
+                "size": {
+                    "width": 150,
+                    "height": 40
+                },
+                "view": "vue-shape-view",
+                "shape": "custom-node",
+                "ports": {
+                    "groups": {
+                        "in": {
+                            "position": "left",
+                            "attrs": {
+                                "circle": {
+                                    "r": 4,
+                                    "magnet": true,
+                                    "stroke": "transparent",
+                                    "strokeWidth": 1,
+                                    "fill": "transparent"
+                                }
+                            }
+                        },
+                        "out": {
+                            "position": {
+                                "name": "right",
+                                "args": {
+                                    "dx": 5
+                                }
+                            },
+                            "attrs": {
+                                "circle": {
+                                    "r": 4,
+                                    "magnet": true,
+                                    "stroke": "transparent",
+                                    "strokeWidth": 1,
+                                    "fill": "transparent"
+                                }
+                            }
+                        }
+                    },
+                    "items": [
+                        {
+                            "id": "Paimon-in",
+                            "group": "in",
+                            "attrs": {
+                                "circle": {
+                                    "fill": "transparent",
+                                    "stroke": "transparent"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "id": "Paimon",
+                "data": {
+                    "name": "Paimon",
+                    "value": "PAIMON",
+                    "type": "OUTPUT"
+                },
+                "zIndex": 2
+            },
+            {
+                "shape": "dag-edge",
+                "connector": {
+                    "name": "smooth"
+                },
+                "id": "c3bec4f4-eea9-44ed-b98e-63605d619d50",
+                "zIndex": 3,
+                "source": {
+                    "cell": "MySQL",
+                    "port": "MySQL-out"
+                },
+                "target": {
+                    "cell": "Paimon"
+                }
+            }
+          ]
+        },
       ],
       pagination: {
         pageSize: 10
-      },
-      showModal: false,
-      row: {}
+      }
     })
+    
     return {
       t,
       ...toRefs(tableVariables)
@@ -91,12 +252,6 @@ export default defineComponent({
           data={this.data}
           pagination={this.pagination}
           bordered={false}
-        />
-        <Modal
-          showModal={this.showModal}
-          title={this.t('cdc.edit_synchronization_job')}
-          formType="CDCLIST"
-          onCancel={() => this.showModal = false}
         />
       </div>
     )

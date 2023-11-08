@@ -15,25 +15,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import httpRequest from '@/api/request'
-import type { Catalog } from './interface'
-
-export * from './interface'
-
-// #region catalog-controller
-
-/**
- * # Get all catalog
- */
-export const getAllCatalogs = () => {
-  return httpRequest.get<any, Catalog[]>('/catalog/getAllCatalogs')
+export interface CDCState {
+  model: object
 }
 
-/**
- * # Get database by catalog id
- */
-export const getDatabasesByCatalogId = (id: number) => {
-  return httpRequest.get<any, Catalog[]>(`/database/getDatabasesByCatalogId/${id}`)
-}
-
-// #endregion
+export const useCDCStore = defineStore({
+  id: 'cdc',
+  state: (): CDCState => ({
+    model: {}
+  }),
+  persist: true,
+  getters: {
+    getModel(): any {
+      return this.model
+    }
+  },
+  actions: {
+    setModel(model: object): void {
+      this.model = model
+    }
+  }
+})
