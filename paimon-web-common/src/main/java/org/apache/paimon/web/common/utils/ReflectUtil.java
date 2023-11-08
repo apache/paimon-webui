@@ -21,6 +21,9 @@ package org.apache.paimon.web.common.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+/**
+ * reflect util
+ */
 public class ReflectUtil {
 
     /** Get the value of a static field */
