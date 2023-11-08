@@ -22,7 +22,7 @@ spring:
   application:
     name: Paimon-Web-UI
   profiles:
-    active: dev-mysql
+    active: dev-h2
   messages:
     basename: i18n/messages
     encoding: UTF-8
@@ -65,3 +65,16 @@ sa-token:
   is-write-header: true
   is-read-header: true
   is-read-body: true
+
+sys-config:
+  spark-conf:
+    remote-addr: 127.0.0.1:8080
+  #     config path eg:"D:/soft/develop/spark-3.3.2-bin-hadoop3/conf/spark-defaults.conf"
+  #    conf-path:
+
+  flink-conf:
+    remote-addr: 127.0.0.1:8080
+    # config path eg: "D:/soft/develop/flink/conf"
+    # conf-path:
+#  flink-sql-gateway-conf:
+    # remote addr
