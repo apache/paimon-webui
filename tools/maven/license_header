@@ -16,13 +16,3 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.mapper;
-
-import org.apache.paimon.web.server.data.model.UserTenant;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
-
-/** user_tenant table mapper. */
-@Mapper
-public interface UserTenantMapper extends BaseMapper<UserTenant> {}
