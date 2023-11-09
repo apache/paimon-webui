@@ -42,4 +42,6 @@ export default {
   close_others: '关闭其他',
   close_right: '关闭右侧',
   close_left: '关闭左侧',
+  sql: 'SQL',
+  please_select_a_table: '请选择表',
 }

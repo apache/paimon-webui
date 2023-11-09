@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { FileTrayFullOutline, Search, FolderOpenOutline } from '@vicons/ionicons5';
+import { Search, CodeSlash } from '@vicons/ionicons5';
 import styles from './index.module.scss'
 import { NIcon, type TreeOption } from 'naive-ui';
 
@@ -25,69 +25,34 @@ export default defineComponent({
     const { t } = useLocaleHooks()
 
     const treeVariables = reactive({
-      treeData: [
+      savedQueryList: [
         {
-          key: 'paimon2',
-          label: 'paimon2',
-          type: 'folder',
+          key: 1,
+          label: 'test1',
           prefix: () =>
-            h(NIcon, null, {
-              default: () => h(FolderOpenOutline)
+            h(NIcon, {color: '#0066FF'}, {
+              default: () => h(CodeSlash)
             }),
-          children: [
-            {
-              key: 'user',
-              label: 'user',
-              type: 'folder',
-              prefix: () =>
-                h(NIcon, null, {
-                  default: () => h(FolderOpenOutline)
-                }),
-              children: [
-                {
-                  label: 'user_table',
-                  key: '1',
-                  type: 'file',
-                  content: 'select * from abc where abc.a="abc";select * from cba where cba.a="cba";',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                },
-                {
-                  label: 'people_table',
-                  key: '2',
-                  type: 'file',
-                  content: 'select * from abc where abc.a="abc";',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                }
-              ]
-            }
-          ]
+          content: 'select * from abc where abc.a="abc";select * from cba where cba.a="cba";'
+        },
+        {
+          key: 2,
+          label: 'test2',
+          prefix: () =>
+            h(NIcon, {color: '#0066FF'}, {
+              default: () => h(CodeSlash)
+            }),
+          content: 'select * from efg where efg.e="efg";select * from efg where efg.e="efg";'
         }
       ],
       filterValue: '',
       selectedKeys: []
     })
 
-    const contextMenuVariables = reactive({
-      x: 0,
-      y: 0,
-      isShow: false,
-      options: [
-        {
-          label: t('playground.new_folder'),
-          key: 'new_folder',
-        },
-        {
-          label: t('playground.new_file'),
-          key: 'new_file',
-        },
-      ]
-    })
+    const handleTreeSelect = (value: never[], option: { children: any; }[]) => {
+      if (option[0]?.children) return
+      treeVariables.selectedKeys = value
+    }
 
     const nodeProps = ({ option }: { option: TreeOption }) => {
       return {
@@ -105,18 +70,7 @@ export default defineComponent({
           })
           tabData.value.chooseTab = option.key
         },
-        onContextmenu (e: MouseEvent): void {
-          e.preventDefault()
-          contextMenuVariables.x = e.clientX
-          contextMenuVariables.y = e.clientY
-          contextMenuVariables.isShow = true
-        }
       }
-    }
-
-    const handleTreeSelect = (value: never[], option: { children: any; }[]) => {
-      if (option[0]?.children) return
-      treeVariables.selectedKeys = value
     }
 
     // mitt - handle tab choose
@@ -126,12 +80,6 @@ export default defineComponent({
       tabData.value = data
     })
 
-
-    const handleContextMenuSelect = () => {
-      contextMenuVariables.isShow = false
-    }
-
-
     onMounted(() => {
       mittBus.emit('initTreeData', treeVariables)
     })
@@ -139,10 +87,8 @@ export default defineComponent({
     return {
       t,
       ...toRefs(treeVariables),
-      nodeProps,
       handleTreeSelect,
-      handleContextMenuSelect,
-      ...toRefs(contextMenuVariables),
+      nodeProps,
     }
   },
   render() {
@@ -162,19 +108,9 @@ export default defineComponent({
               expand-on-click
               selected-keys={this.selectedKeys}
               on-update:selected-keys={this.handleTreeSelect}
-              data={this.treeData}
+              data={this.savedQueryList}
               pattern={this.filterValue}
               node-props={this.nodeProps}
-            />
-            <n-dropdown
-              trigger="manual"
-              placement="bottom-start"
-              options={this.options}
-              show={this.isShow}
-              x={this.x}
-              y={this.y}
-              on-select={this.handleContextMenuSelect}
-              on-clickoutside={() => this.isShow = false}
             />
           </n-space>
         </n-card>

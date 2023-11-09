@@ -42,8 +42,8 @@ export default defineComponent({
         },
         {
           icon: renderIcon(CodeSlashSharp),
-          title: 'Workbench',
-          description: computed(() => (t('playground.workbench'))),
+          title: 'SQL',
+          description: computed(() => (t('playground.sql'))),
           isClick: false,
           path: '/playground/workbench'
         },

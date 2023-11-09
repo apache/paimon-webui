@@ -42,4 +42,6 @@ export default {
   close_others: 'Close Others',
   close_right: 'Close Right',
   close_left: 'Close Left',
+  sql: 'SQL',
+  please_select_a_table: 'Please select a table',
 }

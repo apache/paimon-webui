@@ -16,38 +16,60 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss'
-import MenuTree from './components/menu-tree'
-import TableArea from './components/table'
 
 export default defineComponent({
-  name: 'QueryPage',
-  setup() {
-    const data = ref([])
-
-    const handleSelectTree = (value: any) => {
-      // TODO: fetch data
+  name: 'TableArea',
+  props: {
+    data: {
+      type: Array,
+      default: () => []
     }
+  },
+  setup() {
+    const { t } = useLocaleHooks()
+
+    const tableVariables = reactive({
+      columns: [
+        {
+          title: 'Name',
+          key: 'name'
+        },
+        {
+          title: 'Age',
+          key: 'age'
+        },
+        {
+          title: 'Address',
+          key: 'address'
+        },
+        {
+          title: 'Tags',
+          key: 'tags'
+        },
+      ],
+      data: []
+    })
 
     return {
-      handleSelectTree,
-      data
+      t,
+      ...toRefs(tableVariables)
     }
   },
   render() {
     return (
-      <div class={styles.query}>
-        <div class={styles['menu-tree']}>
-          <MenuTree
-            onSelected={this.handleSelectTree}
+      <div class={styles.container}>
+        {
+          this.data.length === 0 &&
+          <n-empty description={this.t('playground.please_select_a_table')}>
+          </n-empty>
+        }
+        {
+          this.data.length > 0 &&
+          <n-data-table
+            columns={this.columns}
+            data={this.data}
           />
-        </div>
-        <div class={styles['table-area']}>
-          <n-card class={styles.card} content-style={'padding: 20px 18px;display: flex;flex-direction: column;'}>
-            <TableArea
-              data={this.data}
-            />
-          </n-card>
-        </div>
+        }
       </div>
     );
   }

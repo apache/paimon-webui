@@ -44,10 +44,13 @@ export default defineComponent({
         <n-tabs
           type="line"
           size="large"
-          default-value="logs"
+          default-value="record"
           tabs-padding={20}
           pane-style="padding: 20px;box-sizing: border-box;"
         >
+          <n-tab-pane name="record" tab={this.t('playground.query_record')}>
+            {this.t('playground.query_record')}
+          </n-tab-pane>
           <n-tab-pane name="logs" tab={this.t('playground.logs')}>
             {this.t('playground.logs')}
           </n-tab-pane>

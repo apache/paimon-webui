@@ -25,7 +25,7 @@ under the License. */
     height: 100%;
   }
 
-  .editor-area {
+  .table-area {
     width: 80%;
     height: 100%;
 
@@ -33,27 +33,6 @@ under the License. */
       .n-card {
         height: 100%;
       }
-    }
-
-    .tabs {
-      display: flex;
-      height: 41px;
-      width: 100%;
-    }
-  
-    .debugger {
-      display: flex;
-      height: 64px;
-    }
-  
-    .editor {
-      height: 60%;
-      overflow-y: scroll;
-    }
-
-    .console {
-      height: 40%;
-      overflow-y: scroll;
     }
   }
 }

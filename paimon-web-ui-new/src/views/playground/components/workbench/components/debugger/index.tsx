@@ -20,7 +20,7 @@ import styles from './index.module.scss'
 
 export default defineComponent({
   name: 'EditorDebugger',
-  emits: ['handleFormat', 'handleSave'],
+  emits: ['handleFormat', 'handleSave', 'handleRun'],
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
 
@@ -71,12 +71,17 @@ export default defineComponent({
       emit('handleSave')
     }
 
+    const handleRun = () => {
+      emit('handleRun')
+    }
+
     return {
       t,
       ...toRefs(debuggerVariables),
       handleSelect,
       handleFormat,
-      handleSave
+      handleSave,
+      handleRun
     }
   },
   render() {
@@ -84,6 +89,7 @@ export default defineComponent({
       <div class={styles.container}>
         <n-space>
           <n-button
+            onClick={this.handleRun}
             type="primary"
             v-slots={{
               icon: () => <n-icon component={Play} />,
