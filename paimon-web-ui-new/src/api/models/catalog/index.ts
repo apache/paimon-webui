@@ -29,4 +29,11 @@ export const getAllCatalogs = () => {
   return httpRequest.get<any, Catalog[]>('/catalog/getAllCatalogs')
 }
 
+/**
+ * # Get database by catalog id
+ */
+export const getDatabasesByCatalogId = (id: number) => {
+  return httpRequest.get<any, Catalog[]>(`/database/getDatabasesByCatalogId/${id}`)
+}
+
 // #endregion

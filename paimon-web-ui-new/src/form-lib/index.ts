@@ -15,8 +15,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { useCDCList } from "./source/use-cdc-list";
+import { useCDCList } from "./cdc/use-cdc-list";
+import { useMYSQL } from './cdc/use-mysql'
+import { usePaimon } from "./cdc/use-paimon";
 
 export default {
-  CDCLIST: useCDCList
+  CDCLIST: useCDCList,
+  MYSQL: useMYSQL,
+  PAIMON: usePaimon
 }
