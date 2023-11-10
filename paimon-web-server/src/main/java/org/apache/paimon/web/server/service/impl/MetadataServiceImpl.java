@@ -180,7 +180,7 @@ public class MetadataServiceImpl implements MetadataService {
         CatalogInfo catalogInfo =
                 catalogService.getOne(
                         Wrappers.lambdaQuery(CatalogInfo.class)
-                                .eq(CatalogInfo::getCatalogName, dto.getCatalogName())
+                                .eq(CatalogInfo::getId, dto.getCatalogId())
                                 .select(i -> true));
         Catalog catalog = PaimonServiceUtils.getPaimonService(catalogInfo).catalog();
         try {

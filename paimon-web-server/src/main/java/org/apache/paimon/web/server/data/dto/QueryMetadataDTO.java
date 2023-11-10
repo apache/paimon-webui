@@ -24,7 +24,7 @@ import lombok.Data;
 @Data
 public class QueryMetadataDTO {
 
-    private String catalogName;
+    private Integer catalogId;
 
     private String databaseName;
 
