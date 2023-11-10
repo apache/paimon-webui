@@ -47,18 +47,11 @@ public interface DatabaseService extends IService<DatabaseVO> {
     R<Void> createDatabase(DatabaseDTO databaseDTO);
 
     /**
-     * Lists all databases.
-     *
-     * @return The list of all databases.
-     */
-    R<List<DatabaseVO>> listDatabases();
-
-    /**
-     * Get databases given catalog id.
+     * Lists databases given catalog id.
      *
      * @return The list of databases of given catalog.
      */
-    R<List<DatabaseVO>> getDatabasesByCatalogId(Integer id);
+    R<List<DatabaseVO>> listDatabases(Integer catalogId);
 
     /**
      * Drops database given database name.

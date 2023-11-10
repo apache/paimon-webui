@@ -35,7 +35,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -75,46 +74,44 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
     }
 
     @Override
-    public R<List<DatabaseVO>> listDatabases() {
-        List<DatabaseVO> databaseVOList = new ArrayList<>();
-        List<CatalogInfo> catalogInfoList = catalogService.list();
-        if (!CollectionUtils.isEmpty(catalogInfoList)) {
-            catalogInfoList.forEach(
-                    item -> {
-                        PaimonService service = PaimonServiceUtils.getPaimonService(item);
-                        List<String> list = service.listDatabases();
-                        list.forEach(
-                                databaseName -> {
-                                    DatabaseVO info =
-                                            DatabaseVO.builder()
-                                                    .name(databaseName)
-                                                    .catalogId(item.getId())
-                                                    .catalogName(item.getCatalogName())
-                                                    .description("")
-                                                    .build();
-                                    databaseVOList.add(info);
-                                });
-                    });
-        }
-        return R.succeed(databaseVOList);
-    }
-
-    @Override
-    public R<List<DatabaseVO>> getDatabasesByCatalogId(Integer id) {
+    public R<List<DatabaseVO>> listDatabases(Integer catalogId) {
         List<DatabaseVO> resultList = new LinkedList<>();
-        CatalogInfo catalog = catalogService.getById(id);
-        PaimonService service = PaimonServiceUtils.getPaimonService(catalog);
-        List<String> databases = service.listDatabases();
-        databases.forEach(
-                databaseName -> {
-                    DatabaseVO database = new DatabaseVO();
-                    database.setName(databaseName);
-                    database.setCatalogId(catalog.getId());
-                    database.setCatalogName(catalog.getCatalogName());
-                    database.setDescription("");
-                    resultList.add(database);
-                });
-        return R.succeed(resultList);
+        if (Objects.nonNull(catalogId)) {
+            CatalogInfo catalog = catalogService.getById(catalogId);
+            PaimonService service = PaimonServiceUtils.getPaimonService(catalog);
+            List<String> databases = service.listDatabases();
+            databases.forEach(
+                    databaseName -> {
+                        DatabaseVO database = new DatabaseVO();
+                        database.setName(databaseName);
+                        database.setCatalogId(catalog.getId());
+                        database.setCatalogName(catalog.getCatalogName());
+                        database.setDescription("");
+                        resultList.add(database);
+                    });
+            return R.succeed(resultList);
+        } else {
+            List<CatalogInfo> catalogInfoList = catalogService.list();
+            if (!CollectionUtils.isEmpty(catalogInfoList)) {
+                catalogInfoList.forEach(
+                        item -> {
+                            PaimonService service = PaimonServiceUtils.getPaimonService(item);
+                            List<String> list = service.listDatabases();
+                            list.forEach(
+                                    databaseName -> {
+                                        DatabaseVO info =
+                                                DatabaseVO.builder()
+                                                        .name(databaseName)
+                                                        .catalogId(item.getId())
+                                                        .catalogName(item.getCatalogName())
+                                                        .description("")
+                                                        .build();
+                                        resultList.add(info);
+                                    });
+                        });
+            }
+            return R.succeed(resultList);
+        }
     }
 
     @Override
