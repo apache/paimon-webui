@@ -18,8 +18,6 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import org.apache.paimon.table.Table;
-import org.apache.paimon.types.DataField;
 import org.apache.paimon.web.api.catalog.PaimonService;
 import org.apache.paimon.web.api.table.TableChange;
 import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
@@ -270,79 +268,6 @@ public class TableServiceImpl implements TableService {
             log.error("Exception with renaming table.", e);
             return R.failed(Status.TABLE_RENAME_ERROR);
         }
-    }
-
-    @Override
-    public R<List<TableDTO>> getAllTables() {
-        List<TableDTO> tableDTOList = new ArrayList<>();
-        List<CatalogInfo> catalogInfoList = catalogService.list();
-        if (!CollectionUtils.isEmpty(catalogInfoList)) {
-            for (CatalogInfo item : catalogInfoList) {
-                PaimonService service = PaimonServiceUtils.getPaimonService(item);
-                List<String> databaseList = service.listDatabases();
-                if (!CollectionUtils.isEmpty(databaseList)) {
-                    for (String db : databaseList) {
-                        try {
-                            List<String> tables = service.listTables(db);
-                            if (!CollectionUtils.isEmpty(tables)) {
-                                for (String t : tables) {
-                                    try {
-                                        Table table = service.getTable(db, t);
-                                        if (table != null) {
-                                            List<String> primaryKeys = table.primaryKeys();
-                                            List<DataField> fields = table.rowType().getFields();
-                                            List<TableColumn> tableColumns = new ArrayList<>();
-                                            Map<String, String> options = table.options();
-                                            if (!CollectionUtils.isEmpty(fields)) {
-                                                for (DataField field : fields) {
-                                                    String key =
-                                                            FIELDS_PREFIX
-                                                                    + "."
-                                                                    + field.name()
-                                                                    + "."
-                                                                    + DEFAULT_VALUE_SUFFIX;
-                                                    PaimonDataType dataType =
-                                                            DataTypeConvertUtils.fromPaimonType(
-                                                                    field.type());
-                                                    TableColumn.TableColumnBuilder builder =
-                                                            TableColumn.builder()
-                                                                    .field(field.name())
-                                                                    .dataType(dataType)
-                                                                    .comment(field.description());
-                                                    if (primaryKeys.size() > 0
-                                                            && primaryKeys.contains(field.name())) {
-                                                        builder.isPk(true);
-                                                    }
-                                                    if (options.get(key) != null) {
-                                                        builder.defaultValue(options.get(key));
-                                                    }
-                                                    tableColumns.add(builder.build());
-                                                }
-                                            }
-                                            TableDTO tableDTO =
-                                                    TableDTO.builder()
-                                                            .catalogName(item.getCatalogName())
-                                                            .databaseName(db)
-                                                            .name(table.name())
-                                                            .partitionKey(table.partitionKeys())
-                                                            .tableOptions(table.options())
-                                                            .tableColumns(tableColumns)
-                                                            .build();
-                                            tableDTOList.add(tableDTO);
-                                        }
-                                    } catch (Exception e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }
-                            }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-            }
-        }
-        return R.succeed(tableDTOList);
     }
 
     @Override

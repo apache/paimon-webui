@@ -27,7 +27,6 @@ import org.apache.paimon.web.server.service.TableService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -185,17 +184,6 @@ public class TableController {
             @RequestParam String fromTableName,
             @RequestParam String toTableName) {
         return tableService.renameTable(catalogName, databaseName, fromTableName, toTableName);
-    }
-
-    /**
-     * Handler method for the "/getAllTables" endpoint. Retrieves information about all tables and
-     * returns a response containing the table details.
-     *
-     * @return Response object containing a list of {@link TableDTO} representing the tables.
-     */
-    @GetMapping("/getAllTables")
-    public R<List<TableDTO>> getAllTables() {
-        return tableService.getAllTables();
     }
 
     /**

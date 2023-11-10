@@ -127,14 +127,6 @@ public interface TableService {
             String catalogName, String databaseName, String fromTableName, String toTableName);
 
     /**
-     * Handler method for the "/getAllTables" endpoint. Retrieves information about all tables and
-     * returns a response containing the table details.
-     *
-     * @return Response object containing a list of {@link TableDTO} representing the tables.
-     */
-    R<List<TableDTO>> getAllTables();
-
-    /**
      * Query all tables by {@link TableDTO}.
      *
      * @return Response object containing a list of {@link TableVO} representing the tables.
