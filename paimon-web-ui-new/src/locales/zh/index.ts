@@ -20,11 +20,13 @@ import login from './modules/login'
 import playground from './modules/playground'
 import metadata from './modules/metadata'
 import cdc from './modules/cdc'
+import job from './modules/job'
 
 export default {
   login,
   layout,
   playground,
   metadata,
-  cdc
+  cdc,
+  job
 }

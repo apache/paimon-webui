@@ -20,9 +20,9 @@ export type JobStatusType = 'RUNNING' | 'FINISH' | 'CANCEL' | 'FAIL'
 export type JobCardProps = JobStatusType | 'TOTAL'
 
 export enum JobMapping {
-  RUNNING = 'job_running',
-  FINISH = 'job_finish',
-  CANCEL = 'job_cancel',
-  FAIL = 'job_fail',
-  TOTAL = 'job_total',
+  RUNNING = 'running',
+  FINISH = 'finish',
+  CANCEL = 'cancel',
+  FAIL = 'fail',
+  TOTAL = 'total',
 }
