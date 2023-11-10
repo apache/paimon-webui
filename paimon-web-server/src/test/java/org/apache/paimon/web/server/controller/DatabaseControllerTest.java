@@ -94,10 +94,10 @@ public class DatabaseControllerTest extends ControllerTestBase {
     }
 
     @Test
-    public void testGetDatabases() throws Exception {
+    public void testListDatabases() throws Exception {
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get(databasePath + "/getAllDatabases")
+                                MockMvcRequestBuilders.get(databasePath + "/list")
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
