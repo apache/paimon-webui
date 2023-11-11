@@ -15,44 +15,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { CaretForwardCircleOutline, CheckmarkCircleOutline, CloseCircleOutline, FileTrayFullOutline, FlashOffOutline } from '@vicons/ionicons5'
-
-import { type JobCardProps, JobMapping } from '../../constant'
+import { type JobCardProps, JobMapping, JobStatusProps } from '../../constant'
 
 import styles from './index.module.scss'
 
 
-const IconProps = {
-  TOTAL: {
-    color: '#D1E2FC',
-    iconColor: '#80acf6',
-    iconSize: 30,
-    icon: <FileTrayFullOutline />,
-  },
-  RUNNING: {
-    color: '#dafbe7',
-    iconColor: '#7ce998',
-    iconSize: 40,
-    icon: <CheckmarkCircleOutline />,
-  },
-  FINISH: {
-    color: '#ffe7bc',
-    iconColor: '#f6b658',
-    iconSize: 40,
-    icon: <CaretForwardCircleOutline />,
-  },
-  CANCEL: {
-    color: '#e9e2ff',
-    iconColor: '#a48aff',
-    iconSize: 40,
-    icon: <CloseCircleOutline />,
-  },
-  FAIL: {
-    color: '#ffdfdb',
-    iconColor: '#f9827c',
-    iconSize: 30,
-    icon: <FlashOffOutline />,
-  }
+const IconSize = {
+  TOTAL: 30,
+  RUNNING: 40,
+  FINISH: 40,
+  CANCEL: 40,
+  FAIL: 30
 }
 
 export default defineComponent({
@@ -72,8 +45,7 @@ export default defineComponent({
 
     return {
       t,
-      props,
-      IconProps
+      ...toRefs(props),
     }
   },
   render() {
@@ -81,15 +53,17 @@ export default defineComponent({
       <n-card>
         <n-space align='center' justify='start' size={30}>
           <div>
-            <n-icon-wrapper color={this.IconProps[this.props.type].color} icon-color={this.IconProps[this.props.type].iconColor} size='54' border-radius={27}>
-              <n-icon size={this.IconProps[this.props.type].iconSize}>
-                {this.IconProps[this.props.type].icon}
+            <n-icon-wrapper color={JobStatusProps[this.type].bgColor} icon-color={JobStatusProps[this.type].primaryColor} size={54} border-radius={27}>
+              <n-icon size={IconSize[this.type]}>
+                {{
+                  default: () => JobStatusProps[this.type].icon
+                }}
               </n-icon>
             </n-icon-wrapper>
           </div>
           <div>
-            <div>{this.t(`job.${JobMapping[this.props.type]}`)}</div>
-            <div class={styles.value}>{this.props.value}</div>
+            <div>{this.t(`job.${JobMapping[this.type]}`)}</div>
+            <div class={styles.value}>{this.value}</div>
           </div>
         </n-space>
       </n-card>
