@@ -305,14 +305,14 @@ public class TableControllerTest extends ControllerTestBase {
     }
 
     @Test
-    public void testQueryTablesByCondition() throws Exception {
+    public void testListTables() throws Exception {
         TableDTO table = new TableDTO();
         table.setName(tableName);
         //        table.setCatalogId(catalogId);
         //        table.setDatabaseName(databaseName);
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(tablePath + "/queryTablesByCondition")
+                                MockMvcRequestBuilders.post(tablePath + "/list")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(table))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)

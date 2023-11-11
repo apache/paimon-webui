@@ -30,7 +30,7 @@ import java.util.List;
 public interface DatabaseService extends IService<DatabaseVO> {
 
     /**
-     * Verify if the database name is unique.
+     * Verifies whether the database name is unique.
      *
      * @param databaseVO database info
      * @return result

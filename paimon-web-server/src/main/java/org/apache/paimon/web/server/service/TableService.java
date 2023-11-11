@@ -59,7 +59,7 @@ public interface TableService {
             String catalogName, String databaseName, String tableName, String columnName);
 
     /**
-     * Alter a table.
+     * Alters a table.
      *
      * @param catalogName The name of the catalog.
      * @param databaseName The name of the database.
