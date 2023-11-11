@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Table VO. */
+/** VO of table. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

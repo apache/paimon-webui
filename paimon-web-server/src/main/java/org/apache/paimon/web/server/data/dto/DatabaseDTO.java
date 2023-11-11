@@ -20,7 +20,7 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
-/** The DTO of database. */
+/** DTO of database. */
 @Data
 public class DatabaseDTO {
 

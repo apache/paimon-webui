@@ -25,7 +25,7 @@ import org.apache.paimon.table.Table;
 import org.apache.paimon.table.source.ReadBuilder;
 import org.apache.paimon.web.api.table.TableManager;
 import org.apache.paimon.web.server.constant.MetadataConstant;
-import org.apache.paimon.web.server.data.dto.QueryMetadataDTO;
+import org.apache.paimon.web.server.data.dto.MetadataDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
 import org.apache.paimon.web.server.data.model.MetadataOptionModel;
@@ -62,7 +62,7 @@ public class MetadataServiceImpl implements MetadataService {
     private RecordReader<InternalRow> reader;
 
     @Override
-    public List<SchemaVO> getSchema(QueryMetadataDTO dto) {
+    public List<SchemaVO> getSchema(MetadataDTO dto) {
 
         initEnvironment(dto, MetadataConstant.SCHEMAS);
 
@@ -98,7 +98,7 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<SnapshotVO> getSnapshot(QueryMetadataDTO dto) {
+    public List<SnapshotVO> getSnapshot(MetadataDTO dto) {
 
         initEnvironment(dto, MetadataConstant.SNAPSHOTS);
 
@@ -125,7 +125,7 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<ManifestsVO> getManifest(QueryMetadataDTO dto) {
+    public List<ManifestsVO> getManifest(MetadataDTO dto) {
         initEnvironment(dto, MetadataConstant.MANIFESTS);
 
         List<ManifestsVO> result = new LinkedList<>();
@@ -149,7 +149,7 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<DataFileVO> getDataFile(QueryMetadataDTO dto) {
+    public List<DataFileVO> getDataFile(MetadataDTO dto) {
 
         initEnvironment(dto, MetadataConstant.FILES);
 
@@ -171,7 +171,7 @@ public class MetadataServiceImpl implements MetadataService {
         return result;
     }
 
-    private void initEnvironment(QueryMetadataDTO dto, String metadataConstantType) {
+    private void initEnvironment(MetadataDTO dto, String metadataConstantType) {
         dto.setTableName(
                 String.format(
                         MetadataConstant.METADATA_TABLE_FORMAT,

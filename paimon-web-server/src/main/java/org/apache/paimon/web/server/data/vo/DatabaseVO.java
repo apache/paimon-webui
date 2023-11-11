@@ -23,7 +23,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** The VO of database. */
+/** VO of database. */
 @Data
 @Builder
 @NoArgsConstructor

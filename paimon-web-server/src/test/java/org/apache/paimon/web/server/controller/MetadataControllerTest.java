@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.QueryMetadataDTO;
+import org.apache.paimon.web.server.data.dto.MetadataDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
@@ -99,7 +99,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     @Test
     public void testGetSchemaInfo() throws Exception {
-        QueryMetadataDTO metadata = new QueryMetadataDTO();
+        MetadataDTO metadata = new MetadataDTO();
         metadata.setCatalogId(catalogId);
         metadata.setDatabaseName(databaseName);
         metadata.setTableName(tableName);
@@ -123,7 +123,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     @Test
     public void testGetManifestInfo() throws Exception {
-        QueryMetadataDTO metadata = new QueryMetadataDTO();
+        MetadataDTO metadata = new MetadataDTO();
         metadata.setCatalogId(catalogId);
         metadata.setDatabaseName(databaseName);
         metadata.setTableName(tableName);
@@ -147,7 +147,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     @Test
     public void testGetDataFileInfo() throws Exception {
-        QueryMetadataDTO metadata = new QueryMetadataDTO();
+        MetadataDTO metadata = new MetadataDTO();
         metadata.setCatalogId(catalogId);
         metadata.setDatabaseName(databaseName);
         metadata.setTableName(tableName);
@@ -171,7 +171,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     @Test
     public void testGetSnapshotInfo() throws Exception {
-        QueryMetadataDTO metadata = new QueryMetadataDTO();
+        MetadataDTO metadata = new MetadataDTO();
         metadata.setCatalogId(catalogId);
         metadata.setDatabaseName(databaseName);
         metadata.setTableName(tableName);

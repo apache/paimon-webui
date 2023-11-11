@@ -39,7 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-/** The implementation of {@link DatabaseService} */
+/** The implementation of {@link DatabaseService}. */
 @Service
 public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
         implements DatabaseService {
