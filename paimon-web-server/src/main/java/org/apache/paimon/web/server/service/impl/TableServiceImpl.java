@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Table service. */
+/** The implementation of {@link TableService}. */
 @Slf4j
 @Service
 public class TableServiceImpl implements TableService {
@@ -74,7 +74,7 @@ public class TableServiceImpl implements TableService {
             if (!CollectionUtils.isEmpty(tableColumns)) {
                 for (TableColumn tableColumn : tableColumns) {
                     if (tableColumn.getDefaultValue() != null
-                            && !tableColumn.getDefaultValue().equals("")) {
+                            && !tableColumn.getDefaultValue().isEmpty()) {
                         tableOptions.put(
                                 FIELDS_PREFIX
                                         + "."
@@ -115,7 +115,7 @@ public class TableServiceImpl implements TableService {
             Map<String, String> options = new HashMap<>();
             for (TableColumn tableColumn : tableColumns) {
                 if (tableColumn.getDefaultValue() != null
-                        && !tableColumn.getDefaultValue().equals("")) {
+                        && !tableColumn.getDefaultValue().isEmpty()) {
                     options.put(
                             FIELDS_PREFIX
                                     + "."
@@ -138,7 +138,7 @@ public class TableServiceImpl implements TableService {
                 tableChanges.add(add);
             }
 
-            if (options.size() > 0) {
+            if (!options.isEmpty()) {
                 for (Map.Entry<String, String> entry : options.entrySet()) {
                     TableChange.SetOption setOption =
                             TableChange.set(entry.getKey(), entry.getValue());
@@ -271,7 +271,7 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
-    public List<TableVO> queryTablesByCondition(TableDTO tableDTO) {
+    public List<TableVO> listTables(TableDTO tableDTO) {
         List<TableVO> resultList = new LinkedList<>();
         List<CatalogInfo> catalogInfoList = catalogService.list();
         PaimonService paimonService;

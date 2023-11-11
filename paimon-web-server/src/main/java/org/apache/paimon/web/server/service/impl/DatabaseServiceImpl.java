@@ -39,7 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-/** DatabaseServiceImpl. */
+/** The implementation of {@link DatabaseService} */
 @Service
 public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
         implements DatabaseService {
@@ -151,7 +151,7 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
         }
         Objects.requireNonNull(
                 catalogInfo,
-                String.format("CatalogName: [%s] not found.", databaseDTO.getCatalogName()));
+                String.format("Catalog: [%s] is not found.", databaseDTO.getCatalogName()));
         return catalogInfo;
     }
 }

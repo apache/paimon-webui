@@ -187,13 +187,13 @@ public class TableController {
     }
 
     /**
-     * Query all tables by {@link TableDTO}.
+     * Lists tables given {@link TableDTO} condition.
      *
      * @return Response object containing a list of {@link TableVO} representing the tables.
      */
-    @PostMapping("/queryTablesByCondition")
-    public R<Object> queryTablesByCondition(@RequestBody TableDTO tableDTO) {
-        List<TableVO> tables = tableService.queryTablesByCondition(tableDTO);
+    @PostMapping("/list")
+    public R<Object> listTables(@RequestBody TableDTO tableDTO) {
+        List<TableVO> tables = tableService.listTables(tableDTO);
         if (Objects.nonNull(tableDTO.getCatalogId())
                 && Objects.nonNull(tableDTO.getDatabaseName())) {
             return R.succeed(tables);

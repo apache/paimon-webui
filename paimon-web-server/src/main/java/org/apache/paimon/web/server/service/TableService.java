@@ -127,9 +127,9 @@ public interface TableService {
             String catalogName, String databaseName, String fromTableName, String toTableName);
 
     /**
-     * Query all tables by {@link TableDTO}.
+     * Lists tables given {@link TableDTO} condition.
      *
      * @return Response object containing a list of {@link TableVO} representing the tables.
      */
-    List<TableVO> queryTablesByCondition(TableDTO tableDTO);
+    List<TableVO> listTables(TableDTO tableDTO);
 }
