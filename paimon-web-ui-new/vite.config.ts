@@ -54,7 +54,7 @@ export default defineConfig({
       dts: './auto-imports.d.ts',
       dirs: [
         './src/composables',
-        './src/api/models',
+        './src/api',
       ],
       eslintrc: {
         enabled: false
