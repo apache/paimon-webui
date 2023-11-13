@@ -46,6 +46,8 @@ public class TableControllerTest extends ControllerTestBase {
 
     private static final String tablePath = "/api/table";
 
+    private static final Integer catalogId = 1;
+
     private static final String catalogName = "paimon_catalog";
 
     private static final String databaseName = "paimon_database";
@@ -66,7 +68,7 @@ public class TableControllerTest extends ControllerTestBase {
                 TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
-                        .tableName("test_table")
+                        .name(tableName)
                         .tableColumns(tableColumns)
                         .partitionKey(Lists.newArrayList())
                         .tableOptions(Maps.newHashMap())
@@ -117,7 +119,7 @@ public class TableControllerTest extends ControllerTestBase {
                 TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
-                        .tableName(tableName)
+                        .name(tableName)
                         .tableColumns(tableColumns)
                         .partitionKey(Lists.newArrayList())
                         .tableOptions(Maps.newHashMap())
@@ -209,7 +211,7 @@ public class TableControllerTest extends ControllerTestBase {
                 TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
-                        .tableName(tableName)
+                        .name(tableName)
                         .tableColumns(Lists.newArrayList())
                         .partitionKey(Lists.newArrayList())
                         .tableOptions(option)
@@ -268,7 +270,7 @@ public class TableControllerTest extends ControllerTestBase {
                 TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
-                        .tableName("test_table_01")
+                        .name("test_table_01")
                         .tableColumns(tableColumns)
                         .partitionKey(Lists.newArrayList())
                         .tableOptions(Maps.newHashMap())
@@ -303,11 +305,16 @@ public class TableControllerTest extends ControllerTestBase {
     }
 
     @Test
-    public void testGetTables() throws Exception {
+    public void testListTables() throws Exception {
+        TableDTO table = new TableDTO();
+        table.setName(tableName);
+        //        table.setCatalogId(catalogId);
+        //        table.setDatabaseName(databaseName);
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get(tablePath + "/getAllTables")
+                                MockMvcRequestBuilders.post(tablePath + "/list")
                                         .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(table))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())

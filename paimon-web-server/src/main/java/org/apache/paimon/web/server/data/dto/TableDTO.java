@@ -28,18 +28,20 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-/** The DTO of table. */
+/** DTO of table. */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TableDTO {
 
+    private Integer catalogId;
+
     private String catalogName;
 
     private String databaseName;
 
-    private String tableName;
+    private String name;
 
     private String description;
 

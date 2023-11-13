@@ -16,17 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.dto;
+package org.apache.paimon.web.server.data.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/** DTO of query metadata is used for getting table metadata. */
+/** VO of database. */
 @Data
-public class QueryMetadataDTO {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class DatabaseVO {
+
+    private String name;
 
     private Integer catalogId;
 
-    private String databaseName;
+    private String catalogName;
 
-    private String tableName;
+    private String description;
 }

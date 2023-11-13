@@ -42,21 +42,23 @@ public class DatabaseControllerTest extends ControllerTestBase {
 
     private static final String databaseName = "test_db";
 
+    private static final Integer catalogId = 1;
+
     private static final String catalogName = "paimon_catalog";
 
     @Test
     public void testCreateDatabase() throws Exception {
-        DatabaseDTO createDatabase = new DatabaseDTO();
-        createDatabase.setName(databaseName);
-        createDatabase.setCatalogName(catalogName);
-        createDatabase.setCatalogId("1");
-        createDatabase.setIgnoreIfExists(true);
+        DatabaseDTO database = new DatabaseDTO();
+        database.setName(databaseName);
+        database.setCatalogName(catalogName);
+        database.setCatalogId(catalogId);
+        database.setIgnoreIfExists(true);
 
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(databasePath + "/create")
                                         .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(createDatabase))
+                                        .content(ObjectMapperUtils.toJSON(database))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -70,7 +72,7 @@ public class DatabaseControllerTest extends ControllerTestBase {
 
         DatabaseDTO dropDatabase = new DatabaseDTO();
         dropDatabase.setCatalogName(catalogName);
-        dropDatabase.setCatalogId("1");
+        dropDatabase.setCatalogId(catalogId);
         dropDatabase.setIgnoreIfExists(true);
         dropDatabase.setCascade(true);
 
@@ -92,10 +94,10 @@ public class DatabaseControllerTest extends ControllerTestBase {
     }
 
     @Test
-    public void testGetDatabases() throws Exception {
+    public void testListDatabases() throws Exception {
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get(databasePath + "/getAllDatabases")
+                                MockMvcRequestBuilders.get(databasePath + "/list")
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))

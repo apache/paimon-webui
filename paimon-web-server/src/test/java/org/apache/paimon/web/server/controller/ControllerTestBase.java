@@ -18,10 +18,10 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.CatalogDTO;
+import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
-import org.apache.paimon.web.server.data.model.CatalogInfo;
-import org.apache.paimon.web.server.data.model.DatabaseInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
@@ -71,6 +71,8 @@ public class ControllerTestBase {
 
     @TempDir java.nio.file.Path tempFile;
 
+    private static final Integer catalogId = 1;
+
     private static final String catalogName = "paimon_catalog";
 
     private static final String databaseName = "paimon_database";
@@ -102,28 +104,29 @@ public class ControllerTestBase {
         cookie = (MockCookie) response.getCookie(tokenName);
 
         // create default catalog
-        CatalogInfo catalogInfo = new CatalogInfo();
-        catalogInfo.setCatalogType("filesystem");
-        catalogInfo.setCatalogName(catalogName);
-        catalogInfo.setWarehouse(tempFile.toUri().toString());
-        catalogInfo.setDelete(false);
+        CatalogDTO catalog = new CatalogDTO();
+        catalog.setType("filesystem");
+        catalog.setName(catalogName);
+        catalog.setWarehouse(tempFile.toUri().toString());
+        catalog.setDelete(false);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post(catalogPath + "/create")
                         .cookie(cookie)
-                        .content(ObjectMapperUtils.toJSON(catalogInfo))
+                        .content(ObjectMapperUtils.toJSON(catalog))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));
 
         // create default database
-        DatabaseInfo databaseInfo = new DatabaseInfo();
-        databaseInfo.setDatabaseName(databaseName);
-        databaseInfo.setCatalogName(catalogName);
+        DatabaseDTO database = new DatabaseDTO();
+        database.setCatalogId(catalogId);
+        database.setName(databaseName);
+        database.setCatalogName(catalogName);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post(databasePath + "/create")
                         .cookie(cookie)
-                        .content(ObjectMapperUtils.toJSON(databaseInfo))
+                        .content(ObjectMapperUtils.toJSON(database))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));
 
@@ -140,7 +143,7 @@ public class ControllerTestBase {
                 TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
-                        .tableName(tableName)
+                        .name(tableName)
                         .tableColumns(tableColumns)
                         .partitionKey(Lists.newArrayList())
                         .tableOptions(Maps.newHashMap())
@@ -178,7 +181,7 @@ public class ControllerTestBase {
                                         + "/"
                                         + databaseName
                                         + "/"
-                                        + "test_table")
+                                        + tableName)
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));

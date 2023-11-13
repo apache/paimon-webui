@@ -18,16 +18,11 @@
 
 package org.apache.paimon.web.server.mapper;
 
-import org.apache.paimon.web.server.data.model.DatabaseInfo;
+import org.apache.paimon.web.server.data.vo.DatabaseVO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
-
 /** Database table mapper. */
 @Mapper
-public interface DatabaseMapper extends BaseMapper<DatabaseInfo> {
-
-    List<DatabaseInfo> selectByCatalogId(Integer catalogId);
-}
+public interface DatabaseMapper extends BaseMapper<DatabaseVO> {}

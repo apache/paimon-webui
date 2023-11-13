@@ -20,19 +20,13 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
-/** DTO of database. */
+/** DTO of metadata. */
 @Data
-public class DatabaseDTO {
-
-    private String name;
+public class MetadataDTO {
 
     private Integer catalogId;
 
-    private String catalogName;
+    private String databaseName;
 
-    private boolean ignoreIfExists;
-
-    private boolean cascade;
-
-    private String description;
+    private String tableName;
 }
