@@ -73,9 +73,14 @@ export default defineComponent({
       graph.value?.removeNode(nodeVariables.row.name)
     }
 
+    const getGraphData = ()=>{
+      debugger
+    }
+
     expose({
       graph,
-      dnd
+      dnd,
+      getGraphData
     })
 
     return {

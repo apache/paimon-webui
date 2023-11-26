@@ -26,7 +26,7 @@ export * from './interface'
  * # Get all catalog
  */
 export const getAllCatalogs = () => {
-  return httpRequest.get<any, Catalog[]>('/catalog/getAllCatalogs')
+  return httpRequest.get<any, Catalog[]>('/catalog/list')
 }
 
 /**

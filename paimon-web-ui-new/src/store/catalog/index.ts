@@ -42,7 +42,7 @@ export const useCatalogStore = defineStore('catalog', {
       const [, useAllCatalog] = getAllCatalogs()
 
       this._catalogLoading = true
-      const res = await useAllCatalog()
+     const res = await useAllCatalog() 
       this.catalogs = transformCatalog(res.data)
       this._catalogLoading = false
     },

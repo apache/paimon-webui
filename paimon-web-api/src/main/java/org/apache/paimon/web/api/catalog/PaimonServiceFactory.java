@@ -26,15 +26,29 @@ import org.apache.paimon.web.api.common.MetastoreType;
 
 import org.apache.commons.lang3.StringUtils;
 
-/** Paimon service factory. */
+import java.util.Map;
+
+/**
+ * Paimon service factory.
+ */
 public class PaimonServiceFactory {
 
-    public static PaimonService createFileSystemCatalogService(String name, String warehouse) {
+    public static PaimonService createFileSystemCatalogService(String name, String warehouse,
+                                                               Map<String, String> catalogOptions) {
+
         Options options = new Options();
         options.set(CatalogProperties.WAREHOUSE, warehouse + "/" + name);
-
+        String fileSystemType = catalogOptions.get("fileSystemType");
+        if("s3".equals(fileSystemType)){
+            options.set(CatalogProperties.S3_ENDPOINT,catalogOptions.get("endpoint"));
+            options.set(CatalogProperties.S3_ACCESS_KEY,catalogOptions.get("accessKey"));
+            options.set(CatalogProperties.S3_SECRET_KEY,catalogOptions.get("secretKey"));
+        }else if ("oss".equals(fileSystemType)){
+            options.set(CatalogProperties.OSS_ENDPOINT,catalogOptions.get("endpoint"));
+            options.set(CatalogProperties.OSS_ACCESS_KEY,catalogOptions.get("accessKey"));
+            options.set(CatalogProperties.OSS_SECRET_KEY,catalogOptions.get("secretKey"));
+        }
         CatalogContext context = CatalogContext.create(options);
-
         return new PaimonService(CatalogFactory.createCatalog(context), name);
     }
 

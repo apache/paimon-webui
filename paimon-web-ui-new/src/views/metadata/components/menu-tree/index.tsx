@@ -111,7 +111,7 @@ export default defineComponent({
             <n-space justify='space-between' align='enter'>
               <article>Catalog</article>
               <n-button size='small' quaternary circle>
-                <n-icon>
+                <n-icon >
                   <Add />
                 </n-icon>
               </n-button>

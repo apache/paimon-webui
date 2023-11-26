@@ -34,7 +34,9 @@ export default defineComponent({
     const dagRef = ref() as any
     const handleSave = () => {
       // console.log('dagRef', dagRef.value.graph.toJSON())
-      router.push({ path: '/cdc_ingestion' })
+      debugger
+      dagRef.value.getGraphData()
+      // router.push({ path: '/cdc_ingestion' })
     }
 
     const router: Router = useRouter()
@@ -49,6 +51,8 @@ export default defineComponent({
         })
       }
     })
+
+
     
     return {
       t,
