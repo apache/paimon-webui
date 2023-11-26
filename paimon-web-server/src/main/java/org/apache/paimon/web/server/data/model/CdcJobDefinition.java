@@ -1,18 +1,20 @@
 package org.apache.paimon.web.server.data.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
+
 import java.io.Serializable;
-import java.util.Date;
-import lombok.Data;
 
 /**
  * @TableName cdc_job_definition
  */
 @TableName(value ="cdc_job_definition")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Builder
 public class CdcJobDefinition extends BaseModel implements Serializable {
 
     private String title;
@@ -25,5 +27,6 @@ public class CdcJobDefinition extends BaseModel implements Serializable {
 
     private String createUser;
 
-
+    @TableLogic
+    private boolean isDelete;
 }

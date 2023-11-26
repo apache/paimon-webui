@@ -20,6 +20,7 @@ import styles from './index.module.scss';
 import DagCanvas from "./dag-canvas";
 import { useCDCStore } from "@/store/cdc";
 import type { Router } from "vue-router";
+import { createCdcJob } from "@/api/models/cdc";
 
 export default defineComponent({
   name: 'DagPage',
@@ -33,10 +34,14 @@ export default defineComponent({
 
     const dagRef = ref() as any
     const handleSave = () => {
-      // console.log('dagRef', dagRef.value.graph.toJSON())
-      debugger
-      dagRef.value.getGraphData()
-      // router.push({ path: '/cdc_ingestion' })
+      console.log('dagRef', dagRef.value.graph.toJSON())
+      console.log('title',title)
+     const [,useCreateCdcJob] = createCdcJob({title:title.value+"",config:JSON.stringify(dagRef.value.graph.toJSON())})
+     useCreateCdcJob().then((res)=>{
+      console.log(res)
+      router.push({ path: '/cdc_ingestion' })
+     })
+
     }
 
     const router: Router = useRouter()

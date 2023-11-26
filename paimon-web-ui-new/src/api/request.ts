@@ -17,8 +17,11 @@ under the License. */
 
 import { createAxle } from '@varlet/axle'
 import { createUseAxle, type UseAxleInstance, type UseAxleOptions } from '@varlet/axle/use'
+import qs from 'qs'
+import _ from 'lodash'
 
 import type ResponseOptions from './types'
+
 
 type RequestConfigOptions<D, R = any, P = Record<string, any>> = Omit<UseAxleOptions<D, ResponseOptions<R>, P>, 'data'> & Pick<UseAxleOptions<D, R, P>, 'data'>
 
@@ -26,7 +29,7 @@ type AxleConfigOptions<R = any, P = Record<string, any>> = Omit<RequestConfigOpt
 
 export type HttpRequestOptions<R, P = any> = Omit<AxleConfigOptions<R, P>, 'data'>
 
-const axle = createAxle({
+export const axle = createAxle({
   baseURL: '/api'
 })
 
@@ -78,6 +81,8 @@ class HttpRequest {
   }
 
   post<R = any, P = any>(url: string, options: HttpRequestOptions<R, P> = {}) {
+    debugger
+    
     return this.request<R, P>({
       url,
       runner: axle.post,
