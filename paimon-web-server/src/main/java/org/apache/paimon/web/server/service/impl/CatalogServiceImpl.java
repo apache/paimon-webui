@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.paimon.web.server.impl;
+package org.apache.paimon.web.server.service.impl;
 
 import org.apache.paimon.web.api.catalog.PaimonServiceFactory;
 import org.apache.paimon.web.server.data.dto.CatalogDTO;
