@@ -27,5 +27,16 @@ public class CatalogProperties {
 
     public static final String URI = "uri";
 
+    public static final String S3_ENDPOINT = "s3.endpoint";
+
+    public static final String S3_SECRET_KEY = "s3.secret-key";
+
+    public static final String S3_ACCESS_KEY = "s3.access-key";
+
+    public static final String OSS_ENDPOINT = "fs.oss.endpoint";
+
+    public static final String OSS_SECRET_KEY = "fs.oss.accessKeyId";
+
+    public static final String OSS_ACCESS_KEY = "fs.oss.accessKeySecret";
     public static final String HIVE_CONF_DIR = "hive-conf-dir";
 }
