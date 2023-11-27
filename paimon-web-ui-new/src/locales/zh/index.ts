@@ -21,6 +21,7 @@ import playground from './modules/playground'
 import metadata from './modules/metadata'
 import cdc from './modules/cdc'
 import job from './modules/job'
+import common from './modules/common'
 
 export default {
   login,
@@ -28,5 +29,6 @@ export default {
   playground,
   metadata,
   cdc,
-  job
+  job,
+  common,
 }

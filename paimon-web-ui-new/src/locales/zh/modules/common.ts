@@ -15,14 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export interface CdcJobDefinition {
-    id?: number;
-    createTime?: string;
-    updateTime?: string;
-    name: string;
-    description?: string;
-    cdcType?: number;
-    config?: string;
-    createUser?: string;
-  }
-  
+export default {
+    success:'成功',
+    add_success:'新增成功',
+    update_success:'更新成功',
+    delete_success:'删除成功'
+}

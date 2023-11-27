@@ -17,8 +17,6 @@ under the License. */
 
 import { createAxle } from '@varlet/axle'
 import { createUseAxle, type UseAxleInstance, type UseAxleOptions } from '@varlet/axle/use'
-import qs from 'qs'
-import _ from 'lodash'
 
 import type ResponseOptions from './types'
 
@@ -32,7 +30,7 @@ export type HttpRequestOptions<R, P = any> = Omit<AxleConfigOptions<R, P>, 'data
 export const axle = createAxle({
   baseURL: '/api'
 })
-
+const { t } = useLocaleHooks()
 axle.axios.interceptors.request.use(
   (config) => {
     // token here
@@ -52,6 +50,8 @@ axle.axios.interceptors.response.use(
 
     if (code !== 200 && msg) {
       // do something there
+      debugger
+      window.$message.error(t(msg))
       return Promise.reject(response.data)
     }
     return response.data

@@ -52,7 +52,7 @@ public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo>
 
         if (catalogDTO.getType().equalsIgnoreCase(CatalogMode.FILESYSTEM.getMode())) {
             PaimonServiceFactory.createFileSystemCatalogService(
-                    catalogDTO.getName(), catalogDTO.getWarehouse(),catalogDTO.getOptions());
+                    catalogDTO.getName(), catalogDTO.getWarehouse(), catalogDTO.getOptions());
         } else if (catalogDTO.getType().equalsIgnoreCase(CatalogMode.HIVE.getMode())) {
             if (StringUtils.isNotBlank(catalogDTO.getHiveConfDir())) {
                 PaimonServiceFactory.createHiveCatalogService(

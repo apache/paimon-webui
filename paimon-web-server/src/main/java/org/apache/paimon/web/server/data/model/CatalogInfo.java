@@ -22,8 +22,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +29,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /** Catalog table model. */
 @Data
@@ -39,7 +36,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "catalog",autoResultMap = true)
+@TableName(value = "catalog", autoResultMap = true)
 public class CatalogInfo extends BaseModel {
 
     private String catalogType;
@@ -49,19 +46,19 @@ public class CatalogInfo extends BaseModel {
     private String warehouse;
 
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private HashMap<String,String> options;
+    private HashMap<String, String> options;
 
     @TableLogic private boolean isDelete;
 
-    public String getHiveConfDir(){
-        if(options == null){
+    public String getHiveConfDir() {
+        if (options == null) {
             return null;
         }
         return options.get("hiveConfDir");
     }
 
-    public String getHiveUri(){
-        if(options == null) {
+    public String getHiveUri() {
+        if (options == null) {
             return null;
         }
         return options.get("hiveUri");

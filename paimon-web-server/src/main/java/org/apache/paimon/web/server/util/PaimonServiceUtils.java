@@ -39,7 +39,9 @@ public class PaimonServiceUtils {
         if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.FILESYSTEM.getMode())) {
             service =
                     PaimonServiceFactory.createFileSystemCatalogService(
-                            catalogInfo.getCatalogName(), catalogInfo.getWarehouse(),catalogInfo.getOptions());
+                            catalogInfo.getCatalogName(),
+                            catalogInfo.getWarehouse(),
+                            catalogInfo.getOptions());
         } else if (catalogInfo.getCatalogType().equalsIgnoreCase(CatalogMode.HIVE.getMode())) {
             if (StringUtils.isNotBlank(catalogInfo.getHiveConfDir())) {
                 service =
@@ -59,7 +61,9 @@ public class PaimonServiceUtils {
         } else {
             service =
                     PaimonServiceFactory.createFileSystemCatalogService(
-                            catalogInfo.getCatalogName(), catalogInfo.getWarehouse(),catalogInfo.getOptions());
+                            catalogInfo.getCatalogName(),
+                            catalogInfo.getWarehouse(),
+                            catalogInfo.getOptions());
         }
         return service;
     }

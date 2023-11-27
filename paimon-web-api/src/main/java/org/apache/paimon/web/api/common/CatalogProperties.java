@@ -18,9 +18,7 @@
 
 package org.apache.paimon.web.api.common;
 
-/**
- * paimon catalog properties.
- */
+/** paimon catalog properties. */
 public class CatalogProperties {
 
     public static final String METASTORE = "metastore";

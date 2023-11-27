@@ -25,6 +25,7 @@ import {
 import { useConfigStore } from '@/store/config'
 import themes from '@/themes'
 
+
 export default defineComponent({
   name: 'App',
   setup() {
@@ -32,6 +33,7 @@ export default defineComponent({
     const theme = computed(() => configStore.getCurrentTheme === 'dark' ? darkTheme : undefined)
     const themeOverrides = computed(() => themes[theme.value ? 'dark' : 'light'])
     const locale = computed(() => configStore.getCurrentLocale)
+
 
     return {
       theme,

@@ -75,7 +75,8 @@ public enum Status {
     TABLE_DROP_ERROR(10510, "table.drop.error"),
     TABLE_RENAME_ERROR(10510, "table.rename.error"),
 
-    CDC_EXIST_ERROR(10601,"cdc.job.exist.error");
+    CDC_JOB_EXIST_ERROR(10601, "cdc.job.exist.error"),
+    CDC_JOB_NO_EXIST_ERROR(10601, "cdc.job.not.exist.error");
 
     private final int code;
     private final String msg;

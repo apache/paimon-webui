@@ -15,15 +15,28 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type ResponseOptions from '@/api/types'
-import httpRequest from '../../request'
+
 import type { CdcJobDefinition } from './interface'
 import { axle } from '../../request'
 export * from './interface'
 
 
 export const createCdcJob = (cdcJobDefinition: CdcJobDefinition) => {
-  debugger
-  return axle.post('/cdc-job-definition/create',
-  cdcJobDefinition)
+  return axle.post('/cdc-job-definition/create', cdcJobDefinition)
+}
+
+export const updateCdcJob = (cdcJobDefinition: CdcJobDefinition) => {
+  return axle.put(`/cdc-job-definition/update`, cdcJobDefinition)
+}
+
+export const listAllCdcJob = (withConfig: boolean, currentPage: number, pageSize: number) => {
+  return axle.get('/cdc-job-definition/list', { withConfig, currentPage, pageSize })
+}
+
+export const getCdcJobDefinition = (id: number) => {
+  return axle.get(`/cdc-job-definition/${id}`)
+}
+
+export const deleteCdcJobDefinition = (id: number) => {
+  return axle.delete(`/cdc-job-definition/${id}`)
 }

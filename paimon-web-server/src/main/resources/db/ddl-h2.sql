@@ -103,17 +103,19 @@ CREATE TABLE if not exists `role_menu`
     unique key `idx_role_menu` (`role_id`, `menu_id`)
 ) engine = innodb;
 
-CREATE TABLE if not exists `catalog`
+CREATE TABLE if not exists  `catalog`
 (
-    `id`          int(11)     not null primary key comment 'id',
-    `catalog_type`     varchar(50)  not null comment 'catalog type',
-    `catalog_name`     varchar(100)     not null comment 'catalog name',
-    `warehouse`     varchar(200)     not null comment 'warehouse',
-    `hive_uri`     varchar(200)     comment 'hive uri',
-    `hive_conf_dir`     varchar(100)   comment 'catalog name',
-    `is_delete`   tinyint(1)   NOT NULL DEFAULT 0 COMMENT 'is delete',
-    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    id            int                                  not null comment 'id'
+        primary key,
+    catalog_type  varchar(50)                          not null comment 'catalog type',
+    catalog_name  varchar(100)                         not null comment 'catalog name',
+    warehouse     varchar(200)                         not null comment 'warehouse',
+    hive_uri      varchar(200)                         null comment 'hive uri',
+    hive_conf_dir varchar(100)                         null comment 'catalog name',
+    is_delete     tinyint(1) default 0                 not null comment 'is delete',
+    create_time   datetime   default CURRENT_TIMESTAMP null comment 'create time',
+    update_time   datetime   default CURRENT_TIMESTAMP null comment 'update time',
+    options       varchar(512)                         null
 ) engine = innodb;
 
 CREATE TABLE if not exists `databases`
@@ -126,3 +128,19 @@ CREATE TABLE if not exists `databases`
     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
 ) engine = innodb;
+
+CREATE TABLE if not exists `cdc_job_definition`
+(
+    id          int                                not null,
+    name        varchar(20)                        not null,
+    description varchar(200)                       null,
+    cdc_type    int                                not null,
+    config      text                               null,
+    create_user varchar(20)                        null,
+    create_time datetime default CURRENT_TIMESTAMP null,
+    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    is_delete   tinyint                            not null,
+    constraint cdc_job_definition_pk
+        unique (name)
+) engine = innodb;
+
