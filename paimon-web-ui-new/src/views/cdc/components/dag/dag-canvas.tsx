@@ -74,7 +74,7 @@ export default defineComponent({
     }
 
     const getGraphData = ()=>{
-      debugger
+      
     }
 
     expose({

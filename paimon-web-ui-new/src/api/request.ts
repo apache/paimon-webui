@@ -50,7 +50,7 @@ axle.axios.interceptors.response.use(
 
     if (code !== 200 && msg) {
       // do something there
-      debugger
+      
       window.$message.error(t(msg))
       return Promise.reject(response.data)
     }
@@ -81,7 +81,7 @@ class HttpRequest {
   }
 
   post<R = any, P = any>(url: string, options: HttpRequestOptions<R, P> = {}) {
-    debugger
+    
     
     return this.request<R, P>({
       url,

@@ -59,7 +59,7 @@ export default defineComponent({
 
     onMounted(() => {
       if (dagRef.value && dagRef.value.graph) {
-        debugger
+        
         dagRef.value.graph.fromJSON({
           cells: CDCStore.getModel.cells
         })
