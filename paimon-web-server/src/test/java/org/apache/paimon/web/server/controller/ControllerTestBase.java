@@ -41,6 +41,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockCookie;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -84,7 +85,6 @@ public class ControllerTestBase {
         LoginDTO login = new LoginDTO();
         login.setUsername("admin");
         login.setPassword("admin");
-
         MockHttpServletResponse response =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(loginPath)
@@ -105,30 +105,36 @@ public class ControllerTestBase {
 
         // create default catalog
         CatalogDTO catalog = new CatalogDTO();
+        catalog.setId(catalogId);
         catalog.setType("filesystem");
         catalog.setName(catalogName);
         catalog.setWarehouse(tempFile.toUri().toString());
         catalog.setDelete(false);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.post(catalogPath + "/create")
-                        .cookie(cookie)
-                        .content(ObjectMapperUtils.toJSON(catalog))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions createCatalogRa =
+                mockMvc.perform(
+                        MockMvcRequestBuilders.post(catalogPath + "/create")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(catalog))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE));
+        R<?> createCatalogR = getR(createCatalogRa);
+        assertEquals(200, createCatalogR.getCode());
 
         // create default database
         DatabaseDTO database = new DatabaseDTO();
-        database.setCatalogId(catalogId);
         database.setName(databaseName);
         database.setCatalogName(catalogName);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.post(databasePath + "/create")
-                        .cookie(cookie)
-                        .content(ObjectMapperUtils.toJSON(database))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions createDatabaseRa =
+                mockMvc.perform(
+                        MockMvcRequestBuilders.post(databasePath + "/create")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(database))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE));
+        R<?> createDatabaseR = getR(createDatabaseRa);
+        assertEquals(200, createDatabaseR.getCode());
 
         // create default table
         List<TableColumn> tableColumns = new ArrayList<>();
@@ -149,12 +155,20 @@ public class ControllerTestBase {
                         .tableOptions(Maps.newHashMap())
                         .build();
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.post(tablePath + "/create")
-                        .cookie(cookie)
-                        .content(ObjectMapperUtils.toJSON(table))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE));
+        MockHttpServletResponse createTableResultAction =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post(tablePath + "/create")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(table))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse();
+        String createTableResult = createTableResultAction.getContentAsString();
+        R<?> createTableR = ObjectMapperUtils.fromJSON(createTableResult, R.class);
+        assertEquals(200, createTableR.getCode());
     }
 
     @AfterEach
@@ -173,30 +187,55 @@ public class ControllerTestBase {
         R<?> r = ObjectMapperUtils.fromJSON(result, R.class);
         assertEquals(200, r.getCode());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete(
-                                tablePath
-                                        + "/drop/"
-                                        + catalogName
-                                        + "/"
-                                        + databaseName
-                                        + "/"
-                                        + tableName)
-                        .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions dropTableRa =
+                mockMvc.perform(
+                        MockMvcRequestBuilders.delete(
+                                        tablePath
+                                                + "/drop/"
+                                                + catalogName
+                                                + "/"
+                                                + databaseName
+                                                + "/"
+                                                + tableName)
+                                .cookie(cookie)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE));
+        R<?> dropDatabaseR = getR(dropTableRa);
+        assertEquals(200, dropDatabaseR.getCode());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete(
-                                databasePath + "/drop/" + databaseName + "/" + catalogName)
-                        .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE));
+        DatabaseDTO database = new DatabaseDTO();
+        database.setName(databaseName);
+        database.setCatalogName(catalogName);
+        ResultActions dropDatabasesRa =
+                mockMvc.perform(
+                        MockMvcRequestBuilders.post(databasePath + "/drop")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(database))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE));
+        R<?> dropDatabasesR = getR(dropDatabasesRa);
+        assertEquals(200, dropDatabasesR.getCode());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete(catalogPath + "/remove/" + catalogName)
-                        .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE));
+        CatalogDTO catalog = new CatalogDTO();
+        catalog.setName(catalogName);
+        ResultActions removeCatalogRa =
+                mockMvc.perform(
+                        MockMvcRequestBuilders.post(catalogPath + "/remove")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(catalog))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE));
+        R<?> removeCatalogResult = getR(removeCatalogRa);
+        assertEquals(200, removeCatalogResult.getCode());
+    }
+
+    protected R<?> getR(ResultActions perform) throws Exception {
+        MockHttpServletResponse response =
+                perform.andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse();
+        String result = response.getContentAsString();
+        return ObjectMapperUtils.fromJSON(result, R.class);
     }
 }

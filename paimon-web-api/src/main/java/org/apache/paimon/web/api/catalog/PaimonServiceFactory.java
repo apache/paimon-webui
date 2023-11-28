@@ -26,6 +26,7 @@ import org.apache.paimon.web.api.common.MetastoreType;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /** Paimon service factory. */
@@ -33,7 +34,9 @@ public class PaimonServiceFactory {
 
     public static PaimonService createFileSystemCatalogService(
             String name, String warehouse, Map<String, String> catalogOptions) {
-
+        if (catalogOptions == null) {
+            catalogOptions = new HashMap<>();
+        }
         Options options = new Options();
         options.set(CatalogProperties.WAREHOUSE, warehouse + "/" + name);
         String fileSystemType = catalogOptions.get("fileSystemType");
