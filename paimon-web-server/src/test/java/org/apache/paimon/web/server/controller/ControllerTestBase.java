@@ -105,6 +105,7 @@ public class ControllerTestBase {
 
         // create default catalog
         CatalogDTO catalog = new CatalogDTO();
+        catalog.setId(catalogId);
         catalog.setType("filesystem");
         catalog.setName(catalogName);
         catalog.setWarehouse(tempFile.toUri().toString());
