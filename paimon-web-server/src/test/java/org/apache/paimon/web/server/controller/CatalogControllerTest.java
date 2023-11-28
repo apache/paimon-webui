@@ -44,8 +44,6 @@ public class CatalogControllerTest extends ControllerTestBase {
 
     private static final String catalogPath = "/api/catalog";
 
-    @TempDir java.nio.file.Path tempFile;
-
     private static final String catalogName = "testCatalog";
 
     @Test
