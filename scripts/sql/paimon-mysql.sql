@@ -124,6 +124,21 @@ CREATE TABLE if not exists `catalog`
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
     )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `cdc_job_definition`;
+CREATE TABLE if not exists `cdc_job_definition`;
+(
+    id          int                                not null comment 'id',
+    name        varchar(20)                        not null comment 'name',
+    description varchar(200)                       null comment 'description',
+    cdc_type    int                                not null comment 'cdc type ',
+    config      text                               null comment 'cdc job config',
+    create_user varchar(20)                        null comment 'create user',
+    create_time datetime default CURRENT_TIMESTAMP null comment 'create time',
+    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment 'update ',
+    is_delete   tinyint                            not null comment 'is delete',
+    constraint cdc_job_definition_pk
+    unique (name)
+    )ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `user` ( id, username, password, nickname, mobile
                    , email, enabled, is_delete)
