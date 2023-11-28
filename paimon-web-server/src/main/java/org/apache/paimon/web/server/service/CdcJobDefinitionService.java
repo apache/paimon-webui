@@ -25,7 +25,7 @@ import org.apache.paimon.web.server.data.result.R;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
-/** @author zhongyangyang */
+/** Cdc Job Definition Service. */
 public interface CdcJobDefinitionService extends IService<CdcJobDefinition> {
 
     R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO);

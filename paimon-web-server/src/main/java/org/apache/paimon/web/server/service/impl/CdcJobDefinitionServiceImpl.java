@@ -31,7 +31,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
-/** @author zhongyangyang */
+/** CdcJobDefinitionServiceImpl. */
 @Service
 public class CdcJobDefinitionServiceImpl
         extends ServiceImpl<CdcJobDefinitionMapper, CdcJobDefinition>
