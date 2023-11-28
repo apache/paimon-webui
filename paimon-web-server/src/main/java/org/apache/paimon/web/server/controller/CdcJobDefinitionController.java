@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /** CdcJobDefinition api controller. */
-
 @Slf4j
 @RestController
 @RequestMapping("/api/cdc-job-definition")
