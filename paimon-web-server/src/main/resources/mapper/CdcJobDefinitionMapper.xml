@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="org.apache.paimon.web.server.data.model.CdcJobDefinition">
             <result property="id" column="id" jdbcType="INTEGER"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="cdcType" column="cdc_type" jdbcType="INTEGER"/>
             <result property="config" column="config" jdbcType="VARCHAR"/>
@@ -16,7 +16,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,title,description,
+        id,name,description,
         cdc_type,config,create_user,
         create_time,update_time
     </sql>
