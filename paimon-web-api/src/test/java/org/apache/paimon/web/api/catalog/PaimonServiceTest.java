@@ -35,7 +35,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,7 +54,9 @@ public class PaimonServiceTest {
     @BeforeEach
     public void before() {
         warehouse = tempFile.toUri().toString();
-        service = PaimonServiceFactory.createFileSystemCatalogService("paimon", warehouse,new HashMap<>());
+        service =
+                PaimonServiceFactory.createFileSystemCatalogService(
+                        "paimon", warehouse, new HashMap<>());
         service.createDatabase(db);
     }
 
