@@ -28,7 +28,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /** Catalog table model. */
 @Data
@@ -46,7 +46,7 @@ public class CatalogInfo extends BaseModel {
     private String warehouse;
 
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private HashMap<String, String> options;
+    private Map<String, String> options;
 
     @TableLogic private boolean isDelete;
 
