@@ -21,7 +21,7 @@ package org.apache.paimon.web.server.data.dto;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /** DTO of catalog. */
 @Data
@@ -35,7 +35,7 @@ public class CatalogDTO {
 
     private String warehouse;
 
-    private HashMap<String, String> options;
+    private Map<String, String> options;
 
     @TableLogic private boolean isDelete;
 
