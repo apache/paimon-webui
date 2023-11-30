@@ -291,7 +291,8 @@ public class TableServiceImpl implements TableService {
                             resultList.add(table);
                         });
                 break;
-            } else {
+            }
+            if (Objects.nonNull(tableDTO.getName())) {
                 paimonService = PaimonServiceUtils.getPaimonService(catalog);
                 List<String> databaseList = paimonService.listDatabases();
                 for (String database : databaseList) {
