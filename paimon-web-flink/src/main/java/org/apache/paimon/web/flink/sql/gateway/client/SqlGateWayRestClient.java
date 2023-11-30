@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.flink.sql.gateway.client;
 
+import org.apache.paimon.web.common.function.Supplier;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.rest.FileUpload;
 import org.apache.flink.runtime.rest.RestClient;
@@ -30,7 +32,6 @@ import org.apache.flink.runtime.rest.messages.ResponseBody;
 import org.apache.flink.runtime.rest.versioning.RestAPIVersion;
 import org.apache.flink.util.ConfigurationException;
 import org.apache.flink.util.concurrent.Executors;
-import org.apache.paimon.web.common.function.Supplier;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;

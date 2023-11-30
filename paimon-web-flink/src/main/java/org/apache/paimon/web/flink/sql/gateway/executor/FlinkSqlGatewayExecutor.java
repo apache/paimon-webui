@@ -18,50 +18,42 @@
 
 package org.apache.paimon.web.flink.sql.gateway.executor;
 
-import org.apache.flink.runtime.rest.messages.EmptyMessageParameters;
-import org.apache.flink.table.gateway.api.operation.OperationHandle;
-import org.apache.flink.table.gateway.api.session.SessionHandle;
-import org.apache.flink.table.gateway.rest.header.session.OpenSessionHeaders;
-import org.apache.flink.table.gateway.rest.header.statement.ExecuteStatementHeaders;
-import org.apache.flink.table.gateway.rest.message.session.OpenSessionRequestBody;
-import org.apache.flink.table.gateway.rest.message.session.OpenSessionResponseBody;
-import org.apache.flink.table.gateway.rest.message.session.SessionMessageParameters;
-import org.apache.flink.table.gateway.rest.message.statement.ExecuteStatementRequestBody;
-import org.apache.flink.table.gateway.rest.message.statement.ExecuteStatementResponseBody;
+import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
 import org.apache.paimon.web.common.executor.Executor;
 import org.apache.paimon.web.common.result.SubmitResult;
 import org.apache.paimon.web.flink.parser.StatementParser;
-import org.apache.paimon.web.flink.sql.gateway.client.SqlGateWayRestClient;
 import org.apache.paimon.web.flink.sql.gateway.client.SqlGatewayClient;
-
-import java.util.HashMap;
-import java.util.UUID;
+import org.apache.paimon.web.flink.sql.gateway.model.SessionEntity;
 
 /** The flink sql gateway implementation of the {@link Executor}. */
-public class FlinkSqlGatewayExecutor implements Executor{
+public class FlinkSqlGatewayExecutor implements Executor {
 
-    private static final int REQUEST_WAITE_TIME = 1000;
+    private static final Long DEFAULT_FETCH_TOKEN = 0L;
+    private static final String STOP_JOB_SQL = "STOP JOB '%s'";
 
     private final SqlGatewayClient client;
-    private final SessionHandle sessionHandle;
+    private final SessionEntity session;
 
-    public FlinkSqlGatewayExecutor(String address, int port) throws Exception{
-        this.client = new SqlGatewayClient(address, port);
-        this.sessionHandle = client.createSession();
-
+    public FlinkSqlGatewayExecutor(SessionEntity session) throws Exception {
+        this.session = session;
+        this.client = new SqlGatewayClient(session.getAddress(), session.getPort());
     }
 
     @Override
     public SubmitResult executeSql(String multiStatement) throws Exception {
         String[] statements = StatementParser.parse(multiStatement);
-        for (String statement : statements) {
+        for (String statement : statements) {}
 
-        }
         return null;
     }
 
     @Override
-    public boolean stop(String statement) throws Exception {
+    public boolean stop(String jobId) throws Exception {
+        String statement = String.format(STOP_JOB_SQL, jobId);
+        String operationId = client.executeStatement(session.getSessionId(), statement, null);
+        FetchResultsResponseBody fetchResultsResponseBody = client.fetchResults(session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
+        RowData rowData = fetchResultsResponseBody.getResults().getData().get(0);
         return false;
     }
 }

@@ -23,14 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- *  This class represents the result of a job.
- *  Including flink job and spark Job.
- */
+/** This class represents the result of a job. Including flink job and spark Job. */
 public class SubmitResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final String submitId;
     private final String jobId;
     private final String status;
     private final List<Map<String, Object>> data;
@@ -39,6 +37,11 @@ public class SubmitResult implements Serializable {
         this.jobId = builder.jobId;
         this.status = builder.status;
         this.data = builder.data;
+        this.submitId = builder.submitId;
+    }
+
+    public String getSubmitId() {
+        return submitId;
     }
 
     public String getJobId() {
@@ -59,9 +62,16 @@ public class SubmitResult implements Serializable {
 
     /** The builder for SubmitResult. */
     public static class Builder {
+
+        private String submitId;
         private String jobId;
         private String status;
         private List<Map<String, Object>> data = new ArrayList<>();
+
+        public Builder submitId(String submitId) {
+            this.submitId = submitId;
+            return this;
+        }
 
         public Builder jobId(String jobId) {
             this.jobId = jobId;
@@ -90,10 +100,18 @@ public class SubmitResult implements Serializable {
 
     @Override
     public String toString() {
-        return "SubmitResult{" +
-                "jobId='" + jobId + '\'' +
-                ", status='" + status + '\'' +
-                ", data=" + data +
-                '}';
+        return "SubmitResult{"
+                + "submitId='"
+                + submitId
+                + '\''
+                + ", jobId='"
+                + jobId
+                + '\''
+                + ", status='"
+                + status
+                + '\''
+                + ", data="
+                + data
+                + '}';
     }
 }

@@ -25,5 +25,5 @@ public interface Executor {
 
     SubmitResult executeSql(String statement) throws Exception;
 
-    boolean stop(String statement) throws Exception;
+    boolean stop(String jobId) throws Exception;
 }

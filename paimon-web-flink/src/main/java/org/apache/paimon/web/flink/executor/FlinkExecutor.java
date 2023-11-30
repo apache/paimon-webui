@@ -18,13 +18,6 @@
 
 package org.apache.paimon.web.flink.executor;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.StatementSet;
-import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.api.bridge.java.StreamStatementSet;
 import org.apache.paimon.web.common.executor.Executor;
 import org.apache.paimon.web.common.result.SubmitResult;
 import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
@@ -32,12 +25,19 @@ import org.apache.paimon.web.flink.operation.SqlCategory;
 import org.apache.paimon.web.flink.parser.StatementParser;
 import org.apache.paimon.web.flink.utils.CollectResultUtil;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.flink.core.execution.JobClient;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.StatementSet;
+import org.apache.flink.table.api.TableEnvironment;
+import org.apache.flink.table.api.TableResult;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /** The flink implementation of the {@link Executor}. */
-public class FlinkExecutor implements Executor{
+public class FlinkExecutor implements Executor {
 
     private final StreamExecutionEnvironment env;
     private final TableEnvironment tableEnv;
@@ -53,8 +53,7 @@ public class FlinkExecutor implements Executor{
 
         String[] statements = StatementParser.parse(multiStatement);
         for (String statement : statements) {
-            FlinkSqlOperationType operationType =
-                    FlinkSqlOperationType.getOperationType(statement);
+            FlinkSqlOperationType operationType = FlinkSqlOperationType.getOperationType(statement);
             if (operationType.getCategory() == SqlCategory.DQL) {
                 if (!insertStatements.isEmpty()) {
                     continue;
@@ -111,7 +110,7 @@ public class FlinkExecutor implements Executor{
     }
 
     @Override
-    public boolean stop(String statement) throws Exception {
+    public boolean stop(String jobId) throws Exception {
         // TODO
         return false;
     }

@@ -18,13 +18,14 @@
 
 package org.apache.paimon.web.flink.utils;
 
+import org.apache.paimon.web.common.result.SubmitResult;
+
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.gateway.api.results.ResultSet;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.CloseableIterator;
-import org.apache.paimon.web.common.result.SubmitResult;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
