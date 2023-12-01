@@ -51,7 +51,6 @@ public class DatabaseControllerTest extends ControllerTestBase {
         DatabaseDTO database = new DatabaseDTO();
         database.setName(databaseName);
         database.setCatalogName(catalogName);
-        database.setCatalogId(catalogId);
         database.setIgnoreIfExists(true);
 
         String responseString =
