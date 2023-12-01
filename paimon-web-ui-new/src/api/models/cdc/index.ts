@@ -17,26 +17,26 @@ under the License. */
 
 
 import type { CdcJobDefinition } from './interface'
-import { axle } from '../../request'
+import httpRequest from '@/api/request'
 export * from './interface'
 
 
 export const createCdcJob = (cdcJobDefinition: CdcJobDefinition) => {
-  return axle.post('/cdc-job-definition/create', cdcJobDefinition)
+  return httpRequest.post('/cdc-job-definition/create', cdcJobDefinition)
 }
 
 export const updateCdcJob = (cdcJobDefinition: CdcJobDefinition) => {
-  return axle.put(`/cdc-job-definition/update`, cdcJobDefinition)
+  return httpRequest.put(`/cdc-job-definition/update`, cdcJobDefinition)
 }
 
 export const listAllCdcJob = (withConfig: boolean, currentPage: number, pageSize: number) => {
-  return axle.get('/cdc-job-definition/list', { withConfig, currentPage, pageSize })
+  return httpRequest.get('/cdc-job-definition/list', { withConfig, currentPage, pageSize })
 }
 
 export const getCdcJobDefinition = (id: number) => {
-  return axle.get(`/cdc-job-definition/${id}`)
+  return httpRequest.get(`/cdc-job-definition/${id}`)
 }
 
 export const deleteCdcJobDefinition = (id: number) => {
-  return axle.delete(`/cdc-job-definition/${id}`)
+  return httpRequest.delete(`/cdc-job-definition/${id}`)
 }

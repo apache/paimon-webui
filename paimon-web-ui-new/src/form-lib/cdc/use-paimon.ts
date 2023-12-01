@@ -22,8 +22,7 @@ export function usePaimon(item: any) {
 	const { t } = useLocaleHooks()
 	const tabType = item.data.tabType
 	let catalogOptions: any = ref([{value:1}])
-	const [, useAllCatalog] = getAllCatalogs()
-	useAllCatalog().then((res: any) => {
+	getAllCatalogs().then((res: any) => {
 		catalogOptions.value = res.data.map((e: any) => { return { value: e.id, label: e.catalogName } })
 	})
 	console.log('item', item.data)
