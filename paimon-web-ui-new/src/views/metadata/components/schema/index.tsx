@@ -15,7 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { NTag, type DataTableColumns, NButton } from "naive-ui";
+import { NTag, type DataTableColumns, NButton } from 'naive-ui'
+
+import { getSchema } from '@/api/models/catalog'
 
 import styles from './index.module.scss'
 
@@ -38,6 +40,8 @@ export default defineComponent({
   name: 'MetadataSchema',
   setup() {
     const { t } = useLocaleHooks()
+
+    const [, useSchemaInfo, { loading }] = getSchema()
 
     const data: RowData[] = [
       {
@@ -153,19 +157,33 @@ export default defineComponent({
       }
     ]
 
+    onMounted(() => {
+      useSchemaInfo({
+        params: {
+          catalogId: -1632763902,
+          catalogName: "streaming_warehouse",
+          databaseName: "ods",
+          tableName: "t_user"
+        }
+      })
+    })
+
     return {
       columns,
       data,
+      loading,
       t,
     }
   },
   render() {
     return (
       <n-card>
-        <n-data-table
-          columns={this.columns}
-          data={this.data}
-        />
+        <n-spin show={this.loading}>
+          <n-data-table
+            columns={this.columns}
+            data={this.data}
+          />
+        </n-spin>
       </n-card>
     );
   },

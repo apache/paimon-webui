@@ -19,7 +19,8 @@ import { NIcon, type TreeOption } from 'naive-ui'
 import { FileTrayOutline, FolderOutline } from '@vicons/ionicons5'
 
 
-import { getAllCatalogs, type Catalog } from '@/api/models/catalog'
+import { getAllCatalogs, getDatabasesByCatalogId } from '@/api/models/catalog'
+import type { Catalog, Database } from '@/api/models/catalog'
 
 export interface CatalogState {
   catalogs: TreeOption[];
@@ -39,35 +40,16 @@ export const useCatalogStore = defineStore('catalog', {
   },
   actions: {
     async getAllCatalogs(): Promise<void> {
-      const [, useAllCatalog] = getAllCatalogs()
 
       this._catalogLoading = true
-      const res = await useAllCatalog()
+      const res = await getAllCatalogs()
       this.catalogs = transformCatalog(res.data)
       this._catalogLoading = false
     },
-    getDatabasesByCatalogId(id: number): Promise<any> {
-      // TODO: fetch database list by catalog id
-      // Waiting for the deployment of the back end interface
+    async getDatabasesById(id: number): Promise<TreeOption[]> {
+      const res = await getDatabasesByCatalogId(id)
 
-      // const [, useDatabaseByCatalogId] = getDatabasesByCatalogId(id)
-      // return useDatabaseByCatalogId()
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve([
-            {
-              label: 'database',
-              type: 'database',
-              key: ++id,
-              isLeaf: false,
-              prefix: () =>
-                h(NIcon, null, {
-                  default: () => h(FolderOutline)
-                }),
-            }
-          ])
-        }, 1000)
-      })
+      return Promise.resolve(transformDatabase(res.data))
     },
     getTablesByDataBaseId(id: number): Promise<any> {
       // TODO: fetch table list by catalog id and database name
@@ -97,9 +79,22 @@ export const useCatalogStore = defineStore('catalog', {
 
 const transformCatalog = (catalogs: Catalog[]): TreeOption[] => {
   return catalogs.map(catalog => ({
-    label: catalog.name || 'paimon',
-    type: catalog.type || 'catalog',
+    label: catalog.catalogName,
+    type: 'catalog',
     key: catalog.id,
+    isLeaf: false,
+    prefix: () =>
+      h(NIcon, null, {
+        default: () => h(FolderOutline)
+      }),
+  }))
+}
+
+const transformDatabase = (databases: Database[]): TreeOption[] => {
+  return databases.map(database => ({
+    label: database.name,
+    type: 'database',
+    key: `${database.catalogId} ${database.name}`,
     isLeaf: false,
     prefix: () =>
       h(NIcon, null, {

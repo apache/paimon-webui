@@ -19,9 +19,23 @@ export interface Catalog {
   id: number;
   createTime: string;
   updateTime?: string;
-  type: string;
-  name: string;
+  catalogType: string;
+  catalogName: string;
   warehouse: string;
   hiveUri?: string;
   hiveConfDir?: string;
+}
+
+export interface Database {
+  name: string;
+  catalogId: number;
+  catalogName: string;
+  description?: string;
+}
+
+export interface Table {
+  catalogId: number;
+  catalogName: string;
+  databaseName: string;
+  tableName?: string;
 }

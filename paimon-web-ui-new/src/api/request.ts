@@ -15,18 +15,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { createAxle } from '@varlet/axle'
-import { createUseAxle, type UseAxleInstance, type UseAxleOptions } from '@varlet/axle/use'
+import { createAxle, type AxleInstance } from '@varlet/axle'
+import { createUseAxle } from '@varlet/axle/use'
 
-import type ResponseOptions from './types'
+import type { FetchOptions } from './types'
 
-type RequestConfigOptions<D, R = any, P = Record<string, any>> = Omit<UseAxleOptions<D, ResponseOptions<R>, P>, 'data'> & Pick<UseAxleOptions<D, R, P>, 'data'>
-
-type AxleConfigOptions<R = any, P = Record<string, any>> = Omit<RequestConfigOptions<R, P>, 'url' | 'runner'>
-
-export type HttpRequestOptions<R, P = any> = Omit<AxleConfigOptions<R, P>, 'data'>
-
-const axle = createAxle({
+const axle: AxleInstance & { createHooks?: typeof createHooks } = createAxle({
   baseURL: '/api'
 })
 
@@ -60,49 +54,13 @@ axle.axios.interceptors.response.use(
 )
 
 const useAxle = createUseAxle({
-  // any transform in here
+  axle
 })
 
-class HttpRequest {
-  private request<R = any, P = any>(options: RequestConfigOptions<R, P>): UseAxleInstance<R, ResponseOptions<P>, Record<string, any>> {
-    return useAxle(options)
-  }
-
-  get<R = any, P = any>(url: string, options?: AxleConfigOptions<R, P>) {
-    return this.request<R, P>({
-      url,
-      runner: axle.get,
-      data: null as any,
-      ...options
-    })
-  }
-
-  post<R = any, P = any>(url: string, options: HttpRequestOptions<R, P> = {}) {
-    return this.request<R, P>({
-      url,
-      runner: axle.post,
-      data: null as any,
-      ...options
-    })
-  }
-
-  put<R = any, P = any>(url: string, options: HttpRequestOptions<R, P> = {}) {
-    return this.request<R, P>({
-      url,
-      runner: axle.put,
-      data: null as any,
-      ...options
-    })
-  }
-
-  delete<R = any, P = any>(url: string, options: HttpRequestOptions<R, P> = {}) {
-    return this.request<R, P>({
-      url,
-      runner: axle.delete,
-      data: null as any,
-      ...options
-    })
-  }
+function createHooks<T, R>(options: FetchOptions<T, R>) {
+  return useAxle(options)
 }
 
-export default new HttpRequest()
+axle.createHooks = createHooks
+
+export default axle
