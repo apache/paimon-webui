@@ -40,11 +40,11 @@ public class PaimonServiceFactory {
         Options options = new Options();
         options.set(CatalogProperties.WAREHOUSE, warehouse + "/" + name);
         String fileSystemType = catalogOptions.get("fileSystemType");
-        if ("s3".equals(fileSystemType)) {
+        if ("s3".equalsIgnoreCase(fileSystemType)) {
             options.set(CatalogProperties.S3_ENDPOINT, catalogOptions.get("endpoint"));
             options.set(CatalogProperties.S3_ACCESS_KEY, catalogOptions.get("accessKey"));
             options.set(CatalogProperties.S3_SECRET_KEY, catalogOptions.get("secretKey"));
-        } else if ("oss".equals(fileSystemType)) {
+        } else if ("oss".equalsIgnoreCase(fileSystemType)) {
             options.set(CatalogProperties.OSS_ENDPOINT, catalogOptions.get("endpoint"));
             options.set(CatalogProperties.OSS_ACCESS_KEY, catalogOptions.get("accessKey"));
             options.set(CatalogProperties.OSS_SECRET_KEY, catalogOptions.get("secretKey"));
