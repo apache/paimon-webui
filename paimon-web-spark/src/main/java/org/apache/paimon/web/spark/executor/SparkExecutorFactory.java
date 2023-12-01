@@ -16,14 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.executor;
+package org.apache.paimon.web.spark.executor;
 
-import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.common.executor.Executor;
+import org.apache.paimon.web.common.executor.ExecutorFactory;
 
-/** The Executor interface. */
-public interface Executor {
+import org.apache.spark.sql.SparkSession;
 
-    SubmitResult executeSql(String statement) throws Exception;
+/** Factory class for creating executors that interface with the Spark. */
+public class SparkExecutorFactory implements ExecutorFactory {
 
-    boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception;
+    @Override
+    public Executor createExecutor() throws Exception {
+        // TODO other mode.
+        SparkSession sparkSession =
+                SparkSession.builder().appName("SparkExecutor").master("local[*]").getOrCreate();
+
+        return new SparkExecutor(sparkSession);
+    }
 }

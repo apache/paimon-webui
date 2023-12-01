@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.common.function;
 
-/** Supplier Functional interface that can use exceptions */
+/** Supplier Functional interface that can use exceptions. */
 @FunctionalInterface
 public interface Supplier<T> {
     T call() throws Exception;

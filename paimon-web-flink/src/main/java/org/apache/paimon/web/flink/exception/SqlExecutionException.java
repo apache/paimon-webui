@@ -16,14 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.executor;
+package org.apache.paimon.web.flink.exception;
 
-import org.apache.paimon.web.common.result.SubmitResult;
+/** Exception class for SQL execution issues. */
+public class SqlExecutionException extends Exception {
 
-/** The Executor interface. */
-public interface Executor {
-
-    SubmitResult executeSql(String statement) throws Exception;
-
-    boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception;
+    public SqlExecutionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

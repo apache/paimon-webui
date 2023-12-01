@@ -20,7 +20,7 @@ package org.apache.paimon.web.flink.sql.gateway.model;
 
 import java.util.Map;
 
-/** The session entity */
+/** The session entity. */
 public class SessionEntity {
 
     private final String sessionId;
@@ -67,6 +67,7 @@ public class SessionEntity {
         return new Builder();
     }
 
+    /** The builder for SessionEntity. */
     public static class Builder {
         private String sessionId;
         private String sessionName;

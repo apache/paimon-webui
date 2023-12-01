@@ -16,14 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.executor;
+package org.apache.paimon.web.gateway.enums;
 
-import org.apache.paimon.web.common.result.SubmitResult;
-
-/** The Executor interface. */
-public interface Executor {
-
-    SubmitResult executeSql(String statement) throws Exception;
-
-    boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception;
+/** The {@code TaskType} enum defines the types of tasks that can be executed. */
+public enum TaskType {
+    SPARK,
+    FLINK,
+    FLINK_SQL_GATEWAY;
 }

@@ -18,19 +18,32 @@
 
 package org.apache.paimon.web.flink.sql.gateway.executor;
 
-import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
 import org.apache.paimon.web.common.executor.Executor;
 import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.flink.exception.SqlExecutionException;
+import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
 import org.apache.paimon.web.flink.parser.StatementParser;
 import org.apache.paimon.web.flink.sql.gateway.client.SqlGatewayClient;
 import org.apache.paimon.web.flink.sql.gateway.model.SessionEntity;
+import org.apache.paimon.web.flink.utils.CollectResultUtil;
+import org.apache.paimon.web.flink.utils.FlinkSqlStatementSetBuilder;
+import org.apache.paimon.web.flink.utils.FormatSqlExceptionUtil;
+
+import org.apache.flink.table.data.StringData;
+import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /** The flink sql gateway implementation of the {@link Executor}. */
 public class FlinkSqlGatewayExecutor implements Executor {
 
     private static final Long DEFAULT_FETCH_TOKEN = 0L;
-    private static final String STOP_JOB_SQL = "STOP JOB '%s'";
+    private static final String STOP_JOB_BASE_SQL = "STOP JOB '%s'";
+    private static final String WITH_SAVEPOINT = " WITH SAVEPOINT";
+    private static final String WITH_DRAIN = " WITH DRAIN";
+    private static final String STOP_JOB_STATUS = "OK";
 
     private final SqlGatewayClient client;
     private final SessionEntity session;
@@ -41,19 +54,120 @@ public class FlinkSqlGatewayExecutor implements Executor {
     }
 
     @Override
-    public SubmitResult executeSql(String multiStatement) throws Exception {
+    public SubmitResult executeSql(String multiStatement) throws SqlExecutionException {
         String[] statements = StatementParser.parse(multiStatement);
-        for (String statement : statements) {}
+        List<String> insertStatements = new ArrayList<>();
 
+        for (String statement : statements) {
+            FlinkSqlOperationType operationType = FlinkSqlOperationType.getOperationType(statement);
+
+            switch (operationType.getCategory()) {
+                case DQL:
+                    if (insertStatements.isEmpty()) {
+                        return executeDqlStatement(statement, operationType);
+                    }
+                    break;
+                case DML:
+                    if (operationType.getType().equals(FlinkSqlOperationType.INSERT.getType())) {
+                        insertStatements.add(statement);
+                    } else if (insertStatements.isEmpty()) {
+                        return executeDmlStatement(statement);
+                    }
+                    break;
+                default:
+                    executeStatement(statement);
+                    break;
+            }
+        }
+
+        return executeInsertStatements(insertStatements);
+    }
+
+    private SubmitResult executeDqlStatement(String statement, FlinkSqlOperationType operationType)
+            throws SqlExecutionException {
+        try {
+            String operationId = client.executeStatement(session.getSessionId(), statement, null);
+            FetchResultsResponseBody results =
+                    client.fetchResults(session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
+            SubmitResult.Builder builder =
+                    CollectResultUtil.collectSqlGatewayResult(results.getResults())
+                            .submitId(operationId);
+            if (operationType.getType().equals(FlinkSqlOperationType.SELECT.getType())) {
+                builder.jobId(getJobIdFromResults(results));
+            }
+            return builder.build();
+        } catch (Exception e) {
+            String errorMessage = FormatSqlExceptionUtil.formatSqlExceptionMessage(statement);
+            throw new SqlExecutionException(errorMessage, e);
+        }
+    }
+
+    private SubmitResult executeDmlStatement(String statement) throws SqlExecutionException {
+        try {
+            String operationId = client.executeStatement(session.getSessionId(), statement, null);
+            FetchResultsResponseBody results =
+                    client.fetchResults(session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
+            return new SubmitResult.Builder()
+                    .submitId(operationId)
+                    .jobId(getJobIdFromResults(results))
+                    .build();
+        } catch (Exception e) {
+            String errorMessage = FormatSqlExceptionUtil.formatSqlExceptionMessage(statement);
+            throw new SqlExecutionException(errorMessage, e);
+        }
+    }
+
+    private void executeStatement(String statement) throws SqlExecutionException {
+        try {
+            client.executeStatement(session.getSessionId(), statement, null);
+        } catch (Exception e) {
+            String errorMessage = FormatSqlExceptionUtil.formatSqlExceptionMessage(statement);
+            throw new SqlExecutionException(errorMessage, e);
+        }
+    }
+
+    private SubmitResult executeInsertStatements(List<String> insertStatements)
+            throws SqlExecutionException {
+        if (!insertStatements.isEmpty()) {
+            try {
+                String combinedStatement =
+                        FlinkSqlStatementSetBuilder.buildStatementSet(insertStatements);
+                String operationId =
+                        client.executeStatement(session.getSessionId(), combinedStatement, null);
+                FetchResultsResponseBody results =
+                        client.fetchResults(
+                                session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
+                return new SubmitResult.Builder()
+                        .submitId(operationId)
+                        .jobId(getJobIdFromResults(results))
+                        .build();
+            } catch (Exception e) {
+                String errorMessage =
+                        FormatSqlExceptionUtil.formatSqlBatchExceptionMessage(insertStatements);
+                throw new SqlExecutionException(errorMessage, e);
+            }
+        }
         return null;
     }
 
+    private String getJobIdFromResults(FetchResultsResponseBody results) {
+        return Objects.requireNonNull(results.getJobID(), "Job ID not found in results").toString();
+    }
+
     @Override
-    public boolean stop(String jobId) throws Exception {
-        String statement = String.format(STOP_JOB_SQL, jobId);
-        String operationId = client.executeStatement(session.getSessionId(), statement, null);
-        FetchResultsResponseBody fetchResultsResponseBody = client.fetchResults(session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
-        RowData rowData = fetchResultsResponseBody.getResults().getData().get(0);
-        return false;
+    public boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception {
+        StringBuilder sqlBuilder = new StringBuilder(String.format(STOP_JOB_BASE_SQL, jobId));
+        if (withSavepoint) {
+            sqlBuilder.append(WITH_SAVEPOINT);
+        }
+        if (withDrain) {
+            sqlBuilder.append(WITH_DRAIN);
+        }
+        String operationId =
+                client.executeStatement(session.getSessionId(), sqlBuilder.toString(), null);
+        FetchResultsResponseBody fetchResultsResponseBody =
+                client.fetchResults(session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
+        StringData field = fetchResultsResponseBody.getResults().getData().get(0).getString(0);
+        return STOP_JOB_STATUS.equals(field.toString());
     }
 }

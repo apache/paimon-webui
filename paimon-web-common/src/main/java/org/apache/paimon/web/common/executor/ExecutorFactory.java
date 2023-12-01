@@ -21,5 +21,5 @@ package org.apache.paimon.web.common.executor;
 /** The ExecutorFactory interface provides a method to create an Executor. */
 public interface ExecutorFactory {
 
-    Executor createExecutor();
+    Executor createExecutor() throws Exception;
 }

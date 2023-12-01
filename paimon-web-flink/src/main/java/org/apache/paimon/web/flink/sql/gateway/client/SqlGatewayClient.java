@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.flink.sql.gateway.client;
 
-import org.apache.flink.table.gateway.rest.serde.ResultInfo;
 import org.apache.paimon.web.flink.sql.gateway.model.SessionEntity;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +34,7 @@ import org.apache.flink.table.gateway.rest.header.session.ConfigureSessionHeader
 import org.apache.flink.table.gateway.rest.header.session.GetSessionConfigHeaders;
 import org.apache.flink.table.gateway.rest.header.session.OpenSessionHeaders;
 import org.apache.flink.table.gateway.rest.header.session.TriggerSessionHeartbeatHeaders;
+import org.apache.flink.table.gateway.rest.header.statement.CompleteStatementHeaders;
 import org.apache.flink.table.gateway.rest.header.statement.ExecuteStatementHeaders;
 import org.apache.flink.table.gateway.rest.header.statement.FetchResultsHeaders;
 import org.apache.flink.table.gateway.rest.message.operation.OperationMessageParameters;
@@ -42,6 +42,7 @@ import org.apache.flink.table.gateway.rest.message.session.ConfigureSessionReque
 import org.apache.flink.table.gateway.rest.message.session.GetSessionConfigResponseBody;
 import org.apache.flink.table.gateway.rest.message.session.OpenSessionRequestBody;
 import org.apache.flink.table.gateway.rest.message.session.SessionMessageParameters;
+import org.apache.flink.table.gateway.rest.message.statement.CompleteStatementRequestBody;
 import org.apache.flink.table.gateway.rest.message.statement.ExecuteStatementRequestBody;
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsMessageParameters;
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
@@ -50,6 +51,7 @@ import org.apache.flink.table.gateway.rest.util.RowFormat;
 import javax.annotation.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -163,6 +165,17 @@ public class SqlGatewayClient {
                 .getOperationHandle();
     }
 
+    public List<String> completeStatementHints(String sessionId, String statement)
+            throws Exception {
+        return restClient
+                .sendRequest(
+                        CompleteStatementHeaders.getInstance(),
+                        new SessionMessageParameters(buildSessionHandleBySessionId(sessionId)),
+                        new CompleteStatementRequestBody(statement, statement.length()))
+                .get()
+                .getCandidates();
+    }
+
     public FetchResultsResponseBody fetchResults(String sessionId, String operationId, long token)
             throws Exception {
         FetchResultsResponseBody fetchResultsResponseBody =
@@ -179,16 +192,16 @@ public class SqlGatewayClient {
         ResultSet.ResultType resultType = fetchResultsResponseBody.getResultType();
         while (resultType == ResultSet.ResultType.NOT_READY) {
             fetchResultsResponseBody =
-            restClient
-                    .sendRequest(
-                            FetchResultsHeaders.getDefaultInstance(),
-                            new FetchResultsMessageParameters(
-                                    buildSessionHandleBySessionId(sessionId),
-                                    buildOperationHandleByOperationId(operationId),
-                                    token,
-                                    RowFormat.JSON),
-                            EmptyRequestBody.getInstance())
-                    .get();
+                    restClient
+                            .sendRequest(
+                                    FetchResultsHeaders.getDefaultInstance(),
+                                    new FetchResultsMessageParameters(
+                                            buildSessionHandleBySessionId(sessionId),
+                                            buildOperationHandleByOperationId(operationId),
+                                            token,
+                                            RowFormat.JSON),
+                                    EmptyRequestBody.getInstance())
+                            .get();
             resultType = fetchResultsResponseBody.getResultType();
             TimeUnit.MILLISECONDS.sleep(REQUEST_WAITE_TIME);
         }

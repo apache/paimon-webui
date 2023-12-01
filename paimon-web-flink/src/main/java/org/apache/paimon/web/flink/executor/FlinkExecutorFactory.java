@@ -22,12 +22,31 @@ import org.apache.paimon.web.common.executor.Executor;
 import org.apache.paimon.web.common.executor.ExecutorFactory;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.TableEnvironment;
+import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
 
+/** Factory class for creating executors that interface with the Flink Table API. */
 public class FlinkExecutorFactory implements ExecutorFactory {
+
+    private final RuntimeExecutionMode mode;
+
+    private final Configuration configuration;
+
+    public FlinkExecutorFactory(RuntimeExecutionMode mode, Configuration configuration) {
+        this.mode = mode;
+        this.configuration = configuration;
+    }
+
     @Override
     public Executor createExecutor() {
-        return null;
+        EnvironmentSettings environmentSettings = getEnvironmentSettings(mode);
+        StreamExecutionEnvironment env =
+                StreamExecutionEnvironment.getExecutionEnvironment(configuration);
+        TableEnvironment tableEvn = StreamTableEnvironmentImpl.create(env, environmentSettings);
+        return new FlinkExecutor(env, tableEvn);
     }
 
     private EnvironmentSettings getEnvironmentSettings(RuntimeExecutionMode mode) {

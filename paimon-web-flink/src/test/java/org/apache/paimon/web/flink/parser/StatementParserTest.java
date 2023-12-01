@@ -16,14 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.common.executor;
+package org.apache.paimon.web.flink.parser;
 
-import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.flink.TestBase;
 
-/** The Executor interface. */
-public interface Executor {
+import org.junit.jupiter.api.Test;
 
-    SubmitResult executeSql(String statement) throws Exception;
+import static org.assertj.core.api.Assertions.assertThat;
 
-    boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception;
+/** The test of {@link StatementParser}. */
+public class StatementParserTest extends TestBase {
+
+    @Test
+    public void testParse() {
+        String[] statements = StatementParser.parse(statement);
+        assertThat(statements.length).isEqualTo(5);
+    }
 }

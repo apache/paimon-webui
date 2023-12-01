@@ -23,7 +23,7 @@ import org.apache.paimon.web.common.result.SubmitResult;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.gateway.api.results.ResultSet;
+import org.apache.flink.table.gateway.rest.serde.ResultInfo;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.CloseableIterator;
 
@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /** Collect result util. */
 public class CollectResultUtil {
@@ -41,15 +42,16 @@ public class CollectResultUtil {
         List<String> columns = tableResult.getResolvedSchema().getColumnNames();
         try (CloseableIterator<Row> it = tableResult.collect()) {
             List<Map<String, Object>> rows = rowsToList(columns, it);
-            return SubmitResult.builder().data(rows);
+            return SubmitResult.builder().submitId(UUID.randomUUID().toString()).data(rows);
         }
     }
 
-    public static SubmitResult collectSqlGatewayResult(ResultSet resultSet) throws Exception {
-        List<RowData> data = resultSet.getData();
+    public static SubmitResult.Builder collectSqlGatewayResult(ResultInfo resultInfo)
+            throws Exception {
+        List<RowData> data = resultInfo.getData();
         List<Map<String, Object>> results =
-                rowDatasToList(resultSet.getResultSchema().getColumnNames(), data);
-        return SubmitResult.builder().data(results).build();
+                rowDatasToList(resultInfo.getResultSchema().getColumnNames(), data);
+        return SubmitResult.builder().data(results);
     }
 
     private static List<Map<String, Object>> rowsToList(

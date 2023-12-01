@@ -20,10 +20,11 @@ package org.apache.paimon.web.flink.executor;
 
 import org.apache.paimon.web.common.executor.Executor;
 import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.flink.exception.SqlExecutionException;
 import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
-import org.apache.paimon.web.flink.operation.SqlCategory;
 import org.apache.paimon.web.flink.parser.StatementParser;
 import org.apache.paimon.web.flink.utils.CollectResultUtil;
+import org.apache.paimon.web.flink.utils.FormatSqlExceptionUtil;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.core.execution.JobClient;
@@ -48,57 +49,87 @@ public class FlinkExecutor implements Executor {
     }
 
     @Override
-    public SubmitResult executeSql(String multiStatement) throws Exception {
+    public SubmitResult executeSql(String multiStatement) throws SqlExecutionException {
         List<String> insertStatements = new ArrayList<>();
-
         String[] statements = StatementParser.parse(multiStatement);
         for (String statement : statements) {
             FlinkSqlOperationType operationType = FlinkSqlOperationType.getOperationType(statement);
-            if (operationType.getCategory() == SqlCategory.DQL) {
-                if (!insertStatements.isEmpty()) {
-                    continue;
-                }
-                TableResult tableResult = tableEnv.executeSql(statement);
-                if (operationType.getType().equals(FlinkSqlOperationType.SELECT.getType())) {
-                    SubmitResult.Builder builder = CollectResultUtil.collectResult(tableResult);
-                    setResult(tableResult, builder);
-                    return builder.build();
-                } else {
-                    return CollectResultUtil.collectResult(tableResult).build();
-                }
-            } else if (operationType.getCategory() == SqlCategory.DML) {
-                if (operationType.getType().equals(FlinkSqlOperationType.INSERT.getType())) {
-                    insertStatements.add(statement);
-                } else {
-                    if (!insertStatements.isEmpty()) {
-                        continue;
+            switch (operationType.getCategory()) {
+                case DQL:
+                    if (insertStatements.isEmpty()) {
+                        return executeQueryStatement(statement);
                     }
-                    TableResult tableResult = tableEnv.executeSql(statement);
-                    SubmitResult.Builder builder = SubmitResult.builder();
-                    setResult(tableResult, builder);
-                    return builder.build();
+                    break;
+                case DML:
+                    if (operationType.getType().equals(FlinkSqlOperationType.INSERT.getType())) {
+                        insertStatements.add(statement);
+                    } else if (insertStatements.isEmpty()) {
+                        return executeDmlStatement(statement);
+                    }
+                    break;
+                default:
+                    executeStatementWithoutResult(statement);
+                    break;
+            }
+        }
+        return executeInsertStatements(insertStatements);
+    }
+
+    private SubmitResult executeQueryStatement(String statement) throws SqlExecutionException {
+        try {
+            TableResult tableResult = tableEnv.executeSql(statement);
+            return buildResult(tableResult);
+        } catch (Exception e) {
+            String errorMessage = FormatSqlExceptionUtil.formatSqlExceptionMessage(statement);
+            throw new SqlExecutionException(errorMessage, e);
+        }
+    }
+
+    private SubmitResult executeDmlStatement(String statement) throws SqlExecutionException {
+        try {
+            TableResult tableResult = tableEnv.executeSql(statement);
+            return buildResult(tableResult);
+        } catch (Exception e) {
+            String errorMessage = FormatSqlExceptionUtil.formatSqlExceptionMessage(statement);
+            throw new SqlExecutionException(errorMessage, e);
+        }
+    }
+
+    private void executeStatementWithoutResult(String statement) throws SqlExecutionException {
+        try {
+            tableEnv.executeSql(statement);
+        } catch (Exception e) {
+            String errorMessage = FormatSqlExceptionUtil.formatSqlExceptionMessage(statement);
+            throw new SqlExecutionException(errorMessage, e);
+        }
+    }
+
+    private SubmitResult executeInsertStatements(List<String> insertStatements)
+            throws SqlExecutionException {
+        try {
+            if (CollectionUtils.isNotEmpty(insertStatements)) {
+                TableResult tableResult;
+                if (insertStatements.size() > 1) {
+                    StatementSet statementSet = tableEnv.createStatementSet();
+                    insertStatements.forEach(statementSet::addInsertSql);
+                    tableResult = statementSet.execute();
+                } else {
+                    tableResult = tableEnv.executeSql(insertStatements.get(0));
                 }
-            } else {
-                tableEnv.executeSql(statement);
+                return buildResult(tableResult);
             }
+            return null;
+        } catch (Exception e) {
+            String errorMessage =
+                    FormatSqlExceptionUtil.formatSqlBatchExceptionMessage(insertStatements);
+            throw new SqlExecutionException(errorMessage, e);
         }
+    }
 
-        if (CollectionUtils.isNotEmpty(insertStatements)) {
-            SubmitResult.Builder builder = SubmitResult.builder();
-            if (insertStatements.size() > 1) {
-                StatementSet statementSet = tableEnv.createStatementSet();
-                insertStatements.forEach(statementSet::addInsertSql);
-                TableResult tableResult = statementSet.execute();
-                setResult(tableResult, builder);
-                return builder.build();
-            } else {
-                TableResult tableResult = tableEnv.executeSql(insertStatements.get(0));
-                setResult(tableResult, builder);
-                return builder.build();
-            }
-        }
-
-        return null;
+    private SubmitResult buildResult(TableResult tableResult) throws Exception {
+        SubmitResult.Builder builder = CollectResultUtil.collectResult(tableResult);
+        setResult(tableResult, builder);
+        return builder.build();
     }
 
     private void setResult(TableResult tableResult, SubmitResult.Builder builder) throws Exception {
@@ -110,8 +141,8 @@ public class FlinkExecutor implements Executor {
     }
 
     @Override
-    public boolean stop(String jobId) throws Exception {
-        // TODO
+    public boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception {
+        // TODO: STOP JOB STATEMENT.
         return false;
     }
 }
