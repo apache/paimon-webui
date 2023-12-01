@@ -20,6 +20,7 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
+/** DTO of cdcJobDefinition . */
 @Data
 public class CdcJobDefinitionDTO {
 
