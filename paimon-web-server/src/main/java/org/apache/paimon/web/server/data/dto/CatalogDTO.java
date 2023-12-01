@@ -21,6 +21,8 @@ package org.apache.paimon.web.server.data.dto;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
+import java.util.Map;
+
 /** DTO of catalog. */
 @Data
 public class CatalogDTO {
@@ -33,9 +35,21 @@ public class CatalogDTO {
 
     private String warehouse;
 
-    private String hiveUri;
-
-    private String hiveConfDir;
+    private Map<String, String> options;
 
     @TableLogic private boolean isDelete;
+
+    public String getHiveConfDir() {
+        if (options == null) {
+            return null;
+        }
+        return options.get("hiveConfDir");
+    }
+
+    public String getHiveUri() {
+        if (options == null) {
+            return null;
+        }
+        return options.get("hiveUri");
+    }
 }

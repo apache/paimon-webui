@@ -17,6 +17,8 @@ under the License. */
 
 import { type DataTableColumns } from 'naive-ui'
 
+import { getSnapshot } from '@/api/models/catalog'
+
 type RowData = {
   snapshotId: number
   schemaId: number
@@ -30,6 +32,7 @@ export default defineComponent({
   name: 'MetadataSnapshot',
   setup() {
     const { t } = useLocaleHooks()
+    const [, useSnapshot, { loading }] = getSnapshot()
 
     const data: RowData[] = [
       {
@@ -72,19 +75,33 @@ export default defineComponent({
       }
     ]
 
+    onMounted(() => {
+      useSnapshot({
+        params: {
+          catalogId: -1632763902,
+          catalogName: "streaming_warehouse",
+          databaseName: "ods",
+          tableName: "t_user"
+        }
+      })
+    })
+
     return {
       columns,
       data,
+      loading,
       t,
     }
   },
   render() {
     return (
       <n-card>
-        <n-data-table
-          columns={this.columns}
-          data={this.data}
-        />
+        <n-spin show={this.loading}>
+          <n-data-table
+            columns={this.columns}
+            data={this.data}
+          />
+        </n-spin>
       </n-card>
     );
   },

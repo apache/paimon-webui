@@ -15,8 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default interface ResponseOptions<P> {
+import type { RunnerMethod } from "@varlet/axle"
+import type { UseAxleOptions } from "@varlet/axle/use"
+
+export interface ResponseOptions<P> {
   code: number
   data: P
   msg: string
+}
+
+export type FetchOptions<V, R = any, P = Record<string, any>> = Partial<UseAxleOptions<V, ResponseOptions<R>, P>> & {
+  method: RunnerMethod
+  url: string
 }

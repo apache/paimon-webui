@@ -29,7 +29,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:10088',
+        target: 'http://47.94.247.86:10088',
         changeOrigin: true,
       }
     }
@@ -54,7 +54,6 @@ export default defineConfig({
       dts: './auto-imports.d.ts',
       dirs: [
         './src/composables',
-        './src/api',
       ],
       eslintrc: {
         enabled: false
@@ -75,5 +74,5 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  },
+  }
 })
