@@ -40,6 +40,7 @@ import java.util.Optional;
 /** The flink implementation of the {@link Executor}. */
 public class FlinkExecutor implements Executor {
 
+    private static final String EXECUTE_SUCCESS = "OK";
     private final StreamExecutionEnvironment env;
     private final TableEnvironment tableEnv;
 
@@ -118,7 +119,7 @@ public class FlinkExecutor implements Executor {
                 }
                 return buildResult(tableResult);
             }
-            return null;
+            return SubmitResult.builder().status(EXECUTE_SUCCESS).build();
         } catch (Exception e) {
             String errorMessage =
                     FormatSqlExceptionUtil.formatSqlBatchExceptionMessage(insertStatements);
