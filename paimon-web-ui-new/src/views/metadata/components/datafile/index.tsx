@@ -17,6 +17,8 @@ under the License. */
 
 import { type DataTableColumns } from 'naive-ui'
 
+import { getDataFile } from '@/api/models/catalog'
+
 type RowData = {
   partition: string
   bucket: number
@@ -29,6 +31,7 @@ export default defineComponent({
   name: 'MetadataDataFile',
   setup() {
     const { t } = useLocaleHooks()
+    const [, useDataFile, { loading }] = getDataFile()
 
     const data: RowData[] = [
       {
@@ -76,19 +79,33 @@ export default defineComponent({
       }
     ]
 
+    onMounted(() => {
+      useDataFile({
+        params: {
+          catalogId: -1632763902,
+          catalogName: "streaming_warehouse",
+          databaseName: "ods",
+          tableName: "t_user"
+        }
+      })
+    })
+
     return {
       columns,
       data,
+      loading,
       t,
     }
   },
   render() {
     return (
       <n-card>
-        <n-data-table
-          columns={this.columns}
-          data={this.data}
-        />
+        <n-spin show={this.loading}>
+          <n-data-table
+            columns={this.columns}
+            data={this.data}
+          />
+        </n-spin>
       </n-card>
     );
   },

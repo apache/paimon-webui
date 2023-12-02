@@ -80,8 +80,8 @@ devDependencies:
     specifier: ^18.17.15
     version: 18.17.15
   '@varlet/axle':
-    specifier: ^0.1.2
-    version: 0.1.2
+    specifier: ^0.2.5
+    version: 0.2.5
   '@vicons/ionicons5':
     specifier: ^0.12.0
     version: 0.12.0
@@ -1046,19 +1046,19 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@varlet/axle@0.1.2:
-    resolution: {integrity: sha512-UX52zY7olPigsLf5ZsWid7ScOoazBF/8LLYqArej2zrQ+Msg5mQGrH8sfAg1NfofNQuSfBJIILfAhFIY8JELmQ==}
+  /@varlet/axle@0.2.5:
+    resolution: {integrity: sha512-MuRENCqxkgU56GRqzYfhdAvDYZsN1B8hoW23b/D/oLU6v5V492lv7NrQyKNOi4BQALO0HSEgbgi3YR1LjYP4DQ==}
     engines: {pnpm: '>=8.0'}
     dependencies:
-      '@varlet/shared': 2.16.2
+      '@varlet/shared': 2.19.2
       axios: 1.5.0
       qs: 6.11.2
     transitivePeerDependencies:
       - debug
     dev: true
 
-  /@varlet/shared@2.16.2:
-    resolution: {integrity: sha512-Tu4LIaEwIflyUrDzIViM2spluwSP7cNxJyoM+0XD2/h0abI1H86M6NsO5tBRF3R3740ITgJ4GzEHimOYNfbmMQ==}
+  /@varlet/shared@2.19.2:
+    resolution: {integrity: sha512-gLLqAm/Wg4jqO9B2RKSMoewOC1qnM70/8nJDmkYkduc3dG+wpbacI2NBRj5d9YDrYvKnqk/AIz4Z3h5Slgxtpw==}
     dev: true
 
   /@vicons/ionicons5@0.12.0:

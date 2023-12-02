@@ -111,6 +111,7 @@ under the License.
             <scope>runtime</scope>
         </dependency>
 
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -163,7 +164,7 @@ under the License.
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -180,6 +181,17 @@ under the License.
     </dependencies>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/../scripts</directory>
+                <includes>
+                    <include>sql/**</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+        </testResources>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <resources>
             <resource>
