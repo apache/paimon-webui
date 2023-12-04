@@ -19,6 +19,7 @@
 package org.apache.paimon.web.spark.executor;
 
 import org.apache.paimon.web.common.executor.Executor;
+import org.apache.paimon.web.common.result.FetchResultParams;
 import org.apache.paimon.web.common.result.SubmitResult;
 
 import org.apache.spark.sql.Row;
@@ -59,6 +60,12 @@ public class SparkExecutor implements Executor {
                             result.add(map);
                         });
         return SubmitResult.builder().data(result).build();
+    }
+
+    @Override
+    public SubmitResult fetchResults(FetchResultParams params) throws Exception {
+        // TODO
+        return null;
     }
 
     @Override

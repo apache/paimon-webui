@@ -19,6 +19,7 @@
 package org.apache.paimon.web.flink.executor;
 
 import org.apache.paimon.web.common.executor.Executor;
+import org.apache.paimon.web.common.result.FetchResultParams;
 import org.apache.paimon.web.common.result.SubmitResult;
 import org.apache.paimon.web.flink.exception.SqlExecutionException;
 import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
@@ -139,6 +140,12 @@ public class FlinkExecutor implements Executor {
             builder.jobId(jobClient.get().getJobID().toString());
             builder.status(jobClient.get().getJobStatus().get().toString());
         }
+    }
+
+    @Override
+    public SubmitResult fetchResults(FetchResultParams params) throws Exception {
+        // TODO
+        return null;
     }
 
     @Override

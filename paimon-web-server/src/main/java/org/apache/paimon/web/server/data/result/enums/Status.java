@@ -72,8 +72,22 @@ public enum Status {
     TABLE_REMOVE_OPTION_ERROR(10505, "table.remove.option.error"),
     TABLE_DROP_COLUMN_ERROR(10506, "table.drop.column.error"),
     TABLE_AlTER_COLUMN_ERROR(10507, "table.alter.column.error"),
-    TABLE_DROP_ERROR(10510, "table.drop.error"),
-    TABLE_RENAME_ERROR(10510, "table.rename.error");
+    TABLE_DROP_ERROR(10508, "table.drop.error"),
+    TABLE_RENAME_ERROR(10509, "table.rename.error"),
+
+    /** ------------session-----------------. */
+    SESSION_CREATE_ERROR(10601, "session.create.error"),
+    SESSION_CLOSE_ERROR(10602, "session.close.error"),
+    TRIGGER_SESSION_HEARTBEAT_ERROR(10603, "trigger.session.heartbeat.error"),
+    SESSION_NAME_IS_EXIST(10604, "session.name.exist"),
+    SESSION_LIST_ERROR(10605, "session.list.error"),
+
+    /** ------------job-----------------. */
+    JOB_SUBMIT_ERROR(10701, "job.submit.error"),
+    RESULT_FETCH_ERROR(10702, "result.fetch.error"),
+
+    /** ------------statement-----------------. */
+    STATEMENT_SAVE_ERROR(10801, "statement.save.error");
 
     private final int code;
     private final String msg;

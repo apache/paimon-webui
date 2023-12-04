@@ -16,30 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.gateway.enums;
+package org.apache.paimon.web.server.data.dto;
 
-/** The {@code TaskType} enum defines the types of tasks that can be executed. */
-public enum TaskType {
-    SPARK("SPARK"),
-    FLINK("FLINK"),
-    FLINK_SQL_GATEWAY("FLINK SQL GATEWAY");
+import lombok.Data;
 
-    private final String value;
+/** DTO of resultFetch. */
+@Data
+public class ResultFetchDTO {
 
-    public static TaskType fromValue(String value) {
-        for (TaskType type : values()) {
-            if (type.getValue().equals(value)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown TaskType value: " + value);
-    }
+    private String submitId;
 
-    TaskType(String value) {
-        this.value = value;
-    }
+    private String sessionId;
 
-    public String getValue() {
-        return this.value;
-    }
+    private Long token;
 }

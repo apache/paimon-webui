@@ -32,12 +32,14 @@ public class SubmitResult implements Serializable {
     private final String jobId;
     private final String status;
     private final List<Map<String, Object>> data;
+    private final Boolean shouldFetchResult;
 
     private SubmitResult(Builder builder) {
         this.jobId = builder.jobId;
         this.status = builder.status;
         this.data = builder.data;
         this.submitId = builder.submitId;
+        this.shouldFetchResult = builder.shouldFetchResult;
     }
 
     public String getSubmitId() {
@@ -56,6 +58,10 @@ public class SubmitResult implements Serializable {
         return data;
     }
 
+    public boolean shouldFetchResult() {
+        return shouldFetchResult;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -67,6 +73,7 @@ public class SubmitResult implements Serializable {
         private String jobId;
         private String status;
         private List<Map<String, Object>> data = new ArrayList<>();
+        private Boolean shouldFetchResult;
 
         public Builder submitId(String submitId) {
             this.submitId = submitId;
@@ -90,6 +97,11 @@ public class SubmitResult implements Serializable {
 
         public Builder addData(Map<String, Object> dataItem) {
             this.data.add(dataItem);
+            return this;
+        }
+
+        public Builder shouldFetchResult(boolean shouldFetchResult) {
+            this.shouldFetchResult = shouldFetchResult;
             return this;
         }
 

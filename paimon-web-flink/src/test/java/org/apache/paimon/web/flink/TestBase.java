@@ -89,13 +89,13 @@ public class TestBase {
 
     protected String statementSetSql =
             "CREATE TABLE IF NOT EXISTS t_order(\n"
-                    + "    --订单id\n"
+                    + "    --order id\n"
                     + "    `order_id` BIGINT,\n"
-                    + "    --产品\n"
+                    + "    --product\n"
                     + "    `product` BIGINT,\n"
-                    + "    --金额\n"
+                    + "    --amount\n"
                     + "    `amount` BIGINT,\n"
-                    + "    --支付时间\n"
+                    + "    --payment time\n"
                     + "    `order_time` as CAST(CURRENT_TIMESTAMP AS TIMESTAMP(3)),\n"
                     + "    --WATERMARK\n"
                     + "    WATERMARK FOR order_time AS order_time-INTERVAL '2' SECOND\n"

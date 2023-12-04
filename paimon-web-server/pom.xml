@@ -52,8 +52,9 @@ under the License.
         </dependency>
 
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
+            <groupId>org.apache.paimon</groupId>
+            <artifactId>paimon-web-gateway</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

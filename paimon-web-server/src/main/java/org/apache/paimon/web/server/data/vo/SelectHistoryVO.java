@@ -16,30 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.gateway.enums;
+package org.apache.paimon.web.server.data.vo;
 
-/** The {@code TaskType} enum defines the types of tasks that can be executed. */
-public enum TaskType {
-    SPARK("SPARK"),
-    FLINK("FLINK"),
-    FLINK_SQL_GATEWAY("FLINK SQL GATEWAY");
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    private final String value;
+import java.time.LocalDateTime;
 
-    public static TaskType fromValue(String value) {
-        for (TaskType type : values()) {
-            if (type.getValue().equals(value)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown TaskType value: " + value);
-    }
+/** VO of select history. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SelectHistoryVO {
 
-    TaskType(String value) {
-        this.value = value;
-    }
+    private String taskType;
 
-    public String getValue() {
-        return this.value;
-    }
+    private boolean isStreaming;
+
+    private String sessionId;
+
+    private String statements;
+
+    private LocalDateTime createTime;
 }

@@ -18,12 +18,15 @@
 
 package org.apache.paimon.web.common.executor;
 
+import org.apache.paimon.web.common.result.FetchResultParams;
 import org.apache.paimon.web.common.result.SubmitResult;
 
 /** The Executor interface. */
 public interface Executor {
 
     SubmitResult executeSql(String statement) throws Exception;
+
+    SubmitResult fetchResults(FetchResultParams params) throws Exception;
 
     boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception;
 }

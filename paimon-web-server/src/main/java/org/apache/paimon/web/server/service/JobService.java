@@ -16,30 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.gateway.enums;
+package org.apache.paimon.web.server.service;
 
-/** The {@code TaskType} enum defines the types of tasks that can be executed. */
-public enum TaskType {
-    SPARK("SPARK"),
-    FLINK("FLINK"),
-    FLINK_SQL_GATEWAY("FLINK SQL GATEWAY");
+import org.apache.paimon.web.server.data.model.JobInfo;
 
-    private final String value;
+import com.baomidou.mybatisplus.extension.service.IService;
 
-    public static TaskType fromValue(String value) {
-        for (TaskType type : values()) {
-            if (type.getValue().equals(value)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown TaskType value: " + value);
-    }
+/** Job Service. */
+public interface JobService extends IService<JobInfo> {
 
-    TaskType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return this.value;
-    }
+    /**
+     * Persists a new job information record in the datastore.
+     *
+     * @param jobInfo The JobInfo object representing the job details to be saved.
+     * @return {@code true} if the job information was successfully saved, {@code false} otherwise.
+     */
+    boolean saveJob(JobInfo jobInfo);
 }

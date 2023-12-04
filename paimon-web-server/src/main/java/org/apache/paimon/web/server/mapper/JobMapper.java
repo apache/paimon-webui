@@ -16,30 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.gateway.enums;
+package org.apache.paimon.web.server.mapper;
 
-/** The {@code TaskType} enum defines the types of tasks that can be executed. */
-public enum TaskType {
-    SPARK("SPARK"),
-    FLINK("FLINK"),
-    FLINK_SQL_GATEWAY("FLINK SQL GATEWAY");
+import org.apache.paimon.web.server.data.model.JobInfo;
 
-    private final String value;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
-    public static TaskType fromValue(String value) {
-        for (TaskType type : values()) {
-            if (type.getValue().equals(value)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown TaskType value: " + value);
-    }
-
-    TaskType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return this.value;
-    }
-}
+/** Session mapper. */
+@Mapper
+public interface JobMapper extends BaseMapper<JobInfo> {}

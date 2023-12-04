@@ -19,6 +19,7 @@
 package org.apache.paimon.web.flink.sql.gateway.executor;
 
 import org.apache.paimon.web.common.executor.Executor;
+import org.apache.paimon.web.common.result.FetchResultParams;
 import org.apache.paimon.web.common.result.SubmitResult;
 import org.apache.paimon.web.flink.exception.SqlExecutionException;
 import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
@@ -30,11 +31,13 @@ import org.apache.paimon.web.flink.utils.FlinkSqlStatementSetBuilder;
 import org.apache.paimon.web.flink.utils.FormatSqlExceptionUtil;
 
 import org.apache.flink.table.data.StringData;
+import org.apache.flink.table.gateway.api.results.ResultSet;
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /** The flink sql gateway implementation of the {@link Executor}. */
 public class FlinkSqlGatewayExecutor implements Executor {
@@ -43,7 +46,7 @@ public class FlinkSqlGatewayExecutor implements Executor {
     private static final String STOP_JOB_BASE_SQL = "STOP JOB '%s'";
     private static final String WITH_SAVEPOINT = " WITH SAVEPOINT";
     private static final String WITH_DRAIN = " WITH DRAIN";
-    private static final String STOP_JOB_STATUS = "OK";
+    private static final String EXECUTE_SUCCESS = "OK";
 
     private final SqlGatewayClient client;
     private final SessionEntity session;
@@ -93,7 +96,7 @@ public class FlinkSqlGatewayExecutor implements Executor {
                     CollectResultUtil.collectSqlGatewayResult(results.getResults())
                             .submitId(operationId);
             if (operationType.getType().equals(FlinkSqlOperationType.SELECT.getType())) {
-                builder.jobId(getJobIdFromResults(results));
+                builder.jobId(getJobIdFromResults(results)).shouldFetchResult(true);
             }
             return builder.build();
         } catch (Exception e) {
@@ -147,11 +150,29 @@ public class FlinkSqlGatewayExecutor implements Executor {
                 throw new SqlExecutionException(errorMessage, e);
             }
         }
-        return null;
+        return SubmitResult.builder()
+                .submitId(UUID.randomUUID().toString())
+                .status(EXECUTE_SUCCESS)
+                .build();
     }
 
     private String getJobIdFromResults(FetchResultsResponseBody results) {
         return Objects.requireNonNull(results.getJobID(), "Job ID not found in results").toString();
+    }
+
+    @Override
+    public SubmitResult fetchResults(FetchResultParams params) throws Exception {
+        FetchResultsResponseBody fetchResultsResponseBody =
+                client.fetchResults(params.getSessionId(), params.getSubmitId(), params.getToken());
+        ResultSet.ResultType resultType = fetchResultsResponseBody.getResultType();
+        if (resultType == ResultSet.ResultType.EOS) {
+            return SubmitResult.builder().shouldFetchResult(false).build();
+        }
+        SubmitResult.Builder builder =
+                CollectResultUtil.collectSqlGatewayResult(fetchResultsResponseBody.getResults());
+        builder.submitId(params.getSubmitId());
+        builder.status(EXECUTE_SUCCESS);
+        return builder.build();
     }
 
     @Override
@@ -168,6 +189,6 @@ public class FlinkSqlGatewayExecutor implements Executor {
         FetchResultsResponseBody fetchResultsResponseBody =
                 client.fetchResults(session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
         StringData field = fetchResultsResponseBody.getResults().getData().get(0).getString(0);
-        return STOP_JOB_STATUS.equals(field.toString());
+        return EXECUTE_SUCCESS.equals(field.toString());
     }
 }

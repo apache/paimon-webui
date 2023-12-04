@@ -114,8 +114,8 @@ under the License.
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <sa-token.version>1.35.0.RC</sa-token.version>
         <common-lang3.version>3.12.0</common-lang3.version>
-        <hutool.version>5.8.11</hutool.version>
         <gson.version>2.10.1</gson.version>
+        <jackson.verison>2.13.5</jackson.verison>
     </properties>
 
     <dependencyManagement>
@@ -145,12 +145,6 @@ under the License.
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
             </dependency>
 
             <dependency>
@@ -219,6 +213,17 @@ under the License.
                 <version>${gson.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.verison}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.verison}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

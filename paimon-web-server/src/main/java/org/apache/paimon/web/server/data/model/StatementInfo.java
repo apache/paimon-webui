@@ -16,30 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.gateway.enums;
+package org.apache.paimon.web.server.data.model;
 
-/** The {@code TaskType} enum defines the types of tasks that can be executed. */
-public enum TaskType {
-    SPARK("SPARK"),
-    FLINK("FLINK"),
-    FLINK_SQL_GATEWAY("FLINK SQL GATEWAY");
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-    private final String value;
+/** Statement info table model. */
+@Data
+@Builder
+@EqualsAndHashCode(callSuper = true)
+@TableName("statement")
+public class StatementInfo extends BaseModel {
 
-    public static TaskType fromValue(String value) {
-        for (TaskType type : values()) {
-            if (type.getValue().equals(value)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown TaskType value: " + value);
-    }
+    private String taskType;
 
-    TaskType(String value) {
-        this.value = value;
-    }
+    private boolean isStreaming;
 
-    public String getValue() {
-        return this.value;
-    }
+    private String sessionId;
+
+    private String statements;
+
+    private static final long serialVersionUID = 1L;
 }

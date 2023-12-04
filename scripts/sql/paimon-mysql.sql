@@ -124,6 +124,59 @@ CREATE TABLE if not exists `catalog`
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
     )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `job`;
+CREATE TABLE if not exists `job`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `job_id`     varchar(100)  not null comment 'job id',
+    `type`     varchar(100)  comment 'job type',
+    `execute_mode`     varchar(50)  comment 'execute mode',
+    `session_id`     varchar(100)  comment 'session id',
+    `config`     text   comment 'config',
+    `statements`   text COMMENT 'statements',
+    `status` varchar(50) COMMENT 'status',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `select_history`;
+CREATE TABLE if not exists `select_history`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `task_type`     varchar(100)  not null comment 'task type',
+    `is_streaming`  tinyint(1)  comment 'is steaming',
+    `session_id`     varchar(100)  comment 'session id',
+    `statements`   text COMMENT 'statements',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `statement`;
+CREATE TABLE if not exists `statement`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `task_type`     varchar(100)  not null comment 'task type',
+    `is_streaming`  tinyint(1)  comment 'is steaming',
+    `session_id`     varchar(100)  comment 'session id',
+    `statements`   text COMMENT 'statements',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `session`;
+CREATE TABLE if not exists `session`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `session_id`     varchar(100)  not null comment 'session id',
+    `session_name`  varchar(100)  comment 'session name',
+    `address`     varchar(100)  comment 'address',
+    `port`   int(11) COMMENT 'port',
+    `properties`  text   comment 'properties',
+    `status`   int(11) COMMENT 'status',
+    `type`    varchar(100)  comment 'session type',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `user` ( id, username, password, nickname, mobile
                    , email, enabled, is_delete)
