@@ -30,8 +30,8 @@ spring:
       password: root
       mode: always
 
-  ldap:
-    urls: ldap://${LDAP_HOST:127.0.0.1}:${LDAP_PORT:389}
-    base: dc=test,dc=com
-    username: ${LDAP_USER:cn=admin,dc=test,dc=com}
-    password: ${LDAP_PASSWORD:admin}
+#  ldap:
+#    urls: ldap://${LDAP_HOST:127.0.0.1}:${LDAP_PORT:389}
+#    base: dc=test,dc=com
+#    username: ${LDAP_USER:cn=admin,dc=test,dc=com}
+#    password: ${LDAP_PASSWORD:admin}
