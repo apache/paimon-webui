@@ -22,9 +22,15 @@ import org.apache.paimon.web.server.data.model.JobInfo;
 import org.apache.paimon.web.server.mapper.JobMapper;
 import org.apache.paimon.web.server.service.JobService;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /** The implementation of {@link JobService}. */
 @Service
@@ -35,5 +41,39 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
     @Override
     public boolean saveJob(JobInfo jobInfo) {
         return this.save(jobInfo);
+    }
+
+    @Override
+    public boolean updateJobStatusAndEndTime(
+            String jobId, String newStatus, LocalDateTime endTime) {
+        JobInfo jobInfo = new JobInfo();
+        jobInfo.setStatus(newStatus);
+        jobInfo.setEndTime(endTime);
+        return this.update(jobInfo, new QueryWrapper<JobInfo>().eq("job_id", jobId));
+    }
+
+    @Override
+    public boolean updateJobStatusAndStartTime(
+            String jobId, String newStatus, LocalDateTime startTime) {
+        JobInfo jobInfo = new JobInfo();
+        jobInfo.setStatus(newStatus);
+        jobInfo.setStartTime(startTime);
+        return this.update(jobInfo, new QueryWrapper<JobInfo>().eq("job_id", jobId));
+    }
+
+    @Override
+    public List<JobInfo> listJobsByPage(int current, int size) {
+        QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("create_time");
+        Page<JobInfo> page = new Page<>(current, size);
+        IPage<JobInfo> jobInfoIPage = jobMapper.selectPage(page, queryWrapper);
+        return jobInfoIPage.getRecords();
+    }
+
+    @Override
+    public JobInfo getJobByJobId(String jobId) {
+        QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("job_id", jobId);
+        return jobMapper.selectOne(queryWrapper);
     }
 }

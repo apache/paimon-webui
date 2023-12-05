@@ -18,27 +18,28 @@
 
 package org.apache.paimon.web.server.service.impl;
 
+import org.apache.paimon.web.common.executor.Executor;
+import org.apache.paimon.web.common.executor.ExecutorFactory;
 import org.apache.paimon.web.flink.sql.gateway.client.SqlGatewayClient;
 import org.apache.paimon.web.flink.sql.gateway.model.SessionEntity;
+import org.apache.paimon.web.gateway.config.ExecuteConfig;
+import org.apache.paimon.web.gateway.enums.TaskType;
+import org.apache.paimon.web.gateway.provider.ExecutorFactoryProvider;
 import org.apache.paimon.web.server.data.dto.SessionDTO;
 import org.apache.paimon.web.server.data.model.SessionInfo;
-import org.apache.paimon.web.server.data.vo.SessionVO;
 import org.apache.paimon.web.server.mapper.SessionMapper;
+import org.apache.paimon.web.server.service.JobExecutorService;
 import org.apache.paimon.web.server.service.SessionService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /** The implementation of {@link SessionService}. */
 @Service
@@ -46,6 +47,8 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, SessionInfo>
         implements SessionService {
 
     @Autowired private SessionMapper sessionMapper;
+
+    @Autowired private JobExecutorService jobExecutorService;
 
     @Override
     public boolean checkCatalogNameUnique(SessionDTO sessionDTO) {
@@ -59,6 +62,14 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, SessionInfo>
         SqlGatewayClient client =
                 new SqlGatewayClient(sessionDTO.getAddress(), sessionDTO.getPort());
         SessionEntity sessionEntity = client.openSession(sessionDTO.getName());
+
+        ExecuteConfig config = ExecuteConfig.builder().setSessionEntity(sessionEntity).build();
+        TaskType taskType = TaskType.fromValue(sessionDTO.getType().toUpperCase());
+        ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
+        ExecutorFactory executorFactory = provider.getExecutorFactory(taskType);
+        Executor executor = executorFactory.createExecutor();
+        jobExecutorService.addExecutor(sessionEntity.getSessionId(), executor);
+
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonConfig;
         try {
@@ -103,36 +114,9 @@ public class SessionServiceImpl extends ServiceImpl<SessionMapper, SessionInfo>
     }
 
     @Override
-    public List<SessionVO> getAllSessions() {
+    public List<SessionInfo> getAllActiveSessions() {
         QueryWrapper<SessionInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("status", 1);
-        List<SessionInfo> sessionInfos = sessionMapper.selectList(queryWrapper);
-        return sessionInfos.stream().map(this::convertToSessionVO).collect(Collectors.toList());
-    }
-
-    @Override
-    public SessionInfo selectSessionById(String sessionId) {
-        return sessionMapper.selectById(sessionId);
-    }
-
-    private SessionVO convertToSessionVO(SessionInfo sessionInfo) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> propertiesMap = null;
-        try {
-            propertiesMap =
-                    objectMapper.readValue(
-                            sessionInfo.getProperties(),
-                            new TypeReference<Map<String, String>>() {});
-        } catch (Exception e) {
-            propertiesMap = new HashMap<>();
-        }
-        return SessionVO.builder()
-                .sessionId(sessionInfo.getSessionId())
-                .sessionName(sessionInfo.getSessionName())
-                .address(sessionInfo.getAddress())
-                .port(sessionInfo.getPort())
-                .properties(propertiesMap)
-                .status(sessionInfo.getStatus())
-                .build();
+        return sessionMapper.selectList(queryWrapper);
     }
 }

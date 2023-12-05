@@ -19,11 +19,14 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.SessionDTO;
+import org.apache.paimon.web.server.data.model.SessionInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.SessionVO;
 import org.apache.paimon.web.server.service.SessionService;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +35,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /** Session api controller. */
 @Slf4j
@@ -102,14 +108,58 @@ public class SessionController {
      *
      * @return a response entity containing the list of session value objects
      */
-    @GetMapping("/list")
-    public R<List<SessionVO>> listSessions() {
+    @GetMapping("/active/list")
+    public R<List<SessionVO>> getActiveSessions() {
         try {
-            List<SessionVO> sessions = sessionService.getAllSessions();
-            return R.succeed(sessions);
+            List<SessionVO> sessionVOList =
+                    sessionService.getAllActiveSessions().stream()
+                            .map(this::convertToSessionVO)
+                            .collect(Collectors.toList());
+            return R.succeed(sessionVOList);
         } catch (Exception e) {
             log.error("Exception with listing sessions.", e);
             return R.failed(Status.SESSION_LIST_ERROR);
         }
+    }
+
+    /**
+     * Retrieves a list of sessions.
+     *
+     * @return a response entity containing the list of session value objects
+     */
+    @GetMapping("/list")
+    public R<List<SessionVO>> listSessions() {
+        try {
+            List<SessionVO> sessionVOList =
+                    sessionService.list().stream()
+                            .map(this::convertToSessionVO)
+                            .collect(Collectors.toList());
+            return R.succeed(sessionVOList);
+        } catch (Exception e) {
+            log.error("Exception with listing sessions.", e);
+            return R.failed(Status.SESSION_LIST_ERROR);
+        }
+    }
+
+    /** Converts a {@link SessionInfo} object into a {@link SessionVO} object. */
+    private SessionVO convertToSessionVO(SessionInfo sessionInfo) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> propertiesMap = null;
+        try {
+            propertiesMap =
+                    objectMapper.readValue(
+                            sessionInfo.getProperties(),
+                            new TypeReference<Map<String, String>>() {});
+        } catch (Exception e) {
+            propertiesMap = new HashMap<>();
+        }
+        return SessionVO.builder()
+                .sessionId(sessionInfo.getSessionId())
+                .sessionName(sessionInfo.getSessionName())
+                .address(sessionInfo.getAddress())
+                .port(sessionInfo.getPort())
+                .properties(propertiesMap)
+                .status(sessionInfo.getStatus())
+                .build();
     }
 }

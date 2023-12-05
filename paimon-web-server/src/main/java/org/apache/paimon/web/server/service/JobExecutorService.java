@@ -16,23 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server;
+package org.apache.paimon.web.server.service;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.apache.paimon.web.common.executor.Executor;
 
-/** Paimon Manager Server Application. */
-@SpringBootApplication
-@EnableScheduling
-public class PaimonWebServerApplication {
+import org.springframework.stereotype.Service;
 
-    /**
-     * Main.
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(PaimonWebServerApplication.class, args);
+import java.util.concurrent.ConcurrentHashMap;
+
+/** Job executor service. */
+@Service
+public class JobExecutorService {
+
+    private final ConcurrentHashMap<String, Executor> executors = new ConcurrentHashMap<>();
+
+    public Executor getExecutor(String sessionId) {
+        return executors.get(sessionId);
+    }
+
+    public void addExecutor(String sessionId, Executor executor) {
+        executors.put(sessionId, executor);
     }
 }

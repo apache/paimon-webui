@@ -19,18 +19,26 @@
 package org.apache.paimon.web.server.data.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 /** Job table model. */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @TableName("job")
 public class JobInfo extends BaseModel {
 
     private String jobId;
+
+    private String jobName;
 
     private String type;
 
@@ -43,6 +51,10 @@ public class JobInfo extends BaseModel {
     private String statements;
 
     private String status;
+
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
 
     private static final long serialVersionUID = 1L;
 }

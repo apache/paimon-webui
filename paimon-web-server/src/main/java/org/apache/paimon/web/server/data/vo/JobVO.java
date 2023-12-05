@@ -23,6 +23,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,8 @@ public class JobVO {
 
     private String jobId;
 
+    private String jobName;
+
     private String type;
 
     private String executeMode;
@@ -50,4 +53,8 @@ public class JobVO {
     private List<Map<String, Object>> resultData;
 
     private Long token;
+
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
 }

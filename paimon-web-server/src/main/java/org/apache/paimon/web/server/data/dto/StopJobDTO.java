@@ -16,23 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server;
+package org.apache.paimon.web.server.data.dto;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import lombok.Data;
 
-/** Paimon Manager Server Application. */
-@SpringBootApplication
-@EnableScheduling
-public class PaimonWebServerApplication {
+/** DTO of stop job. */
+@Data
+public class StopJobDTO {
 
-    /**
-     * Main.
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(PaimonWebServerApplication.class, args);
-    }
+    private String sessionId;
+
+    private String jobId;
+
+    private boolean withSavepoint;
+
+    private boolean withDrain;
 }

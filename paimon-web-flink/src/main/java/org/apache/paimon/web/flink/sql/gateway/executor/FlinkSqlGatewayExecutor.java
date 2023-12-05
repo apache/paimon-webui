@@ -30,9 +30,10 @@ import org.apache.paimon.web.flink.utils.CollectResultUtil;
 import org.apache.paimon.web.flink.utils.FlinkSqlStatementSetBuilder;
 import org.apache.paimon.web.flink.utils.FormatSqlExceptionUtil;
 
-import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.gateway.api.results.ResultSet;
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ import java.util.UUID;
 
 /** The flink sql gateway implementation of the {@link Executor}. */
 public class FlinkSqlGatewayExecutor implements Executor {
+
+    private static final Logger log = LoggerFactory.getLogger(FlinkSqlGatewayExecutor.class);
 
     private static final Long DEFAULT_FETCH_TOKEN = 0L;
     private static final String STOP_JOB_BASE_SQL = "STOP JOB '%s'";
@@ -177,18 +180,24 @@ public class FlinkSqlGatewayExecutor implements Executor {
 
     @Override
     public boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception {
-        StringBuilder sqlBuilder = new StringBuilder(String.format(STOP_JOB_BASE_SQL, jobId));
-        if (withSavepoint) {
-            sqlBuilder.append(WITH_SAVEPOINT);
+        try {
+            StringBuilder sqlBuilder = new StringBuilder(String.format(STOP_JOB_BASE_SQL, jobId));
+            if (withSavepoint) {
+                sqlBuilder.append(WITH_SAVEPOINT);
+            }
+            if (withDrain) {
+                sqlBuilder.append(WITH_DRAIN);
+            }
+            client.executeStatement(session.getSessionId(), sqlBuilder.toString(), null);
+            return true;
+        } catch (Exception e) {
+            log.error(
+                    "Failed to stop job with job ID: {}. Savepoint: {}. Drain: {}.",
+                    jobId,
+                    withSavepoint,
+                    withDrain,
+                    e);
+            throw new SqlExecutionException("Failed to stop job with job ID: " + jobId, e);
         }
-        if (withDrain) {
-            sqlBuilder.append(WITH_DRAIN);
-        }
-        String operationId =
-                client.executeStatement(session.getSessionId(), sqlBuilder.toString(), null);
-        FetchResultsResponseBody fetchResultsResponseBody =
-                client.fetchResults(session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
-        StringData field = fetchResultsResponseBody.getResults().getData().get(0).getString(0);
-        return EXECUTE_SUCCESS.equals(field.toString());
     }
 }

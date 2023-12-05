@@ -44,6 +44,7 @@ public enum FlinkSqlOperationType {
     LOAD("LOAD"),
     UNLOAD("UNLOAD"),
     SET("SET"),
+    RESET("RESET"),
     CALL("CALL"),
     NO_SUPPORTED("NO_SUPPORTED");
 

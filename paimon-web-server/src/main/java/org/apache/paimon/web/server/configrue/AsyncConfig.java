@@ -16,23 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server;
+package org.apache.paimon.web.server.configrue;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-/** Paimon Manager Server Application. */
-@SpringBootApplication
+import java.util.concurrent.Executor;
+
+/** AsyncConfig. */
+@Configuration
+@EnableAsync
 @EnableScheduling
-public class PaimonWebServerApplication {
+public class AsyncConfig implements AsyncConfigurer {
 
-    /**
-     * Main.
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(PaimonWebServerApplication.class, args);
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("Async-");
+        executor.initialize();
+        return executor;
     }
 }

@@ -16,23 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server;
+package org.apache.paimon.web.common.status;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+/** Represents the various states that a job, such as Flink or Spark. */
+public enum JobStatus {
+    CREATED("CREATED"),
+    RUNNING("RUNNING"),
+    FINISHED("FINISHED"),
+    FAILED("FAILED"),
+    CANCELED("CANCELED");
 
-/** Paimon Manager Server Application. */
-@SpringBootApplication
-@EnableScheduling
-public class PaimonWebServerApplication {
+    private final String value;
 
-    /**
-     * Main.
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(PaimonWebServerApplication.class, args);
+    public static JobStatus fromValue(String value) {
+        for (JobStatus type : values()) {
+            if (type.getValue().equals(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown JobStatus value: " + value);
+    }
+
+    JobStatus(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return this.value;
     }
 }

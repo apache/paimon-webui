@@ -32,7 +32,7 @@ public class SubmitResult implements Serializable {
     private final String jobId;
     private final String status;
     private final List<Map<String, Object>> data;
-    private final Boolean shouldFetchResult;
+    private final boolean shouldFetchResult;
 
     private SubmitResult(Builder builder) {
         this.jobId = builder.jobId;
@@ -73,7 +73,7 @@ public class SubmitResult implements Serializable {
         private String jobId;
         private String status;
         private List<Map<String, Object>> data = new ArrayList<>();
-        private Boolean shouldFetchResult;
+        private boolean shouldFetchResult;
 
         public Builder submitId(String submitId) {
             this.submitId = submitId;

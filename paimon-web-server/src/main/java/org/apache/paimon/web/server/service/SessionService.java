@@ -20,7 +20,6 @@ package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.dto.SessionDTO;
 import org.apache.paimon.web.server.data.model.SessionInfo;
-import org.apache.paimon.web.server.data.vo.SessionVO;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -70,16 +69,7 @@ public interface SessionService extends IService<SessionInfo> {
      * Retrieves all sessions that are currently active and converts them into a list of session
      * view objects.
      *
-     * @return a list of {@link SessionVO} representing the active sessions
+     * @return a list of {@link SessionInfo} representing the active sessions
      */
-    List<SessionVO> getAllSessions();
-
-    /**
-     * Retrieves session information for a given session ID.
-     *
-     * @param sessionId The unique identifier of the session to retrieve.
-     * @return The SessionInfo object corresponding to the provided session ID. Returns {@code null}
-     *     if the session with the specified ID is not found.
-     */
-    SessionInfo selectSessionById(String sessionId);
+    List<SessionInfo> getAllActiveSessions();
 }

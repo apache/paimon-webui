@@ -16,23 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server;
+package org.apache.paimon.web.server.util;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
-/** Paimon Manager Server Application. */
-@SpringBootApplication
-@EnableScheduling
-public class PaimonWebServerApplication {
+/** Local date time util. */
+public class LocalDateTimeUtil {
 
-    /**
-     * Main.
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(PaimonWebServerApplication.class, args);
+    public static LocalDateTime convertUtcStringToLocalDateTime(String utcTimeStr) {
+        OffsetDateTime utcTime =
+                OffsetDateTime.parse(utcTimeStr + "Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        ZonedDateTime beijingTime = utcTime.atZoneSameInstant(ZoneId.of("Asia/Shanghai"));
+        return beijingTime.toLocalDateTime();
     }
 }

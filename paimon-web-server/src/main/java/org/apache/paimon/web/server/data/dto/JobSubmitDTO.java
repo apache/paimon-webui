@@ -26,6 +26,8 @@ import java.util.Map;
 @Data
 public class JobSubmitDTO {
 
+    private String jobName;
+
     private String taskType;
 
     private boolean isStreaming;
