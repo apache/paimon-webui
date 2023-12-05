@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Paimon Web Service Port
+server:
+  port: 10088
+
+spring:
+  # Paimon Web Service Name
+  application:
+    name: Paimon-Web-UI
+  profiles:
+    active: dev-h2
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
+  # mvc config
+  mvc:
+    pathmatch:
+      # Path matching strategy, default ant_path_matcher, support ant_path_matcher and path_pattern_parser
+      matching-strategy: ant_path_matcher
+    format:
+      date: yyyy-MM-dd HH:mm:ss # date format
+      time: HH:mm:ss # time format
+      date-time: yyyy-MM-dd HH:mm:ss # date-time format
+
+  # json format global configuration
+  jackson:
+    time-zone: GMT+8 # Time zone, default is GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss # Date format, the default is yyyy-MM-dd HH:mm:ss
+
+mybatis-plus:
+  mapperLocations: classpath*:mapper/*Mapper.xml
+  global-config:
+    banner: false
+    db-config:
+      logic-delete-field: is_delete
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+sa-token:
+  token-name: ${spring.application.name}
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: uuid
+  is-log: false
+  is-print: false
+  is-read-cookie: true
+  is-write-header: true
+  is-read-header: true
+  is-read-body: true

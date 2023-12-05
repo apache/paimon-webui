@@ -16,7 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '@/api/request'
-import type { Catalog } from './interface'
+import type { Catalog, Database, Table } from './interface'
+import type { ResponseOptions } from '@/api/types'
 
 export * from './interface'
 
@@ -26,14 +27,55 @@ export * from './interface'
  * # Get all catalog
  */
 export const getAllCatalogs = () => {
-  return httpRequest.get<any, Catalog[]>('/catalog/getAllCatalogs')
+  return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/getAllCatalogs')
 }
 
 /**
  * # Get database by catalog id
  */
 export const getDatabasesByCatalogId = (id: number) => {
-  return httpRequest.get<any, Catalog[]>(`/database/getDatabasesByCatalogId/${id}`)
+  return httpRequest.get<unknown, ResponseOptions<Database[]>>(`/database/list?catalogId=${id}`)
+}
+
+
+/**
+ * # Get schema
+ */
+export const getSchema = () => {
+  return httpRequest.createHooks!<Table, any[]>({
+    url: '/metadata/query/schema',
+    method: 'post',
+  })
+}
+
+/** 
+ * # Get manifest 
+ */
+export const getManifest = () => {
+  return httpRequest.createHooks!<Table, any[]>({
+    url: '/metadata/query/manifest',
+    method: 'post',
+  })
+}
+
+/**
+ * # Get data file
+ */
+export const getDataFile = () => {
+  return httpRequest.createHooks!<Table, any[]>({
+    url: '/metadata/query/dataFile',
+    method: 'post',
+  })
+}
+
+/**
+ * # Get snapshot
+ */
+export const getSnapshot = () => {
+  return httpRequest.createHooks!<Table, any[]>({
+    url: '/metadata/query/snapshot',
+    method: 'post',
+  })
 }
 
 // #endregion

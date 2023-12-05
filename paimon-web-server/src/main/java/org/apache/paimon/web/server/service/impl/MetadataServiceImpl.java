@@ -18,12 +18,11 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import org.apache.paimon.catalog.Catalog;
 import org.apache.paimon.data.InternalRow;
 import org.apache.paimon.reader.RecordReader;
 import org.apache.paimon.table.Table;
 import org.apache.paimon.table.source.ReadBuilder;
-import org.apache.paimon.web.api.table.TableManager;
+import org.apache.paimon.web.api.catalog.PaimonService;
 import org.apache.paimon.web.server.constant.MetadataConstant;
 import org.apache.paimon.web.server.data.dto.MetadataDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
@@ -182,14 +181,9 @@ public class MetadataServiceImpl implements MetadataService {
                         Wrappers.lambdaQuery(CatalogInfo.class)
                                 .eq(CatalogInfo::getId, dto.getCatalogId())
                                 .select(i -> true));
-        Catalog catalog = PaimonServiceUtils.getPaimonService(catalogInfo).catalog();
-        try {
-            Table table = TableManager.getTable(catalog, dto.getDatabaseName(), dto.getTableName());
-            this.reader = getReader(table);
-        } catch (Catalog.TableNotExistException e) {
-            throw new RuntimeException(
-                    String.format("Table [%s] not exists", dto.getTableName()), e);
-        }
+        PaimonService paimonService = PaimonServiceUtils.getPaimonService(catalogInfo);
+        Table table = paimonService.getTable(dto.getDatabaseName(), dto.getTableName());
+        this.reader = getReader(table);
     }
 
     private List<MetadataOptionModel> formatOptions(String jsonOption) {
