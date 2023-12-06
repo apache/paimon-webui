@@ -19,10 +19,3 @@ spring:
     username: ${MYSQL_USERNAME:username}
     password: ${MYSQL_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
-  sql:
-    init:
-      data-locations: classpath:sql/paimon-mysql.sql
-      continue-on-error: true
-      username: root
-      password: root
-      mode: always
