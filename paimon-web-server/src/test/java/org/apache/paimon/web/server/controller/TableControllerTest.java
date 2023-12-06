@@ -307,7 +307,6 @@ public class TableControllerTest extends ControllerTestBase {
     @Test
     public void testListTables() throws Exception {
         TableDTO table = new TableDTO();
-        //        table.setName(tableName);
         table.setCatalogId(catalogId);
         table.setDatabaseName(databaseName);
         String responseString =
