@@ -69,8 +69,9 @@ public class CdcJobDefinitionServiceImpl
                 "description",
                 "update_time",
                 "create_time");
-        if (withConfig) {
-            queryWrapper.select("config");
+        if (!withConfig) {
+            queryWrapper.select("name","id","description","cdc_type","create_user","update_time","create_time");
+
         }
         Page<CdcJobDefinition> resPage = baseMapper.selectPage(page, queryWrapper);
         return new PageR<>(resPage.getTotal(), true, resPage.getRecords());

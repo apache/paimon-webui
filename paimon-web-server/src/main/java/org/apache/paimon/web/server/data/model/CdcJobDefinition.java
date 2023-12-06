@@ -27,6 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /** Model of cdc_job_definition */
 @TableName(value = "cdc_job_definition")
@@ -48,4 +49,5 @@ public class CdcJobDefinition extends BaseModel implements Serializable {
     private String createUser;
 
     @TableLogic private boolean isDelete;
+
 }
