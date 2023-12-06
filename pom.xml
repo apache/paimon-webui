@@ -88,6 +88,7 @@ under the License.
         <guava.version>31.1-jre</guava.version>
         <maven.checkstyle.version>3.1.2</maven.checkstyle.version>
         <maven.compiler.version>3.10.1</maven.compiler.version>
+        <springdoc-openapi-ui.version>1.6.9</springdoc-openapi-ui.version>
         <spotless.version>2.13.0</spotless.version>
         <spotless.delimiter>package</spotless.delimiter>
         <spotless.license.header>
@@ -217,6 +218,11 @@ under the License.
                 <version>${gson.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc-openapi-ui.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
