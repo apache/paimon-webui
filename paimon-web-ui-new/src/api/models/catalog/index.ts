@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '@/api/request'
-import type { Catalog, Database, Table } from './interface'
+import type { Catalog, Database, Table, TableQuery } from './interface'
 import type { ResponseOptions } from '@/api/types'
 
 export * from './interface'
@@ -37,6 +37,12 @@ export const getDatabasesByCatalogId = (id: number) => {
   return httpRequest.get<unknown, ResponseOptions<Database[]>>(`/database/list?catalogId=${id}`)
 }
 
+/**
+ * # Get table by catalog id and database name
+ */
+export const getTables = (params: TableQuery) => {
+  return httpRequest.post<TableQuery, ResponseOptions<Table[]>>(`/table/list`, params)
+}
 
 /**
  * # Get schema
