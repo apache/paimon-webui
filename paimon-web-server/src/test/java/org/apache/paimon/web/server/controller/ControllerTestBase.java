@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.server.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
@@ -30,6 +29,7 @@ import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
 import org.apache.paimon.web.server.util.StringUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.junit.jupiter.api.AfterEach;
@@ -48,17 +48,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * ControllerTestBase.
- */
+/** ControllerTestBase. */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ControllerTestBase {
@@ -72,13 +68,11 @@ public class ControllerTestBase {
     @Value("${spring.application.name}")
     private String tokenName;
 
-    @Autowired
-    public MockMvc mockMvc;
+    @Autowired public MockMvc mockMvc;
 
     public static MockCookie cookie;
 
-    @TempDir
-    java.nio.file.Path tempFile;
+    @TempDir java.nio.file.Path tempFile;
 
     private static final Integer catalogId = 1;
 
@@ -251,7 +245,8 @@ public class ControllerTestBase {
         return ObjectMapperUtils.fromJSON(result, R.class);
     }
 
-    protected <T> R<T> getR(MockHttpServletResponse response, TypeReference<R<T>> typeReference) throws Exception {
+    protected <T> R<T> getR(MockHttpServletResponse response, TypeReference<R<T>> typeReference)
+            throws Exception {
         String result = response.getContentAsString();
         return ObjectMapperUtils.fromJSON(result, typeReference);
     }
@@ -261,19 +256,22 @@ public class ControllerTestBase {
         return ObjectMapperUtils.fromJSON(result, PageR.class);
     }
 
-    protected <T> PageR<T> getPageR(MockHttpServletResponse response, TypeReference<PageR<T>> typeReference) throws Exception {
+    protected <T> PageR<T> getPageR(
+            MockHttpServletResponse response, TypeReference<PageR<T>> typeReference)
+            throws Exception {
         String result = response.getContentAsString();
         return ObjectMapperUtils.fromJSON(result, typeReference);
     }
 
-    protected void checkMvcResult(MockHttpServletResponse response, int exceptedStatus) throws Exception {
+    protected void checkMvcResult(MockHttpServletResponse response, int exceptedStatus)
+            throws Exception {
         R<?> r = getR(response);
         assertEquals(exceptedStatus, r.getCode());
     }
 
-    protected void checkMvcPageResult(MockHttpServletResponse response, boolean exceptedStatus) throws Exception {
+    protected void checkMvcPageResult(MockHttpServletResponse response, boolean exceptedStatus)
+            throws Exception {
         PageR<?> pageR = getPageR(response);
         assertEquals(pageR.isSuccess(), exceptedStatus);
     }
-
 }
