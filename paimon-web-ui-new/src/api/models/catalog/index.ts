@@ -16,10 +16,10 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '@/api/request'
-import type { Catalog, Database, Table, TableQuery } from './interface'
+import type { Catalog, Database, Table, TableQuery } from './types'
 import type { ResponseOptions } from '@/api/types'
 
-export * from './interface'
+export * from './types'
 
 // #region catalog-controller
 

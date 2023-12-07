@@ -15,32 +15,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export interface Catalog {
-  id: number;
-  createTime: string;
-  updateTime?: string;
-  catalogType: string;
-  catalogName: string;
-  warehouse: string;
-  hiveUri?: string;
-  hiveConfDir?: string;
-}
-
-export interface Database {
-  name: string;
-  catalogId: number;
-  catalogName: string;
-  description?: string;
-}
-
-export interface Table {
-  catalogId: number;
-  catalogName: string;
-  databaseName: string;
-  name?: string;
-}
-
-export interface TableQuery {
-  catalogId: number;
-  databaseName: string;
+export interface Manifest {
+  fileName: string;
+  fileSize: string;
+  numAddedFiles: string;
+  numDeletedFiles: string;
+  schemaId: string;
 }
