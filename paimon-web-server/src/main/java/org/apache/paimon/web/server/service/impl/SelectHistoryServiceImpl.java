@@ -36,6 +36,8 @@ import java.util.List;
 public class SelectHistoryServiceImpl extends ServiceImpl<SelectHistoryMapper, SelectHistory>
         implements SelectHistoryService {
 
+    private static final String PIPELINE_NAME_PATTERN = "(?i)SET 'pipeline\\.name' = '[^']+';";
+
     @Autowired private SelectHistoryMapper selectHistoryMapper;
 
     @Override
@@ -49,6 +51,12 @@ public class SelectHistoryServiceImpl extends ServiceImpl<SelectHistoryMapper, S
         queryWrapper.orderByDesc("create_time");
         Page<SelectHistory> page = new Page<>(current, size);
         IPage<SelectHistory> selectHistoryPage = selectHistoryMapper.selectPage(page, queryWrapper);
-        return selectHistoryPage.getRecords();
+        List<SelectHistory> records = selectHistoryPage.getRecords();
+        records.forEach(record -> {
+            String content = record.getStatements();
+            String updatedContent = content.replaceAll(PIPELINE_NAME_PATTERN, "").trim();
+            record.setStatements(updatedContent);
+        });
+        return records;
     }
 }

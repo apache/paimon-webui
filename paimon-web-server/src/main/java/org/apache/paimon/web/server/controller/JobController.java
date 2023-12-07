@@ -100,16 +100,6 @@ public class JobController {
      * method is scheduled to run at a fixed interval, starting after an initial delay. It checks
      * for active sessions and creates and adds an executor to the {@code JobExecutorService} for
      * each session that does not already have one.
-     *
-     * <p>This method is designed to be called asynchronously and will log information about the
-     * initialization status. If no active sessions are found, it logs a message and exits. If
-     * executors are successfully initialized, it logs a success message. Any exceptions encountered
-     * during the initialization process are logged as errors.
-     *
-     * <p>This method is annotated with {@code @Async} to run in a background thread and with
-     * {@code @Scheduled} to run at regular intervals defined by the {@code initialDelay} and {@code
-     * fixedDelay} parameters.
-     *
      * @throws Exception if there is any issue during the executor initialization process. This
      *     exception is caught and logged within the method, and does not propagate.
      */
@@ -136,8 +126,6 @@ public class JobController {
                     jobExecutorService.addExecutor(sessionEntity.getSessionId(), executor);
                 }
             }
-
-            log.info("Executors have been initialized successfully.");
         } catch (Exception e) {
             log.error("Exception during executors initialization", e);
         }
@@ -437,6 +425,9 @@ public class JobController {
         }
         if (jobInfo.getEndTime() != null) {
             builder.endTime(jobInfo.getEndTime());
+        }
+        if (StringUtils.isNotBlank(jobInfo.getStatus())) {
+            builder.status(jobInfo.getStatus());
         }
         return builder.build();
     }
