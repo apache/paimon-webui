@@ -15,39 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss'
-import logoImage from '@/assets/logo.svg'
-import MenuBar from '../menubar'
-import ToolBar from '../toolbar'
+import styles from './index.module.scss';
 
 export default defineComponent({
-  props:{
-    headerMenuOptions: {
-      type: Array as PropType<any>,
-      default: []
-    },
-  },
-  name: 'TopBar',
+  name: 'RolePage',
   setup() {
+    return {}
   },
-  render () {
+  render() {
     return (
-      <div class={styles.container}>
-        <div class={styles['logo-bar']}>
-          <n-space align='center' justify='center'>
-            <div class={styles.logo}>
-              <img src={logoImage} alt='logo-image'/>
-            </div>
-            <div>Apache Paimon</div>
-          </n-space>
-        </div>
-        <div class={styles['menu-bar']}>
-          <MenuBar menuOptions={this.headerMenuOptions}/>
-        </div>
-        <div class={styles.toolbar}>
-          <ToolBar />
-        </div>
-      </div>
+      <div class={styles.container}>RolePage</div>
     )
   }
 })

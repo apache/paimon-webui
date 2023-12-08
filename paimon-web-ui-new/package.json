@@ -34,6 +34,8 @@
     "@types/lodash": "^4.14.200",
     "@types/node": "^18.17.15",
     "@varlet/axle": "^0.2.5",
+    "@vicons/antd": "^0.12.0",
+    "@vicons/carbon": "^0.12.0",
     "@vicons/ionicons5": "^0.12.0",
     "@vitejs/plugin-vue": "^4.3.4",
     "@vitejs/plugin-vue-jsx": "^3.0.2",

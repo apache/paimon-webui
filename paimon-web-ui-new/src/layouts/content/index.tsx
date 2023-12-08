@@ -17,21 +17,47 @@ under the License. */
 
 import NavBar from './components/topbar'
 import styles from './index.module.scss'
+import SideBar from './components/sidebar'
+import { useData } from './use-data'
+import { useConfigStore } from '@/store/config'
 
 export default defineComponent({
   name: 'ContentPage',
   setup() {
+    const configStore = useConfigStore()
+    const route = useRoute()
+    const { menuOptions, state } = useData()
+    const getSideOption = (state: any) => {
+      const activeNavKey = configStore.getCurrentNavActive
+      state.sideMenuOptions = menuOptions.value.filter((m: any) => m.key === activeNavKey)[0]?.sideMenuOptions || []
+      state.isShowSided = state.sideMenuOptions && state.sideMenuOptions.length > 0
+    }
+    getSideOption(state)
+    watch(
+      () => configStore.getCurrentNavActive,
+      () => { getSideOption(state)})
+    return {
+      ...toRefs(state),
+      menuOptions
+    }
   },
   render() {
     return (
       <div class={styles['container']}>
-        <n-layout>
+        <n-layout style='height: 100%'>
           <n-layout-header style="height: 64px;" bordered>
-            <NavBar></NavBar>
+            <NavBar headerMenuOptions={this.menuOptions}></NavBar>
           </n-layout-header>
-          <n-layout-content content-style="height: calc(100vh - 64px);">
-            <router-view />
-          </n-layout-content>
+          <n-layout has-sider position='absolute' style='top: 64px'>
+            {this.isShowSided && (
+              <SideBar
+                sideMenuOptions={this.sideMenuOptions}
+              />
+            )}
+            <n-layout-content content-style="height: calc(100vh - 64px);">
+              <router-view />
+            </n-layout-content>
+          </n-layout>
         </n-layout>
       </div>
     )

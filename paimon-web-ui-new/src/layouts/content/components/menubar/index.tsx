@@ -20,40 +20,15 @@ import { RouterLink } from "vue-router"
 import type { NavBar } from "@/store/config/type"
 
 export default defineComponent({
+  props:{
+    menuOptions: {
+      type: Array as PropType<any>,
+      default: []
+    },
+  },
   name: 'MenuBar',
   setup() {
-    const { t } = useLocaleHooks()
     const configStore = useConfigStore()
-
-    const renderLabel = (label: string, link: string) => {
-      return h(
-        RouterLink,
-        {
-          to: {name: link}
-        },
-        { default: () => label }
-      )
-    }
-
-    const menuOptions = computed(() => ([
-      {
-        label: () => renderLabel(t('layout.playground'), 'playground'),
-        key: 'playground',
-      },
-      {
-        label: () => renderLabel(t('layout.metadata'), 'metadata'),
-        key: 'metadata',
-      },
-      {
-        label: () => renderLabel(t('layout.cdc_ingestion'), 'cdc_ingestion'),
-        key: 'cdc_ingestion',
-      },
-      {
-        label: () => renderLabel(t('layout.system'), 'system'),
-        key: 'system',
-      },
-    ]))
-
     const activeKey = ref<string>('playground')
 
     const handleUpdateValue = (value: string) => {
@@ -67,7 +42,6 @@ export default defineComponent({
 
     return {
       activeKey,
-      menuOptions,
       handleUpdateValue
     }
   },
