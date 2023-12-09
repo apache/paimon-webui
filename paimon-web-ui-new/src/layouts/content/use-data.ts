@@ -57,7 +57,6 @@ export const useData = () => {
     {
       label: () => renderLabel(t('layout.system'), 'system'),
       key: 'system',
-
       sideMenuOptions:[{
         label: ()=> renderLabel(t('layout.user'), 'system'),
         key: '/system/user',
