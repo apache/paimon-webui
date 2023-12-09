@@ -45,22 +45,19 @@ export const useData = () => {
     {
       label: () => renderLabel(t('layout.playground'), 'playground'),
       key: 'playground',
-      icon: renderIcon(Code)
     },
     {
       label: () => renderLabel(t('layout.metadata'), 'metadata'),
       key: 'metadata',
-      icon: renderIcon(Catalog)
     },
     {
       label: () => renderLabel(t('layout.cdc_ingestion'), 'cdc_ingestion'),
       key: 'cdc_ingestion',
-      icon: renderIcon(FileSyncOutlined)
     },
     {
       label: () => renderLabel(t('layout.system'), 'system'),
       key: 'system',
-      icon: renderIcon(SettingsOutline),
+
       sideMenuOptions:[{
         label: ()=> renderLabel(t('layout.user'), 'system'),
         key: '/system/user',
