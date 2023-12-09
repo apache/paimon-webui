@@ -287,11 +287,12 @@ public class TableServiceImpl implements TableService {
                             table.setCatalogId(catalog.getId());
                             table.setCatalogName(catalog.getCatalogName());
                             table.setName(name);
-                            table.setDatabaseName(table.getDatabaseName());
+                            table.setDatabaseName(tableDTO.getDatabaseName());
                             resultList.add(table);
                         });
                 break;
-            } else {
+            }
+            if (Objects.nonNull(tableDTO.getName())) {
                 paimonService = PaimonServiceUtils.getPaimonService(catalog);
                 List<String> databaseList = paimonService.listDatabases();
                 for (String database : databaseList) {

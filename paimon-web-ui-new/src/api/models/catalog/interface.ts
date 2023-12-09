@@ -37,5 +37,10 @@ export interface Table {
   catalogId: number;
   catalogName: string;
   databaseName: string;
-  tableName?: string;
+  name?: string;
+}
+
+export interface TableQuery {
+  catalogId: number;
+  databaseName: string;
 }
