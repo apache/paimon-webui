@@ -18,6 +18,9 @@
 
 package org.apache.paimon.web.server.data.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.apache.paimon.web.server.constant.Constants;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
@@ -26,7 +29,10 @@ import lombok.EqualsAndHashCode;
 
 /** user table model. */
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseModel {
 
     private static final long serialVersionUID = 1L;

@@ -18,7 +18,9 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.UserDTO;
 import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.service.UserService;
 
@@ -27,18 +29,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.apache.paimon.web.server.data.result.enums.Status.USER_NOT_EXIST;
 
-/** User api controller. */
+/**
+ * User api controller.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Autowired private UserService userService;
+    @Autowired
+    private UserService userService;
 
     /**
      * get user by id.
@@ -55,5 +63,17 @@ public class UserController {
         }
         user.setPassword(null);
         return R.succeed(user);
+    }
+
+    @PostMapping("/{id}")
+    public R<Void> createUser(@RequestBody UserDTO user) {
+        return userService.create(user);
+    }
+
+    @GetMapping("/list")
+    public PageR<User> listUser(@RequestParam(required = false) String username,
+                                @RequestParam long currentPage,
+                                @RequestParam long pageSize) {
+        return userService.page(username, currentPage, pageSize);
     }
 }

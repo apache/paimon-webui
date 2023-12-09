@@ -19,7 +19,10 @@
 package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.dto.LoginDTO;
+import org.apache.paimon.web.server.data.dto.UserDTO;
 import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.result.PageR;
+import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 import org.apache.paimon.web.server.data.vo.UserInfoVO;
 
@@ -53,4 +56,8 @@ public interface UserService extends IService<User> {
      * @return user list
      */
     List<User> selectUnallocatedList(User user);
+
+    R<Void> create(UserDTO userDTO);
+
+    PageR<User> page(String username, long currentPage, long pageSize);
 }

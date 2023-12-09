@@ -18,13 +18,19 @@
 
 package org.apache.paimon.web.server.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
+import org.apache.paimon.web.server.data.dto.UserDTO;
 import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.RoleMenu;
 import org.apache.paimon.web.server.data.model.SysMenu;
 import org.apache.paimon.web.server.data.model.SysRole;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.model.UserRole;
+import org.apache.paimon.web.server.data.result.PageR;
+import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 import org.apache.paimon.web.server.data.result.exception.user.UserDisabledException;
 import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
@@ -43,6 +49,7 @@ import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.paimon.web.server.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,17 +57,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/** UserServiceImpl. */
+/**
+ * UserServiceImpl.
+ */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Autowired private LdapService ldapService;
-    @Autowired private UserMapper userMapper;
-    @Autowired private UserRoleService userRoleService;
-    @Autowired private SysRoleService sysRoleService;
-    @Autowired private RoleMenuService roleMenuService;
-    @Autowired private SysMenuService sysMenuService;
-    @Autowired private TenantService tenantService;
+    @Autowired
+    private LdapService ldapService;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private UserRoleService userRoleService;
+    @Autowired
+    private SysRoleService sysRoleService;
+    @Autowired
+    private RoleMenuService roleMenuService;
+    @Autowired
+    private SysMenuService sysMenuService;
+    @Autowired
+    private TenantService tenantService;
 
     /**
      * login by username and password.
@@ -188,5 +204,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public List<User> selectUnallocatedList(User user) {
         return userMapper.selectUnallocatedList(user);
+    }
+
+    @Override
+    public R<Void> create(UserDTO userDTO) {
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("username", userDTO.getUsername());
+        if (baseMapper.exists(userQueryWrapper)) {
+            return R.failed(Status.USER_EXIST_ERROR);
+        }
+        User user = User.builder().username(userDTO.getUsername())
+                .email(userDTO.getEmail())
+                .mobile(userDTO.getMobile())
+                .userType(userDTO.getUserType())
+                .enabled(userDTO.getEnabled())
+                .build();
+        baseMapper.insert(user);
+        return R.succeed();
+    }
+
+    @Override
+    public PageR<User> page(String username, long currentPage, long pageSize) {
+        Page<User> page = new Page<>(currentPage, pageSize);
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StringUtils.isNotBlank(username), "username", username);
+        page = baseMapper.selectPage(page, queryWrapper);
+        return new PageR<>(page.getTotal(), true, page.getRecords());
     }
 }
