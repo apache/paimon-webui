@@ -82,7 +82,7 @@ export const useTable = () => {
                         },
                         onHandleDelete:(row)=>{
                             deleteCdcJobDefinition(row.id).then(()=>{
-                                window.$message.success(t('delete_success'))
+                                window.$message.success(t('cdc.delete_success'))
                                 getTableData()
                             })
                         }

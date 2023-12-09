@@ -15,6 +15,103 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export const useTable = ()=>{
+import type { Router } from 'vue-router';
+import { listUser } from '@/api/models/user';
+export const useTable = () => {
+    const router: Router = useRouter()
+    const { t } = useLocaleHooks()
+    const tableVariables = reactive({
+        columns: [
+            {
+                title: computed(() => t('system.user.username')),
+                key: 'username',
+                resizable: true
+            },
+            {
+                title: computed(() => t('system.user.nickname')),
+                key: 'nickname',
+                resizable: true
+            },
+            {
+                title: computed(() => t('system.user.mobile')),
+                key: 'mobile',
+                resizable: true
+            },
+            {
+                title: computed(() => t('system.user.email')),
+                key: 'email',
+                resizable: true
+            },
+            {
+                title: computed(() => t('common.create_time')),
+                key: 'createTime',
+                resizable: true
+            },
+            {
+                title: computed(() => t('common.update_time')),
+                key: 'updateTime',
+                resizable: true
+            },
+            // {
+            //     title: computed(() => t('cdc.operation')),
+            //     key: 'actions',
+            //     render: (row: any) =>
+            //         h(TableAction, {
+            //             row,
+            //             onHandleEdit: (row) => {
+            //                 getCdcJobDefinition(row.id).then(res => {
+            //                     const CDCStore = useCDCStore()
+            //                     CDCStore.setModel({
+            //                         cells: JSON.parse(res.data.config).cells,
+            //                         name: res.data.name,
+            //                         editMode: 'edit',
+            //                         id:res.data.id
+            //                     })
+            //                     router.push({ path: '/cdc_ingestion/dag' })
+            //                 })
+            //             },
+            //             onHandleDelete:(row)=>{
+            //                 deleteCdcJobDefinition(row.id).then(()=>{
+            //                     window.$message.success(t('common.cdc.delete_success'))
+            //                     getTableData()
+            //                 })
+            //             }
+            //         })
 
+            // }
+        ],
+        data: [],
+        pagination: reactive({
+            displayOrder: ['quick-jumper', 'pages', 'size-picker'],
+            showQuickJumper: true,
+            showSizePicker: true,
+            pageSize: 10,
+            pageSizes: [10, 20, 50, 100],
+            page: 1,
+            count: 100,
+            onChange: (page: number) => {
+                tableVariables.pagination.page = page
+                getTableData()
+            },
+            onUpdatePageSize: (pageSize: number) => {
+                tableVariables.pagination.pageSize = pageSize
+                tableVariables.pagination.page = 1
+                getTableData()
+            }
+        })
+    })
+    const getTableData = () => {
+        let params = {
+            currentPage: tableVariables.pagination.page,
+            pageSize: tableVariables.pagination.pageSize
+        }
+        listUser(params).then(((res: any) => {
+            tableVariables.data = res.data
+            tableVariables.pagination.count = res.total
+        }))
+    }
+    return {
+        tableVariables,
+        getTableData
+    }
 }

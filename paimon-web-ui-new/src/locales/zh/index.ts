@@ -22,6 +22,7 @@ import metadata from './modules/metadata'
 import cdc from './modules/cdc'
 import job from './modules/job'
 import common from './modules/common'
+import system from './modules/system'
 
 export default {
   login,
@@ -31,4 +32,5 @@ export default {
   cdc,
   job,
   common,
+  system
 }

@@ -15,12 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-    success:'成功',
-    add_success:'新增成功',
-    update_success:'更新成功',
-    delete_success:'删除成功',
-    create_user:'创建用户',
-    create_time:'创建时间',
-    update_time:'修改时间'
-}
+import httpRequest from '../../request'
+import type { ResponseOptions } from '@/api/types'
+
+export const listUser = (params:any) => {
+    return httpRequest.get<ResponseOptions<any>>('/user/list',params)
+  }

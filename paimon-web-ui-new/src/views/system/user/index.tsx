@@ -16,11 +16,15 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss';
+import { useTable } from './use-table';
 
 export default defineComponent({
   name: 'UserPage',
   setup() {
-    return {}
+    const { t } = useLocaleHooks()
+    const {tableVariables,getTableData} = useTable()
+    getTableData()
+    return {...toRefs(tableVariables),getTableData,t}
   },
   render() {
     return (
@@ -28,13 +32,28 @@ export default defineComponent({
         <n-space vertical>
           <n-space justify="space-between">
             <n-space>
-              <n-button type="primary">新增</n-button>
+              <n-button type="primary">{this.t('system.user.add')}</n-button>
             </n-space>
             <n-space>
               <n-input></n-input>
             </n-space>
           </n-space>
-          <n-data-table></n-data-table>
+          <n-data-table
+              columns={this.columns}
+              data={this.data}
+            />
+            <n-space justify='center'>
+              <n-pagination
+                v-model:page={this.pagination.page}
+                v-model:page-size={this.pagination.pageSize}
+                item-count={this.pagination.count}
+                show-size-picker
+                page-sizes={this.pagination.pageSizes}
+                show-quick-jumper
+                onUpdatePage={this.pagination.onChange}
+                onUpdatePageSize={this.pagination.onUpdatePageSize}
+              />
+            </n-space>
         </n-space>
       </n-card>
     )
