@@ -17,10 +17,8 @@ under the License. */
 
 
 import { RouterLink } from "vue-router"
-import { UserOutlined,UserSwitchOutlined,FileSyncOutlined} from '@vicons/antd'
-import {Catalog,Code} from '@vicons/carbon'
+import { UserOutlined,UserSwitchOutlined} from '@vicons/antd'
 import { NIcon } from "naive-ui"
-import { SettingsOutline } from "@vicons/ionicons5"
 
 
 export const useData = () => {

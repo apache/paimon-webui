@@ -24,7 +24,19 @@ export default defineComponent({
   },
   render() {
     return (
-      <div class={styles.container}>UserPage</div>
+      <n-card class={styles.container} content-style="background:#FFF">
+        <n-space vertical>
+          <n-space justify="space-between">
+            <n-space>
+              <n-button type="primary">新增</n-button>
+            </n-space>
+            <n-space>
+              <n-input></n-input>
+            </n-space>
+          </n-space>
+          <n-data-table></n-data-table>
+        </n-space>
+      </n-card>
     )
   }
 })

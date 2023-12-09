@@ -65,7 +65,7 @@ public class UserController {
         return R.succeed(user);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/create")
     public R<Void> createUser(@RequestBody UserDTO user) {
         return userService.create(user);
     }
