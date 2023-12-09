@@ -20,21 +20,36 @@ import styles from './index.module.scss';
 import DagCanvas from "./dag-canvas";
 import { useCDCStore } from "@/store/cdc";
 import type { Router } from "vue-router";
+import { createCdcJob, updateCdcJob } from "@/api/models/cdc";
 
 export default defineComponent({
   name: 'DagPage',
   setup() {
+    window.$message = useMessage()
     const { t } = useLocaleHooks()
     const CDCStore = useCDCStore()
-    const title = ref('')
+    const name = ref('')
     onMounted(() => {
-      title.value = CDCStore.getModel.name
+      name.value = CDCStore.getModel.name
     })
 
     const dagRef = ref() as any
     const handleSave = () => {
-      // console.log('dagRef', dagRef.value.graph.toJSON())
-      router.push({ path: '/cdc_ingestion' })
+      const editMode = CDCStore.getModel.editMode
+      if (editMode === 'edit') {
+        updateCdcJob({ id: CDCStore.getModel.id, name: name.value + "", description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
+        .then(()=>{
+          window.$message.success(t('common.update_success'))
+          router.push({ path: '/cdc_ingestion' })
+        })
+      } else {
+        createCdcJob({ name: name.value + "", description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
+          .then(() => {
+            window.$message.success(t('common.add_success'))
+            router.push({ path: '/cdc_ingestion' })
+          })
+      }
+
     }
 
     const router: Router = useRouter()
@@ -44,15 +59,18 @@ export default defineComponent({
 
     onMounted(() => {
       if (dagRef.value && dagRef.value.graph) {
+        
         dagRef.value.graph.fromJSON({
           cells: CDCStore.getModel.cells
         })
       }
     })
-    
+
+
+
     return {
       t,
-      title,
+      name,
       handleSave,
       dagRef,
       handleJump
@@ -67,7 +85,7 @@ export default defineComponent({
               <n-space align="center">
                 <n-icon component={Leaf} color="#2F7BEA" size="18" />
                 <span class={styles.title} onClick={this.handleJump}>{this.t('cdc.synchronization_job_definition')} {
-                  this.title ? ` - ${this.title}` : ''
+                  this.name ? ` - ${this.name}` : ''
                 }</span>
               </n-space>
               <div class={styles.operation}>

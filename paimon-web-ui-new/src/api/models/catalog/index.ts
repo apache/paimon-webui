@@ -27,7 +27,7 @@ export * from './interface'
  * # Get all catalog
  */
 export const getAllCatalogs = () => {
-  return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/getAllCatalogs')
+  return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/list')
 }
 
 /**
@@ -54,8 +54,8 @@ export const getSchema = () => {
   })
 }
 
-/** 
- * # Get manifest 
+/**
+ * # Get manifest
  */
 export const getManifest = () => {
   return httpRequest.createHooks!<Table, any[]>({

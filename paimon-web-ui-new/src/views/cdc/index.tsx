@@ -21,12 +21,12 @@ import styles from './index.module.scss';
 import { Leaf } from '@vicons/ionicons5';
 import { useCDCStore } from '@/store/cdc';
 import type { Router } from 'vue-router';
-
+import { useMessage } from 'naive-ui'
 export default defineComponent({
   name: 'CDCPage',
   setup() {
     const { t } = useLocaleHooks()
-
+    window.$message = useMessage()
     const showModalRef = ref(false)
 
     const handleOpenModal = () => {
