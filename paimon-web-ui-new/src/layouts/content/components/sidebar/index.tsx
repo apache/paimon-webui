@@ -15,6 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+
+import type { MenuOption } from 'naive-ui/es/menu/src/interface'
 import { defineComponent, ref, type PropType } from 'vue'
 import {  useRouter } from 'vue-router'
 import type { Router } from 'vue-router'
@@ -23,7 +25,7 @@ const Sidebar = defineComponent({
   name: 'Sidebar',
   props: {
     sideMenuOptions: {
-      type: Array as PropType<any>,
+      type: Array<MenuOption>,
       default: []
     },
   },

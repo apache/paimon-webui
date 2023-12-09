@@ -29,7 +29,7 @@ export default defineComponent({
     const { menuOptions, state } = useData()
     const getSideOption = (state: any) => {
       const activeNavKey = configStore.getCurrentNavActive
-      state.sideMenuOptions = menuOptions.value.filter((m: any) => m.key === activeNavKey)[0]?.sideMenuOptions || []
+      state.sideMenuOptions = menuOptions.value.find((m: any) => m.key === activeNavKey)?.sideMenuOptions || []
       state.isShowSided = state.sideMenuOptions && state.sideMenuOptions.length > 0
     }
     getSideOption(state)

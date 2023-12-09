@@ -16,13 +16,13 @@ specific language governing permissions and limitations
 under the License. */
 
 import { useConfigStore } from "@/store/config"
-import { RouterLink } from "vue-router"
 import type { NavBar } from "@/store/config/type"
+import type { MenuOption } from "naive-ui/es/menu/src/interface"
 
 export default defineComponent({
   props:{
     menuOptions: {
-      type: Array as PropType<any>,
+      type: Array<MenuOption>,
       default: []
     },
   },
