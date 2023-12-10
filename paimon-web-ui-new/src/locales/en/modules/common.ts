@@ -20,8 +20,8 @@ export default {
     add_success:'add success',
     update_success:'update success',
     delete_success:'delete success',
-    create_user:'create user',
-    create_time:'create time',
-    update_time:'update time',
+    create_user:'Create user',
+    create_time:'Create time',
+    update_time:'Update time',
     search:'Search'
 }

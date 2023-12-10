@@ -28,7 +28,8 @@ export default defineComponent({
   },
   render() {
     return (
-      <n-card class={styles.container} content-style="background:#FFF">
+      <n-space class={styles.container} vertical justify="center">
+      <n-card >
         <n-space vertical>
           <n-space justify="space-between">
             <n-space>
@@ -57,6 +58,7 @@ export default defineComponent({
             </n-space>
         </n-space>
       </n-card>
+      </n-space>
     )
   }
 })
