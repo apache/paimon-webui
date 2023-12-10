@@ -25,7 +25,7 @@ spring:
   sql:
     init:
       data-locations: classpath:sql/paimon-mysql.sql
-      continue-on-error: false
+      continue-on-error: true
       username: root
       password: root
       mode: always
