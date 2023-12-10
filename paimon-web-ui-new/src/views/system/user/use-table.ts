@@ -80,6 +80,9 @@ export const useTable = () => {
 
             // }
         ],
+        searchForm: {
+            username: ''
+        },
         data: [],
         pagination: reactive({
             displayOrder: ['quick-jumper', 'pages', 'size-picker'],
@@ -102,6 +105,7 @@ export const useTable = () => {
     })
     const getTableData = () => {
         let params = {
+            username: tableVariables.searchForm.username,
             currentPage: tableVariables.pagination.page,
             pageSize: tableVariables.pagination.pageSize
         }
@@ -110,8 +114,13 @@ export const useTable = () => {
             tableVariables.pagination.count = res.total
         }))
     }
+    const handleResetage = ()=>{
+        tableVariables.pagination.page = 1
+        getTableData()
+    }
     return {
         tableVariables,
-        getTableData
+        getTableData,
+        handleResetage
     }
 }

@@ -17,9 +17,9 @@ under the License. */
 
 const user = {
   add: 'Add',
-  username:'username',
-  nickname:'nickname',
-  mobile:'mobile',
-  email:'email'
+  username:'Username',
+  nickname:'Nickname',
+  mobile:'Mobile',
+  email:'Email'
 }
 export default { user }

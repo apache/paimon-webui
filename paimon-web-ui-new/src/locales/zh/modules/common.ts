@@ -22,5 +22,6 @@ export default {
     delete_success:'删除成功',
     create_user:'创建用户',
     create_time:'创建时间',
-    update_time:'修改时间'
+    update_time:'修改时间',
+    search:'搜索'
 }

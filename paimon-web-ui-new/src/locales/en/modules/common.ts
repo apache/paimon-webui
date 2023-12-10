@@ -22,5 +22,6 @@ export default {
     delete_success:'delete success',
     create_user:'create user',
     create_time:'create time',
-    update_time:'update time'
+    update_time:'update time',
+    search:'Search'
 }

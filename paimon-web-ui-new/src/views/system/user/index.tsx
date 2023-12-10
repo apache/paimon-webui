@@ -22,9 +22,9 @@ export default defineComponent({
   name: 'UserPage',
   setup() {
     const { t } = useLocaleHooks()
-    const {tableVariables,getTableData} = useTable()
+    const {tableVariables,getTableData,handleResetage} = useTable()
     getTableData()
-    return {...toRefs(tableVariables),getTableData,t}
+    return {...toRefs(tableVariables),getTableData,t,handleResetage}
   },
   render() {
     return (
@@ -35,7 +35,8 @@ export default defineComponent({
               <n-button type="primary">{this.t('system.user.add')}</n-button>
             </n-space>
             <n-space>
-              <n-input></n-input>
+              <n-input v-model:value={this.searchForm.username} clearable></n-input>
+              <n-button type="primary" onClick={this.handleResetage}>{this.t('common.search')}</n-button>
             </n-space>
           </n-space>
           <n-data-table
