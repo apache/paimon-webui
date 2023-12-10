@@ -35,6 +35,8 @@ import org.apache.paimon.web.server.data.model.SelectHistory;
 import org.apache.paimon.web.server.data.model.SessionInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
+import org.apache.paimon.web.server.data.vo.JobStatusVO;
 import org.apache.paimon.web.server.data.vo.JobVO;
 import org.apache.paimon.web.server.data.vo.ResultDataVO;
 import org.apache.paimon.web.server.service.JobExecutorService;
@@ -100,6 +102,7 @@ public class JobController {
      * method is scheduled to run at a fixed interval, starting after an initial delay. It checks
      * for active sessions and creates and adds an executor to the {@code JobExecutorService} for
      * each session that does not already have one.
+     *
      * @throws Exception if there is any issue during the executor initialization process. This
      *     exception is caught and logged within the method, and does not propagate.
      */
@@ -231,6 +234,60 @@ public class JobController {
         List<JobVO> jobVOList =
                 jobInfos.stream().map(this::convertJobInfoToJobVO).collect(Collectors.toList());
         return R.succeed(jobVOList);
+    }
+
+    /**
+     * Retrieves the status of a job by its job identifier.
+     *
+     * @param jobId The unique identifier of the job whose status is being queried.
+     * @return A {@link R} wrapper object containing the {@link JobStatusVO} which holds the job ID
+     *     and its status. If the job is found, the status is included in the response; otherwise,
+     *     an appropriate error is returned.
+     */
+    @GetMapping("/status/get")
+    public R<JobStatusVO> getJobStatus(String jobId) {
+        JobInfo job = jobService.getJobByJobId(jobId);
+        JobStatusVO jobStatusVO =
+                JobStatusVO.builder().jobId(job.getJobId()).status(job.getStatus()).build();
+        return R.succeed(jobStatusVO);
+    }
+
+    /**
+     * Retrieves the statistics of all jobs, including the total number of jobs and counts by
+     * status. The statuses considered are running, finished, canceled, and failed.
+     */
+    @GetMapping("/statistics/get")
+    public R<JobStatisticsVO> getJobStatistics() {
+        List<JobInfo> jobInfos = jobService.list();
+
+        long totalNum = jobInfos.size();
+        long runningNum =
+                jobInfos.stream()
+                        .filter(job -> JobStatus.RUNNING.getValue().equals(job.getStatus()))
+                        .count();
+        long finishedNum =
+                jobInfos.stream()
+                        .filter(job -> JobStatus.FINISHED.getValue().equals(job.getStatus()))
+                        .count();
+        long canceledNum =
+                jobInfos.stream()
+                        .filter(job -> JobStatus.CANCELED.getValue().equals(job.getStatus()))
+                        .count();
+        long failedNum =
+                jobInfos.stream()
+                        .filter(job -> JobStatus.FAILED.getValue().equals(job.getStatus()))
+                        .count();
+
+        JobStatisticsVO statistics =
+                JobStatisticsVO.builder()
+                        .totalNum(totalNum)
+                        .runningNum(runningNum)
+                        .finishedNum(finishedNum)
+                        .canceledNum(canceledNum)
+                        .failedNum(failedNum)
+                        .build();
+
+        return R.succeed(statistics);
     }
 
     /**

@@ -52,11 +52,12 @@ public class SelectHistoryServiceImpl extends ServiceImpl<SelectHistoryMapper, S
         Page<SelectHistory> page = new Page<>(current, size);
         IPage<SelectHistory> selectHistoryPage = selectHistoryMapper.selectPage(page, queryWrapper);
         List<SelectHistory> records = selectHistoryPage.getRecords();
-        records.forEach(record -> {
-            String content = record.getStatements();
-            String updatedContent = content.replaceAll(PIPELINE_NAME_PATTERN, "").trim();
-            record.setStatements(updatedContent);
-        });
+        records.forEach(
+                record -> {
+                    String content = record.getStatements();
+                    String updatedContent = content.replaceAll(PIPELINE_NAME_PATTERN, "").trim();
+                    record.setStatements(updatedContent);
+                });
         return records;
     }
 }
