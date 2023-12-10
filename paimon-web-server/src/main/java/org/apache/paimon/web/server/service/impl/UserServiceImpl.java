@@ -18,8 +18,6 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.dto.UserDTO;
 import org.apache.paimon.web.server.data.enums.UserType;
@@ -44,12 +42,14 @@ import org.apache.paimon.web.server.service.SysRoleService;
 import org.apache.paimon.web.server.service.TenantService;
 import org.apache.paimon.web.server.service.UserRoleService;
 import org.apache.paimon.web.server.service.UserService;
+import org.apache.paimon.web.server.util.StringUtils;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.paimon.web.server.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,26 +57,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * UserServiceImpl.
- */
+/** UserServiceImpl. */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Autowired
-    private LdapService ldapService;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private UserRoleService userRoleService;
-    @Autowired
-    private SysRoleService sysRoleService;
-    @Autowired
-    private RoleMenuService roleMenuService;
-    @Autowired
-    private SysMenuService sysMenuService;
-    @Autowired
-    private TenantService tenantService;
+    @Autowired private LdapService ldapService;
+    @Autowired private UserMapper userMapper;
+    @Autowired private UserRoleService userRoleService;
+    @Autowired private SysRoleService sysRoleService;
+    @Autowired private RoleMenuService roleMenuService;
+    @Autowired private SysMenuService sysMenuService;
+    @Autowired private TenantService tenantService;
 
     /**
      * login by username and password.
@@ -213,12 +204,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (baseMapper.exists(userQueryWrapper)) {
             return R.failed(Status.USER_EXIST_ERROR);
         }
-        User user = User.builder().username(userDTO.getUsername())
-                .email(userDTO.getEmail())
-                .mobile(userDTO.getMobile())
-                .userType(userDTO.getUserType())
-                .enabled(userDTO.getEnabled())
-                .build();
+        User user =
+                User.builder()
+                        .username(userDTO.getUsername())
+                        .email(userDTO.getEmail())
+                        .mobile(userDTO.getMobile())
+                        .userType(userDTO.getUserType())
+                        .enabled(userDTO.getEnabled())
+                        .build();
         baseMapper.insert(user);
         return R.succeed();
     }

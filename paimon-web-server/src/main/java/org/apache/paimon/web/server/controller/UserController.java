@@ -37,16 +37,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.apache.paimon.web.server.data.result.enums.Status.USER_NOT_EXIST;
 
-/**
- * User api controller.
- */
+/** User api controller. */
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    @Autowired private UserService userService;
 
     /**
      * get user by id.
@@ -71,9 +68,10 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public PageR<User> listUser(@RequestParam(required = false) String username,
-                                @RequestParam long currentPage,
-                                @RequestParam long pageSize) {
+    public PageR<User> listUser(
+            @RequestParam(required = false) String username,
+            @RequestParam long currentPage,
+            @RequestParam long pageSize) {
         return userService.page(username, currentPage, pageSize);
     }
 }

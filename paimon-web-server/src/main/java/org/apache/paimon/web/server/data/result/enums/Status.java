@@ -75,7 +75,7 @@ public enum Status {
     TABLE_DROP_ERROR(10510, "table.drop.error"),
     TABLE_RENAME_ERROR(10510, "table.rename.error"),
 
-    USER_EXIST_ERROR(10601,"user is exist"),
+    USER_EXIST_ERROR(10601, "user is exist"),
     CDC_JOB_EXIST_ERROR(10701, "cdc.job.exist.error"),
     CDC_JOB_NO_EXIST_ERROR(10702, "cdc.job.not.exist.error");
 
