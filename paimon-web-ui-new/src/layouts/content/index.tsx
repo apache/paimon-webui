@@ -35,7 +35,7 @@ export default defineComponent({
     getSideOption(state)
     watch(
       () => configStore.getCurrentNavActive,
-      () => { getSideOption(state)})
+      () => { getSideOption(state) })
     return {
       ...toRefs(state),
       menuOptions
@@ -49,11 +49,11 @@ export default defineComponent({
             <NavBar headerMenuOptions={this.menuOptions}></NavBar>
           </n-layout-header>
           <n-layout has-sider position='absolute' style='top: 64px'>
-            {this.isShowSided && (
+            {this.isShowSided ? (
               <SideBar
                 sideMenuOptions={this.sideMenuOptions}
               />
-            )}
+            ) : <></>}
             <n-layout-content content-style="height: calc(100vh - 64px);">
               <router-view />
             </n-layout-content>
