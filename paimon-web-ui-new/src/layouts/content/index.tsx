@@ -30,7 +30,7 @@ export default defineComponent({
     const getSideOption = (state: any) => {
       const activeNavKey = configStore.getCurrentNavActive
       state.sideMenuOptions = menuOptions.value.find((m: any) => m.key === activeNavKey)?.sideMenuOptions || []
-      state.isShowSided = state.sideMenuOptions && state.sideMenuOptions.length > 0
+      state.isShowSided = state.sideMenuOptions && state.sideMenuOptions.length
     }
     getSideOption(state)
     watch(
