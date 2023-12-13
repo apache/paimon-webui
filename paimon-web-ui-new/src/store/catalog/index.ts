@@ -19,8 +19,8 @@ import { NIcon, type TreeOption } from 'naive-ui'
 import { FileTrayOutline, FolderOutline } from '@vicons/ionicons5'
 
 
-import { getAllCatalogs, getDatabasesByCatalogId } from '@/api/models/catalog'
-import type { Catalog, Database } from '@/api/models/catalog'
+import { getAllCatalogs, getDatabasesByCatalogId, getTables } from '@/api/models/catalog'
+import type { Catalog, Database, Table, TableQuery } from '@/api/models/catalog'
 
 export interface CatalogState {
   catalogs: TreeOption[];
@@ -51,28 +51,10 @@ export const useCatalogStore = defineStore('catalog', {
 
       return Promise.resolve(transformDatabase(res.data))
     },
-    getTablesByDataBaseId(id: number): Promise<any> {
-      // TODO: fetch table list by catalog id and database name
-      // Waiting for the deployment of the back end interface
+    async getTablesByDataBaseId(params: TableQuery): Promise<TreeOption[]> {
+      const res = await getTables(params)
 
-      // const [, useDatabaseByCatalogId] = getDatabasesByCatalogId(id)
-      // return useDatabaseByCatalogId()
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve([
-            {
-              label: 'table',
-              type: 'table',
-              key: ++id,
-              isLeaf: true,
-              prefix: () =>
-                h(NIcon, null, {
-                  default: () => h(FileTrayOutline)
-                }),
-            }
-          ])
-        }, 1000)
-      })
+      return Promise.resolve(transformTable(res.data))
     }
   }
 })
@@ -99,6 +81,19 @@ const transformDatabase = (databases: Database[]): TreeOption[] => {
     prefix: () =>
       h(NIcon, null, {
         default: () => h(FolderOutline)
+      }),
+  }))
+}
+
+const transformTable = (tables: Table[]): TreeOption[] => {
+  return tables.map(table => ({
+    label: table.name,
+    type: 'table',
+    key: `${table.catalogId} ${table.databaseName} ${table.name}`,
+    isLeaf: true,
+    prefix: () =>
+      h(NIcon, null, {
+        default: () => h(FileTrayOutline)
       }),
   }))
 }

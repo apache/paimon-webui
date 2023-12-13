@@ -65,3 +65,15 @@ sa-token:
   is-write-header: true
   is-read-header: true
   is-read-body: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    ldap:
+      enabled: false
