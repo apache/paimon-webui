@@ -15,22 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/system',
-  name: 'system',
-  meta: { title: 'System' },
-  children: [
-    {
-      path: '/system/user',
-      name: 'system-user',
-      meta: { title: 'user' },
-      component: () => import('@/views/system/user')
-    },
-    {
-      path: '/system/role',
-      name: 'system-role',
-      meta: { title: 'role' },
-      component: () => import('@/views/system/role')
-    },
-  ]
-}
+import styles from './index.module.scss';
+
+export default defineComponent({
+  name: 'RolePage',
+  setup() {
+    return {}
+  },
+  render() {
+    return (
+      <div class={styles.container}>RolePage</div>
+    )
+  }
+})
