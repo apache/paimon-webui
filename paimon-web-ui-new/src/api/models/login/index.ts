@@ -25,8 +25,8 @@ import type { LoginOptions } from './interface'
  * # Login
  * @param {LoginOptions} options
  */
-export const onLogin = () => {
-  return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login')
+export const onLogin = (params:any) => {
+  return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login',params)
 }
 
 /**
