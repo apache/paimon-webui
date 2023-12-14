@@ -15,22 +15,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/system',
-  name: 'system',
-  meta: { title: 'System' },
-  children: [
-    {
-      path: '/system/user',
-      name: 'system-user',
-      meta: { title: 'user' },
-      component: () => import('@/views/system/user')
-    },
-    {
-      path: '/system/role',
-      name: 'system-role',
-      meta: { title: 'role' },
-      component: () => import('@/views/system/role')
-    },
-  ]
+export interface Schema {
+  schemaId: string;
+  fields: SchemaField[];
+  partitionKeys: string;
+  primaryKeys: string;
+  comment: string;
+  option: SchemaOption[];
+  updateTime: string;
+}
+
+export interface SchemaField {
+  id: number;
+  name: string;
+  type: string;
+  comment?: string;
+}
+
+export interface SchemaOption {
+  key: string;
+  value: string;
 }

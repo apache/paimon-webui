@@ -15,22 +15,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/system',
-  name: 'system',
-  meta: { title: 'System' },
-  children: [
-    {
-      path: '/system/user',
-      name: 'system-user',
-      meta: { title: 'user' },
-      component: () => import('@/views/system/user')
-    },
-    {
-      path: '/system/role',
-      name: 'system-role',
-      meta: { title: 'role' },
-      component: () => import('@/views/system/role')
-    },
-  ]
+export interface Snapshot {
+  snapshotId: string;
+  schemaId: string;
+  commitUser: string;
+  commitIdentifier: string;
+  commitKind: string;
+  commitTime: string;
+  baseManifestList: string;
+  deltaManifestList: string;
+  changelogManifestList: string;
+  totalRecordCount: string;
+  deltaRecordCount: string;
+  changelogRecordCount: string;
+  addedFileCount: number;
+  deletedFileCount: number;
+  watermark: string;
 }
