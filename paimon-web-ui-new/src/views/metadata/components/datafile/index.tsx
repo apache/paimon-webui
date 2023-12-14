@@ -46,10 +46,10 @@ export default defineComponent({
     onMounted(() => {
       useDataFile({
         params: {
-          catalogId: 20717569,
+          catalogId: -1632763902,
           catalogName: "streaming_warehouse",
-          databaseName: "cdc_test",
-          tableName: "lianyun_pf_servers"
+          databaseName: "ods",
+          tableName: "t_user"
         }
       })
     })
