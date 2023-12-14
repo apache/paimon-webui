@@ -15,22 +15,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  path: '/system',
-  name: 'system',
-  meta: { title: 'System' },
-  children: [
-    {
-      path: '/system/user',
-      name: 'system-user',
-      meta: { title: 'user' },
-      component: () => import('@/views/system/user')
-    },
-    {
-      path: '/system/role',
-      name: 'system-role',
-      meta: { title: 'role' },
-      component: () => import('@/views/system/role')
-    },
-  ]
+export interface Datafile {
+  bucket: number;
+  filePath: string;
+  fileFormat: string;
+  schemaId: string;
+  level: number;
+  recordCount: string;
+  fileSizeInBytes: string;
+
+  // TODO: JSON String
+  partition: string;
+  minKey: string;
+  maxKey: string;
+  nullValueCounts: string;
+  minValueStats: string;
+  maxValueStats: string;
+  
+  minSequenceNumber: string;
+  maxSequenceNumber: string;
+  creationTime: string;
 }
+

@@ -19,8 +19,15 @@ import styles from './index.module.scss'
 import logoImage from '@/assets/logo.svg'
 import MenuBar from '../menubar'
 import ToolBar from '../toolbar'
+import type { MentionOption } from 'naive-ui'
 
 export default defineComponent({
+  props:{
+    headerMenuOptions: {
+      type: Array<MentionOption>,
+      default: []
+    },
+  },
   name: 'TopBar',
   setup() {
   },
@@ -36,7 +43,7 @@ export default defineComponent({
           </n-space>
         </div>
         <div class={styles['menu-bar']}>
-          <MenuBar />
+          <MenuBar menuOptions={this.headerMenuOptions}/>
         </div>
         <div class={styles.toolbar}>
           <ToolBar />

@@ -24,4 +24,6 @@ export default {
   dark: '暗色',
   cancel: '取消',
   confirm: '确认',
+  user:'用户管理',
+  role:'权限管理'
 }

@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type ResponseOptions from '@/api/types'
+import type { ResponseOptions } from '@/api/types'
 import type { LoginOptions } from './interface'
 
 // #region login-controller
