@@ -25,7 +25,6 @@ export function usePaimon(item: any) {
 	getAllCatalogs().then((res: any) => {
 		catalogOptions.value = res.data.map((e: any) => { return { value: e.id, label: e.catalogName } })
 	})
-	console.log('item', item.data)
 	const model = reactive({
 		warehouse: '',
 		metastore: '',
