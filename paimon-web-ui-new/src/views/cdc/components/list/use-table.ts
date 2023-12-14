@@ -92,14 +92,13 @@ export const useTable = () => {
         ],
         data: [],
         pagination: reactive({
-            displayOrder: ['quick-jumper', 'pages', 'size-picker'],
             showQuickJumper: true,
             showSizePicker: true,
             pageSize: 10,
             pageSizes: [10, 20, 50, 100],
             page: 1,
             count: 100,
-            onChange: (page: number) => {
+            onUpdatePage: (page: number) => {
                 tableVariables.pagination.page = page
                 getTableData()
             },

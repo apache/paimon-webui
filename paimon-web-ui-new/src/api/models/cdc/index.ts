@@ -20,23 +20,37 @@ import type { CdcJobDefinition } from './interface'
 import httpRequest from '@/api/request'
 export * from './interface'
 
-
+/**
+ * # Create cdc job definition
+ */
 export const createCdcJob = (cdcJobDefinition: CdcJobDefinition) => {
   return httpRequest.post('/cdc-job-definition/create', cdcJobDefinition)
 }
 
+/**
+ * # Update cdc job definition
+ */
 export const updateCdcJob = (cdcJobDefinition: CdcJobDefinition) => {
   return httpRequest.put(`/cdc-job-definition/update`, cdcJobDefinition)
 }
 
+/**
+ * # List all cdc job definitions
+ */
 export const listAllCdcJob = (withConfig: boolean, currentPage: number, pageSize: number) => {
   return httpRequest.get('/cdc-job-definition/list', { withConfig, currentPage, pageSize })
 }
 
+/**
+ * # Get cdc job definition detail
+ */
 export const getCdcJobDefinition = (id: number) => {
   return httpRequest.get(`/cdc-job-definition/${id}`)
 }
 
+/**
+ * # Delete cdc job definition
+ */
 export const deleteCdcJobDefinition = (id: number) => {
   return httpRequest.delete(`/cdc-job-definition/${id}`)
 }

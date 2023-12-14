@@ -25,7 +25,7 @@ import { createCdcJob, updateCdcJob } from "@/api/models/cdc";
 export default defineComponent({
   name: 'DagPage',
   setup() {
-    window.$message = useMessage()
+    // window.$message = useMessage()
     const { t } = useLocaleHooks()
     const CDCStore = useCDCStore()
     const name = ref('')
@@ -65,8 +65,6 @@ export default defineComponent({
         })
       }
     })
-
-
 
     return {
       t,

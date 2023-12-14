@@ -23,7 +23,7 @@ import type { FetchOptions } from './types'
 const axle: AxleInstance & { createHooks?: typeof createHooks } = createAxle({
   baseURL: '/api'
 })
-
+useMessage().success('dd')
 axle.axios.interceptors.request.use(
   (config) => {
     // token here
