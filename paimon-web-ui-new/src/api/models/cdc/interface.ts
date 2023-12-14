@@ -24,5 +24,5 @@ export interface CdcJobDefinition {
     cdcType?: number;
     config?: string;
     createUser?: string;
-  }
+}
   
