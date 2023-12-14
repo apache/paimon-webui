@@ -15,8 +15,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  display: flex;
-  width: calc(100% - 60px);
-  padding: 30px;
+import httpRequest from '../../request'
+import type { ResponseOptions } from '@/api/types'
+
+/**
+ * # List roles
+ */
+export const listRole = (params:any) => {
+    return httpRequest.get<ResponseOptions<any>>('/role/list',params)
 }

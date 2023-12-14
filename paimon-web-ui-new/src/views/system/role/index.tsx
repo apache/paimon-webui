@@ -16,15 +16,38 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss';
+import { useTable } from './use-table';
 
 export default defineComponent({
-  name: 'RolePage',
+  name: 'UserPage',
   setup() {
-    return {}
+    const { t } = useLocaleHooks()
+    const {tableVariables,getTableData,handleResetage} = useTable()
+    getTableData()
+    return {...toRefs(tableVariables),getTableData,t,handleResetage}
   },
   render() {
     return (
-      <div class={styles.container}>RolePage</div>
+      <n-space class={styles.container} vertical justify="center">
+      <n-card >
+        <n-space vertical>
+          <n-space justify="space-between">
+            <n-space>
+              <n-button type="primary">{this.t('system.user.add')}</n-button>
+            </n-space>
+            <n-space>
+              <></>
+            </n-space>
+          </n-space>
+          <n-data-table
+              columns={this.columns}
+              data={this.data}
+              remote
+              pagination={this.pagination}
+            />
+        </n-space>
+      </n-card>
+      </n-space>
     )
   }
 })
