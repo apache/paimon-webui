@@ -17,9 +17,16 @@ under the License. */
 
 const user = {
   add: 'Add',
-  username:'Username',
-  nickname:'Nickname',
-  mobile:'Mobile',
-  email:'Email'
+  username: 'Username',
+  nickname: 'Nickname',
+  mobile: 'Mobile',
+  email: 'Email'
 }
-export default { user }
+
+const role = {
+  role_name: 'Role name',
+  role_key: 'Role Key',
+  enabled: 'Enabled'
+}
+
+export default { user, role }

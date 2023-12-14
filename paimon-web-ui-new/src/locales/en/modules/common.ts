@@ -23,5 +23,8 @@ export default {
     create_user:'Create user',
     create_time:'Create time',
     update_time:'Update time',
-    search:'Search'
+    search:'Search',
+    yes:'Yes',
+    no:'No'
 }
+
