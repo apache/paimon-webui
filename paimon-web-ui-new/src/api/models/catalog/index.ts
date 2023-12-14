@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '@/api/request'
-import type { Catalog, Database, Table, TableQuery } from './types'
+import type { Catalog, Database, Table, Manifest, TableQuery } from './types'
 import type { ResponseOptions } from '@/api/types'
 
 export * from './types'
@@ -58,7 +58,7 @@ export const getSchema = () => {
  * # Get manifest 
  */
 export const getManifest = () => {
-  return httpRequest.createHooks!<Table, any[]>({
+  return httpRequest.createHooks!<ResponseOptions<Manifest[]>, Manifest[]>({
     url: '/metadata/query/manifest',
     method: 'post',
   })
