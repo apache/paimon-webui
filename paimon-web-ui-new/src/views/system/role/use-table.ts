@@ -48,33 +48,6 @@ export const useTable = () => {
                 key: 'updateTime',
                 resizable: true
             },
-            // {
-            //     title: computed(() => t('cdc.operation')),
-            //     key: 'actions',
-            //     render: (row: any) =>
-            //         h(TableAction, {
-            //             row,
-            //             onHandleEdit: (row) => {
-            //                 getCdcJobDefinition(row.id).then(res => {
-            //                     const CDCStore = useCDCStore()
-            //                     CDCStore.setModel({
-            //                         cells: JSON.parse(res.data.config).cells,
-            //                         name: res.data.name,
-            //                         editMode: 'edit',
-            //                         id:res.data.id
-            //                     })
-            //                     router.push({ path: '/cdc_ingestion/dag' })
-            //                 })
-            //             },
-            //             onHandleDelete:(row)=>{
-            //                 deleteCdcJobDefinition(row.id).then(()=>{
-            //                     window.$message.success(t('common.cdc.delete_success'))
-            //                     getTableData()
-            //                 })
-            //             }
-            //         })
-
-            // }
         ],
         searchForm: {
             roleName: ''
