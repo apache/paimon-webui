@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '@/api/request'
-import type { Catalog, Database, Table, TableQuery } from './types'
+import type { Catalog, Database, Datafile, Table, TableQuery } from './types'
 import type { ResponseOptions } from '@/api/types'
 
 export * from './types'
@@ -68,7 +68,7 @@ export const getManifest = () => {
  * # Get data file
  */
 export const getDataFile = () => {
-  return httpRequest.createHooks!<Table, any[]>({
+  return httpRequest.createHooks!<ResponseOptions<Datafile[]>, Datafile[]>({
     url: '/metadata/query/dataFile',
     method: 'post',
   })

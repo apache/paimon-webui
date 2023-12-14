@@ -17,50 +17,14 @@ under the License. */
 
 import { type DataTableColumns } from 'naive-ui'
 
-import { getDataFile } from '@/api/models/catalog'
-
-type RowData = {
-  partition: string
-  bucket: number
-  filePath: string
-  fileFormat: string
-}
-
+import { getDataFile, type Datafile } from '@/api/models/catalog'
 
 export default defineComponent({
   name: 'MetadataDataFile',
   setup() {
-    const { t } = useLocaleHooks()
-    const [, useDataFile, { loading }] = getDataFile()
+    const [datafiles, useDataFile, { loading }] = getDataFile()
 
-    const data: RowData[] = [
-      {
-        partition: '[1]',
-        bucket: 0,
-        filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'ORC'
-      },
-      {
-        partition: '[2]',
-        bucket: 0,
-        filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'PARQUET'
-      },
-      {
-        partition: '[3]',
-        bucket: 1,
-        filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'ORC'
-      },
-      {
-        partition: '[4]',
-        bucket: 1,
-        filePath: 'opt/paimon/warehouse/ods.db/t_role',
-        fileFormat: 'PARQUET'
-      },
-    ]
-
-    const columns: DataTableColumns<RowData> = [
+    const columns: DataTableColumns<Datafile> = [
       {
         title: 'Partition',
         key: 'partition'
@@ -82,19 +46,18 @@ export default defineComponent({
     onMounted(() => {
       useDataFile({
         params: {
-          catalogId: -1632763902,
+          catalogId: 20717569,
           catalogName: "streaming_warehouse",
-          databaseName: "ods",
-          tableName: "t_user"
+          databaseName: "cdc_test",
+          tableName: "lianyun_pf_servers"
         }
       })
     })
 
     return {
       columns,
-      data,
+      datafiles,
       loading,
-      t,
     }
   },
   render() {
@@ -103,7 +66,7 @@ export default defineComponent({
         <n-spin show={this.loading}>
           <n-data-table
             columns={this.columns}
-            data={this.data}
+            data={this.datafiles?.data || []}
           />
         </n-spin>
       </n-card>
