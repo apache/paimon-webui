@@ -17,7 +17,7 @@ under the License. */
 
 import httpRequest from '../../request'
 import type { ResponseOptions } from '@/api/types'
-import type { LoginOptions } from './interface'
+import type { LoginOptions } from './types/login_options'
 
 // #region login-controller
 
@@ -25,8 +25,8 @@ import type { LoginOptions } from './interface'
  * # Login
  * @param {LoginOptions} options
  */
-export const onLogin = (params:any) => {
-  return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login',params)
+export const onLogin = (params: LoginOptions) => {
+  return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login', params)
 }
 
 /**
