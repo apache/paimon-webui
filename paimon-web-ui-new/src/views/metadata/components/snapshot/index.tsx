@@ -16,42 +16,16 @@ specific language governing permissions and limitations
 under the License. */
 
 import { type DataTableColumns } from 'naive-ui'
+import dayjs from 'dayjs'
 
-import { getSnapshot } from '@/api/models/catalog'
-
-type RowData = {
-  snapshotId: number
-  schemaId: number
-  commitIdentifier: number
-  commitKind: string
-  commitTime: string
-}
-
+import { getSnapshot, type Snapshot } from '@/api/models/catalog'
 
 export default defineComponent({
   name: 'MetadataSnapshot',
   setup() {
-    const { t } = useLocaleHooks()
-    const [, useSnapshot, { loading }] = getSnapshot()
+    const [snapshots, useSnapshot, { loading }] = getSnapshot()
 
-    const data: RowData[] = [
-      {
-        snapshotId: 0,
-        schemaId: 2,
-        commitIdentifier: 3,
-        commitKind: 'APPEND',
-        commitTime: '2023-10-30 10:00:00'
-      },
-      {
-        snapshotId: 1,
-        schemaId: 1,
-        commitIdentifier: 1,
-        commitKind: 'APPEND',
-        commitTime: '2023-10-28 11:08:14'
-      },
-    ]
-
-    const columns: DataTableColumns<RowData> = [
+    const columns: DataTableColumns<Snapshot> = [
       {
         title: 'Snapshot ID',
         key: 'snapshotId'
@@ -71,7 +45,10 @@ export default defineComponent({
       },
       {
         title: 'Commit Time',
-        key: 'commitTime'
+        key: 'commitTime',
+        render: (row) => {
+          return dayjs(row.commitTime).format('YYYY-MM-DD HH:mm:ss')
+        }
       }
     ]
 
@@ -88,9 +65,8 @@ export default defineComponent({
 
     return {
       columns,
-      data,
+      snapshots,
       loading,
-      t,
     }
   },
   render() {
@@ -99,7 +75,7 @@ export default defineComponent({
         <n-spin show={this.loading}>
           <n-data-table
             columns={this.columns}
-            data={this.data}
+            data={this.snapshots?.data || []}
           />
         </n-spin>
       </n-card>
