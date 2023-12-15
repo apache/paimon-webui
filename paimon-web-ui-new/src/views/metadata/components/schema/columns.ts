@@ -15,17 +15,40 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  display: flex;
-  width: 100%;
-  height: 100%;
+import type { DataTableColumns } from 'naive-ui'
 
-  .content {
-    display: flex;
-    flex-direction: column;
-    
-    width: calc(100% - 60px);
+import type { SchemaField, SchemaOption } from '@/api/models/catalog'
 
-    padding: 14px 20px;
+export const fieldsColumns: DataTableColumns<SchemaField> = [
+  {
+    title: 'ID',
+    key: 'id'
+  },
+  {
+    title: 'Name',
+    key: 'name'
+  },
+  {
+    title: 'Type',
+    key: 'type'
+  },
+  {
+    title: 'Comment',
+    key: 'comment',
+    align: 'center',
+    render: (row) => {
+      return row.comment || '-'
+    }
+  },
+]
+
+export const optionsColumns: DataTableColumns<SchemaOption> = [
+  {
+    title: 'Key',
+    key: 'key'
+  },
+  {
+    title: 'Value',
+    key: 'value'
   }
-}
+]
