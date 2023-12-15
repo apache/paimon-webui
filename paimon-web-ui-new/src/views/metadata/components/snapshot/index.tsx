@@ -19,11 +19,14 @@ import { type DataTableColumns } from 'naive-ui'
 import dayjs from 'dayjs'
 
 import { getSnapshot, type Snapshot } from '@/api/models/catalog'
+import { useCatalogStore } from '@/store/catalog'
 
 export default defineComponent({
   name: 'MetadataSnapshot',
   setup() {
     const [snapshots, useSnapshot, { loading }] = getSnapshot()
+
+    const catalogStore = useCatalogStore()
 
     const columns: DataTableColumns<Snapshot> = [
       {
@@ -52,16 +55,16 @@ export default defineComponent({
       }
     ]
 
-    onMounted(() => {
+    const onFetchData = async () => {
       useSnapshot({
-        params: {
-          catalogId: -1632763902,
-          catalogName: "streaming_warehouse",
-          databaseName: "ods",
-          tableName: "t_user"
-        }
+        params: catalogStore.currentTable
       })
-    })
+    }
+
+    watch(() => catalogStore.currentTable, onFetchData)
+
+    onMounted(onFetchData)
+
 
     return {
       columns,
