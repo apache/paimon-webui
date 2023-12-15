@@ -18,7 +18,7 @@ under the License. */
 import { createAxle, type AxleInstance } from '@varlet/axle'
 import { createUseAxle } from '@varlet/axle/use'
 
-import type { FetchOptions } from './types'
+import type { FetchOptions, ResponseOptions } from './types'
 
 const axle: AxleInstance & { createHooks?: typeof createHooks } = createAxle({
   baseURL: '/api'
@@ -58,7 +58,7 @@ const useAxle = createUseAxle({
 })
 
 function createHooks<T, R>(options: FetchOptions<T, R>) {
-  return useAxle(options)
+  return useAxle<ResponseOptions<T>, R, Record<string, any>>(options)
 }
 
 axle.createHooks = createHooks
