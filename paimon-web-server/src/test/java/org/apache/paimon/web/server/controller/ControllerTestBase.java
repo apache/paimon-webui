@@ -18,21 +18,13 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.dto.CatalogDTO;
-import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
-import org.apache.paimon.web.server.data.dto.TableDTO;
-import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
-import org.apache.paimon.web.server.util.PaimonDataType;
 import org.apache.paimon.web.server.util.StringUtils;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,9 +37,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
