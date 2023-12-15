@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /** Tests for {@link MetadataController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MetadataControllerTest extends ControllerTestBase {
+public class MetadataControllerTest extends MetadataTestBase {
 
     private static final String METADATA_PATH = "/api/metadata";
 

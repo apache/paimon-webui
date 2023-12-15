@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /** Test for DatabaseController. */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DatabaseControllerTest extends ControllerTestBase {
+public class DatabaseControllerTest extends MetadataTestBase {
 
     private static final String databasePath = "/api/database";
 

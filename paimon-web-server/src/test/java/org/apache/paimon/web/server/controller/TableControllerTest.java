@@ -42,7 +42,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Test for TableController. */
-public class TableControllerTest extends ControllerTestBase {
+public class TableControllerTest extends MetadataTestBase {
 
     private static final String tablePath = "/api/table";
 

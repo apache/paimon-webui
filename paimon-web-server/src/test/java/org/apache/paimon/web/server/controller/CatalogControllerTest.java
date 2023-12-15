@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CatalogControllerTest extends ControllerTestBase {
+public class CatalogControllerTest extends MetadataTestBase {
 
     private static final String catalogPath = "/api/catalog";
 
