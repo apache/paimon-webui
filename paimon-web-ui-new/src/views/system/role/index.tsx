@@ -20,7 +20,7 @@ import { useConstants } from './use-constants';
 import { useTable } from './use-table';
 
 export default defineComponent({
-  name: 'UserPage',
+  name: 'RolePage',
   setup() {
     const { t } = useLocaleHooks()
     const { tableVariables, getTableData, roleList,loading} = useTable()
