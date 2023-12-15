@@ -24,7 +24,7 @@ export interface ResponseOptions<P> {
   msg: string
 }
 
-export type FetchOptions<V, R = any, P = Record<string, any>> = Partial<UseAxleOptions<V, ResponseOptions<R>, P>> & {
+export type FetchOptions<V, R = any, P = Record<string, any>> = Partial<UseAxleOptions<ResponseOptions<V>, R, P>> & {
   method: RunnerMethod
   url: string
 }
