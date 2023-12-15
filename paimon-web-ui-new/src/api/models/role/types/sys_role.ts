@@ -15,16 +15,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import httpRequest from '../../request'
-import type { ResponseOptions } from '@/api/types'
-import type { SysRole } from './types/sys_role'
-
-/**
- * # List roles
- */
-export const listRole = () => {
-  return httpRequest.createHooks!<ResponseOptions<SysRole[]>, any[]>({
-    url: '/role/list',
-    method: 'get',
-  })
+export interface SysRole {
+  roleName: string;
+  roleKey?: string;
+  sort?: number;
+  enabled: boolean;
+  remark?: string;
+  menuIds?: number[]
 }

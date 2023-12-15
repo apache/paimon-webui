@@ -17,70 +17,30 @@ under the License. */
 
 import { listRole } from '@/api/models/role';
 export const useTable = () => {
-    const { t } = useLocaleHooks()
     const tableVariables = reactive({
-        columns: [
-            {
-                title: computed(() => t('system.role.role_name')),
-                key: 'roleName',
-                resizable: true
-            },
-            {
-                title: computed(() => t('system.role.role_key')),
-                key: 'roleKey',
-                resizable: true
-            },
-            {
-                title: computed(() => t('system.role.enabled')),
-                key: 'enabled',
-                resizable: true,
-                render: (row: any) => {
-                    return row.enabled ? t('common.yes') : t('common.no')
-                }
-            },
-            {
-                title: computed(() => t('common.create_time')),
-                key: 'createTime',
-                resizable: true
-            },
-            {
-                title: computed(() => t('common.update_time')),
-                key: 'updateTime',
-                resizable: true
-            },
-        ],
         searchForm: {
             roleName: ''
         },
-        data: [],
         pagination: reactive({
             showQuickJumper: true,
             showSizePicker: true,
             pageSize: 10,
-            pageSizes: [10, 20, 50, 100],
             page: 1,
             itemCount: 0,
             onUpdatePage: (page: number) => {
                 tableVariables.pagination.page = page
                 getTableData()
             },
-            onUpdatePageSize: (pageSize: number) => {
-                tableVariables.pagination.pageSize = pageSize
-                tableVariables.pagination.page = 1
-                getTableData()
-            }
         })
     })
+    const [roleList, useRoleList, { loading }] = listRole()
     const getTableData = () => {
         let params = {
             roleName: tableVariables.searchForm.roleName,
             currentPage: tableVariables.pagination.page,
             pageSize: tableVariables.pagination.pageSize
         }
-        listRole(params).then(((res: any) => {
-            tableVariables.data = res.data
-            tableVariables.pagination.itemCount = res.total
-        }))
+        useRoleList({ params })
     }
     const handleResetage = () => {
         tableVariables.pagination.page = 1
@@ -89,6 +49,8 @@ export const useTable = () => {
     return {
         tableVariables,
         getTableData,
-        handleResetage
+        handleResetage,
+        roleList,
+        loading
     }
 }
