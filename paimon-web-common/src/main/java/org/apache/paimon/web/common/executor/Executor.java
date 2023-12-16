@@ -22,8 +22,8 @@ import org.apache.paimon.web.common.result.FetchResultParams;
 import org.apache.paimon.web.common.result.SubmissionResult;
 
 /**
- * The Executor interface provides methods to submit SQL statements for execution,
- * fetch results, and stop jobs.
+ * The Executor interface provides methods to submit SQL statements for execution, fetch results,
+ * and stop jobs.
  */
 public interface Executor {
 
@@ -46,23 +46,22 @@ public interface Executor {
     SubmissionResult fetchResults(FetchResultParams params) throws Exception;
 
     /**
-     * Stops the execution of a job with the given job ID. The method can accept
-     * additional options to customize the stopping behavior based on the
-     * underlying execution framework.
+     * Stops the execution of a job with the given job ID. The method can accept additional options
+     * to customize the stopping behavior based on the underlying execution framework.
      *
      * <p>For Flink, you can pass additional boolean flags:
-     * <ul>
-     *   <li>{@code withSavepoint}: Set to {@code true} to create a savepoint before stopping.</li>
-     *   <li>{@code withDrain}: Set to {@code true} to perform a drain before stopping.</li>
-     * </ul>
-     * </p>
      *
-     * <p>For Spark, no additional options are required, and any supplied options will be ignored.</p>
+     * <ul>
+     *   <li>{@code withSavepoint}: Set to {@code true} to create a savepoint before stopping.
+     *   <li>{@code withDrain}: Set to {@code true} to perform a drain before stopping.
+     * </ul>
+     *
+     * <p>For Spark, no additional options are required, and any supplied options will be ignored.
      *
      * @param jobId The unique ID of the job to stop.
-     * @param options Optional parameters to customize the stop behavior. The first boolean
-     *                is treated as {@code withSavepoint}, and the second boolean (if present)
-     *                is treated as {@code withDrain}.
+     * @param options Optional parameters to customize the stop behavior. The first boolean is
+     *     treated as {@code withSavepoint}, and the second boolean (if present) is treated as
+     *     {@code withDrain}.
      * @return {@code true} if the job was stopped successfully, {@code false} otherwise.
      * @throws Exception if there is an error stopping the job.
      */

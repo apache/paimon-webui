@@ -34,7 +34,12 @@ public class SubmissionResult implements Serializable {
     private final List<Map<String, Object>> data;
     private final boolean shouldFetchResult;
 
-    private SubmissionResult(String submitId, String jobId, String status, List<Map<String, Object>> data, boolean shouldFetchResult) {
+    private SubmissionResult(
+            String submitId,
+            String jobId,
+            String status,
+            List<Map<String, Object>> data,
+            boolean shouldFetchResult) {
         this.submitId = submitId;
         this.jobId = jobId;
         this.status = status;
@@ -107,6 +112,6 @@ public class SubmissionResult implements Serializable {
 
         public SubmissionResult build() {
             return new SubmissionResult(submitId, jobId, status, data, shouldFetchResult);
-    }
+        }
     }
 }

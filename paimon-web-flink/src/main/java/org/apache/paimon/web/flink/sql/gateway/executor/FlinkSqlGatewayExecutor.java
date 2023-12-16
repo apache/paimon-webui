@@ -89,8 +89,8 @@ public class FlinkSqlGatewayExecutor implements Executor {
         return executeInsertStatements(insertStatements);
     }
 
-    private SubmissionResult executeDqlStatement(String statement, FlinkSqlOperationType operationType)
-            throws SqlExecutionException {
+    private SubmissionResult executeDqlStatement(
+            String statement, FlinkSqlOperationType operationType) throws SqlExecutionException {
         try {
             String operationId = client.executeStatement(session.getSessionId(), statement, null);
             FetchResultsResponseBody results =

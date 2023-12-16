@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.flink.sql.gateway.client;
 
-
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.rest.FileUpload;
 import org.apache.flink.runtime.rest.RestClient;
@@ -33,9 +32,9 @@ import org.apache.flink.util.ConfigurationException;
 import org.apache.flink.util.concurrent.Executors;
 
 import java.io.IOException;
-import java.util.function.Supplier;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 /** SQL gateway rest client. */
 public class SqlGateWayRestClient extends RestClient {
@@ -61,8 +60,7 @@ public class SqlGateWayRestClient extends RestClient {
                     Collection<FileUpload> fileUploads,
                     RestAPIVersion<? extends RestAPIVersion<?>> apiVersion) {
         return throwExceptionHandler(
-                () ->
-                {
+                () -> {
                     try {
                         return super.sendRequest(
                                 targetAddress,
@@ -85,8 +83,7 @@ public class SqlGateWayRestClient extends RestClient {
                     P extends ResponseBody>
             CompletableFuture<P> sendRequest(M messageHeaders, U messageParameters, R request) {
         return throwExceptionHandler(
-                () ->
-                {
+                () -> {
                     try {
                         return super.sendRequest(
                                 targetAddress,
@@ -111,8 +108,7 @@ public class SqlGateWayRestClient extends RestClient {
                     R request,
                     Collection<FileUpload> fileUploads) {
         return throwExceptionHandler(
-                () ->
-                {
+                () -> {
                     try {
                         return super.sendRequest(
                                 targetAddress,

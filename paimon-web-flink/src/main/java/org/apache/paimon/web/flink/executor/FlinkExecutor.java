@@ -134,7 +134,8 @@ public class FlinkExecutor implements Executor {
         return builder.build();
     }
 
-    private void setResult(TableResult tableResult, SubmissionResult.Builder builder) throws Exception {
+    private void setResult(TableResult tableResult, SubmissionResult.Builder builder)
+            throws Exception {
         Optional<JobClient> jobClient = tableResult.getJobClient();
         if (jobClient.isPresent()) {
             builder.jobId(jobClient.get().getJobID().toString());

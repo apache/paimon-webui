@@ -22,9 +22,8 @@ package org.apache.paimon.web.common.executor;
 public interface ExecutorFactory {
 
     /**
-     * Creates and returns a new instance of an {@link Executor}.
-     * Implementations should provide specific details about the type
-     * of executor being created and any initialization details.
+     * Creates and returns a new instance of an {@link Executor}. Implementations should provide
+     * specific details about the type of executor being created and any initialization details.
      *
      * @return A new instance of {@link Executor}.
      * @throws Exception if there is an error creating the executor instance.
