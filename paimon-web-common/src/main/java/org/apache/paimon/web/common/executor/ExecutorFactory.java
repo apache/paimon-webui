@@ -18,8 +18,16 @@
 
 package org.apache.paimon.web.common.executor;
 
-/** The ExecutorFactory interface provides a method to create an Executor. */
+/** This factory is defined to create an {@link Executor} instance. */
 public interface ExecutorFactory {
 
+    /**
+     * Creates and returns a new instance of an {@link Executor}.
+     * Implementations should provide specific details about the type
+     * of executor being created and any initialization details.
+     *
+     * @return A new instance of {@link Executor}.
+     * @throws Exception if there is an error creating the executor instance.
+     */
     Executor createExecutor() throws Exception;
 }

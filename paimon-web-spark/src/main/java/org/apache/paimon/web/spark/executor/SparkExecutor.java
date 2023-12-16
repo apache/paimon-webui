@@ -20,7 +20,7 @@ package org.apache.paimon.web.spark.executor;
 
 import org.apache.paimon.web.common.executor.Executor;
 import org.apache.paimon.web.common.result.FetchResultParams;
-import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.common.result.SubmissionResult;
 
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -41,7 +41,7 @@ public class SparkExecutor implements Executor {
     }
 
     @Override
-    public SubmitResult executeSql(String multiStatement) throws Exception {
+    public SubmissionResult executeSql(String multiStatement) throws Exception {
         // TODO parse spark multiStatement,if multiple execution sql are passed in.
         List<Row> rows = sparkSession.sql(multiStatement).collectAsList();
         List<Map<String, Object>> result = new ArrayList<>();
@@ -59,17 +59,17 @@ public class SparkExecutor implements Executor {
                                             });
                             result.add(map);
                         });
-        return SubmitResult.builder().data(result).build();
+        return SubmissionResult.builder().data(result).build();
     }
 
     @Override
-    public SubmitResult fetchResults(FetchResultParams params) throws Exception {
+    public SubmissionResult fetchResults(FetchResultParams params) throws Exception {
         // TODO
         return null;
     }
 
     @Override
-    public boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception {
+    public boolean stop(String jobId, Object... options) throws Exception {
         // TODO need to be implemented here
         return false;
     }

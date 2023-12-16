@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.flink.utils;
 
-import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.common.result.SubmissionResult;
 
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.data.GenericRowData;
@@ -38,20 +38,20 @@ public class CollectResultUtil {
 
     private static final String NULL_COLUMN = "";
 
-    public static SubmitResult.Builder collectResult(TableResult tableResult) throws Exception {
+    public static SubmissionResult.Builder collectResult(TableResult tableResult) throws Exception {
         List<String> columns = tableResult.getResolvedSchema().getColumnNames();
         try (CloseableIterator<Row> it = tableResult.collect()) {
             List<Map<String, Object>> rows = rowsToList(columns, it);
-            return SubmitResult.builder().submitId(UUID.randomUUID().toString()).data(rows);
+            return SubmissionResult.builder().submitId(UUID.randomUUID().toString()).data(rows);
         }
     }
 
-    public static SubmitResult.Builder collectSqlGatewayResult(ResultInfo resultInfo)
+    public static SubmissionResult.Builder collectSqlGatewayResult(ResultInfo resultInfo)
             throws Exception {
         List<RowData> data = resultInfo.getData();
         List<Map<String, Object>> results =
                 rowDatasToList(resultInfo.getResultSchema().getColumnNames(), data);
-        return SubmitResult.builder().data(results);
+        return SubmissionResult.builder().data(results);
     }
 
     private static List<Map<String, Object>> rowsToList(

@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** This class represents the result of a job. Including flink job and spark Job. */
-public class SubmitResult implements Serializable {
+/** Represents the outcome of a job submission process. */
+public class SubmissionResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,12 +34,12 @@ public class SubmitResult implements Serializable {
     private final List<Map<String, Object>> data;
     private final boolean shouldFetchResult;
 
-    private SubmitResult(Builder builder) {
-        this.jobId = builder.jobId;
-        this.status = builder.status;
-        this.data = builder.data;
-        this.submitId = builder.submitId;
-        this.shouldFetchResult = builder.shouldFetchResult;
+    private SubmissionResult(String submitId, String jobId, String status, List<Map<String, Object>> data, boolean shouldFetchResult) {
+        this.submitId = submitId;
+        this.jobId = jobId;
+        this.status = status;
+        this.data = data;
+        this.shouldFetchResult = shouldFetchResult;
     }
 
     public String getSubmitId() {
@@ -105,25 +105,8 @@ public class SubmitResult implements Serializable {
             return this;
         }
 
-        public SubmitResult build() {
-            return new SubmitResult(this);
-        }
+        public SubmissionResult build() {
+            return new SubmissionResult(submitId, jobId, status, data, shouldFetchResult);
     }
-
-    @Override
-    public String toString() {
-        return "SubmitResult{"
-                + "submitId='"
-                + submitId
-                + '\''
-                + ", jobId='"
-                + jobId
-                + '\''
-                + ", status='"
-                + status
-                + '\''
-                + ", data="
-                + data
-                + '}';
     }
 }

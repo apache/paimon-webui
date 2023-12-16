@@ -20,7 +20,7 @@ package org.apache.paimon.web.flink.sql.gateway.executor;
 
 import org.apache.paimon.web.common.executor.Executor;
 import org.apache.paimon.web.common.result.FetchResultParams;
-import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.common.result.SubmissionResult;
 import org.apache.paimon.web.flink.exception.SqlExecutionException;
 import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
 import org.apache.paimon.web.flink.parser.StatementParser;
@@ -60,7 +60,7 @@ public class FlinkSqlGatewayExecutor implements Executor {
     }
 
     @Override
-    public SubmitResult executeSql(String multiStatement) throws SqlExecutionException {
+    public SubmissionResult executeSql(String multiStatement) throws SqlExecutionException {
         String[] statements = StatementParser.parse(multiStatement);
         List<String> insertStatements = new ArrayList<>();
 
@@ -89,13 +89,13 @@ public class FlinkSqlGatewayExecutor implements Executor {
         return executeInsertStatements(insertStatements);
     }
 
-    private SubmitResult executeDqlStatement(String statement, FlinkSqlOperationType operationType)
+    private SubmissionResult executeDqlStatement(String statement, FlinkSqlOperationType operationType)
             throws SqlExecutionException {
         try {
             String operationId = client.executeStatement(session.getSessionId(), statement, null);
             FetchResultsResponseBody results =
                     client.fetchResults(session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
-            SubmitResult.Builder builder =
+            SubmissionResult.Builder builder =
                     CollectResultUtil.collectSqlGatewayResult(results.getResults())
                             .submitId(operationId);
             if (operationType.getType().equals(FlinkSqlOperationType.SELECT.getType())) {
@@ -108,12 +108,12 @@ public class FlinkSqlGatewayExecutor implements Executor {
         }
     }
 
-    private SubmitResult executeDmlStatement(String statement) throws SqlExecutionException {
+    private SubmissionResult executeDmlStatement(String statement) throws SqlExecutionException {
         try {
             String operationId = client.executeStatement(session.getSessionId(), statement, null);
             FetchResultsResponseBody results =
                     client.fetchResults(session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
-            return new SubmitResult.Builder()
+            return new SubmissionResult.Builder()
                     .submitId(operationId)
                     .jobId(getJobIdFromResults(results))
                     .build();
@@ -132,7 +132,7 @@ public class FlinkSqlGatewayExecutor implements Executor {
         }
     }
 
-    private SubmitResult executeInsertStatements(List<String> insertStatements)
+    private SubmissionResult executeInsertStatements(List<String> insertStatements)
             throws SqlExecutionException {
         if (!insertStatements.isEmpty()) {
             try {
@@ -143,7 +143,7 @@ public class FlinkSqlGatewayExecutor implements Executor {
                 FetchResultsResponseBody results =
                         client.fetchResults(
                                 session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
-                return new SubmitResult.Builder()
+                return new SubmissionResult.Builder()
                         .submitId(operationId)
                         .jobId(getJobIdFromResults(results))
                         .build();
@@ -153,7 +153,7 @@ public class FlinkSqlGatewayExecutor implements Executor {
                 throw new SqlExecutionException(errorMessage, e);
             }
         }
-        return SubmitResult.builder()
+        return SubmissionResult.builder()
                 .submitId(UUID.randomUUID().toString())
                 .status(EXECUTE_SUCCESS)
                 .build();
@@ -164,14 +164,14 @@ public class FlinkSqlGatewayExecutor implements Executor {
     }
 
     @Override
-    public SubmitResult fetchResults(FetchResultParams params) throws Exception {
+    public SubmissionResult fetchResults(FetchResultParams params) throws Exception {
         FetchResultsResponseBody fetchResultsResponseBody =
                 client.fetchResults(params.getSessionId(), params.getSubmitId(), params.getToken());
         ResultSet.ResultType resultType = fetchResultsResponseBody.getResultType();
         if (resultType == ResultSet.ResultType.EOS) {
-            return SubmitResult.builder().shouldFetchResult(false).build();
+            return SubmissionResult.builder().shouldFetchResult(false).build();
         }
-        SubmitResult.Builder builder =
+        SubmissionResult.Builder builder =
                 CollectResultUtil.collectSqlGatewayResult(fetchResultsResponseBody.getResults());
         builder.submitId(params.getSubmitId());
         builder.status(EXECUTE_SUCCESS);
@@ -179,7 +179,17 @@ public class FlinkSqlGatewayExecutor implements Executor {
     }
 
     @Override
-    public boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception {
+    public boolean stop(String jobId, Object... options) throws Exception {
+        boolean withSavepoint = false;
+        boolean withDrain = false;
+
+        if (options.length > 0 && options[0] instanceof Boolean) {
+            withSavepoint = (Boolean) options[0];
+        }
+        if (options.length > 1 && options[1] instanceof Boolean) {
+            withDrain = (Boolean) options[1];
+        }
+
         try {
             StringBuilder sqlBuilder = new StringBuilder(String.format(STOP_JOB_BASE_SQL, jobId));
             if (withSavepoint) {

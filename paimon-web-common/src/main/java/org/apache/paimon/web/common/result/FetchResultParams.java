@@ -25,10 +25,10 @@ public class FetchResultParams {
     private final String submitId;
     private final Long token;
 
-    private FetchResultParams(Builder builder) {
-        this.sessionId = builder.sessionId;
-        this.submitId = builder.submitId;
-        this.token = builder.token;
+    private FetchResultParams(String sessionId, String submitId, Long token) {
+        this.sessionId = sessionId;
+        this.submitId = submitId;
+        this.token = token;
     }
 
     public String getSessionId() {
@@ -69,7 +69,7 @@ public class FetchResultParams {
         }
 
         public FetchResultParams build() {
-            return new FetchResultParams(this);
+            return new FetchResultParams(sessionId, submitId, token);
         }
     }
 }

@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.flink.exception;
 
-/** Exception class for SQL execution issues. */
+/** Exception of SQL execution. */
 public class SqlExecutionException extends Exception {
 
     public SqlExecutionException(String message, Throwable cause) {

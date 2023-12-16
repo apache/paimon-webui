@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.flink.executor;
 
-import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.common.result.SubmissionResult;
 import org.apache.paimon.web.flink.TestBase;
 import org.apache.paimon.web.flink.exception.SqlExecutionException;
 
@@ -46,7 +46,7 @@ public class FlinkExecutorTest extends TestBase {
 
     @Test
     public void testExecuteSql() throws SqlExecutionException {
-        SubmitResult submitResult = executor.executeSql(createStatement);
+        SubmissionResult submitResult = executor.executeSql(createStatement);
         assertThat(submitResult).isNotNull();
     }
 }

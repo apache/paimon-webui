@@ -21,7 +21,7 @@ package org.apache.paimon.web.server.controller;
 import org.apache.paimon.web.common.executor.Executor;
 import org.apache.paimon.web.common.executor.ExecutorFactory;
 import org.apache.paimon.web.common.result.FetchResultParams;
-import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.common.result.SubmissionResult;
 import org.apache.paimon.web.common.status.JobStatus;
 import org.apache.paimon.web.flink.sql.gateway.model.SessionEntity;
 import org.apache.paimon.web.gateway.config.ExecuteConfig;
@@ -152,7 +152,7 @@ public class JobController {
                 jobSubmitDTO.setStatements(
                         addPipelineNameStatement(pipelineName, jobSubmitDTO.getStatements()));
             }
-            SubmitResult submitResult = executor.executeSql(jobSubmitDTO.getStatements());
+            SubmissionResult submitResult = executor.executeSql(jobSubmitDTO.getStatements());
             if (StringUtils.isNotBlank(submitResult.getJobId())) {
                 JobInfo jobInfo = buildJobInfo(submitResult, jobSubmitDTO);
                 jobService.saveJob(jobInfo);
@@ -191,7 +191,7 @@ public class JobController {
                             .submitId(resultFetchDTO.getSubmitId())
                             .token(token)
                             .build();
-            SubmitResult submitResult = executor.fetchResults(params);
+            SubmissionResult submitResult = executor.fetchResults(params);
             ResultDataVO resultDataVO =
                     ResultDataVO.builder().resultData(submitResult.getData()).token(token).build();
             return R.succeed(resultDataVO);
@@ -358,7 +358,7 @@ public class JobController {
             }
             SessionInfo sessionInfo = optionalSessionInfo.get();
             Executor executor = jobExecutorService.getExecutor(sessionInfo.getSessionId());
-            SubmitResult submitResult = executor.executeSql(SHOW_JOBS_STATEMENT);
+            SubmissionResult submitResult = executor.executeSql(SHOW_JOBS_STATEMENT);
             List<Map<String, Object>> jobsData = submitResult.getData();
             for (Map<String, Object> jobData : jobsData) {
                 String jobId = (String) jobData.get("job id");
@@ -416,7 +416,7 @@ public class JobController {
      * Creates a {@link JobInfo} object from the results of a job submission and the job submission
      * details.
      */
-    private JobInfo buildJobInfo(SubmitResult submitResult, JobSubmitDTO jobSubmitDTO) {
+    private JobInfo buildJobInfo(SubmissionResult submitResult, JobSubmitDTO jobSubmitDTO) {
         JobInfo.JobInfoBuilder builder =
                 JobInfo.builder()
                         .jobId(submitResult.getJobId())
@@ -447,7 +447,7 @@ public class JobController {
     }
 
     /** Constructs a {@link JobVO} object from the submission result and job submission details. */
-    private JobVO buildJobVO(SubmitResult submitResult, JobSubmitDTO jobSubmitDTO) {
+    private JobVO buildJobVO(SubmissionResult submitResult, JobSubmitDTO jobSubmitDTO) {
         JobVO.JobVOBuilder builder =
                 JobVO.builder()
                         .type(jobSubmitDTO.getTaskType())

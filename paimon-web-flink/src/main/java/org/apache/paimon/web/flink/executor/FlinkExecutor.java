@@ -20,7 +20,7 @@ package org.apache.paimon.web.flink.executor;
 
 import org.apache.paimon.web.common.executor.Executor;
 import org.apache.paimon.web.common.result.FetchResultParams;
-import org.apache.paimon.web.common.result.SubmitResult;
+import org.apache.paimon.web.common.result.SubmissionResult;
 import org.apache.paimon.web.flink.exception.SqlExecutionException;
 import org.apache.paimon.web.flink.operation.FlinkSqlOperationType;
 import org.apache.paimon.web.flink.parser.StatementParser;
@@ -51,7 +51,7 @@ public class FlinkExecutor implements Executor {
     }
 
     @Override
-    public SubmitResult executeSql(String multiStatement) throws SqlExecutionException {
+    public SubmissionResult executeSql(String multiStatement) throws SqlExecutionException {
         List<String> insertStatements = new ArrayList<>();
         String[] statements = StatementParser.parse(multiStatement);
         for (String statement : statements) {
@@ -77,7 +77,7 @@ public class FlinkExecutor implements Executor {
         return executeInsertStatements(insertStatements);
     }
 
-    private SubmitResult executeQueryStatement(String statement) throws SqlExecutionException {
+    private SubmissionResult executeQueryStatement(String statement) throws SqlExecutionException {
         try {
             TableResult tableResult = tableEnv.executeSql(statement);
             return buildResult(tableResult);
@@ -87,7 +87,7 @@ public class FlinkExecutor implements Executor {
         }
     }
 
-    private SubmitResult executeDmlStatement(String statement) throws SqlExecutionException {
+    private SubmissionResult executeDmlStatement(String statement) throws SqlExecutionException {
         try {
             TableResult tableResult = tableEnv.executeSql(statement);
             return buildResult(tableResult);
@@ -106,7 +106,7 @@ public class FlinkExecutor implements Executor {
         }
     }
 
-    private SubmitResult executeInsertStatements(List<String> insertStatements)
+    private SubmissionResult executeInsertStatements(List<String> insertStatements)
             throws SqlExecutionException {
         try {
             if (CollectionUtils.isNotEmpty(insertStatements)) {
@@ -120,7 +120,7 @@ public class FlinkExecutor implements Executor {
                 }
                 return buildResult(tableResult);
             }
-            return SubmitResult.builder().status(EXECUTE_SUCCESS).build();
+            return SubmissionResult.builder().status(EXECUTE_SUCCESS).build();
         } catch (Exception e) {
             String errorMessage =
                     FormatSqlExceptionUtil.formatSqlBatchExceptionMessage(insertStatements);
@@ -128,13 +128,13 @@ public class FlinkExecutor implements Executor {
         }
     }
 
-    private SubmitResult buildResult(TableResult tableResult) throws Exception {
-        SubmitResult.Builder builder = CollectResultUtil.collectResult(tableResult);
+    private SubmissionResult buildResult(TableResult tableResult) throws Exception {
+        SubmissionResult.Builder builder = CollectResultUtil.collectResult(tableResult);
         setResult(tableResult, builder);
         return builder.build();
     }
 
-    private void setResult(TableResult tableResult, SubmitResult.Builder builder) throws Exception {
+    private void setResult(TableResult tableResult, SubmissionResult.Builder builder) throws Exception {
         Optional<JobClient> jobClient = tableResult.getJobClient();
         if (jobClient.isPresent()) {
             builder.jobId(jobClient.get().getJobID().toString());
@@ -143,13 +143,13 @@ public class FlinkExecutor implements Executor {
     }
 
     @Override
-    public SubmitResult fetchResults(FetchResultParams params) throws Exception {
+    public SubmissionResult fetchResults(FetchResultParams params) throws Exception {
         // TODO
         return null;
     }
 
     @Override
-    public boolean stop(String jobId, boolean withSavepoint, boolean withDrain) throws Exception {
+    public boolean stop(String jobId, Object... options) throws Exception {
         // TODO: STOP JOB STATEMENT.
         return false;
     }

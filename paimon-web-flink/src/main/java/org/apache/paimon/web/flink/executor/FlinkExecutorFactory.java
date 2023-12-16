@@ -45,13 +45,20 @@ public class FlinkExecutorFactory implements ExecutorFactory {
         EnvironmentSettings environmentSettings = getEnvironmentSettings(mode);
         StreamExecutionEnvironment env =
                 StreamExecutionEnvironment.getExecutionEnvironment(configuration);
-        TableEnvironment tableEvn = StreamTableEnvironmentImpl.create(env, environmentSettings);
-        return new FlinkExecutor(env, tableEvn);
+        TableEnvironment tableEnv = StreamTableEnvironmentImpl.create(env, environmentSettings);
+        return new FlinkExecutor(env, tableEnv);
     }
 
     private EnvironmentSettings getEnvironmentSettings(RuntimeExecutionMode mode) {
-        return mode == RuntimeExecutionMode.BATCH
-                ? EnvironmentSettings.newInstance().inBatchMode().build()
-                : EnvironmentSettings.newInstance().inStreamingMode().build();
+        switch (mode) {
+            case BATCH:
+                return EnvironmentSettings.newInstance().inBatchMode().build();
+            case STREAMING:
+                return EnvironmentSettings.newInstance().inStreamingMode().build();
+            case AUTOMATIC:
+                return EnvironmentSettings.newInstance().build();
+            default:
+                throw new IllegalArgumentException("Unsupported runtime execution mode: " + mode);
+        }
     }
 }

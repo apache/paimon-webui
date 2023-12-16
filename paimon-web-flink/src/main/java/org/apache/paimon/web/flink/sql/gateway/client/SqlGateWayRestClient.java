@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.flink.sql.gateway.client;
 
-import org.apache.paimon.web.common.function.Supplier;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.rest.FileUpload;
@@ -33,6 +32,8 @@ import org.apache.flink.runtime.rest.versioning.RestAPIVersion;
 import org.apache.flink.util.ConfigurationException;
 import org.apache.flink.util.concurrent.Executors;
 
+import java.io.IOException;
+import java.util.function.Supplier;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
@@ -61,14 +62,20 @@ public class SqlGateWayRestClient extends RestClient {
                     RestAPIVersion<? extends RestAPIVersion<?>> apiVersion) {
         return throwExceptionHandler(
                 () ->
-                        super.sendRequest(
+                {
+                    try {
+                        return super.sendRequest(
                                 targetAddress,
                                 targetPort,
                                 messageHeaders,
                                 messageParameters,
                                 request,
                                 fileUploads,
-                                apiVersion));
+                                apiVersion);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     public <
@@ -79,12 +86,18 @@ public class SqlGateWayRestClient extends RestClient {
             CompletableFuture<P> sendRequest(M messageHeaders, U messageParameters, R request) {
         return throwExceptionHandler(
                 () ->
-                        super.sendRequest(
+                {
+                    try {
+                        return super.sendRequest(
                                 targetAddress,
                                 targetPort,
                                 messageHeaders,
                                 messageParameters,
-                                request));
+                                request);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     public <
@@ -99,13 +112,19 @@ public class SqlGateWayRestClient extends RestClient {
                     Collection<FileUpload> fileUploads) {
         return throwExceptionHandler(
                 () ->
-                        super.sendRequest(
+                {
+                    try {
+                        return super.sendRequest(
                                 targetAddress,
                                 targetPort,
                                 messageHeaders,
                                 messageParameters,
                                 request,
-                                fileUploads));
+                                fileUploads);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     public <
@@ -113,12 +132,18 @@ public class SqlGateWayRestClient extends RestClient {
                     P extends ResponseBody>
             CompletableFuture<P> sendRequest(M messageHeaders) {
         return throwExceptionHandler(
-                () -> super.sendRequest(targetAddress, targetPort, messageHeaders));
+                () -> {
+                    try {
+                        return super.sendRequest(targetAddress, targetPort, messageHeaders);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     private <T> T throwExceptionHandler(Supplier<T> func0) {
         try {
-            return func0.call();
+            return func0.get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
