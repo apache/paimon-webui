@@ -85,6 +85,8 @@ export default defineComponent({
 
     onMounted(catalogStore.getAllCatalogs)
 
+    onUnmounted(catalogStore.resetCurrentTable)
+
     const onLoadMenu = async (node: TreeOption) => {
       if (node.type === 'catalog') {
         node.children = await catalogStore.getDatabasesById(node.key as number)
@@ -101,6 +103,23 @@ export default defineComponent({
       return Promise.resolve()
     }
 
+    const nodeProps = ({ option }: { option: TreeOption }) => {
+      return {
+        onClick () {
+          const { type } = option
+          if (type === 'table') {
+            const [ catalogId, catalogName, databaseName, name ] = (option.key?.toString() || '')?.split(' ') || []
+            catalogStore.setCurrentTable({
+              catalogId: Number(catalogId),
+              catalogName,
+              databaseName,
+              tableName: name
+            })
+          }
+        }
+      }
+    }
+
     return {
       menuLoading: catalogStoreRef.catalogLoading,
       menuList: catalogStoreRef.catalogs,
@@ -109,7 +128,8 @@ export default defineComponent({
       t,
       onLoadMenu,
       updatePrefixWithExpanded,
-      renderSuffix
+      renderSuffix,
+      nodeProps
     }
   },
   render() {
@@ -136,6 +156,7 @@ export default defineComponent({
               <n-tree
                 block-line
                 expand-on-click
+                nodeProps={this.nodeProps}
                 renderSuffix={this.renderSuffix}
                 onUpdate:expandedKeys={this.updatePrefixWithExpanded}
                 onLoad={this.onLoadMenu}

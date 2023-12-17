@@ -57,8 +57,8 @@ const useAxle = createUseAxle({
   axle
 })
 
-function createHooks<T, R>(options: FetchOptions<T, R>) {
-  return useAxle<ResponseOptions<T>, R, Record<string, any>>(options)
+function createHooks<T>(options: FetchOptions<T>) {
+  return useAxle<ResponseOptions<T>, ResponseOptions<T>, Record<string, any>>(options)
 }
 
 axle.createHooks = createHooks

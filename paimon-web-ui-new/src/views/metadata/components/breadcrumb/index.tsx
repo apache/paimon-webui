@@ -17,18 +17,63 @@ under the License. */
 
 import { Folder, FileTray } from '@vicons/ionicons5'
 
+import { useCatalogStore } from '@/store/catalog'
+
 export default defineComponent({
   name: 'MetaDataBreadcrumb',
-  setup() { },
+  setup() {
+    const catalogStore = useCatalogStore()
+    const catalogStoreRef = storeToRefs(catalogStore)
+
+    return {
+      currentTable: catalogStoreRef.currentTable
+    }
+  },
   render() {
     return (
       <n-breadcrumb>
         <n-breadcrumb-item>
-          <n-icon component={Folder} /> paimon2</n-breadcrumb-item>
+          <n-button text>
+            {{
+              default: () => {
+                return this.currentTable?.catalogName
+              },
+              icon: () => {
+                return <n-icon>
+                  <Folder />
+                </n-icon>
+              }
+            }}
+          </n-button>
+        </n-breadcrumb-item>
         <n-breadcrumb-item>
-          <n-icon component={Folder} /> user</n-breadcrumb-item>
+          <n-button text>
+            {{
+              default: () => {
+                return this.currentTable?.databaseName
+              },
+              icon: () => {
+                return <n-icon>
+                  <Folder />
+                </n-icon>
+              }
+            }}
+          </n-button>
+        </n-breadcrumb-item>
         <n-breadcrumb-item>
-          <n-icon component={FileTray} /> user_table</n-breadcrumb-item>
+          <n-button text>
+            {{
+              default: () => {
+                return this.currentTable?.tableName
+              },
+              icon: () => {
+                return <n-icon>
+                  <FileTray />
+                </n-icon>
+              }
+            }}
+          </n-button>
+        </n-breadcrumb-item>
       </n-breadcrumb>
     );
   }

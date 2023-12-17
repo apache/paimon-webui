@@ -27,5 +27,9 @@ under the License. */
     width: calc(100% - 60px);
 
     padding: 14px 20px;
+
+    :global(.n-empty) {
+      margin-top: 200px;
+    }
   }
 }
