@@ -22,3 +22,7 @@ module.exports = {
   metadata,
   system
 }
+
+export interface TableParams extends Table {
+  tableName: string;
+}
