@@ -21,7 +21,7 @@ export const useTable = () => {
         searchForm: {
             roleName: ''
         },
-        pagination: reactive({
+        pagination: {
             showQuickJumper: true,
             showSizePicker: true,
             pageSize: 10,
@@ -31,7 +31,7 @@ export const useTable = () => {
                 tableVariables.pagination.page = page
                 getTableData()
             },
-        })
+        }
     })
     const [roleList, useRoleList, { loading }] = listRole()
     const getTableData = () => {

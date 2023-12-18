@@ -17,13 +17,13 @@ under the License. */
 
 import httpRequest from '../../request'
 import type { ResponseOptions } from '@/api/types'
-import type { SysRole } from './types/sys_role'
+import type { Role } from './types/role'
 
 /**
  * # List roles
  */
 export const listRole = () => {
-  return httpRequest.createHooks!<ResponseOptions<SysRole[]>, any[]>({
+  return httpRequest.createHooks!<ResponseOptions<Role[]>, any[]>({
     url: '/role/list',
     method: 'get',
   })

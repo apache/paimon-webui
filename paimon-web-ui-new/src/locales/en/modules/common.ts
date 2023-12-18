@@ -16,10 +16,10 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-    success:'success',
-    add_success:'add success',
-    update_success:'update success',
-    delete_success:'delete success',
+    success:'Success',
+    add_success:'Add success',
+    update_success:'Update success',
+    delete_success:'Delete success',
     create_user:'Create user',
     create_time:'Create time',
     update_time:'Update time',

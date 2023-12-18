@@ -106,7 +106,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
         String response =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(METADATA_PATH + "/querySchemaInfo")
+                                MockMvcRequestBuilders.post(METADATA_PATH + "/query/schema")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(metadata))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -130,7 +130,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
         String response =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(METADATA_PATH + "/queryManifestInfo")
+                                MockMvcRequestBuilders.post(METADATA_PATH + "/query/snapshot")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(metadata))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
