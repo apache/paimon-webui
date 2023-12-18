@@ -15,6 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { useCatalogStore } from '@/store/catalog'
+
 import styles from './index.module.scss'
 import MenuTree from "./components/menu-tree"
 import Breadcrumb from './components/breadcrumb'
@@ -22,15 +24,25 @@ import Tabs from './components/metadata-tabs'
 
 export default defineComponent({
   name: 'MetadataPage',
-  setup() { },
+  setup() {
+    const catalogStore = useCatalogStore()
+    const catalogStoreRef = storeToRefs(catalogStore)
+
+    return {
+      currentTable: catalogStoreRef.currentTable
+    }
+  },
   render() {
     return (
       <div class={styles.container}>
         <MenuTree />
         <div class={styles.content}>
-          <Breadcrumb />
-          <Tabs />
-          <router-view />
+          {
+            this.currentTable ? <>
+              <Breadcrumb />
+              <Tabs />
+            </> : <n-empty description='Select the table. Please'></n-empty>
+          }
         </div>
       </div>
     );

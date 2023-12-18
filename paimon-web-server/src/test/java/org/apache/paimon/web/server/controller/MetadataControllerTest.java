@@ -19,27 +19,17 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.MetadataDTO;
-import org.apache.paimon.web.server.data.dto.TableDTO;
-import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
-import org.apache.paimon.web.server.util.PaimonDataType;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.event.annotation.AfterTestClass;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -48,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureMockMvc
 public class MetadataControllerTest extends ControllerTestBase {
 
-    private static final String METADATA_PATH = "/api/metadata";
+    private static final String METADATA_PATH = "/api/metadata/query";
 
     private static final String tablePath = "/api/table";
 
@@ -60,43 +50,6 @@ public class MetadataControllerTest extends ControllerTestBase {
 
     private static final String tableName = "paimon_table";
 
-    @BeforeTestClass
-    public void createTable() throws Exception {
-        List<TableColumn> tableColumns = new ArrayList<>();
-        TableColumn id =
-                new TableColumn("id", PaimonDataType.builder().type("INT").build(), "", false, "0");
-        TableColumn name =
-                new TableColumn(
-                        "name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
-        tableColumns.add(id);
-        tableColumns.add(name);
-        TableDTO table =
-                TableDTO.builder()
-                        .catalogName(catalogName)
-                        .databaseName(databaseName)
-                        .name(tableName)
-                        .tableColumns(tableColumns)
-                        .partitionKey(Lists.newArrayList())
-                        .tableOptions(Maps.newHashMap())
-                        .build();
-
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post(tablePath + "/create")
-                                        .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(table))
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
-        assertEquals(200, r.getCode());
-    }
-
     @Test
     public void testGetSchemaInfo() throws Exception {
         MetadataDTO metadata = new MetadataDTO();
@@ -106,7 +59,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
         String response =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(METADATA_PATH + "/query/schema")
+                                MockMvcRequestBuilders.post(METADATA_PATH + "/schema")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(metadata))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -130,7 +83,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
         String response =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(METADATA_PATH + "/query/snapshot")
+                                MockMvcRequestBuilders.post(METADATA_PATH + "/manifest")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(metadata))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -154,7 +107,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
         String response =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(METADATA_PATH + "/queryDataFileInfo")
+                                MockMvcRequestBuilders.post(METADATA_PATH + "/dataFile")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(metadata))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -178,7 +131,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
         String response =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(METADATA_PATH + "/querySnapshotInfo")
+                                MockMvcRequestBuilders.post(METADATA_PATH + "/snapshot")
                                         .cookie(cookie)
                                         .content(ObjectMapperUtils.toJSON(metadata))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -191,21 +144,5 @@ public class MetadataControllerTest extends ControllerTestBase {
 
         R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
         assertEquals(200, result.getCode());
-    }
-
-    @AfterTestClass
-    public void dropTable() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete(
-                                tablePath
-                                        + "/drop/"
-                                        + catalogName
-                                        + "/"
-                                        + databaseName
-                                        + "/"
-                                        + tableName)
-                        .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE));
     }
 }

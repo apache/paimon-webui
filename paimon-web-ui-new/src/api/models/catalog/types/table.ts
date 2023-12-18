@@ -26,3 +26,7 @@ export interface TableQuery {
   catalogId: number;
   databaseName: string;
 }
+
+export interface TableParams extends Table {
+  tableName: string;
+}
