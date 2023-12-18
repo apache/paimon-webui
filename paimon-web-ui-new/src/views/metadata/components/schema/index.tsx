@@ -19,6 +19,7 @@ import { type DataTableColumns } from 'naive-ui'
 import dayjs from 'dayjs'
 
 import { getSchema, type Schema } from '@/api/models/catalog'
+import { useCatalogStore } from '@/store/catalog'
 
 import { fieldsColumns, optionsColumns } from './columns'
 import styles from './index.module.scss'
@@ -27,6 +28,8 @@ export default defineComponent({
   name: 'MetadataSchema',
   setup() {
     const { t } = useLocaleHooks()
+    
+    const catalogStore = useCatalogStore()
 
     const [schemaData, useSchemaInfo, { loading }] = getSchema()
 
@@ -82,16 +85,15 @@ export default defineComponent({
       }
     ]
 
-    onMounted(() => {
+    const onFetchData = async () => {
       useSchemaInfo({
-        params: {
-          catalogId: -1632763902,
-          catalogName: "streaming_warehouse",
-          databaseName: "ods",
-          tableName: "t_user"
-        }
+        params: catalogStore.currentTable
       })
-    })
+    }
+
+    watch(() => catalogStore.currentTable, onFetchData)
+
+    onMounted(onFetchData)
 
     return {
       columns,

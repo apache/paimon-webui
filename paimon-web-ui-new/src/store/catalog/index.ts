@@ -20,22 +20,27 @@ import { FileTrayOutline, FolderOutline } from '@vicons/ionicons5'
 
 
 import { getAllCatalogs, getDatabasesByCatalogId, getTables } from '@/api/models/catalog'
-import type { Catalog, Database, Table, TableQuery } from '@/api/models/catalog'
+import type { Catalog, Database, Table, TableParams, TableQuery } from '@/api/models/catalog'
 
 export interface CatalogState {
   catalogs: TreeOption[];
   _catalogLoading: boolean;
+  _currentTable?: TableParams
 }
 
 export const useCatalogStore = defineStore('catalog', {
   state: (): CatalogState => ({
     catalogs: [],
-    _catalogLoading: false
+    _catalogLoading: false,
+    _currentTable: undefined
   }),
   persist: true,
   getters: {
     catalogLoading: (state): boolean => {
       return state._catalogLoading
+    },
+    currentTable: (state): TableParams | undefined => {
+      return state._currentTable
     }
   },
   actions: {
@@ -55,6 +60,12 @@ export const useCatalogStore = defineStore('catalog', {
       const res = await getTables(params)
 
       return Promise.resolve(transformTable(res.data))
+    },
+    async setCurrentTable(table: TableParams) {
+      this._currentTable = table
+    },
+    async resetCurrentTable() {
+      this._currentTable = undefined
     }
   }
 })
@@ -89,7 +100,7 @@ const transformTable = (tables: Table[]): TreeOption[] => {
   return tables.map(table => ({
     label: table.name,
     type: 'table',
-    key: `${table.catalogId} ${table.databaseName} ${table.name}`,
+    key: `${table.catalogId} ${table.catalogName} ${table.databaseName} ${table.name}`,
     isLeaf: true,
     prefix: () =>
       h(NIcon, null, {

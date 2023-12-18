@@ -18,11 +18,14 @@ under the License. */
 import { type DataTableColumns } from 'naive-ui'
 
 import { getDataFile, type Datafile } from '@/api/models/catalog'
+import { useCatalogStore } from '@/store/catalog'
 
 export default defineComponent({
   name: 'MetadataDataFile',
   setup() {
     const [datafiles, useDataFile, { loading }] = getDataFile()
+
+    const catalogStore = useCatalogStore()
 
     const columns: DataTableColumns<Datafile> = [
       {
@@ -43,16 +46,15 @@ export default defineComponent({
       }
     ]
 
-    onMounted(() => {
+    const onFetchData = async () => {
       useDataFile({
-        params: {
-          catalogId: -1632763902,
-          catalogName: "streaming_warehouse",
-          databaseName: "ods",
-          tableName: "t_user"
-        }
+        params: catalogStore.currentTable
       })
-    })
+    }
+
+    watch(() => catalogStore.currentTable, onFetchData)
+
+    onMounted(onFetchData)
 
     return {
       columns,
