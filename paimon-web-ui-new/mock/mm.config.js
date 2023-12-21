@@ -56,7 +56,7 @@ module.exports = util => {
           'type|1': [`js`, `css`, `html`],
           'discount|1': [`0`, `1`],
           author: {
-            'name|1': [`张三`, `李四`],
+            'name|1': [`Davin`, `labbomb`],
           },
           title: `@ctitle`,
         },
