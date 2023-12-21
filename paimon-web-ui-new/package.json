@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "dev:mock": "vite --mode mock",
+    "mock": "mm --config=mock/mm.config.js",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -21,6 +23,7 @@
     "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
     "mitt": "^3.0.1",
+    "mockm": "1.1.27-alpha.2",
     "monaco-editor": "^0.43.0",
     "pinia": "^2.1.6",
     "pinia-plugin-persistedstate": "^3.2.0",
@@ -56,6 +59,7 @@
     "unplugin-auto-import": "^0.16.6",
     "unplugin-vue-components": "^0.25.2",
     "vite": "^4.4.9",
-    "vue-tsc": "^1.8.11"
+    "vue-tsc": "^1.8.11",
+    "mockm": "1.1.27-alpha.2"
   }
 }
