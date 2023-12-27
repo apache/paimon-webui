@@ -21,5 +21,16 @@ export default {
   schema_info: 'Schema 信息',
   snapshot_file: 'Snapshot 文件',
   manifests_file: 'Manifest 文件',
-  data_file: '数据文件'
+  data_file: '数据文件',
+
+  create_catalog: '创建 Catalog',
+  catalog_name: 'Catalog 名称',
+  catalog_type: 'Catalog 类型',
+  catalog_warehouse: 'Warehouse',
+  catalog_hiveurl: 'Hive Url',
+  catalog_hive_conf_dir: 'Hive Conf Dir',
+
+  create_database: '创建 Database',
+  database_name: 'Database 名称',
+  database_des: 'Database 描述',
 }

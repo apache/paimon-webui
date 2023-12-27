@@ -16,9 +16,10 @@ specific language governing permissions and limitations
 under the License. */
 
 import { Add, FolderOutline, FolderOpenOutline, Search } from '@vicons/ionicons5'
-import { NButton, NIcon, type TreeOption } from 'naive-ui';
+import { NButton, NIcon, type TreeOption } from 'naive-ui'
 
 import { useCatalogStore } from '@/store/catalog'
+import Modal from '@/components/modal'
 
 import styles from './index.module.scss'
 
@@ -31,17 +32,17 @@ export default defineComponent({
     const catalogStoreRef = storeToRefs(catalogStore)
 
     const filterValue = ref('')
+    const showModalRef = ref(false)
+    const modalRef = ref()
+    const formType = ref('CATALOG')
 
-    const dropdownMenu = [
-      {
-        label: t('playground.new_folder'),
-        key: 'new_folder',
-      },
-      {
-        label: t('playground.new_file'),
-        key: 'new_file',
-      },
-    ]
+    const formTitle = computed(() => {
+      return `metadata.create_${formType.value.toLocaleLowerCase()}`
+    })
+
+    const handleConfirm = async () => {
+      await modalRef.value.formRef.validate()
+    }
 
     const updatePrefixWithExpanded = (
       _keys: Array<string | number>,
@@ -68,19 +69,44 @@ export default defineComponent({
       }
     }
 
+    const handleOpenModal = () => {
+      showModalRef.value = true
+    }
+
+    const handleCloseModal = () => {
+      formType.value = 'CATALOG'
+      showModalRef.value = false
+    }
+
     const renderSuffix = ({ option }: { option: TreeOption }) => {
-      return option.type !== 'table' ? h(NButton, {
-        quaternary: true,
-        circle: true,
-        size: 'tiny',
-        onClick: (e) => {
-          e.stopPropagation()
-        }
-      }, {
-        default: () => h(NIcon, null, {
-          default: () => h(Add)
-        })
-      }) : undefined
+      return option.type !== 'table'
+        ? h(
+            NButton,
+            {
+              quaternary: true,
+              circle: true,
+              size: 'tiny',
+              onClick: (e) => {
+                e.stopPropagation()
+
+                if (option.type === 'catalog') {
+                  formType.value = 'DATABASE'
+                }
+                if (option.type === 'database') {
+                  formType.value = 'DATABASE'
+                }
+
+                handleOpenModal()
+              }
+            },
+            {
+              default: () =>
+                h(NIcon, null, {
+                  default: () => h(Add)
+                })
+            }
+          )
+        : undefined
     }
 
     onMounted(catalogStore.getAllCatalogs)
@@ -90,8 +116,7 @@ export default defineComponent({
     const onLoadMenu = async (node: TreeOption) => {
       if (node.type === 'catalog') {
         node.children = await catalogStore.getDatabasesById(node.key as number)
-      } 
-      else {
+      } else {
         const [catalogId, databaseName] = (node.key as string)?.split(' ') || []
         const params = {
           catalogId: Number(catalogId),
@@ -105,10 +130,11 @@ export default defineComponent({
 
     const nodeProps = ({ option }: { option: TreeOption }) => {
       return {
-        onClick () {
+        onClick() {
           const { type } = option
           if (type === 'table') {
-            const [ catalogId, catalogName, databaseName, name ] = (option.key?.toString() || '')?.split(' ') || []
+            const [catalogId, catalogName, databaseName, name] =
+              (option.key?.toString() || '')?.split(' ') || []
             catalogStore.setCurrentTable({
               catalogId: Number(catalogId),
               catalogName,
@@ -123,13 +149,18 @@ export default defineComponent({
     return {
       menuLoading: catalogStoreRef.catalogLoading,
       menuList: catalogStoreRef.catalogs,
-      dropdownMenu,
       filterValue,
+      formType,
+      formTitle,
+      showModalRef,
       t,
       onLoadMenu,
       updatePrefixWithExpanded,
       renderSuffix,
-      nodeProps
+      nodeProps,
+      handleOpenModal,
+      handleCloseModal,
+      handleConfirm
     }
   },
   render() {
@@ -137,21 +168,22 @@ export default defineComponent({
       <div class={styles.container}>
         <n-card class={styles.card} content-style={'padding:20px 18px;'}>
           <n-space vertical>
-            <n-space justify='space-between' align='enter'>
+            <n-space justify="space-between" align="enter">
               <article>Catalog</article>
-              <n-button size='small' quaternary circle>
+              <n-button size="small" quaternary circle onClick={this.handleOpenModal}>
                 <n-icon>
                   <Add />
                 </n-icon>
               </n-button>
             </n-space>
-            <n-input placeholder={this.t('playground.search')} style="width: 100%;"
+            <n-input
+              placeholder={this.t('playground.search')}
+              style="width: 100%;"
               v-model:value={this.filterValue}
               v-slots={{
                 prefix: () => <n-icon component={Search} />
               }}
-            >
-            </n-input>
+            ></n-input>
             <n-spin show={this.menuLoading}>
               <n-tree
                 block-line
@@ -166,7 +198,17 @@ export default defineComponent({
             </n-spin>
           </n-space>
         </n-card>
+        {this.showModalRef && (
+          <Modal
+            ref='modalRef'
+            showModal={this.showModalRef}
+            title={this.t(this.formTitle)}
+            formType={this.formType}
+            onCancel={this.handleCloseModal}
+            onConfirm={this.handleConfirm}
+          />
+        )}
       </div>
-    );
+    )
   }
-});
+})

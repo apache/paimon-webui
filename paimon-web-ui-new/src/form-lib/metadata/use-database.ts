@@ -15,19 +15,42 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { useCDCList } from './cdc/use-cdc-list'
-import { useMYSQL } from './cdc/use-mysql'
-import { usePaimon } from './cdc/use-paimon'
+import type { IJsonItem } from '@/components/dynamic-form/types'
 
-import { useCatalog } from './metadata/use-catalog'
-import { useDatabase } from './metadata/use-database'
-import { useTable } from './metadata/use-table'
+export function useDatabase() {
+  const { t } = useLocaleHooks()
 
-export default {
-  CDCLIST: useCDCList,
-  MYSQL: useMYSQL,
-  PAIMON: usePaimon,
-  CATALOG: useCatalog,
-  DATABASE: useDatabase,
-  TABLE: useTable
+	const model = reactive({})
+
+	return {
+		json: [
+			{
+				type: 'input',
+				field: 'name',
+				name: t('metadata.database_name'),
+				props: {
+					placeholder: ''
+				},
+				validate: {
+					trigger: ['input', 'blur'],
+					required: true,
+					message: 'error',
+					validator: (validator: any, value: string) => {
+						if (!value) {
+							return new Error('error')
+						}
+					}
+				}
+			},
+			{
+				type: 'input',
+				field: 'description',
+				name: t('metadata.database_des'),
+				props: {
+					placeholder: '',
+					type: 'textarea'
+				}
+			},
+		] as IJsonItem[], model
+	}
 }
