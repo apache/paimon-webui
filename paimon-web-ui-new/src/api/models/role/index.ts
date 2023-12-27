@@ -22,7 +22,7 @@ import type { Role } from './types/role'
 /**
  * # List roles
  */
-export const listRole = () => {
+export const listRoles = () => {
   return httpRequest.createHooks!<ResponseOptions<Role[]>, any[]>({
     url: '/role/list',
     method: 'get',
