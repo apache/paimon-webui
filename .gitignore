@@ -74,3 +74,5 @@ coverage
 
 # paimon-web-ui-new
 paimon-web-ui-new/auto-imports.d.ts
+paimon-web-ui-new/httpData
+paimon-web-ui-new/apiWeb.json
