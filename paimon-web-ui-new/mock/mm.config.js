@@ -65,10 +65,20 @@ module.exports = util => {
   }
 }
 
-function rename(mockInstance) {
+function rename(mockUtil) {
   const result = {}
   for (const key in mockData) {
-    result[`/mock/api${key}`] = mockInstance(mockData[key])
+    const apiData = mockData[key](mockUtil)
+
+    for (const k in apiData) {
+      const urlGap = k.split(' ')
+
+      if (urlGap.length === 2) {
+        result[`${urlGap[0]} /mock/api${urlGap[1]}`] = apiData[k]
+      } else {
+        result[`/mock/api${k}`] = apiData[k]
+      }
+    }
   }
 
   return result
