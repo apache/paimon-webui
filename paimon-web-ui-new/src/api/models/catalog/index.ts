@@ -48,7 +48,7 @@ export const getTables = (params: TableQuery) => {
  * # Get schema
  */
 export const getSchema = () => {
-  return httpRequest.createHooks!<ResponseOptions<Schema[]>, Schema[]>({
+  return httpRequest.createHooks!<Schema[]>({
     url: '/metadata/query/schema',
     method: 'post',
   })
@@ -58,7 +58,7 @@ export const getSchema = () => {
  * # Get manifest
  */
 export const getManifest = () => {
-  return httpRequest.createHooks!<ResponseOptions<Manifest[]>, Manifest[]>({
+  return httpRequest.createHooks!<Manifest[]>({
     url: '/metadata/query/manifest',
     method: 'post',
   })
@@ -68,7 +68,7 @@ export const getManifest = () => {
  * # Get data file
  */
 export const getDataFile = () => {
-  return httpRequest.createHooks!<ResponseOptions<Datafile[]>, Datafile[]>({
+  return httpRequest.createHooks!<Datafile[]>({
     url: '/metadata/query/dataFile',
     method: 'post',
   })
@@ -78,7 +78,7 @@ export const getDataFile = () => {
  * # Get snapshot
  */
 export const getSnapshot = () => {
-  return httpRequest.createHooks!<ResponseOptions<Snapshot[]>, Snapshot[]>({
+  return httpRequest.createHooks!<Snapshot[]>({
     url: '/metadata/query/snapshot',
     method: 'post',
   })

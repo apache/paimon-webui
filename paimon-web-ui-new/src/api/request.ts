@@ -21,7 +21,7 @@ import { createUseAxle } from '@varlet/axle/use'
 import type { FetchOptions, ResponseOptions } from './types'
 
 const axle: AxleInstance & { createHooks?: typeof createHooks } = createAxle({
-  baseURL: '/api'
+  baseURL: import.meta.env.MODE === 'mock' ? '/mock/api' : '/api'
 })
 
 axle.axios.interceptors.request.use(
@@ -57,8 +57,8 @@ const useAxle = createUseAxle({
   axle
 })
 
-function createHooks<T, R>(options: FetchOptions<T, R>) {
-  return useAxle<ResponseOptions<T>, R, Record<string, any>>(options)
+function createHooks<T>(options: FetchOptions<T>) {
+  return useAxle<ResponseOptions<T>, ResponseOptions<T>, Record<string, any>>(options)
 }
 
 axle.createHooks = createHooks

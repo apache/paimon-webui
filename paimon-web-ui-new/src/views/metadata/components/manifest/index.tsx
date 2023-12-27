@@ -18,12 +18,15 @@ under the License. */
 import { type DataTableColumns } from 'naive-ui'
 
 import { getManifest, type Manifest } from '@/api/models/catalog'
+import { useCatalogStore } from '@/store/catalog'
 
 export default defineComponent({
   name: 'MetadataManifest',
   setup() {
     const { t } = useLocaleHooks()
     const [manifest, useManifest, { loading }] = getManifest()
+
+    const catalogStore = useCatalogStore()
 
     const columns: DataTableColumns<Manifest> = [
       {
@@ -40,16 +43,15 @@ export default defineComponent({
       },
     ]
 
-    onMounted(() => {
+    const onFetchData = async () => {
       useManifest({
-        params: {
-          catalogId: -1632763902,
-          catalogName: "streaming_warehouse",
-          databaseName: "ods",
-          tableName: "t_user"
-        }
+        params: catalogStore.currentTable
       })
-    })
+    }
+
+    watch(() => catalogStore.currentTable, onFetchData)
+
+    onMounted(onFetchData)
 
     return {
       columns,

@@ -15,21 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  display: flex;
-  width: 100%;
-  height: 100%;
+const metadata = require(`./metadata`)
 
-  .content {
-    display: flex;
-    flex-direction: column;
-    
-    width: calc(100% - 60px);
-
-    padding: 14px 20px;
-
-    :global(.n-empty) {
-      margin-top: 200px;
-    }
-  }
+module.exports = {
+  ...metadata
 }

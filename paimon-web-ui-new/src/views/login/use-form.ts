@@ -17,10 +17,10 @@ under the License. */
 
 import type { FormValidationError } from 'naive-ui'
 import type { Router } from 'vue-router'
+import { onLogin } from '@/api'
 
 export function useForm() {
   const router: Router = useRouter()
-  const [userInfo, onSubmit] = onLogin()
 
   const state = reactive({
     loginForm: ref(),
@@ -33,7 +33,7 @@ export function useForm() {
   const handleLogin = () => {
     state.loginForm.validate(async (errors: Array<FormValidationError>) => {
       if (!errors) {
-        await onSubmit({
+        onLogin({
           params: {
             username: state.model.username,
             password: state.model.password,
@@ -41,7 +41,6 @@ export function useForm() {
             rememberMe: true
           }
         })
-        console.log(userInfo)
         router.push({ path: '/' })
       }
     })

@@ -15,21 +15,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  display: flex;
-  width: 100%;
-  height: 100%;
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    
-    width: calc(100% - 60px);
-
-    padding: 14px 20px;
-
-    :global(.n-empty) {
-      margin-top: 200px;
-    }
+module.exports = {
+  '/catalog/getAllCatalogs': {
+    code: 200,
+    message: 'success',
+    'data|5': [
+      {
+        'id|+1': 1,
+        createTime: '@date("yyyy-MM-dd HH:mm:ss")',
+        updateTime: '@date("yyyy-MM-dd HH:mm:ss")',
+        catalogType: 'hlv',
+        catalogName: `@title`,
+        warehouse: undefined,
+        hiveUri: undefined,
+        hiveConfDir: undefined
+      }
+    ]
   }
 }
