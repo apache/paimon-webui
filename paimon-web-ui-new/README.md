@@ -33,6 +33,12 @@ pnpm install
 pnpm dev
 ```
 
+- If you can't a backend server. You can running project with mock mode
+
+```sh
+pnpm dev:mock & pnpm run mock
+```
+
 ### Type-Check, Compile and Minify for Production
 
 ```sh

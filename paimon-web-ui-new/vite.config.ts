@@ -28,6 +28,10 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 export default defineConfig({
   server: {
     proxy: {
+      '/mock': {
+        target: 'http://127.0.0.1:10088',
+        changeOrigin: true,
+      },
       '/api': {
         target: 'http://127.0.0.1:10088',
         changeOrigin: true,
