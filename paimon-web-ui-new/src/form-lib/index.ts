@@ -19,15 +19,11 @@ import { useCDCList } from './cdc/use-cdc-list'
 import { useMYSQL } from './cdc/use-mysql'
 import { usePaimon } from './cdc/use-paimon'
 
-import { useCatalog } from './metadata/use-catalog'
 import { useDatabase } from './metadata/use-database'
-import { useTable } from './metadata/use-table'
 
 export default {
   CDCLIST: useCDCList,
   MYSQL: useMYSQL,
   PAIMON: usePaimon,
-  CATALOG: useCatalog,
   DATABASE: useDatabase,
-  TABLE: useTable
 }

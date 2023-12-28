@@ -32,6 +32,12 @@ module.exports = (mockUtil) => ({
       }
     ]
   }),
+  'post /catalog/create': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
+
   'get /database/list': mockUtil({
     code: 200,
     msg: 'Successfully',
