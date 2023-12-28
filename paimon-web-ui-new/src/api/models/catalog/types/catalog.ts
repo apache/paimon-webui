@@ -25,3 +25,11 @@ export interface Catalog {
   hiveUri?: string;
   hiveConfDir?: string;
 }
+
+export interface CatalogDTO {
+  type: string;
+  name: string;
+  warehouse: string;
+  hiveUri?: string;
+  hiveConfDir?: string;
+}

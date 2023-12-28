@@ -27,7 +27,7 @@ export default {
   catalog_name: 'Catalog 名称',
   catalog_type: 'Catalog 类型',
   catalog_warehouse: 'Warehouse',
-  catalog_hiveurl: 'Hive Url',
+  catalog_hiveuri: 'Hive Uri',
   catalog_hive_conf_dir: 'Hive Conf Dir',
 
   create_database: '创建 Database',

@@ -18,16 +18,58 @@ under the License. */
 import { Add } from '@vicons/ionicons5'
 
 import { useCatalogStore } from '@/store/catalog'
+import { createCatalog, type CatalogDTO } from '@/api/models/catalog'
 
 export default defineComponent({
   name: 'CatalogForm',
   setup() {
+    const rules = {
+      name: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'catalog name required'
+      },
+      type: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'catalog type required'
+      },
+      warehouse: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'catalog warehouse required'
+      },
+      hiveUri: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'catalog hiveUri required'
+      },
+      hiveConfDir: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'catalog hiveConfDir required'
+      }
+    }
+
+    const catalogTypeOptions = [
+      {
+        label: 'FileSystem',
+        value: 'filesystem'
+      },
+      {
+        label: 'Hive',
+        value: 'hive'
+      }
+    ]
+
     const { t } = useLocaleHooks()
+    const message = useMessage()
 
     const catalogStore = useCatalogStore()
+    const [result, createFetch, { loading }] = createCatalog()
 
     const formRef = ref()
-    const formValue = ref({
+    const formValue = ref<CatalogDTO>({
       name: '',
       type: '',
       warehouse: '',
@@ -36,6 +78,20 @@ export default defineComponent({
 
     const handleConfirm = async () => {
       await formRef.value.validate()
+      await createFetch({
+        params: toRaw(formValue.value)
+      })
+      
+      if (result.value.code === 200) {
+        handleCloseModal()
+        message.success(t('Create Successfully'))
+        formValue.value = {
+          name: '',
+          type: '',
+          warehouse: '',
+        }
+        catalogStore.getAllCatalogs(true)
+      }
     }
 
     const handleOpenModal = (e: Event) => {
@@ -51,6 +107,10 @@ export default defineComponent({
       formRef,
       formValue,
       showModal,
+      loading,
+
+      rules,
+      catalogTypeOptions,
 
       t,
       handleOpenModal,
@@ -80,23 +140,33 @@ export default defineComponent({
               default: () => (
                 <n-form
                   ref='formRef'
-                  inline
+                  label-placement="left"
+                  label-width="auto"
+                  label-align="right"
+                  rules={this.rules}
                   model={this.formValue}
                 >
                   <n-form-item label={this.t('metadata.catalog_name')} path='name'>
                     <n-input v-model:value={this.formValue.name} />
                   </n-form-item>
                   <n-form-item label={this.t('metadata.catalog_type')} path='type'>
-                    <n-input v-model:value={this.formValue.type} />
+                    <n-select v-model:value={this.formValue.type} options={this.catalogTypeOptions} />
                   </n-form-item>
                   <n-form-item label={this.t('metadata.catalog_warehouse')} path='warehouse'>
                     <n-input v-model:value={this.formValue.warehouse} />
                   </n-form-item>
-                  <n-form-item>
-                    <n-button attr-type='button' onClick='handleValidateClick'>
-                      验证
-                    </n-button>
-                  </n-form-item>
+                  {
+                    this.formValue.type === 'hive' && (
+                      <>
+                        <n-form-item label={this.t('metadata.catalog_hiveuri')} path='hiveUri'>
+                          <n-input v-model:value={this.formValue.hiveUri} />
+                        </n-form-item>
+                        <n-form-item label={this.t('metadata.catalog_hive_conf_dir')} path='hiveConfDir'>
+                          <n-input v-model:value={this.formValue.hiveConfDir} />
+                        </n-form-item>
+                      </>
+                    )
+                  }
                 </n-form>
               ),
               footer: () => (
@@ -104,7 +174,7 @@ export default defineComponent({
                   <n-button onClick={this.handleCloseModal}>
                     {this.t('layout.cancel')}
                   </n-button>
-                  <n-button type='primary' onClick={this.handleConfirm}>
+                  <n-button type='primary' loading={this.loading} onClick={this.handleConfirm}>
                     {this.t('layout.confirm')}
                   </n-button>
                 </n-space>

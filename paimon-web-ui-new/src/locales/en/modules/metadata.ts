@@ -27,7 +27,7 @@ export default {
   catalog_name: 'Catalog Name',
   catalog_type: 'Catalog Type',
   catalog_warehouse: 'Warehouse',
-  catalog_hiveurl: 'Hive Url',
+  catalog_hiveuri: 'Hive Uri',
   catalog_hive_conf_dir: 'Hive Conf Dir',
 
   create_database: 'Create Database',

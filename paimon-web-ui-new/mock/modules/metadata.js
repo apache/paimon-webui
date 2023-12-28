@@ -50,6 +50,12 @@ module.exports = (mockUtil) => ({
       },
     ]
   }),
+  'post /database/create': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
+
   'post /table/list': mockUtil({
     code: 200,
     msg: 'Successfully',
@@ -62,6 +68,12 @@ module.exports = (mockUtil) => ({
       },
     ]
   }),
+  'post /table/create': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
+
   'post /metadata/query/schema': mockUtil({
     code: 200,
     msg: 'Successfully',

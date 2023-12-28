@@ -15,7 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { FolderOutline, FolderOpenOutline, Search } from '@vicons/ionicons5'
+import { Search } from '@vicons/ionicons5'
+import { Catalog, ChangeCatalog, DataBase } from '@vicons/carbon'
+import { DatabaseFilled } from '@vicons/antd'
 import { NIcon, type TreeOption } from 'naive-ui'
 
 import { useCatalogStore } from '@/store/catalog'
@@ -41,31 +43,6 @@ export default defineComponent({
       await modalRef.value.formRef.validate()
     }
 
-    const updatePrefixWithExpanded = (
-      _keys: Array<string | number>,
-      _option: Array<TreeOption | null>,
-      meta: {
-        node: TreeOption | null
-        action: 'expand' | 'collapse' | 'filter'
-      }
-    ) => {
-      if (!meta.node) return
-      switch (meta.action) {
-        case 'expand':
-          meta.node.prefix = () =>
-            h(NIcon, null, {
-              default: () => h(FolderOpenOutline)
-            })
-          break
-        case 'collapse':
-          meta.node.prefix = () =>
-            h(NIcon, null, {
-              default: () => h(FolderOutline)
-            })
-          break
-      }
-    }
-
     const handleOpenModal = () => {
       showMoal.value = true
     }
@@ -75,13 +52,25 @@ export default defineComponent({
       showMoal.value = false
     }
 
+    const renderPrefix = ({ option, expanded }: { option: TreeOption, expanded: boolean }) => {
+      let icon = expanded ? Catalog : ChangeCatalog
+      if (option.type !== 'catalog') {
+        icon = expanded ? DataBase : DatabaseFilled
+      }
+      
+      return h(NIcon, null, {
+        default: () => h(icon)
+      })
+    }
+
     const renderSuffix = ({ option }: { option: TreeOption }) => {
       switch (option.type) {
         case 'catalog':
-          return 11;
+          const [catalogId] = option.key?.toString()?.split(' ') || []
+          return h(DatabaseFormButton, { catalogId: Number(catalogId) })
         case 'database':
-          const [catalogId, databaseName] = option.key?.toString()?.split(' ') || [];
-          return h(DatabaseFormButton, { catalogId: Number(catalogId), databaseName })
+          const [id, name, databaseName] = option.key?.toString()?.split(' ') || []
+          return h(DatabaseFormButton, { catalogId: Number(id), catalogName: name, databaseName })
         default:
           return undefined
       }
@@ -132,7 +121,7 @@ export default defineComponent({
       showMoal,
       t,
       onLoadMenu,
-      updatePrefixWithExpanded,
+      renderPrefix,
       renderSuffix,
       nodeProps,
       handleOpenModal,
@@ -163,7 +152,7 @@ export default defineComponent({
                 expand-on-click
                 nodeProps={this.nodeProps}
                 renderSuffix={this.renderSuffix}
-                onUpdate:expandedKeys={this.updatePrefixWithExpanded}
+                renderSwitcherIcon={this.renderPrefix}
                 onLoad={this.onLoadMenu}
                 data={this.menuList}
                 pattern={this.filterValue}

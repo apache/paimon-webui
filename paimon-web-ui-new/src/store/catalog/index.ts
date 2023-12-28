@@ -44,12 +44,15 @@ export const useCatalogStore = defineStore('catalog', {
     }
   },
   actions: {
-    async getAllCatalogs(): Promise<void> {
-
-      this._catalogLoading = true
-      const res = await getAllCatalogs()
-      this.catalogs = transformCatalog(res.data)
-      this._catalogLoading = false
+    async getAllCatalogs(reload?: boolean): Promise<TreeOption[] | void> {
+      if (!reload && this.catalogs.length !== 0) {
+        return Promise.resolve(this.catalogs)
+      } else {
+        this._catalogLoading = true
+        const res = await getAllCatalogs()
+        this.catalogs = transformCatalog(res.data)
+        this._catalogLoading = false
+      }
     },
     async getDatabasesById(id: number): Promise<TreeOption[]> {
       const res = await getDatabasesByCatalogId(id)
