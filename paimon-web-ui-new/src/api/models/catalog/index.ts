@@ -16,7 +16,19 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '@/api/request'
-import type { Catalog, Database, Table, Schema, Manifest, Snapshot, Datafile, TableQuery } from './types'
+import type {
+  Catalog,
+  Database,
+  Table,
+  Schema,
+  Manifest,
+  Snapshot,
+  Datafile,
+  TableQuery,
+  CatalogDTO,
+  DatabaseDTO,
+  TableDTO
+} from './types'
 import type { ResponseOptions } from '@/api/types'
 
 export * from './types'
@@ -31,10 +43,30 @@ export const getAllCatalogs = () => {
 }
 
 /**
+ * # Create new Catalog
+ */
+export const createCatalog = () => {
+  return httpRequest.createHooks!<unknown, CatalogDTO>({
+    url: '/catalog/create',
+    method: 'post'
+  })
+}
+
+/**
  * # Get database by catalog id
  */
 export const getDatabasesByCatalogId = (id: number) => {
   return httpRequest.get<unknown, ResponseOptions<Database[]>>(`/database/list?catalogId=${id}`)
+}
+
+/**
+ * # Create new Database
+ */
+export const createDatabase = () => {
+  return httpRequest.createHooks!<unknown, DatabaseDTO>({
+    url: '/database/create',
+    method: 'post'
+  })
 }
 
 /**
@@ -44,23 +76,35 @@ export const getTables = (params: TableQuery) => {
   return httpRequest.post<TableQuery, ResponseOptions<Table[]>>(`/table/list`, params)
 }
 
+
+/**
+ * # Create new Table
+ */
+export const createTable = () => {
+  return httpRequest.createHooks!<unknown, TableDTO>({
+    url: '/table/create',
+    method: 'post'
+  })
+}
+
+
 /**
  * # Get schema
  */
 export const getSchema = () => {
   return httpRequest.createHooks!<Schema[]>({
     url: '/metadata/query/schema',
-    method: 'post',
+    method: 'post'
   })
 }
 
-/** 
- * # Get manifest 
+/**
+ * # Get manifest
  */
 export const getManifest = () => {
   return httpRequest.createHooks!<Manifest[]>({
     url: '/metadata/query/manifest',
-    method: 'post',
+    method: 'post'
   })
 }
 
@@ -70,7 +114,7 @@ export const getManifest = () => {
 export const getDataFile = () => {
   return httpRequest.createHooks!<Datafile[]>({
     url: '/metadata/query/dataFile',
-    method: 'post',
+    method: 'post'
   })
 }
 
@@ -80,7 +124,7 @@ export const getDataFile = () => {
 export const getSnapshot = () => {
   return httpRequest.createHooks!<Snapshot[]>({
     url: '/metadata/query/snapshot',
-    method: 'post',
+    method: 'post'
   })
 }
 

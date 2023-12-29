@@ -45,6 +45,7 @@ axle.axios.interceptors.response.use(
       // do something there
       return Promise.reject(response.data)
     }
+
     return response.data
   },
   (error) => {
@@ -57,8 +58,8 @@ const useAxle = createUseAxle({
   axle
 })
 
-function createHooks<T>(options: FetchOptions<T>) {
-  return useAxle<ResponseOptions<T>, ResponseOptions<T>, Record<string, any>>(options)
+function createHooks<T, P = Record<string, any>>(options: FetchOptions<T, P>) {
+  return useAxle<ResponseOptions<T>, ResponseOptions<T>, P>(options)
 }
 
 axle.createHooks = createHooks

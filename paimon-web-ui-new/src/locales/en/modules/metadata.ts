@@ -21,5 +21,16 @@ export default {
   schema_info: 'Schema',
   snapshot_file: 'Snapshot File',
   manifests_file: 'Manifest File',
-  data_file: 'Data File'
+  data_file: 'Data File',
+
+  create_catalog: 'Create Catalog',
+  catalog_name: 'Catalog Name',
+  catalog_type: 'Catalog Type',
+  catalog_warehouse: 'Warehouse',
+  catalog_hiveuri: 'Hive Uri',
+  catalog_hive_conf_dir: 'Hive Conf Dir',
+
+  create_database: 'Create Database',
+  database_name: 'Database Name',
+  database_des: 'Database Description',
 }

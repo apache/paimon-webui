@@ -20,6 +20,7 @@ under the License. */
  * @type {import('mockm/@types/config').Config}
  */
 
+const { setTimeout } = require('timers')
 const mockData = require(`./modules`)
 
 module.exports = util => {
@@ -29,6 +30,10 @@ module.exports = util => {
     replayPort: 10091,
 
     api: {
+      async 'use /' (req, res, next) {
+        setTimeout(next, 1000)
+      },
+
       // demo
       '/api/1': {msg: `ok`},
 
