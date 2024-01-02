@@ -15,44 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export interface Table {
-  catalogId: number
-  catalogName: string
-  databaseName: string
-  name?: string
-}
-
-export interface TableQuery {
-  catalogId: number
-  databaseName: string
-}
-
-export interface TableParams extends Table {
-  tableName: string
-}
-
-export interface TableDTO {
-  catalogId: number
-  databaseName: string
-  name: string
-  description?: string
-  catalogName?: string
-  tableColumns?: ColumnDTO[]
-  partitionKey?: string[]
-  tableOptions?: Record<string, string>
-}
-
-export interface ColumnDTO {
-  field: string
-  dataType: DataTypeDTO
-  comment: string
-  defaultValue: string
-  pk: boolean
-}
-
-export interface DataTypeDTO {
-  type: string
-  precision: number
-  scale: number
-  nullable: boolean
+export default {
+    success:'Success',
+    add_success:'Add success',
+    update_success:'Update success',
+    delete_success:'Delete success',
+    create_user:'Create user',
+    create_time:'Create time',
+    update_time:'Update time',
+    search:'Search',
+    yes:'Yes',
+    no:'No'
 }

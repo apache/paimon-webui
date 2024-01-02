@@ -15,44 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export interface Table {
-  catalogId: number
-  catalogName: string
-  databaseName: string
-  name?: string
-}
+import httpRequest from '../../request'
+import type { ResponseOptions } from '@/api/types'
+import type { Role } from './types/role'
 
-export interface TableQuery {
-  catalogId: number
-  databaseName: string
-}
-
-export interface TableParams extends Table {
-  tableName: string
-}
-
-export interface TableDTO {
-  catalogId: number
-  databaseName: string
-  name: string
-  description?: string
-  catalogName?: string
-  tableColumns?: ColumnDTO[]
-  partitionKey?: string[]
-  tableOptions?: Record<string, string>
-}
-
-export interface ColumnDTO {
-  field: string
-  dataType: DataTypeDTO
-  comment: string
-  defaultValue: string
-  pk: boolean
-}
-
-export interface DataTypeDTO {
-  type: string
-  precision: number
-  scale: number
-  nullable: boolean
+/**
+ * # List roles
+ */
+export const listRoles = () => {
+  return httpRequest.createHooks!<ResponseOptions<Role[]>, any[]>({
+    url: '/role/list',
+    method: 'get',
+  })
 }
