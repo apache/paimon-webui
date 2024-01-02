@@ -19,5 +19,11 @@ export default {
     success:'成功',
     add_success:'新增成功',
     update_success:'更新成功',
-    delete_success:'删除成功'
+    delete_success:'删除成功',
+    create_user:'创建用户',
+    create_time:'创建时间',
+    update_time:'修改时间',
+    search:'搜索',
+    yes:'是',
+    no:'否'
 }

@@ -21,3 +21,12 @@ export interface Database {
   catalogName: string;
   description?: string;
 }
+
+export interface DatabaseFormDTO {
+  name: string;
+  description?: string;
+}
+
+export interface DatabaseDTO extends DatabaseFormDTO {
+  catalogId: number;
+}

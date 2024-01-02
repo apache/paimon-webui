@@ -18,5 +18,5 @@ under the License. */
 const metadata = require(`./metadata`)
 
 module.exports = {
-  ...metadata
+  metadata
 }

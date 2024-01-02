@@ -15,44 +15,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export interface Table {
-  catalogId: number
-  catalogName: string
-  databaseName: string
-  name?: string
+const user = {
+  add: 'Add',
+  username: 'Username',
+  nickname: 'Nickname',
+  mobile: 'Mobile',
+  email: 'Email'
 }
 
-export interface TableQuery {
-  catalogId: number
-  databaseName: string
+const role = {
+  role_name: 'Role name',
+  role_key: 'Role Key',
+  enabled: 'Enabled'
 }
 
-export interface TableParams extends Table {
-  tableName: string
-}
-
-export interface TableDTO {
-  catalogId: number
-  databaseName: string
-  name: string
-  description?: string
-  catalogName?: string
-  tableColumns?: ColumnDTO[]
-  partitionKey?: string[]
-  tableOptions?: Record<string, string>
-}
-
-export interface ColumnDTO {
-  field: string
-  dataType: DataTypeDTO
-  comment: string
-  defaultValue: string
-  pk: boolean
-}
-
-export interface DataTypeDTO {
-  type: string
-  precision: number
-  scale: number
-  nullable: boolean
-}
+export default { user, role }
