@@ -15,22 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import layout from './modules/layout'
-import login from './modules/login'
-import playground from './modules/playground'
-import metadata from './modules/metadata'
-import cdc from './modules/cdc'
-import job from './modules/job'
-import system from './modules/system'
-import common from './modules/common'
+import httpRequest from '../../request'
+import type { ResponseOptions } from '@/api/types'
+import type { Role } from './types/role'
 
-export default {
-  login,
-  layout,
-  playground,
-  metadata,
-  cdc,
-  job,
-  system,
-  common
+/**
+ * # List roles
+ */
+export const listRoles = () => {
+  return httpRequest.createHooks!<ResponseOptions<Role[]>, any[]>({
+    url: '/role/list',
+    method: 'get',
+  })
 }

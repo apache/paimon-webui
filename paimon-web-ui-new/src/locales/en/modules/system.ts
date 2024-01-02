@@ -15,22 +15,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import layout from './modules/layout'
-import login from './modules/login'
-import playground from './modules/playground'
-import metadata from './modules/metadata'
-import cdc from './modules/cdc'
-import job from './modules/job'
-import system from './modules/system'
-import common from './modules/common'
-
-export default {
-  login,
-  layout,
-  playground,
-  metadata,
-  cdc,
-  job,
-  system,
-  common
+const user = {
+  add: 'Add',
+  username: 'Username',
+  nickname: 'Nickname',
+  mobile: 'Mobile',
+  email: 'Email'
 }
+
+const role = {
+  role_name: 'Role name',
+  role_key: 'Role Key',
+  enabled: 'Enabled'
+}
+
+export default { user, role }
