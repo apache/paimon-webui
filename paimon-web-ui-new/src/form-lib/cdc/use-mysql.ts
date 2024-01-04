@@ -21,7 +21,6 @@ export function useMYSQL(item:any) {
   const { t } = useLocaleHooks()
   
   const tabType = item.data.tabType
-  console.log('item', item.data)
 	const data = item.data
 
 	const model = reactive({

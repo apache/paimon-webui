@@ -37,9 +37,9 @@ export default defineComponent({
       const editMode = CDCStore.getModel.editMode
       if (editMode === 'edit') {
         updateCdcJob({ id: CDCStore.getModel.id, name: name.value + "", description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
-        .then(()=>{
-          router.push({ path: '/cdc_ingestion' })
-        })
+          .then(() => {
+            router.push({ path: '/cdc_ingestion' })
+          })
       } else {
         createCdcJob({ name: name.value + "", description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
           .then(() => {
@@ -56,7 +56,6 @@ export default defineComponent({
 
     onMounted(() => {
       if (dagRef.value && dagRef.value.graph) {
-        
         dagRef.value.graph.fromJSON({
           cells: CDCStore.getModel.cells
         })
