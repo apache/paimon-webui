@@ -17,13 +17,15 @@ under the License. */
 
 import { getAllCatalogs } from "@/api/models/catalog"
 import type { IJsonItem } from "@/components/dynamic-form/types"
+import { useCatalogStore } from "@/store/catalog"
 
 export function usePaimon(item: any) {
 	const { t } = useLocaleHooks()
 	const tabType = item.data.tabType
 	let catalogOptions: any = ref([{value:1}])
-	getAllCatalogs().then((res: any) => {
-		catalogOptions.value = res.data.map((e: any) => { return { value: e.id, label: e.catalogName } })
+	const catalogStore = useCatalogStore()
+	catalogStore.getAllCatalogs().then(()=>{
+		catalogOptions.value = catalogStore.catalogs
 	})
 	const model = reactive({
 		warehouse: '',

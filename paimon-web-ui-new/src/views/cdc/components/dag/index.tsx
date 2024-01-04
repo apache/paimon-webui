@@ -38,13 +38,11 @@ export default defineComponent({
       if (editMode === 'edit') {
         updateCdcJob({ id: CDCStore.getModel.id, name: name.value + "", description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
         .then(()=>{
-          window.$message.success(t('common.update_success'))
           router.push({ path: '/cdc_ingestion' })
         })
       } else {
         createCdcJob({ name: name.value + "", description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
           .then(() => {
-            window.$message.success(t('common.add_success'))
             router.push({ path: '/cdc_ingestion' })
           })
       }

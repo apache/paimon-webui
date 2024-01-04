@@ -26,12 +26,12 @@ export const useTable = () => {
     const tableVariables = reactive({
         columns: [
             {
-                title: computed(() => t('cdc.job_name')),
+                title: t('cdc.job_name'),
                 key: 'name',
                 resizable: true
             },
             {
-                title: computed(() => t('cdc.synchronization_type')),
+                title: t('cdc.synchronization_type'),
                 key: 'cdcType',
                 resizable: true,
                 render: (row:any)=>{
@@ -43,27 +43,27 @@ export const useTable = () => {
                 }
             },
             {
-                title: computed(() => t('cdc.job_description')),
+                title: t('cdc.job_description'),
                 key: 'description',
                 resizable: true
             },
             {
-                title: computed(() => t('cdc.create_user')),
+                title: t('cdc.create_user'),
                 key: 'createUser',
                 resizable: true
             },
             {
-                title: computed(() => t('cdc.create_time')),
+                title: t('cdc.create_time'),
                 key: 'createTime',
                 resizable: true
             },
             {
-                title: computed(() => t('cdc.update_time')),
+                title: t('cdc.update_time'),
                 key: 'updateTime',
                 resizable: true
             },
             {
-                title: computed(() => t('cdc.operation')),
+                title: t('cdc.operation'),
                 key: 'actions',
                 render: (row: any) =>
                     h(TableAction, {
@@ -82,7 +82,6 @@ export const useTable = () => {
                         },
                         onHandleDelete:(row)=>{
                             deleteCdcJobDefinition(row.id).then(()=>{
-                                window.$message.success(t('delete_success'))
                                 getTableData()
                             })
                         }
@@ -91,11 +90,10 @@ export const useTable = () => {
             }
         ],
         data: [],
-        pagination: reactive({
+        pagination: {
             showQuickJumper: true,
             showSizePicker: true,
             pageSize: 10,
-            pageSizes: [10, 20, 50, 100],
             page: 1,
             count: 100,
             onUpdatePage: (page: number) => {
@@ -107,7 +105,7 @@ export const useTable = () => {
                 tableVariables.pagination.page = 1
                 getTableData()
             }
-        })
+        }
     })
     const getTableData = () => {
         listAllCdcJob(false, tableVariables.pagination.page, tableVariables.pagination.pageSize).then(((res: any) => {
