@@ -29,6 +29,10 @@ export default {
   catalog_warehouse: 'Warehouse',
   catalog_hiveuri: 'Hive Uri',
   catalog_hive_conf_dir: 'Hive Conf Dir',
+  catalog_filesystem_type:'File System type',
+  catalog_endpoint:'Endpoint',
+  catalog_access_key:'Access Key',
+  catalog_secret_key:'Secret Key',
 
   create_database: 'Create Database',
   database_name: 'Database Name',
