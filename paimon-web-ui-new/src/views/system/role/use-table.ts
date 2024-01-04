@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { listRole } from '@/api/models/role';
+import { listRoles } from '@/api/models/role';
 export const useTable = () => {
     const tableVariables = reactive({
         searchForm: {
@@ -33,7 +33,7 @@ export const useTable = () => {
             },
         }
     })
-    const [roleList, useRoleList, { loading }] = listRole()
+    const [roleList, useRoleList, { loading }] = listRoles()
     const getTableData = () => {
         let params = {
             roleName: tableVariables.searchForm.roleName,
