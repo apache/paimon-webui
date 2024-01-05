@@ -38,7 +38,7 @@ public class PaimonServiceFactory {
             catalogOptions = new HashMap<>();
         }
         Options options = new Options();
-        options.set(CatalogProperties.WAREHOUSE, warehouse + "/" + name);
+        options.set(CatalogProperties.WAREHOUSE, warehouse);
         String fileSystemType = catalogOptions.get("fileSystemType");
         if ("s3".equalsIgnoreCase(fileSystemType)) {
             options.set(CatalogProperties.S3_ENDPOINT, catalogOptions.get("endpoint"));
@@ -56,7 +56,7 @@ public class PaimonServiceFactory {
     public static PaimonService createHiveCatalogService(
             String name, String warehouse, String uri, String hiveConfDir) {
         Options options = new Options();
-        options.set(CatalogProperties.WAREHOUSE, warehouse + "/" + name);
+        options.set(CatalogProperties.WAREHOUSE, warehouse);
 
         options.set(CatalogProperties.METASTORE, MetastoreType.HIVE.toString());
         options.set(CatalogProperties.URI, uri);
