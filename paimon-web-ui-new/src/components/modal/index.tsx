@@ -44,7 +44,7 @@ const props = {
   formType: {
     type: String as PropType<string>,
     default: ''
-  }
+  },
 }
 
 export default defineComponent({
@@ -107,7 +107,7 @@ export default defineComponent({
                 }}
               />
             ),
-            footer: () => (
+            action: () => (
               <n-space justify='end'>
                 <n-button onClick={this.handleCancel}>
                   {this.t('layout.cancel')}

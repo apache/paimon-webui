@@ -22,8 +22,9 @@ import { NIcon, type TreeOption } from 'naive-ui'
 
 import { useCatalogStore } from '@/store/catalog'
 
-import CatalogFormButton from './catalog-form'
-import DatabaseFormButton from './database-form'
+import CatalogFormButton from '../catalog-form'
+import DatabaseFormButton from '../database-form'
+import TableFormButton from '../table-form'
 import styles from './index.module.scss'
 
 export default defineComponent({
@@ -35,29 +36,15 @@ export default defineComponent({
     const catalogStoreRef = storeToRefs(catalogStore)
 
     const filterValue = ref('')
-    const showMoal = ref(false)
-    const modalRef = ref()
+    const isSearch = ref(false)
     const formType = ref('CATALOG')
 
-    const handleConfirm = async () => {
-      await modalRef.value.formRef.validate()
-    }
-
-    const handleOpenModal = () => {
-      showMoal.value = true
-    }
-
-    const handleCloseModal = () => {
-      formType.value = 'CATALOG'
-      showMoal.value = false
-    }
-
-    const renderPrefix = ({ option, expanded }: { option: TreeOption, expanded: boolean }) => {
+    const renderPrefix = ({ option, expanded }: { option: TreeOption; expanded: boolean }) => {
       let icon = expanded ? Catalog : ChangeCatalog
       if (option.type !== 'catalog') {
         icon = expanded ? DataBase : DatabaseFilled
       }
-      
+
       return h(NIcon, null, {
         default: () => h(icon)
       })
@@ -70,15 +57,27 @@ export default defineComponent({
           return h(DatabaseFormButton, { catalogId: Number(catalogId) })
         case 'database':
           const [id, name, databaseName] = option.key?.toString()?.split(' ') || []
-          return h(DatabaseFormButton, { catalogId: Number(id), catalogName: name, databaseName })
+          return h(TableFormButton, { catalogId: id, catalogName: name, databaseName })
         default:
           return undefined
       }
     }
 
-    onMounted(catalogStore.getAllCatalogs)
+    onMounted(() => {
+      catalogStore.getAllCatalogs(true)
+    })
 
     onUnmounted(catalogStore.resetCurrentTable)
+
+    watch(
+      () => filterValue.value,
+      async (newValue) => {
+        if (!newValue && isSearch.value) {
+          isSearch.value = false
+          await catalogStore.getAllCatalogs(true)
+        }
+      }
+    )
 
     const onLoadMenu = async (node: TreeOption) => {
       if (node.type === 'catalog') {
@@ -89,7 +88,7 @@ export default defineComponent({
           catalogId: Number(catalogId),
           databaseName
         }
-        node.children = await catalogStore.getTablesByDataBaseId(params)
+        node.children = (await catalogStore.getTablesByDataBaseId(params)) || []
       }
 
       return Promise.resolve()
@@ -113,20 +112,27 @@ export default defineComponent({
       }
     }
 
+    const onSearch = async (e: KeyboardEvent) => {
+      if (e.code === 'Enter') {
+        isSearch.value = true
+        await catalogStore.getTablesByDataBaseId({
+          name: filterValue.value
+        })
+      }
+    }
+
     return {
       menuLoading: catalogStoreRef.catalogLoading,
       menuList: catalogStoreRef.catalogs,
       filterValue,
+      isSearch,
       formType,
-      showMoal,
       t,
       onLoadMenu,
+      onSearch,
       renderPrefix,
       renderSuffix,
-      nodeProps,
-      handleOpenModal,
-      handleCloseModal,
-      handleConfirm
+      nodeProps
     }
   },
   render() {
@@ -145,17 +151,18 @@ export default defineComponent({
               v-slots={{
                 prefix: () => <n-icon component={Search} />
               }}
+              onKeyup={this.onSearch}
             ></n-input>
             <n-spin show={this.menuLoading}>
               <n-tree
                 block-line
                 expand-on-click
+                data={this.menuList}
+                defaultExpandAll={this.isSearch}
                 nodeProps={this.nodeProps}
                 renderSuffix={this.renderSuffix}
                 renderSwitcherIcon={this.renderPrefix}
                 onLoad={this.onLoadMenu}
-                data={this.menuList}
-                pattern={this.filterValue}
               />
             </n-spin>
           </n-space>

@@ -18,7 +18,7 @@ under the License. */
 import { Add } from '@vicons/ionicons5'
 import type { FormInst } from 'naive-ui'
 
-import { createDatabase, type DatabaseDTO, type DatabaseFormDTO } from '@/api/models/catalog'
+import { createDatabase, type DatabaseFormDTO } from '@/api/models/catalog'
 import { useCatalogStore } from '@/store/catalog'
 import IModal from '@/components/modal'
 

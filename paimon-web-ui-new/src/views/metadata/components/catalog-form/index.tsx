@@ -169,7 +169,7 @@ export default defineComponent({
                   }
                 </n-form>
               ),
-              footer: () => (
+              action: () => (
                 <n-space justify='end'>
                   <n-button onClick={this.handleCloseModal}>
                     {this.t('layout.cancel')}
