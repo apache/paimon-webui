@@ -29,8 +29,32 @@ export default {
   catalog_warehouse: 'Warehouse',
   catalog_hiveuri: 'Hive Uri',
   catalog_hive_conf_dir: 'Hive Conf Dir',
+  catalog_filesystem_type:'文件系统类型',
+  catalog_endpoint:'Endpoint',
+  catalog_access_key:'Access Key',
+  catalog_secret_key:'Secret Key',
 
   create_database: '创建 Database',
   database_name: 'Database 名称',
   database_des: 'Database 描述',
+
+  create_table: '创建 Table',
+  table_basic_information: '主要信息',
+  table_name: 'Table 名称',
+  table_des: 'Table 描述',
+
+  table_columns: 'Table 列',
+  column_field: '字段',
+  column_type: '类型',
+  column_length: '长度',
+  column_pk: '主键',
+  column_nullable: '是否为空',
+  column_default: '默认值',
+  column_comment: '标注',
+  column_action: '操作',
+
+  partition_columns: '分区列',
+
+  table_add_options: '增加选项',
 }
+

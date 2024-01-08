@@ -126,6 +126,21 @@ CREATE TABLE if not exists `catalog`
     options       varchar(512)                         null
     ) engine = innodb;
 
+DROP TABLE IF EXISTS `cdc_job_definition`;
+CREATE TABLE if not exists `cdc_job_definition`
+(
+    id          int                                not null comment 'id',
+    `name`      varchar(20)                        not null comment 'name',
+    description varchar(200)                       null comment 'description',
+    cdc_type    int                                not null comment 'cdc type ',
+    config      text                               null comment 'cdc job config',
+    create_user varchar(20)                        null comment 'create user',
+    create_time datetime default CURRENT_TIMESTAMP null comment 'create time',
+    update_time datetime default CURRENT_TIMESTAMP null comment 'update time',
+    is_delete   tinyint(1) default 0               not null comment 'is delete',
+    constraint cdc_job_definition_pk
+    unique (`name`)
+) engine = innodb;
 
 INSERT INTO `user` ( id, username, password, nickname, mobile
                    , email, enabled, is_delete)

@@ -26,7 +26,6 @@ export default defineComponent({
   name: 'CDCPage',
   setup() {
     const { t } = useLocaleHooks()
-
     const showModalRef = ref(false)
 
     const handleOpenModal = () => {

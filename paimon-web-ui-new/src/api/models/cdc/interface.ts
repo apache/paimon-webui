@@ -15,32 +15,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss';
-import { useTable } from './use-table'
-
-export default defineComponent({
-  name: 'ListPage',
-  setup() {
-    const { t } = useLocaleHooks()
-
-    const { tableVariables, getTableData } = useTable()
-    getTableData()
-
-    return {
-      t,
-      ...toRefs(tableVariables)
-    }
-  },
-  render() {
-    return (
-      <div class={styles['list-page']}>
-        <n-data-table
-          columns={this.columns}
-          data={this.data}
-          remote
-          pagination={this.pagination}
-        />
-      </div>
-    )
-  }
-})
+export interface CdcJobDefinition {
+    id?: number;
+    createTime?: string;
+    updateTime?: string;
+    name: string;
+    description?: string;
+    cdcType?: number;
+    config?: string;
+    createUser?: string;
+}
+  

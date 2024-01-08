@@ -56,18 +56,49 @@ module.exports = (mockUtil) => ({
     "data": null
   }),
 
-  'post /table/list': mockUtil({
-    code: 200,
-    msg: 'Successfully',
-    'data|5': [
-      {
-        "catalogId": '1-52',
-        "catalogName": "@name",
-        "databaseName": "@name",
-        "name": "@name"
-      },
-    ]
-  }),
+  'post /table/list': (req, res) => {
+    if (req.body.name) {
+      res.json(mockUtil({
+        code: 200,
+        msg: 'Successfully',
+        data: {
+          "123123": {
+            "test_sync_table": [
+              {
+                "catalogId": "123123",
+                "catalogName": "paimon",
+                "databaseName": "test_sync_table",
+                "name": `asdvas${req.body.name}`
+              }
+            ],
+            "my_db": [
+              {
+                "catalogId": "123123",
+                "catalogName": "paimon",
+                "databaseName": "my_db",
+                "name": `qwef${req.body.name}`
+              }
+            ]
+          }
+        }
+      }))
+
+      return
+    } else {
+      res.json(mockUtil({
+        code: 200,
+        msg: 'Successfully',
+        'data|5': [
+          {
+            "catalogId": '1-52',
+            "catalogName": "@name",
+            "databaseName": "@name",
+            "name": "@name"
+          },
+        ]
+      }))
+    }
+  },
   'post /table/create': mockUtil({
     "code": 200,
     "msg": "Successfully",
