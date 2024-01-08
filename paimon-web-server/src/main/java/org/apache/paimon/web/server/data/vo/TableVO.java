@@ -18,12 +18,18 @@
 
 package org.apache.paimon.web.server.data.vo;
 
+import org.apache.paimon.web.server.data.model.TableColumn;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /** VO of table. */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TableVO {
@@ -35,4 +41,8 @@ public class TableVO {
     private String databaseName;
 
     private String name;
+
+    private List<TableColumn> columns;
+
+    private List<String> partitionKey;
 }
