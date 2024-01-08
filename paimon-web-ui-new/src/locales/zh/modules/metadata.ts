@@ -29,6 +29,10 @@ export default {
   catalog_warehouse: 'Warehouse',
   catalog_hiveuri: 'Hive Uri',
   catalog_hive_conf_dir: 'Hive Conf Dir',
+  catalog_filesystem_type:'文件系统类型',
+  catalog_endpoint:'Endpoint',
+  catalog_access_key:'Access Key',
+  catalog_secret_key:'Secret Key',
 
   create_database: '创建 Database',
   database_name: 'Database 名称',
@@ -53,3 +57,4 @@ export default {
 
   table_add_options: '增加选项',
 }
+
