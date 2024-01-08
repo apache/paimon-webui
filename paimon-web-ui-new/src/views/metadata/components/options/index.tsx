@@ -16,21 +16,11 @@ specific language governing permissions and limitations
 under the License. */
 
 import { type DataTableColumns } from 'naive-ui'
-import { AddCircleOutline, CreateOutline, RemoveCircleOutline } from '@vicons/ionicons5'
+import { AddCircleOutline, CreateOutline, RemoveCircleOutline, Warning } from '@vicons/ionicons5'
 
-import { getOptions, type TableOption } from '@/api/models/catalog'
+import { deleteOption, getOptions, type TableOption } from '@/api/models/catalog'
 import { useCatalogStore } from '@/store/catalog'
-
-type RowData = {
-  key: number
-  columnName: string
-  dataType: string
-  nullAble: boolean
-  primaryKey: boolean
-  partitionKey: boolean
-  defaultValue?: string
-  description?: string
-}
+import OptionsForm from '../options-form'
 
 export default defineComponent({
   name: 'MetadataOptions',
@@ -39,6 +29,7 @@ export default defineComponent({
     const catalogStore = useCatalogStore()
 
     const [optionsList, useOptionsList, { loading }] = getOptions()
+    const [, useDelete] = deleteOption()
 
     const columns: DataTableColumns<TableOption> = [
       {
@@ -52,7 +43,7 @@ export default defineComponent({
       {
         title: 'Operation',
         key: 'operation',
-        render() {
+        render(rowData) {
           return (
             <n-space>
               <n-button strong secondary circle>
@@ -60,11 +51,19 @@ export default defineComponent({
                   icon: () => <n-icon component={CreateOutline} />
                 }}
               </n-button>
-              <n-button strong secondary circle type="error">
+              <n-popconfirm onPositiveClick={() => onDeleteOption(rowData?.key)}>
                 {{
-                  icon: () => <n-icon component={RemoveCircleOutline} />
+                  default: () => 'Confirm to delete ? ',
+                  trigger: () => (
+                    <n-button strong secondary circle type="error">
+                      {{
+                        icon: () => <n-icon component={RemoveCircleOutline} />
+                      }}
+                    </n-button>
+                  ),
+                  icon: () => <n-icon color='#EC4C4D' component={Warning} />
                 }}
-              </n-button>
+              </n-popconfirm>
             </n-space>
           )
         }
@@ -77,35 +76,55 @@ export default defineComponent({
       })
     }
 
+    const onDeleteOption = async (optionKey: string) => {
+      await useDelete({
+        config: {
+          params: {
+            ...toRaw(catalogStore.currentTable),
+            key: optionKey
+          }
+        }
+      })
+
+      await onFetchData()
+
+      return Promise.resolve(true)
+    }
+
     watch(() => catalogStore.currentTable, onFetchData)
 
     onMounted(onFetchData)
 
     return {
       columns,
-      data: optionsList.value?.data || [],
+      optionsList,
+      loading,
       pagination: {
         pageSize: 10
       },
+
+      onFetchData,
       t
     }
   },
   render() {
     return (
-      <n-card title="Options">
-        {{
-          'header-extra': () => (
-            <n-button strong secondary circle>
-              {{
-                icon: () => <n-icon component={AddCircleOutline} />
-              }}
-            </n-button>
-          ),
-          default: () => (
-            <n-data-table columns={this.columns} data={this.data} pagination={this.pagination} />
-          )
-        }}
-      </n-card>
+      <n-spin show={this.loading}>
+        <n-card title="Options">
+          {{
+            'header-extra': () => (
+              <OptionsForm onConfirm={this.onFetchData} />
+            ),
+            default: () => (
+              <n-data-table
+                columns={this.columns}
+                data={this.optionsList?.data || []}
+                pagination={this.pagination}
+              />
+            )
+          }}
+        </n-card>
+      </n-spin>
     )
   }
 })

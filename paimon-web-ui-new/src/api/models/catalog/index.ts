@@ -104,6 +104,26 @@ export const getOptions = () => {
 }
 
 /**
+ * # Create new Option
+ */
+export const createOption = () => {
+  return httpRequest.createHooks!<unknown, TableDTO>({
+    url: '/table/option/add',
+    method: 'post'
+  })
+}
+
+/**
+ * # Delete option
+ */
+export const deleteOption = () => {
+  return httpRequest.createHooks!<TableOption[], TableQuery & { key: string; }>({
+    url: '/table/option/remove',
+    method: 'post',
+  })
+}
+
+/**
  * # Get schema
  */
 export const getSchema = () => {

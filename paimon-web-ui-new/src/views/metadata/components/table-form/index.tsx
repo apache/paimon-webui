@@ -18,7 +18,8 @@ under the License. */
 import { Add } from '@vicons/ionicons5'
 
 import { useCatalogStore } from '@/store/catalog'
-import { createTable, type OptionsDTO, type TableDTO } from '@/api/models/catalog'
+import { createTable, type TableDTO } from '@/api/models/catalog'
+import { transformOption } from '@/views/metadata/constant'
 
 import OptionContent, { newOption } from '../options-form-content'
 import TableColumnContent, { newField } from '../table-column-content'
@@ -41,6 +42,26 @@ const props = {
   }
 }
 
+
+const resetFormValue = () => {
+  return {
+    name: '',
+    tableColumns: [
+      {
+        field: '',
+        dataType: {
+          nullable: true,
+          type: undefined
+        },
+        comment: '',
+        defaultValue: '',
+        pk: false
+      }
+    ],
+    options: []
+  }
+}
+
 export default defineComponent({
   name: 'TableForm',
   props,
@@ -54,22 +75,7 @@ export default defineComponent({
     const [result, createFetch, { loading }] = createTable()
 
     const formRef = ref()
-    const formValue = ref<TableDTO>({
-      name: '',
-      tableColumns: [
-        {
-          field: '',
-          dataType: {
-            nullable: true,
-            type: undefined
-          },
-          comment: '',
-          defaultValue: '',
-          pk: false
-        }
-      ],
-      options: []
-    })
+    const formValue = ref<TableDTO>(resetFormValue())
     const showModal = ref(false)
 
     const tableKeys = computed(() => {
@@ -89,17 +95,15 @@ export default defineComponent({
       await createFetch({
         params: {
           ...toRaw(props),
-          ...tramsFormValue(toRaw(formValue.value))
+          ...transformOption(toRaw(formValue.value))
         }
       })
 
       if (result.value.code === 200) {
         handleCloseModal()
         message.success(t('Create Successfully'))
-        formValue.value = {
-          name: ''
-        }
-        catalogStore.getAllCatalogs(true)
+        formValue.value = resetFormValue()
+        await catalogStore.getAllCatalogs(true)
       }
     }
 
@@ -110,6 +114,7 @@ export default defineComponent({
 
     const handleCloseModal = () => {
       showModal.value = false
+      formValue.value = resetFormValue()
     }
 
     const handleAddOption = () => {
@@ -120,16 +125,6 @@ export default defineComponent({
       formValue.value.tableColumns?.push(JSON.parse(JSON.stringify(newField)))
     }
 
-    const tramsFormValue = (value: TableDTO) => {
-      const tableOptions: OptionsDTO = {}
-      value.options?.forEach((item) => {
-        tableOptions[item.key] = item.value
-      })
-      return {
-        ...value,
-        tableOptions
-      }
-    }
 
     return {
       formRef,

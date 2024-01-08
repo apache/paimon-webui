@@ -104,6 +104,7 @@ export default defineComponent({
             catalogStore.setCurrentTable({
               catalogId: Number(catalogId),
               tableName: name,
+              name,
               ...tableData
             })
           }

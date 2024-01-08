@@ -15,6 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { RemoveCircleOutline } from '@vicons/ionicons5'
+
 import type { TableOption } from '@/api/models/catalog'
 
 const props = {
@@ -74,9 +76,11 @@ export default defineComponent({
             >
               <n-input v-model:value={item.value} placeholder="Value" />
             </n-form-item-gi>
-            <n-gi suffix block span={2} class="suffix">
-              <n-button onClick={() => this.onDelete(index)} tertiary type="error">
-                Remove
+            <n-gi span={2}>
+              <n-button block onClick={() => this.onDelete(index)} tertiary type="error">
+                {{
+                  icon: () => <n-icon component={RemoveCircleOutline} />
+                }}
               </n-button>
             </n-gi>
           </>

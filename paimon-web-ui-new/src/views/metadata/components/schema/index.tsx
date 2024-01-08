@@ -99,7 +99,6 @@ export default defineComponent({
   render() {
     return (
       <n-card>
-        {this.loading}
         <n-spin show={this.loading}>
           <n-data-table
             row-key={(rowData: Schema) => rowData.schemaId}
