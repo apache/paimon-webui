@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export const options = [
+export const dataTypeOptions = [
   { value: 'INT', label: 'INT' },
   { value: 'TINYINT', label: 'TINYINT' },
   { value: 'SMALLINT', label: 'SMALLINT' },
@@ -40,3 +40,6 @@ export const options = [
   { value: 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)', label: 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)' },
 ];
 
+export const hasLength = ['CHAR', 'VARCHAR', 'BINARY', 'VARBINARY', 'TIME(precision)', 'TIMESTAMP(precision)', 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)', 'DECIMAL'];
+
+export const hasEndLength = ['DECIMAL'];

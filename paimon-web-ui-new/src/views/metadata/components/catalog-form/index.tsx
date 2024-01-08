@@ -91,17 +91,7 @@ export default defineComponent({
       if (result.value.code === 200) {
         handleCloseModal()
         message.success(t('Create Successfully'))
-        formValue.value = {
-          name: '',
-          type: '',
-          warehouse: '',
-          options: {
-            fileSystemType: 'local',
-            endpoint: '',
-            accessKey: '',
-            secretKey: ''
-          }
-        }
+        resetState()
         catalogStore.getAllCatalogs(true)
       }
     }
@@ -113,6 +103,21 @@ export default defineComponent({
 
     const handleCloseModal = () => {
       showModal.value = false
+      resetState()
+    }
+
+    const resetState = () => {
+      formValue.value = {
+        name: '',
+        type: '',
+        warehouse: '',
+        options: {
+          fileSystemType: 'local',
+          endpoint: '',
+          accessKey: '',
+          secretKey: ''
+        }
+      }
     }
 
     return {

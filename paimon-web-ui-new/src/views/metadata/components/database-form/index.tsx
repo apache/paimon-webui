@@ -70,6 +70,9 @@ export default defineComponent({
 
     const handleCloseModal = () => {
       showModal.value = false
+      modalRef.value?.formRef?.resetValues({
+        name: '',
+      })
     }
 
     return {

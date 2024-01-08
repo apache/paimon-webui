@@ -15,6 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import type { UseAxleOptions } from '@varlet/axle/use'
+
 import httpRequest from '@/api/request'
 import type {
   Catalog,
@@ -28,7 +30,10 @@ import type {
   CatalogDTO,
   DatabaseDTO,
   TableDTO,
-  SearchTable
+  TableParams,
+  SearchTable,
+  OptionsDTO,
+  TableOption
 } from './types'
 import type { ResponseOptions } from '@/api/types'
 
@@ -40,7 +45,7 @@ export * from './types'
  * # Get all catalog
  */
 export const getAllCatalogs = () => {
-  return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/list')
+  return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/getAllCatalogs')
 }
 
 /**
@@ -88,12 +93,21 @@ export const createTable = () => {
   })
 }
 
+/**
+ * # Get options
+ */
+export const getOptions = () => {
+  return httpRequest.createHooks!<TableOption[], TableParams>({
+    url: '/metadata/query/options',
+    method: 'post',
+  })
+}
 
 /**
  * # Get schema
  */
 export const getSchema = () => {
-  return httpRequest.createHooks!<Schema[]>({
+  return httpRequest.createHooks!<Schema[], TableParams>({
     url: '/metadata/query/schema',
     method: 'post'
   })
@@ -103,7 +117,7 @@ export const getSchema = () => {
  * # Get manifest
  */
 export const getManifest = () => {
-  return httpRequest.createHooks!<Manifest[]>({
+  return httpRequest.createHooks!<Manifest[], TableParams>({
     url: '/metadata/query/manifest',
     method: 'post'
   })
@@ -113,7 +127,7 @@ export const getManifest = () => {
  * # Get data file
  */
 export const getDataFile = () => {
-  return httpRequest.createHooks!<Datafile[]>({
+  return httpRequest.createHooks!<Datafile[], TableParams>({
     url: '/metadata/query/dataFile',
     method: 'post'
   })
@@ -123,7 +137,7 @@ export const getDataFile = () => {
  * # Get snapshot
  */
 export const getSnapshot = () => {
-  return httpRequest.createHooks!<Snapshot[]>({
+  return httpRequest.createHooks!<Snapshot[], TableParams>({
     url: '/metadata/query/snapshot',
     method: 'post'
   })

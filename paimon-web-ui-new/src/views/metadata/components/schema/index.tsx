@@ -28,7 +28,7 @@ export default defineComponent({
   name: 'MetadataSchema',
   setup() {
     const { t } = useLocaleHooks()
-    
+
     const catalogStore = useCatalogStore()
 
     const [schemaData, useSchemaInfo, { loading }] = getSchema()
@@ -40,25 +40,19 @@ export default defineComponent({
         renderExpand: (row) => {
           const { fields = [], option = [] } = row
 
-          return <div>
-            <div class={styles.schema_field_title}>Fields: </div>
-            <n-data-table
-              columns={fieldsColumns}
-              data={fields}
-              bordered={false}
-            />
-            <div class={styles.schema_field_title}>Options: </div>
-            <n-data-table
-              columns={optionsColumns}
-              data={option}
-              bordered={false}
-            />
-          </div>
+          return (
+            <div>
+              <div class={styles.schema_field_title}>Fields: </div>
+              <n-data-table columns={fieldsColumns} data={fields} bordered={false} />
+              <div class={styles.schema_field_title}>Options: </div>
+              <n-data-table columns={optionsColumns} data={option} bordered={false} />
+            </div>
+          )
         }
       },
       {
         title: 'ID',
-        key: 'schemaId',
+        key: 'schemaId'
       },
       {
         title: 'Partition Keys',
@@ -99,7 +93,7 @@ export default defineComponent({
       columns,
       schemaData,
       loading,
-      t,
+      t
     }
   },
   render() {
@@ -115,6 +109,6 @@ export default defineComponent({
           />
         </n-spin>
       </n-card>
-    );
-  },
-});
+    )
+  }
+})

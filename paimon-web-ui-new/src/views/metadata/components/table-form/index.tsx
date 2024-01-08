@@ -18,16 +18,33 @@ under the License. */
 import { Add } from '@vicons/ionicons5'
 
 import { useCatalogStore } from '@/store/catalog'
-import { createTable, type TableDTO, type TableOption } from '@/api/models/catalog'
+import { createTable, type OptionsDTO, type TableDTO } from '@/api/models/catalog'
 
 import OptionContent, { newOption } from '../options-form-content'
-import TableColumnContent from '../table-column-content'
+import TableColumnContent, { newField } from '../table-column-content'
 
 import styles from './index.module.scss'
 
+
+const props = {
+  catalogId: {
+    type: Number as PropType<number>,
+    require: true
+  },
+  catalogName: {
+    type: String as PropType<string>,
+    require: true
+  },
+  databaseName: {
+    type: String as PropType<string>,
+    require: true
+  }
+}
+
 export default defineComponent({
   name: 'TableForm',
-  setup() {
+  props,
+  setup(props) {
     const rules = {}
 
     const { t } = useLocaleHooks()
@@ -43,8 +60,8 @@ export default defineComponent({
         {
           field: '',
           dataType: {
-            type: '',
-            nullable: true
+            nullable: true,
+            type: undefined
           },
           comment: '',
           defaultValue: '',
@@ -55,10 +72,25 @@ export default defineComponent({
     })
     const showModal = ref(false)
 
+    const tableKeys = computed(() => {
+      return formValue.value
+        .tableColumns!.filter((item) => Boolean(item.field))
+        .map((item) => {
+          return {
+            label: item.field,
+            value: item.field
+          }
+        })
+    })
+
     const handleConfirm = async () => {
       await formRef.value.validate()
+
       await createFetch({
-        params: toRaw(formValue.value)
+        params: {
+          ...toRaw(props),
+          ...tramsFormValue(toRaw(formValue.value))
+        }
       })
 
       if (result.value.code === 200) {
@@ -84,19 +116,36 @@ export default defineComponent({
       formValue.value.options?.push({ ...newOption })
     }
 
+    const handleAddColumn = () => {
+      formValue.value.tableColumns?.push(JSON.parse(JSON.stringify(newField)))
+    }
+
+    const tramsFormValue = (value: TableDTO) => {
+      const tableOptions: OptionsDTO = {}
+      value.options?.forEach((item) => {
+        tableOptions[item.key] = item.value
+      })
+      return {
+        ...value,
+        tableOptions
+      }
+    }
+
     return {
       formRef,
       formValue,
       showModal,
       loading,
 
+      tableKeys,
       rules,
 
       t,
       handleOpenModal,
       handleCloseModal,
       handleConfirm,
-      handleAddOption
+      handleAddOption,
+      handleAddColumn
     }
   },
   render() {
@@ -113,16 +162,24 @@ export default defineComponent({
               default: () => (
                 <n-form ref="formRef" rules={this.rules} model={this.formValue}>
                   <div class={styles.form_title}>{this.t('metadata.table_basic_information')}</div>
-                  <n-form-item label={this.t('metadata.table_name')} path="name">
+                  <n-form-item
+                    rule={{
+                      required: true,
+                      message: 'Name is required',
+                      trigger: ['input', 'blur']
+                    }}
+                    label={this.t('metadata.table_name')}
+                    path="name"
+                  >
                     <n-input v-model:value={this.formValue.name} />
                   </n-form-item>
                   <n-form-item label={this.t('metadata.table_des')} path="type">
-                    <n-input type="textarea" />
+                    <n-input v-model:value={this.formValue.description} type="textarea" />
                   </n-form-item>
 
                   <n-space align="center" justify="space-between" class={styles.form_title}>
                     {this.t('metadata.table_columns')}
-                    <n-button circle onClick={this.handleOpenModal}>
+                    <n-button circle onClick={this.handleAddColumn}>
                       <n-icon>
                         <Add />
                       </n-icon>
@@ -136,7 +193,12 @@ export default defineComponent({
                   />
                   <div class={styles.form_title}>{this.t('metadata.partition_columns')}</div>
                   <n-form-item showLabel={false} path="type">
-                    <n-select placeholder="Select" />
+                    <n-select
+                      multiple
+                      options={this.tableKeys}
+                      v-model:value={this.formValue.partitionKey}
+                      placeholder="Select"
+                    />
                   </n-form-item>
                   <n-space align="center" justify="space-between" class={styles.form_title}>
                     {this.t('metadata.table_add_options')}

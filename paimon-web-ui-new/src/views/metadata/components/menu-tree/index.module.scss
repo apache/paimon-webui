@@ -24,12 +24,24 @@ under the License. */
   .card {
     height: 100%;
 
-    .search {
+    .vertical {
       display: flex;
-    }
+      flex-direction: column;
+      height: 100%;
+      gap: 20px;
 
-    .icon {
-      display: flex;
+      .search {
+        display: flex;
+      }
+  
+      .icon {
+        display: flex;
+      }
+
+      .scroll {
+        position: relative;
+        flex: 1;
+      }
     }
   }
 }
