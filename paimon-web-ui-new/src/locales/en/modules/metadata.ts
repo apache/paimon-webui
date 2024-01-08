@@ -37,4 +37,23 @@ export default {
   create_database: 'Create Database',
   database_name: 'Database Name',
   database_des: 'Database Description',
+
+  create_table: 'Create Table',
+  table_basic_information: 'Basic Information',
+  table_name: 'Table Name',
+  table_des: 'Table Description',
+
+  table_columns: 'Table Columns',
+  column_field: 'Field',
+  column_type: 'Type',
+  column_length: 'Length',
+  column_pk: 'PK',
+  column_nullable: 'Nullable',
+  column_default: 'Default',
+  column_comment: 'Comment',
+  column_action: 'Operation',
+
+  partition_columns: 'Partition Columns',
+
+  table_add_options: 'Add Options',
 }

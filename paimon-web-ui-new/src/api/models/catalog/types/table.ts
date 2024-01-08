@@ -23,8 +23,15 @@ export interface Table {
 }
 
 export interface TableQuery {
-  catalogId: number
-  databaseName: string
+  catalogId?: number
+  databaseName?: string
+  name?: string
+}
+
+export interface SearchTable {
+  [catalogId: string]: {
+    [databaseName: string]: Table[]
+  }
 }
 
 export interface TableParams extends Table {
@@ -32,14 +39,15 @@ export interface TableParams extends Table {
 }
 
 export interface TableDTO {
-  catalogId: number
-  databaseName: string
-  name: string
-  description?: string
+  catalogId?: number
   catalogName?: string
+  databaseName?: string
+  name?: string
+  description?: string
   tableColumns?: ColumnDTO[]
   partitionKey?: string[]
-  tableOptions?: Record<string, string>
+  tableOptions?: OptionsDTO
+  options?: TableOption[]
 }
 
 export interface ColumnDTO {
@@ -52,7 +60,16 @@ export interface ColumnDTO {
 
 export interface DataTypeDTO {
   type: string
-  precision: number
-  scale: number
+  precision?: number | null
+  scale?: number | null
   nullable: boolean
+}
+
+export interface OptionsDTO {
+  [key: string]: string
+}
+
+export interface TableOption {
+  k: string;
+  v: string;
 }

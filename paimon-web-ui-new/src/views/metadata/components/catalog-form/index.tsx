@@ -74,10 +74,10 @@ export default defineComponent({
       type: '',
       warehouse: '',
       options: {
-        fileSystemType:'local',
-        endpoint:'',
-        accessKey:'',
-        secretKey:''
+        fileSystemType: 'local',
+        endpoint: '',
+        accessKey: '',
+        secretKey: ''
       }
     })
     const showModal = ref(false)
@@ -96,10 +96,10 @@ export default defineComponent({
           type: '',
           warehouse: '',
           options: {
-            fileSystemType:'local',
-            endpoint:'',
-            accessKey:'',
-            secretKey:''
+            fileSystemType: 'local',
+            endpoint: '',
+            accessKey: '',
+            secretKey: ''
           }
         }
         catalogStore.getAllCatalogs(true)
@@ -204,7 +204,7 @@ export default defineComponent({
                   )}
                 </n-form>
               ),
-              footer: () => (
+              action: () => (
                 <n-space justify="end">
                   <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
                   <n-button type="primary" loading={this.loading} onClick={this.handleConfirm}>

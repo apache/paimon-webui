@@ -27,7 +27,8 @@ import type {
   TableQuery,
   CatalogDTO,
   DatabaseDTO,
-  TableDTO
+  TableDTO,
+  SearchTable
 } from './types'
 import type { ResponseOptions } from '@/api/types'
 
@@ -73,7 +74,7 @@ export const createDatabase = () => {
  * # Get table by catalog id and database name
  */
 export const getTables = (params: TableQuery) => {
-  return httpRequest.post<TableQuery, ResponseOptions<Table[]>>(`/table/list`, params)
+  return httpRequest.post<TableQuery, ResponseOptions<Table[] | SearchTable>>(`/table/list`, params)
 }
 
 
