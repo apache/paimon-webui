@@ -73,6 +73,12 @@ export default defineComponent({
       name: '',
       type: '',
       warehouse: '',
+      options: {
+        fileSystemType:'local',
+        endpoint:'',
+        accessKey:'',
+        secretKey:''
+      }
     })
     const showModal = ref(false)
 
@@ -81,7 +87,7 @@ export default defineComponent({
       await createFetch({
         params: toRaw(formValue.value)
       })
-      
+
       if (result.value.code === 200) {
         handleCloseModal()
         message.success(t('Create Successfully'))
@@ -89,6 +95,12 @@ export default defineComponent({
           name: '',
           type: '',
           warehouse: '',
+          options: {
+            fileSystemType:'local',
+            endpoint:'',
+            accessKey:'',
+            secretKey:''
+          }
         }
         catalogStore.getAllCatalogs(true)
       }
@@ -121,60 +133,81 @@ export default defineComponent({
   render() {
     return (
       <>
-        <n-button
-          quaternary
-          circle
-          size='tiny'
-          onClick={this.handleOpenModal}
-        >
+        <n-button quaternary circle size="tiny" onClick={this.handleOpenModal}>
           <n-icon>
             <Add />
           </n-icon>
         </n-button>
-        <n-modal
-          v-model:show={this.showModal}
-          mask-closable={false}
-        >
+        <n-modal v-model:show={this.showModal} mask-closable={false}>
           <n-card bordered={false} title={this.t('metadata.create_catalog')} style="width: 600px">
             {{
               default: () => (
                 <n-form
-                  ref='formRef'
-                  label-placement="left"
+                  ref="formRef"
+                  label-placement="top"
                   label-width="auto"
-                  label-align="right"
+                  label-align="left"
                   rules={this.rules}
                   model={this.formValue}
                 >
-                  <n-form-item label={this.t('metadata.catalog_name')} path='name'>
+                  <n-form-item label={this.t('metadata.catalog_name')} path="name">
                     <n-input v-model:value={this.formValue.name} />
                   </n-form-item>
-                  <n-form-item label={this.t('metadata.catalog_type')} path='type'>
-                    <n-select v-model:value={this.formValue.type} options={this.catalogTypeOptions} />
+                  <n-form-item label={this.t('metadata.catalog_type')} path="type">
+                    <n-select
+                      v-model:value={this.formValue.type}
+                      options={this.catalogTypeOptions}
+                    />
                   </n-form-item>
-                  <n-form-item label={this.t('metadata.catalog_warehouse')} path='warehouse'>
+                  <n-form-item label={this.t('metadata.catalog_warehouse')} path="warehouse">
                     <n-input v-model:value={this.formValue.warehouse} />
                   </n-form-item>
-                  {
-                    this.formValue.type === 'hive' && (
-                      <>
-                        <n-form-item label={this.t('metadata.catalog_hiveuri')} path='hiveUri'>
-                          <n-input v-model:value={this.formValue.hiveUri} />
-                        </n-form-item>
-                        <n-form-item label={this.t('metadata.catalog_hive_conf_dir')} path='hiveConfDir'>
-                          <n-input v-model:value={this.formValue.hiveConfDir} />
-                        </n-form-item>
-                      </>
-                    )
-                  }
+                  {this.formValue.type === 'hive' && (
+                    <>
+                      <n-form-item label={this.t('metadata.catalog_hiveuri')} path="hiveUri">
+                        <n-input v-model:value={this.formValue.hiveUri} />
+                      </n-form-item>
+                      <n-form-item
+                        label={this.t('metadata.catalog_hive_conf_dir')}
+                        path="hiveConfDir"
+                      >
+                        <n-input v-model:value={this.formValue.hiveConfDir} />
+                      </n-form-item>
+                    </>
+                  )}
+                  {this.formValue.type === 'filesystem' && (
+                    <>
+                      <n-form-item label={this.t('metadata.catalog_filesystem_type')}>
+                        <n-radio-group v-model:value={this.formValue.options.fileSystemType}>
+                          <n-space>
+                            <n-radio value="local">local</n-radio>
+                            <n-radio value="s3">s3</n-radio>
+                            <n-radio value="oss">oss</n-radio>
+                          </n-space>
+                        </n-radio-group>
+                      </n-form-item>
+                      {(this.formValue.options.fileSystemType === 's3' ||
+                        this.formValue.options.fileSystemType === 'oss') && (
+                        <>
+                          <n-form-item label={this.t('metadata.catalog_endpoint')}>
+                            <n-input v-model:value={this.formValue.options.endpoint} />
+                          </n-form-item>
+                          <n-form-item label={this.t('metadata.catalog_access_key')}>
+                            <n-input v-model:value={this.formValue.options.accessKey} />
+                          </n-form-item>
+                          <n-form-item label={this.t('metadata.catalog_secret_key')}>
+                            <n-input v-model:value={this.formValue.options.secretKey} />
+                          </n-form-item>
+                        </>
+                      )}
+                    </>
+                  )}
                 </n-form>
               ),
               footer: () => (
-                <n-space justify='end'>
-                  <n-button onClick={this.handleCloseModal}>
-                    {this.t('layout.cancel')}
-                  </n-button>
-                  <n-button type='primary' loading={this.loading} onClick={this.handleConfirm}>
+                <n-space justify="end">
+                  <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
+                  <n-button type="primary" loading={this.loading} onClick={this.handleConfirm}>
                     {this.t('layout.confirm')}
                   </n-button>
                 </n-space>
