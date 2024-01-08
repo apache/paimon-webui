@@ -217,6 +217,12 @@ under the License.
                     <include>static/**</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>${project.basedir}/../scripts</directory>
+                <includes>
+                    <include>sql/**</include>
+                </includes>
+            </resource>
         </resources>
 
         <plugins>
