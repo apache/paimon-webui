@@ -116,6 +116,7 @@ under the License.
         <common-lang3.version>3.12.0</common-lang3.version>
         <hutool.version>5.8.11</hutool.version>
         <gson.version>2.10.1</gson.version>
+        <auto-service.version>1.0.1</auto-service.version>
     </properties>
 
     <dependencyManagement>
@@ -223,6 +224,13 @@ under the License.
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc-openapi-ui.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service</artifactId>
+                <version>${auto-service.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
