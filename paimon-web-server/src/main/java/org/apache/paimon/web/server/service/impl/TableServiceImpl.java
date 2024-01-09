@@ -38,6 +38,7 @@ import org.apache.paimon.web.server.util.PaimonServiceUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -183,7 +184,7 @@ public class TableServiceImpl implements TableService {
             TableColumn oldColumn = alterTableRequest.getOldColumn();
             TableColumn newColumn = alterTableRequest.getNewColumn();
 
-            List<TableChange> tableChanges = createTableChanges(oldColumn, newColumn);
+            List<TableChange> tableChanges = createTableChanges(alterTableRequest);
 
             if (!Objects.equals(newColumn.getField(), oldColumn.getField())) {
                 ColumnMetadata columnMetadata =
@@ -315,23 +316,50 @@ public class TableServiceImpl implements TableService {
         return resultList;
     }
 
-    private List<TableChange> createTableChanges(TableColumn oldColumn, TableColumn newColumn) {
+    private List<TableChange> createTableChanges(AlterTableRequest alterTableRequest) {
+        TableColumn oldColumn = alterTableRequest.getOldColumn();
+        TableColumn newColumn = alterTableRequest.getNewColumn();
         ColumnMetadata columnMetadata =
                 new ColumnMetadata(
                         newColumn.getField(),
                         DataTypeConvertUtils.convert(oldColumn.getDataType()),
                         oldColumn.getComment());
 
+        List<TableChange> tableChanges = new ArrayList<>();
+
         TableChange.ModifyColumnType modifyColumnType =
                 TableChange.modifyColumnType(
                         columnMetadata, DataTypeConvertUtils.convert(newColumn.getDataType()));
+        tableChanges.add(modifyColumnType);
 
         TableChange.ModifyColumnComment modifyColumnComment =
                 TableChange.modifyColumnComment(columnMetadata, newColumn.getComment());
-
-        List<TableChange> tableChanges = new ArrayList<>();
-        tableChanges.add(modifyColumnType);
         tableChanges.add(modifyColumnComment);
+
+        if (!Objects.equals(newColumn.getDefaultValue(), oldColumn.getDefaultValue())) {
+            TableChange.SetOption setOption =
+                    TableChange.set(
+                            FIELDS_PREFIX + "." + newColumn.getField() + "." + DEFAULT_VALUE_SUFFIX,
+                            newColumn.getDefaultValue());
+            tableChanges.add(setOption);
+        }
+
+        if (alterTableRequest.isMoveToFirst()) {
+            TableChange.ModifyColumnPosition modifyColumnPosition =
+                    TableChange.modifyColumnPosition(
+                            columnMetadata, TableChange.ColumnPosition.first());
+            tableChanges.add(modifyColumnPosition);
+        }
+
+        if (!alterTableRequest.isMoveToFirst()
+                && StringUtils.isNotBlank(alterTableRequest.getAfterColumnName())) {
+            TableChange.ModifyColumnPosition modifyColumnPosition =
+                    TableChange.modifyColumnPosition(
+                            columnMetadata,
+                            TableChange.ColumnPosition.after(
+                                    alterTableRequest.getAfterColumnName()));
+            tableChanges.add(modifyColumnPosition);
+        }
 
         return tableChanges;
     }

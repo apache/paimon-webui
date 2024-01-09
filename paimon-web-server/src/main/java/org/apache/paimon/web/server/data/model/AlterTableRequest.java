@@ -31,4 +31,8 @@ public class AlterTableRequest {
     private TableColumn oldColumn;
 
     private TableColumn newColumn;
+
+    private boolean moveToFirst;
+
+    private String afterColumnName;
 }
