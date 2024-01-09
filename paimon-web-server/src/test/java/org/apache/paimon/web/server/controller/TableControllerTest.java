@@ -172,15 +172,16 @@ public class TableControllerTest extends ControllerTestBase {
     @Test
     public void testAlterTable() throws Exception {
         TableColumn oldColumn =
-                new TableColumn("id", PaimonDataType.builder().type("INT").build(), "", false, "0");
+                new TableColumn("name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
 
         TableColumn newColumn =
                 new TableColumn(
-                        "age", PaimonDataType.builder().type("BIGINT").build(), "", false, "0");
+                        "age", PaimonDataType.builder().type("BIGINT").build(), "", false, "1");
 
         AlterTableRequest alterTableRequest = new AlterTableRequest();
         alterTableRequest.setOldColumn(oldColumn);
         alterTableRequest.setNewColumn(newColumn);
+        alterTableRequest.setMoveToFirst(true);
 
         String responseString =
                 mockMvc.perform(
