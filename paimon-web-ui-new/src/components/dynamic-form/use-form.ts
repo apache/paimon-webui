@@ -15,15 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormRules, IFormItemRule } from "./types"
+import type { FormInst } from 'naive-ui'
+import type { IFormInst, FormRules, IFormItemRule } from './types'
 
-export const useFormHooks = () => {
+export const useFormHooks = (): IFormInst & { state: { formRef: FormInst } } => {
   const state = reactive({
     formRef: ref()
   })
 
   const validate = async (...args: []) => {
-    await state.formRef.validate(...args)
+    return state.formRef.validate(...args)
   }
 
   const setValues = (initialValues: { [field: string]: any }) => {

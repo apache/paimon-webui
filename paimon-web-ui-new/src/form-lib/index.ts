@@ -20,10 +20,12 @@ import { useMYSQL } from './cdc/use-mysql'
 import { usePaimon } from './cdc/use-paimon'
 
 import { useDatabase } from './metadata/use-database'
+import { useOptions } from './metadata/use-options'
 
 export default {
   CDCLIST: useCDCList,
   MYSQL: useMYSQL,
   PAIMON: usePaimon,
   DATABASE: useDatabase,
+  OPTIONS: useOptions
 }

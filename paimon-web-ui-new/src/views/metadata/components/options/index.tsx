@@ -16,11 +16,12 @@ specific language governing permissions and limitations
 under the License. */
 
 import { type DataTableColumns } from 'naive-ui'
-import { AddCircleOutline, CreateOutline, RemoveCircleOutline, Warning } from '@vicons/ionicons5'
+import { RemoveCircleOutline, Warning } from '@vicons/ionicons5'
 
 import { deleteOption, getOptions, type TableOption } from '@/api/models/catalog'
 import { useCatalogStore } from '@/store/catalog'
 import OptionsForm from '../options-form'
+import OptionsEditForm from '../options-form/edit'
 
 export default defineComponent({
   name: 'MetadataOptions',
@@ -46,11 +47,7 @@ export default defineComponent({
         render(rowData) {
           return (
             <n-space>
-              <n-button strong secondary circle>
-                {{
-                  icon: () => <n-icon component={CreateOutline} />
-                }}
-              </n-button>
+              <OptionsEditForm value={rowData} />
               <n-popconfirm onPositiveClick={() => onDeleteOption(rowData?.key)}>
                 {{
                   default: () => 'Confirm to delete ? ',

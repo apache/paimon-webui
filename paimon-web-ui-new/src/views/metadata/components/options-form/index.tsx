@@ -121,7 +121,7 @@ export default defineComponent({
           }}
         </n-button>
         <n-modal v-model:show={this.showModal} mask-closable={false}>
-          <n-card bordered={true} title={this.t('metadata.create_catalog')} style="width: 700px">
+          <n-card bordered={true} title={'Create Option'} style="width: 700px">
             {{
               'header-extra': () => (
                 <n-button quaternary circle size="tiny" onClick={this.handleAddOption}>
