@@ -25,6 +25,7 @@ export function usePaimon(item: any) {
 	let catalogOptions: any = ref([{value:1}])
 	const catalogStore = useCatalogStore()
 	catalogStore.getAllCatalogs().then(()=>{
+		debugger
 		catalogOptions.value = catalogStore.catalogs
 	})
 	const model = reactive({
