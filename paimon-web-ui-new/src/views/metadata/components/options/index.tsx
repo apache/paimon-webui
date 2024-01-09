@@ -47,7 +47,7 @@ export default defineComponent({
         render(rowData) {
           return (
             <n-space>
-              <OptionsEditForm value={rowData} />
+              <OptionsEditForm onConfirm={onFetchData} value={rowData} />
               <n-popconfirm onPositiveClick={() => onDeleteOption(rowData?.key)}>
                 {{
                   default: () => 'Confirm to delete ? ',
