@@ -20,11 +20,9 @@ package org.apache.paimon.web.api.shell;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,12 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /** The test class of shell execution in{@link ShellService}. */
 public class ShellServiceTest {
 
-    @TempDir private Path tempFile;
-
     @Test
     public void testExecuteShell() throws IOException {
         List<String> args = Arrays.asList("/bin/sh", "-c", "echo 1");
-        ShellService shellService = new ShellService(tempFile.toUri().toString(), args);
+        ShellService shellService = new ShellService("/", args);
         Process execute = shellService.execute();
         InputStream is = execute.getInputStream();
         List<String> lines = IOUtils.readLines(is);
@@ -48,7 +44,7 @@ public class ShellServiceTest {
     @Test
     public void testExecuteBash() throws IOException {
         List<String> args = Arrays.asList("/bin/bash", "-c", "echo 1");
-        ShellService shellService = new ShellService(tempFile.toUri().toString(), args);
+        ShellService shellService = new ShellService("/", args);
         Process execute = shellService.execute();
         InputStream is = execute.getInputStream();
         List<String> lines = IOUtils.readLines(is);
