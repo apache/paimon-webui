@@ -115,7 +115,7 @@ export default defineComponent({
             default: () => (
               <n-data-table
                 columns={this.columns}
-                data={this.optionsList?.data || []}
+                data={this.optionsList || []}
                 pagination={this.pagination}
               />
             )

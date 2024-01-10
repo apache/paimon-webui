@@ -38,6 +38,10 @@ export interface TableParams extends Table {
   tableName: string
 }
 
+export interface ColumnParams extends Table {
+  columnName: string
+}
+
 export interface TableDTO {
   catalogId?: number
   catalogName?: string
@@ -45,6 +49,18 @@ export interface TableDTO {
   name?: string
   description?: string
   tableColumns?: ColumnDTO[]
+  partitionKey?: string[]
+  tableOptions?: OptionsDTO
+  options?: TableOption[]
+}
+
+export interface TableDetail {
+  catalogId?: number
+  catalogName?: string
+  databaseName?: string
+  name?: string
+  description?: string
+  columns?: ColumnDTO[]
   partitionKey?: string[]
   tableOptions?: OptionsDTO
   options?: TableOption[]

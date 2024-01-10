@@ -18,13 +18,13 @@ under the License. */
 import { Add, AddCircleOutline } from '@vicons/ionicons5'
 
 import { useCatalogStore } from '@/store/catalog'
-import { createOption, type TableOption } from '@/api/models/catalog'
+import { type ColumnDTO, createColumns } from '@/api/models/catalog'
 import { transformOption } from '@/views/metadata/constant'
 
-import OptionContent, { newOption } from '../options-form-content'
+import ColumnFormContent, { newField } from '../table-column-content'
 
-type OptionsFormType = {
-  options: TableOption[]
+type ColumnFormType = {
+  tableColumns: ColumnDTO[]
 }
 
 const props = {
@@ -32,7 +32,7 @@ const props = {
 }
 
 export default defineComponent({
-  name: 'OptionForm',
+  name: 'ColumnForm',
   props,
   setup(props) {
     const rules = {
@@ -52,11 +52,11 @@ export default defineComponent({
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [, createFetch, { loading }] = createOption()
+    const [, createFetch, { loading }] = createColumns()
 
     const formRef = ref()
-    const formValue = ref<OptionsFormType>({
-      options: [{ ...newOption }]
+    const formValue = ref<ColumnFormType>({
+      tableColumns: [JSON.parse(JSON.stringify(newField))]
     })
     const showModal = ref(false)
 
@@ -65,7 +65,7 @@ export default defineComponent({
       await createFetch({
         params: transformOption({
           ...toRaw(catalogStore.currentTable),
-          options: toRaw(formValue.value).options
+          tableColumns: toRaw(formValue.value).tableColumns
         })
       })
 
@@ -87,12 +87,12 @@ export default defineComponent({
 
     const resetState = () => {
       formValue.value = {
-        options: [{ ...newOption }]
+        tableColumns: [JSON.parse(JSON.stringify(newField))]
       }
     }
 
     const handleAddOption = () => {
-      formValue.value?.options.push({ ...newOption })
+      formValue.value?.tableColumns.push(JSON.parse(JSON.stringify(newField)))
     }
 
     return {
@@ -119,7 +119,7 @@ export default defineComponent({
           }}
         </n-button>
         <n-modal v-model:show={this.showModal} mask-closable={false}>
-          <n-card bordered={true} title={'Create Option'} style="width: 700px">
+          <n-card bordered={true} title={'Create Column'} style="width: 1100px">
             {{
               'header-extra': () => (
                 <n-button quaternary circle size="tiny" onClick={this.handleAddOption}>
@@ -137,11 +137,9 @@ export default defineComponent({
                   rules={this.rules}
                   model={this.formValue}
                 >
-                  <OptionContent
-                    onUpdateOptions={(value) => {
-                      this.formValue.options = value
-                    }}
-                    options={this.formValue.options || []}
+                  <ColumnFormContent
+                    data={this.formValue.tableColumns}
+                    onUpdateColumns={(value) => (this.formValue.tableColumns = [...value])}
                   />
                 </n-form>
               ),

@@ -65,7 +65,6 @@ export default defineComponent({
 
     onMounted(onFetchData)
 
-
     return {
       columns,
       snapshots,
@@ -78,7 +77,7 @@ export default defineComponent({
         <n-spin show={this.loading}>
           <n-data-table
             columns={this.columns}
-            data={this.snapshots?.data || []}
+            data={this.snapshots || []}
           />
         </n-spin>
       </n-card>

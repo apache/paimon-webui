@@ -66,7 +66,7 @@ export default defineComponent({
         <n-spin show={this.loading}>
           <n-data-table
             columns={this.columns}
-            data={this.manifest?.data || []}
+            data={this.manifest || []}
           />
         </n-spin>
       </n-card>

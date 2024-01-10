@@ -36,7 +36,7 @@ export default defineComponent({
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [result, createFetch, { loading }] = createOption()
+    const [, createFetch, { loading }] = createOption()
 
     const modalRef = ref<{ formRef: IFormInst }>()
     const showModal = ref(false)
@@ -50,11 +50,9 @@ export default defineComponent({
         })
       })
 
-      if (result.value.code === 200) {
-        handleCloseModal()
-        message.success(t('Create Successfully'))
-        props.onConfirm!()
-      }
+      handleCloseModal()
+      message.success(t('Create Successfully'))
+      props.onConfirm!()
     }
 
     const handleOpenModal = (e: Event) => {
@@ -87,7 +85,7 @@ export default defineComponent({
           }}
         </n-button>
         <IModal
-          ref='modalRef'
+          ref="modalRef"
           showModal={this.showModal}
           row={this.value}
           title={'Edit Option'}

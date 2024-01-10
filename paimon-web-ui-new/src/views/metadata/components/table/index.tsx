@@ -16,151 +16,149 @@ specific language governing permissions and limitations
 under the License. */
 
 import { type DataTableColumns } from 'naive-ui'
-import { AddCircleOutline, CreateOutline, RemoveCircleOutline } from '@vicons/ionicons5'
+import { CreateOutline, RemoveCircleOutline, Warning } from '@vicons/ionicons5'
 
-
-type RowData = {
-  key: number
-  columnName: string
-  dataType: string
-  nullAble: boolean
-  primaryKey: boolean
-  partitionKey: boolean
-  defaultValue?: string
-  description?: string
-}
+import { useCatalogStore } from '@/store/catalog'
+import { getColumns, type ColumnDTO, deleteColumns, type ColumnParams } from '@/api/models/catalog'
+import ColumnsForm from '../columns-form'
 
 export default defineComponent({
   name: 'MetadataTable',
   setup() {
     const { t } = useLocaleHooks()
 
-    const data: RowData[] = [
-      {
-        key: 0,
-        columnName: 'ID',
-        dataType: 'INT',
-        nullAble: true,
-        primaryKey: false,
-        partitionKey: false,
-      },
-      {
-        key: 1,
-        columnName: 'Name',
-        dataType: 'STRING',
-        nullAble: false,
-        primaryKey: true,
-        partitionKey: false
-      },
-      {
-        key: 2,
-        columnName: 'Description',
-        dataType: 'STRING',
-        nullAble: false,
-        primaryKey: true,
-        partitionKey: false,
-        defaultValue: '123'
-      }
-    ]
+    const catalogStore = useCatalogStore()
+    const [tableColumns, useColumns, { loading }] = getColumns()
 
-    const columns: DataTableColumns<RowData> = [
+    const columns: DataTableColumns<ColumnDTO> = [
       {
         title: 'Column Name',
-        key: 'columnName'
+        key: 'field'
       },
       {
         title: 'Data Type',
-        key: 'dataType'
+        key: 'dataType.type'
       },
       {
         title: 'Nullable',
         key: 'nullAble',
         align: 'center',
         render(rowData) {
-            return <n-checkbox v-model:checked={rowData.nullAble} />
-        },
+          return <n-checkbox checked={rowData.dataType.nullable} />
+        }
       },
       {
         title: 'Primary Key',
         key: 'primaryKey',
         align: 'center',
         render(rowData) {
-          return <n-checkbox v-model:checked={rowData.primaryKey} />
-       },
+          return <n-checkbox checked={rowData.pk} />
+        }
       },
       {
         title: 'Partition Key',
         key: 'partitionKey',
         align: 'center',
         render(rowData) {
-          return <n-checkbox v-model:checked={rowData.partitionKey} />
-       },
+          const isChecked = (tableColumns.value?.partitionKey || [])?.includes(rowData.field)
+          return <n-checkbox v-model:checked={isChecked} />
+        }
       },
       {
         title: 'Default Value',
         key: 'defaultValue',
         align: 'center',
         render(rowData) {
-            return rowData.defaultValue || '-'
-        },
+          return rowData.defaultValue || '-'
+        }
       },
       {
-        title: 'Description',
-        key: 'description',
+        title: 'Comment',
+        key: 'comment',
         align: 'center',
         render(rowData) {
-            return rowData.defaultValue || '-'
-        },
+          return rowData.comment || '-'
+        }
       },
       {
         title: 'Operation',
         key: 'operation',
-        render() {
-          return <n-space>
-            <n-button strong secondary circle>
-              {{
-                icon: () => <n-icon component={CreateOutline} />,
-              }}
-            </n-button>
-            <n-button strong secondary circle type="error">
-              {{
-                icon: () => <n-icon component={RemoveCircleOutline} />,
-              }}
-            </n-button>
-          </n-space>
+        render(rowData) {
+          return (
+            <n-space>
+              <n-button strong secondary circle>
+                {{
+                  icon: () => <n-icon component={CreateOutline} />
+                }}
+              </n-button>
+              <n-popconfirm onPositiveClick={() => onDeleteColumn(rowData?.field)}>
+                {{
+                  default: () => 'Confirm to delete ? ',
+                  trigger: () => (
+                    <n-button strong secondary circle type="error">
+                      {{
+                        icon: () => <n-icon component={RemoveCircleOutline} />
+                      }}
+                    </n-button>
+                  ),
+                  icon: () => <n-icon color="#EC4C4D" component={Warning} />
+                }}
+              </n-popconfirm>
+            </n-space>
+          )
         }
       }
     ]
 
+    const onDeleteColumn = async (columnName: string) => {
+      await deleteColumns({
+        ...toRaw(catalogStore.currentTable),
+        columnName
+      } as ColumnParams)
+
+      await onFetchData()
+    }
+
+    const onFetchData = async () => {
+      useColumns({
+        params: catalogStore.currentTable
+      })
+    }
+
+    watch(() => catalogStore.currentTable, onFetchData)
+
+    onMounted(onFetchData)
+
     return {
+      loading,
       columns,
-      data,
+      tableColumns,
       pagination: {
         pageSize: 10
       },
-      t,
+
+      onFetchData,
+      t
     }
   },
   render() {
     return (
-      <n-card title='Common Column'>
-        {{
-          'header-extra': () => (
-             <n-button strong secondary circle>
-              {{
-                icon: () => <n-icon component={AddCircleOutline} />,
-              }}
-            </n-button>
-          ),
-          default: () => (
-            <n-data-table
-              columns={this.columns}
-              data={this.data}
-              pagination={this.pagination}
-            />
-          )
-        }}
-      </n-card>
-    );
-  },
-});
+      <n-spin show={this.loading}>
+        <n-card title="Common Column">
+          {{
+            'header-extra': () => (
+              <ColumnsForm onConfirm={this.onFetchData} />
+            ),
+            default: () => (
+              <n-data-table
+                columns={this.columns}
+                data={this.tableColumns?.columns || []}
+                pagination={this.pagination}
+              />
+            )
+          }}
+        </n-card>
+      </n-spin>
+    )
+  }
+})

@@ -37,7 +37,7 @@ export default defineComponent({
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [result, createFetch, { loading }] = createDatabase()
+    const [, createFetch, { loading }] = createDatabase()
 
     const modalRef = ref<{ formRef: IFormInst }>()
     const showModal = ref(false)
@@ -52,14 +52,12 @@ export default defineComponent({
           }
         })
 
-        if (result.value.code === 200) {
-          handleCloseModal()
-          message.success(t('Create Successfully'))
-          values = reactive({
-            name: '',
-          })
-          catalogStore.getAllCatalogs(true)
-        }
+        handleCloseModal()
+        message.success(t('Create Successfully'))
+        values = reactive({
+          name: ''
+        })
+        catalogStore.getAllCatalogs(true)
       }
     }
 
@@ -71,7 +69,7 @@ export default defineComponent({
     const handleCloseModal = () => {
       showModal.value = false
       modalRef.value?.formRef?.resetValues({
-        name: '',
+        name: ''
       })
     }
 
