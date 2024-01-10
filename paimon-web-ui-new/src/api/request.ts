@@ -18,10 +18,10 @@ under the License. */
 import { createAxle, type AxleInstance } from '@varlet/axle'
 import { createUseAxle } from '@varlet/axle/use'
 
-import type { FetchOptions } from './types'
+import type { FetchOptions, ResponseOptions } from './types'
 
 const axle: AxleInstance & { createHooks?: typeof createHooks } = createAxle({
-  baseURL: '/api'
+  baseURL: import.meta.env.MODE === 'mock' ? '/mock/api' : '/api'
 })
 
 axle.axios.interceptors.request.use(
@@ -45,6 +45,7 @@ axle.axios.interceptors.response.use(
       // do something there
       return Promise.reject(response.data)
     }
+
     return response.data
   },
   (error) => {
@@ -57,8 +58,8 @@ const useAxle = createUseAxle({
   axle
 })
 
-function createHooks<T, R>(options: FetchOptions<T, R>) {
-  return useAxle(options)
+function createHooks<T, P = Record<string, any>>(options: FetchOptions<T, P>) {
+  return useAxle<ResponseOptions<T>, ResponseOptions<T>, P>(options)
 }
 
 axle.createHooks = createHooks

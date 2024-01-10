@@ -33,6 +33,20 @@ pnpm install
 pnpm dev
 ```
 
+- If you can't a backend server. You can running project with mock mode
+
+    This will open a mock server service and api document.
+
+    The mock server will in [http://localhost:10088](http://localhost:10088)
+
+    The mock api document will in [http://localhost:10090](http://localhost:10090)
+
+```sh
+pnpm dev:mock & pnpm run mock
+```
+
+
+
 ### Type-Check, Compile and Minify for Production
 
 ```sh

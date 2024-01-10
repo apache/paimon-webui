@@ -16,12 +16,29 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface Catalog {
-  id: number;
-  createTime: string;
-  updateTime?: string;
-  catalogType: string;
-  catalogName: string;
-  warehouse: string;
-  hiveUri?: string;
-  hiveConfDir?: string;
+  id: number
+  createTime: string
+  updateTime?: string
+  catalogType: string
+  catalogName: string
+  warehouse: string
+  hiveUri?: string
+  hiveConfDir?: string
+  options?: FileSystemOption
+}
+
+export interface CatalogDTO {
+  type: string
+  name: string
+  warehouse: string
+  hiveUri?: string
+  hiveConfDir?: string
+  options: FileSystemOption
+}
+
+export interface FileSystemOption {
+  fileSystemType:string,
+  endpoint?:string,
+  accessKey?:string,
+  secretKey?:string
 }

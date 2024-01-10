@@ -16,7 +16,20 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '@/api/request'
-import type { Catalog, Database, Table, TableQuery } from './types'
+import type {
+  Catalog,
+  Database,
+  Table,
+  Schema,
+  Manifest,
+  Snapshot,
+  Datafile,
+  TableQuery,
+  CatalogDTO,
+  DatabaseDTO,
+  TableDTO,
+  SearchTable
+} from './types'
 import type { ResponseOptions } from '@/api/types'
 
 export * from './types'
@@ -27,7 +40,17 @@ export * from './types'
  * # Get all catalog
  */
 export const getAllCatalogs = () => {
-  return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/getAllCatalogs')
+  return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/list')
+}
+
+/**
+ * # Create new Catalog
+ */
+export const createCatalog = () => {
+  return httpRequest.createHooks!<unknown, CatalogDTO>({
+    url: '/catalog/create',
+    method: 'post'
+  })
 }
 
 /**
@@ -38,29 +61,51 @@ export const getDatabasesByCatalogId = (id: number) => {
 }
 
 /**
+ * # Create new Database
+ */
+export const createDatabase = () => {
+  return httpRequest.createHooks!<unknown, DatabaseDTO>({
+    url: '/database/create',
+    method: 'post'
+  })
+}
+
+/**
  * # Get table by catalog id and database name
  */
 export const getTables = (params: TableQuery) => {
-  return httpRequest.post<TableQuery, ResponseOptions<Table[]>>(`/table/list`, params)
+  return httpRequest.post<TableQuery, ResponseOptions<Table[] | SearchTable>>(`/table/list`, params)
 }
+
+
+/**
+ * # Create new Table
+ */
+export const createTable = () => {
+  return httpRequest.createHooks!<unknown, TableDTO>({
+    url: '/table/create',
+    method: 'post'
+  })
+}
+
 
 /**
  * # Get schema
  */
 export const getSchema = () => {
-  return httpRequest.createHooks!<Table, any[]>({
+  return httpRequest.createHooks!<Schema[]>({
     url: '/metadata/query/schema',
-    method: 'post',
+    method: 'post'
   })
 }
 
-/** 
- * # Get manifest 
+/**
+ * # Get manifest
  */
 export const getManifest = () => {
-  return httpRequest.createHooks!<Table, any[]>({
+  return httpRequest.createHooks!<Manifest[]>({
     url: '/metadata/query/manifest',
-    method: 'post',
+    method: 'post'
   })
 }
 
@@ -68,9 +113,9 @@ export const getManifest = () => {
  * # Get data file
  */
 export const getDataFile = () => {
-  return httpRequest.createHooks!<Table, any[]>({
+  return httpRequest.createHooks!<Datafile[]>({
     url: '/metadata/query/dataFile',
-    method: 'post',
+    method: 'post'
   })
 }
 
@@ -78,9 +123,9 @@ export const getDataFile = () => {
  * # Get snapshot
  */
 export const getSnapshot = () => {
-  return httpRequest.createHooks!<Table, any[]>({
+  return httpRequest.createHooks!<Snapshot[]>({
     url: '/metadata/query/snapshot',
-    method: 'post',
+    method: 'post'
   })
 }
 

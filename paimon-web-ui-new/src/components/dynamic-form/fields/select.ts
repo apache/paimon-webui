@@ -31,6 +31,6 @@ export function renderSelect(
       void (fields[field] = value)
       if (props?.onUpdateValue) props.onUpdateValue(value)
     },
-    options: unref(options)
+    options: options
   })
 }

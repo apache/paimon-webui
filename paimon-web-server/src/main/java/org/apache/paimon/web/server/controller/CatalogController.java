@@ -68,7 +68,7 @@ public class CatalogController {
      *
      * @return The list of all catalogs.
      */
-    @GetMapping("/getAllCatalogs")
+    @GetMapping("/list")
     public R<List<CatalogInfo>> getCatalog() {
         List<CatalogInfo> catalogs = catalogService.list();
         return R.succeed(catalogs);

@@ -16,13 +16,60 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface Table {
-  catalogId: number;
-  catalogName: string;
-  databaseName: string;
-  name?: string;
+  catalogId: number
+  catalogName: string
+  databaseName: string
+  name?: string
 }
 
 export interface TableQuery {
-  catalogId: number;
-  databaseName: string;
+  catalogId?: number
+  databaseName?: string
+  name?: string
+}
+
+export interface SearchTable {
+  [catalogId: string]: {
+    [databaseName: string]: Table[]
+  }
+}
+
+export interface TableParams extends Table {
+  tableName: string
+}
+
+export interface TableDTO {
+  catalogId?: number
+  catalogName?: string
+  databaseName?: string
+  name?: string
+  description?: string
+  tableColumns?: ColumnDTO[]
+  partitionKey?: string[]
+  tableOptions?: OptionsDTO
+  options?: TableOption[]
+}
+
+export interface ColumnDTO {
+  field: string
+  dataType: DataTypeDTO
+  comment: string
+  defaultValue: string
+  pk: boolean
+}
+
+export interface DataTypeDTO {
+  type: string
+  precision?: number | null
+  scale?: number | null
+  nullable: boolean
+}
+
+export interface OptionsDTO {
+  [key: string]: string
+}
+
+export interface TableOption {
+  k: string;
+  v: string;
 }

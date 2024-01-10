@@ -25,7 +25,6 @@ export default defineComponent({
   name: 'ContentPage',
   setup() {
     const configStore = useConfigStore()
-    const route = useRoute()
     const { menuOptions, state } = useData()
     const getSideOption = (state: any) => {
       const activeNavKey = configStore.getCurrentNavActive
@@ -49,11 +48,11 @@ export default defineComponent({
             <NavBar headerMenuOptions={this.menuOptions}></NavBar>
           </n-layout-header>
           <n-layout has-sider position='absolute' style='top: 64px'>
-            {this.isShowSided && (
+            {this.isShowSided ? (
               <SideBar
                 sideMenuOptions={this.sideMenuOptions}
               />
-            )}
+            ) : null}
             <n-layout-content content-style="height: calc(100vh - 64px);">
               <router-view />
             </n-layout-content>

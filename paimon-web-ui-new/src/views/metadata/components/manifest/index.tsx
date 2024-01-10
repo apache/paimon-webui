@@ -17,46 +17,18 @@ under the License. */
 
 import { type DataTableColumns } from 'naive-ui'
 
-import { getManifest } from '@/api/models/catalog'
-
-type RowData = {
-  fileName: string
-  fileSize: number
-  numAddFiles: number
-}
-
+import { getManifest, type Manifest } from '@/api/models/catalog'
+import { useCatalogStore } from '@/store/catalog'
 
 export default defineComponent({
   name: 'MetadataManifest',
   setup() {
     const { t } = useLocaleHooks()
-    const [, useManifest, { loading }] = getManifest()
+    const [manifest, useManifest, { loading }] = getManifest()
 
+    const catalogStore = useCatalogStore()
 
-    const data: RowData[] = [
-      {
-        fileName: 'manifest-wekfj',
-        fileSize: 29838,
-        numAddFiles: 19,
-      },
-      {
-        fileName: 'manifest-akagerjgerg38746',
-        fileSize: 827387,
-        numAddFiles: 27,
-      },
-      {
-        fileName: 'manifest-aka38reophkrpoth746',
-        fileSize: 36423,
-        numAddFiles: 37,
-      },
-      {
-        fileName: 'manifest-gerjgoiejrog',
-        fileSize: 387423,
-        numAddFiles: 34,
-      },
-    ]
-
-    const columns: DataTableColumns<RowData> = [
+    const columns: DataTableColumns<Manifest> = [
       {
         title: 'File Name',
         key: 'fileName'
@@ -67,24 +39,23 @@ export default defineComponent({
       },
       {
         title: 'Number of Add Files',
-        key: 'numAddFiles'
+        key: 'numAddedFiles'
       },
     ]
 
-    onMounted(() => {
+    const onFetchData = async () => {
       useManifest({
-        params: {
-          catalogId: -1632763902,
-          catalogName: "streaming_warehouse",
-          databaseName: "ods",
-          tableName: "t_user"
-        }
+        params: catalogStore.currentTable
       })
-    })
+    }
+
+    watch(() => catalogStore.currentTable, onFetchData)
+
+    onMounted(onFetchData)
 
     return {
       columns,
-      data,
+      manifest,
       loading,
       t,
     }
@@ -95,7 +66,7 @@ export default defineComponent({
         <n-spin show={this.loading}>
           <n-data-table
             columns={this.columns}
-            data={this.data}
+            data={this.manifest?.data || []}
           />
         </n-spin>
       </n-card>

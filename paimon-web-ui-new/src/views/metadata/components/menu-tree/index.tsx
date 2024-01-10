@@ -15,11 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Add, FolderOutline, FolderOpenOutline, Search } from '@vicons/ionicons5'
-import { NButton, NIcon, type TreeOption } from 'naive-ui';
+import { Search } from '@vicons/ionicons5'
+import { Catalog, ChangeCatalog, DataBase } from '@vicons/carbon'
+import { DatabaseFilled } from '@vicons/antd'
+import { NIcon, type TreeOption } from 'naive-ui'
 
 import { useCatalogStore } from '@/store/catalog'
 
+import CatalogFormButton from '../catalog-form'
+import DatabaseFormButton from '../database-form'
+import TableFormButton from '../table-form'
 import styles from './index.module.scss'
 
 export default defineComponent({
@@ -31,85 +36,103 @@ export default defineComponent({
     const catalogStoreRef = storeToRefs(catalogStore)
 
     const filterValue = ref('')
+    const isSearch = ref(false)
+    const formType = ref('CATALOG')
 
-    const dropdownMenu = [
-      {
-        label: t('playground.new_folder'),
-        key: 'new_folder',
-      },
-      {
-        label: t('playground.new_file'),
-        key: 'new_file',
-      },
-    ]
+    const renderPrefix = ({ option, expanded }: { option: TreeOption; expanded: boolean }) => {
+      let icon = expanded ? Catalog : ChangeCatalog
+      if (option.type !== 'catalog') {
+        icon = expanded ? DataBase : DatabaseFilled
+      }
 
-    const updatePrefixWithExpanded = (
-      _keys: Array<string | number>,
-      _option: Array<TreeOption | null>,
-      meta: {
-        node: TreeOption | null
-        action: 'expand' | 'collapse' | 'filter'
-      }
-    ) => {
-      if (!meta.node) return
-      switch (meta.action) {
-        case 'expand':
-          meta.node.prefix = () =>
-            h(NIcon, null, {
-              default: () => h(FolderOpenOutline)
-            })
-          break
-        case 'collapse':
-          meta.node.prefix = () =>
-            h(NIcon, null, {
-              default: () => h(FolderOutline)
-            })
-          break
-      }
+      return h(NIcon, null, {
+        default: () => h(icon)
+      })
     }
 
     const renderSuffix = ({ option }: { option: TreeOption }) => {
-      return option.type !== 'table' ? h(NButton, {
-        quaternary: true,
-        circle: true,
-        size: 'tiny',
-        onClick: (e) => {
-          e.stopPropagation()
-        }
-      }, {
-        default: () => h(NIcon, null, {
-          default: () => h(Add)
-        })
-      }) : undefined
+      switch (option.type) {
+        case 'catalog':
+          const [catalogId] = option.key?.toString()?.split(' ') || []
+          return h(DatabaseFormButton, { catalogId: Number(catalogId) })
+        case 'database':
+          const [id, name, databaseName] = option.key?.toString()?.split(' ') || []
+          return h(TableFormButton, { catalogId: id, catalogName: name, databaseName })
+        default:
+          return undefined
+      }
     }
 
-    onMounted(catalogStore.getAllCatalogs)
+    onMounted(() => {
+      catalogStore.getAllCatalogs(true)
+    })
+
+    onUnmounted(catalogStore.resetCurrentTable)
+
+    watch(
+      () => filterValue.value,
+      async (newValue) => {
+        if (!newValue && isSearch.value) {
+          isSearch.value = false
+          await catalogStore.getAllCatalogs(true)
+        }
+      }
+    )
 
     const onLoadMenu = async (node: TreeOption) => {
       if (node.type === 'catalog') {
         node.children = await catalogStore.getDatabasesById(node.key as number)
-      } 
-      else {
+      } else {
         const [catalogId, databaseName] = (node.key as string)?.split(' ') || []
         const params = {
           catalogId: Number(catalogId),
           databaseName
         }
-        node.children = await catalogStore.getTablesByDataBaseId(params)
+        node.children = (await catalogStore.getTablesByDataBaseId(params)) || []
       }
 
       return Promise.resolve()
     }
 
+    const nodeProps = ({ option }: { option: TreeOption }) => {
+      return {
+        onClick() {
+          const { type } = option
+          if (type === 'table') {
+            const [catalogId, catalogName, databaseName, name] =
+              (option.key?.toString() || '')?.split(' ') || []
+            catalogStore.setCurrentTable({
+              catalogId: Number(catalogId),
+              catalogName,
+              databaseName,
+              tableName: name
+            })
+          }
+        }
+      }
+    }
+
+    const onSearch = async (e: KeyboardEvent) => {
+      if (e.code === 'Enter') {
+        isSearch.value = true
+        await catalogStore.getTablesByDataBaseId({
+          name: filterValue.value
+        })
+      }
+    }
+
     return {
       menuLoading: catalogStoreRef.catalogLoading,
       menuList: catalogStoreRef.catalogs,
-      dropdownMenu,
       filterValue,
+      isSearch,
+      formType,
       t,
       onLoadMenu,
-      updatePrefixWithExpanded,
-      renderSuffix
+      onSearch,
+      renderPrefix,
+      renderSuffix,
+      nodeProps
     }
   },
   render() {
@@ -117,35 +140,34 @@ export default defineComponent({
       <div class={styles.container}>
         <n-card class={styles.card} content-style={'padding:20px 18px;'}>
           <n-space vertical>
-            <n-space justify='space-between' align='enter'>
+            <n-space justify="space-between" align="enter">
               <article>Catalog</article>
-              <n-button size='small' quaternary circle>
-                <n-icon>
-                  <Add />
-                </n-icon>
-              </n-button>
+              <CatalogFormButton />
             </n-space>
-            <n-input placeholder={this.t('playground.search')} style="width: 100%;"
+            <n-input
+              placeholder={this.t('playground.search')}
+              style="width: 100%;"
               v-model:value={this.filterValue}
               v-slots={{
                 prefix: () => <n-icon component={Search} />
               }}
-            >
-            </n-input>
+              onKeyup={this.onSearch}
+            ></n-input>
             <n-spin show={this.menuLoading}>
               <n-tree
                 block-line
                 expand-on-click
-                renderSuffix={this.renderSuffix}
-                onUpdate:expandedKeys={this.updatePrefixWithExpanded}
-                onLoad={this.onLoadMenu}
                 data={this.menuList}
-                pattern={this.filterValue}
+                defaultExpandAll={this.isSearch}
+                nodeProps={this.nodeProps}
+                renderSuffix={this.renderSuffix}
+                renderSwitcherIcon={this.renderPrefix}
+                onLoad={this.onLoadMenu}
               />
             </n-spin>
           </n-space>
         </n-card>
       </div>
-    );
+    )
   }
-});
+})

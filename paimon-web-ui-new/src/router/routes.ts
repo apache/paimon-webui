@@ -46,7 +46,7 @@ const loginPage: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/login')
+    component: () => import('@/views/login')
   }
 ]
 

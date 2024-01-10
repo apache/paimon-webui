@@ -25,8 +25,11 @@ under the License. */
     flex-direction: column;
     
     width: calc(100% - 60px);
-    height: 100%;
 
     padding: 14px 20px;
+
+    :global(.n-empty) {
+      margin-top: 200px;
+    }
   }
 }

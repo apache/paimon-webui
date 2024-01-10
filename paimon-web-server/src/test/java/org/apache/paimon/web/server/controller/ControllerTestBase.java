@@ -23,11 +23,13 @@ import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.TableColumn;
+import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
 import org.apache.paimon.web.server.util.StringUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.junit.jupiter.api.AfterEach;
@@ -236,5 +238,40 @@ public class ControllerTestBase {
                         .getResponse();
         String result = response.getContentAsString();
         return ObjectMapperUtils.fromJSON(result, R.class);
+    }
+
+    protected R<?> getR(MockHttpServletResponse response) throws Exception {
+        String result = response.getContentAsString();
+        return ObjectMapperUtils.fromJSON(result, R.class);
+    }
+
+    protected <T> R<T> getR(MockHttpServletResponse response, TypeReference<R<T>> typeReference)
+            throws Exception {
+        String result = response.getContentAsString();
+        return ObjectMapperUtils.fromJSON(result, typeReference);
+    }
+
+    protected PageR<?> getPageR(MockHttpServletResponse response) throws Exception {
+        String result = response.getContentAsString();
+        return ObjectMapperUtils.fromJSON(result, PageR.class);
+    }
+
+    protected <T> PageR<T> getPageR(
+            MockHttpServletResponse response, TypeReference<PageR<T>> typeReference)
+            throws Exception {
+        String result = response.getContentAsString();
+        return ObjectMapperUtils.fromJSON(result, typeReference);
+    }
+
+    protected void checkMvcResult(MockHttpServletResponse response, int exceptedStatus)
+            throws Exception {
+        R<?> r = getR(response);
+        assertEquals(exceptedStatus, r.getCode());
+    }
+
+    protected void checkMvcPageResult(MockHttpServletResponse response, boolean exceptedStatus)
+            throws Exception {
+        PageR<?> pageR = getPageR(response);
+        assertEquals(pageR.isSuccess(), exceptedStatus);
     }
 }
