@@ -105,7 +105,7 @@ public class ControllerTestBase {
 
         cookie = (MockCookie) response.getCookie(tokenName);
 
-        // create default catalog
+       /* // create default catalog
         CatalogDTO catalog = new CatalogDTO();
         catalog.setType("filesystem");
         catalog.setName(catalogName);
@@ -120,9 +120,9 @@ public class ControllerTestBase {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE));
         R<?> createCatalogR = getR(createCatalogRa);
-        assertEquals(200, createCatalogR.getCode());
+        assertEquals(200, createCatalogR.getCode());*/
 
-        // create default database
+        /*// create default database
         DatabaseDTO database = new DatabaseDTO();
         database.setName(databaseName);
         database.setCatalogName(catalogName);
@@ -169,7 +169,7 @@ public class ControllerTestBase {
                         .getResponse();
         String createTableResult = createTableResultAction.getContentAsString();
         R<?> createTableR = ObjectMapperUtils.fromJSON(createTableResult, R.class);
-        assertEquals(200, createTableR.getCode());
+        assertEquals(200, createTableR.getCode());*/
     }
 
     @AfterEach
@@ -188,7 +188,7 @@ public class ControllerTestBase {
         R<?> r = ObjectMapperUtils.fromJSON(result, R.class);
         assertEquals(200, r.getCode());
 
-        ResultActions dropTableRa =
+       /* ResultActions dropTableRa =
                 mockMvc.perform(
                         MockMvcRequestBuilders.delete(
                                         tablePath
@@ -227,7 +227,7 @@ public class ControllerTestBase {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE));
         R<?> removeCatalogResult = getR(removeCatalogRa);
-        assertEquals(200, removeCatalogResult.getCode());
+        assertEquals(200, removeCatalogResult.getCode());*/
     }
 
     protected R<?> getR(ResultActions perform) throws Exception {

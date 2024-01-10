@@ -19,11 +19,13 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.CatalogDTO;
+import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,7 +35,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /** Test for CatalogController. */
 @SpringBootTest
@@ -46,6 +51,7 @@ public class CatalogControllerTest extends ControllerTestBase {
     private static final String catalogName = "testCatalog";
 
     @Test
+    @Order(1)
     public void testCreateCatalog() throws Exception {
         CatalogDTO catalog = new CatalogDTO();
         catalog.setType("filesystem");
@@ -68,11 +74,37 @@ public class CatalogControllerTest extends ControllerTestBase {
 
         R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
         assertEquals(200, r.getCode());
+    }
 
+    @Test
+    @Order(2)
+    public void testGetCatalog() throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(catalogPath + "/list")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<List<CatalogInfo>> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<List<CatalogInfo>>>() {});
+        assertEquals(200, r.getCode());
+        assertNotNull(r.getData());
+        assertEquals(catalogName, r.getData().get(0).getCatalogName());
+    }
+
+    @Test
+    @Order(3)
+    public void testRemoveCatalog() throws Exception {
         CatalogDTO removeCatalog = new CatalogDTO();
         removeCatalog.setId(1);
         removeCatalog.setName(catalogName);
 
+        String responseString =
         mockMvc.perform(
                         MockMvcRequestBuilders.post(catalogPath + "/remove")
                                 .cookie(cookie)
@@ -88,23 +120,5 @@ public class CatalogControllerTest extends ControllerTestBase {
         R<Void> remove =
                 ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
         assertEquals(200, remove.getCode());
-    }
-
-    @Test
-    public void testGetAllCatalogs() throws Exception {
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.get(catalogPath + "/getAllCatalogs")
-                                        .cookie(cookie)
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
-        assertEquals(200, r.getCode());
     }
 }
