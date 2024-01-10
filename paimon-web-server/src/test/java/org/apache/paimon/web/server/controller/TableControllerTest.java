@@ -172,7 +172,8 @@ public class TableControllerTest extends ControllerTestBase {
     @Test
     public void testAlterTable() throws Exception {
         TableColumn oldColumn =
-                new TableColumn("name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
+                new TableColumn(
+                        "name", PaimonDataType.builder().type("STRING").build(), "", false, "0");
 
         TableColumn newColumn =
                 new TableColumn(

@@ -318,9 +318,6 @@ public class TableServiceImpl implements TableService {
         return resultList;
     }
 
-    private List<TableChange> createTableChanges(AlterTableRequest alterTableRequest) {
-        TableColumn oldColumn = alterTableRequest.getOldColumn();
-        TableColumn newColumn = alterTableRequest.getNewColumn();
     @Override
     public TableVO listColumns(String catalogName, String databaseName, String tableName) {
         PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
@@ -358,7 +355,9 @@ public class TableServiceImpl implements TableService {
         return builder.build();
     }
 
-    private List<TableChange> createTableChanges(TableColumn oldColumn, TableColumn newColumn) {
+    private List<TableChange> createTableChanges(AlterTableRequest alterTableRequest) {
+        TableColumn oldColumn = alterTableRequest.getOldColumn();
+        TableColumn newColumn = alterTableRequest.getNewColumn();
         ColumnMetadata columnMetadata =
                 new ColumnMetadata(
                         newColumn.getField(),
