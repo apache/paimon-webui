@@ -28,8 +28,10 @@ under the License. */
 
     padding: 14px 20px;
 
-    :global(.n-empty) {
-      margin-top: 200px;
+    .empty {
+      :global(.n-empty) {
+        margin-top: 200px;
+      }
     }
   }
 }

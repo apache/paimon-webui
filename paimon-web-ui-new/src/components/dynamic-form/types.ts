@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormItemRule, FormProps, FormRules, GridProps } from "naive-ui"
+import type { FormInst, FormItemRule, FormProps, FormRules, GridProps } from "naive-ui"
 
 type ComponentType =
   | 'input'
@@ -71,6 +71,15 @@ interface IMeta extends Omit<FormProps, 'model' | 'rules'> {
   rules: IFormRules
 }
 
+interface IFormInst extends FormInst {
+  setValues: (initialValues: { [field: string]: any }) => void
+  resetValues: (initialValues: { [field: string]: any }) => void
+  getValues: () => { [field: string]: any }
+  restoreValidation: () => void
+  validate: (...args: []) => Promise<any>
+  formatValidate: (validate?: IFormItemRule | FormRules) => IFormItemRule
+}
+
 export type {
   IJsonItem,
   IJsonItemParams,
@@ -82,5 +91,6 @@ export type {
   IFormItemRule,
   IMeta,
   GridProps,
-  FormRules
+  FormRules,
+  IFormInst
 }

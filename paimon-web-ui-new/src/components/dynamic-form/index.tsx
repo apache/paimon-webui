@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormRules, GridProps, IMeta } from "./types"
+import type { FormRules, GridProps, IFormInst, IMeta } from "./types"
 import { useFormHooks } from "./use-form"
 
 const props = {
@@ -36,11 +36,11 @@ const props = {
 export default defineComponent({
   name: 'DynamicForm',
   props,
-  setup(props, { expose }) {
+  setup(_, { expose }) {
     const { state, ...rest } = useFormHooks()
     expose({
       ...rest
-    })
+    }  as IFormInst)
     return { ...toRefs(state) }
   },
   render(props: { meta: IMeta; gridProps?: GridProps; loading?: boolean }) {

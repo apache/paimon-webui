@@ -105,6 +105,24 @@ module.exports = (mockUtil) => ({
     "data": null
   }),
 
+  'post /metadata/query/options': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": [
+        {
+            "key": "bucket",
+            "value": "4"
+        },
+        {
+            "key": "changelog-producer",
+            "value": "input"
+        },
+        {
+            "key": "sink.parallelism",
+            "value": "4"
+        }
+    ]
+}),
   'post /metadata/query/schema': mockUtil({
     code: 200,
     msg: 'Successfully',
@@ -191,5 +209,16 @@ module.exports = (mockUtil) => ({
         "creationTime": "@now"
       }
     ]
+  }),
+
+  'post /table/option/add': mockUtil({
+    code: 200,
+    msg: 'Successfully',
+    data: null,
+  }),
+  'post /table/option/remove': mockUtil({
+    code: 200,
+    msg: 'Successfully',
+    data: null,
   })
 })

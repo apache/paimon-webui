@@ -93,7 +93,7 @@ const transformDatabase = (databases: Database[]): TreeOption[] => {
   return databases.map(database => ({
     label: database.name,
     type: 'database',
-    key: `${database.catalogId} ${database.name}`,
+    key: `${database.catalogId} ${database.catalogName} ${database.name}`,
     isLeaf: false,
   }))
 }
@@ -102,7 +102,7 @@ const transformTable = (tables: Table[]): TreeOption[] => {
   return tables.map(table => ({
     label: table.name,
     type: 'table',
-    key: `${table.catalogId} ${table.catalogName} ${table.databaseName} ${table.name}`,
+    key: `${JSON.stringify(table)}`,
     isLeaf: true,
     prefix: () =>
       h(NIcon, null, {

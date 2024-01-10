@@ -59,7 +59,7 @@ export interface ColumnDTO {
 }
 
 export interface DataTypeDTO {
-  type: string
+  type?: string
   precision?: number | null
   scale?: number | null
   nullable: boolean
@@ -70,6 +70,6 @@ export interface OptionsDTO {
 }
 
 export interface TableOption {
-  k: string;
-  v: string;
+  key: string;
+  value: string;
 }
