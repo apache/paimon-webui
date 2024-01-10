@@ -77,7 +77,7 @@ public class TableController {
     }
 
     /**
-     *  Lists columns given a table.
+     * Lists columns given a table.
      *
      * @param catalogName The name of the catalog.
      * @param databaseName The name of the database.
