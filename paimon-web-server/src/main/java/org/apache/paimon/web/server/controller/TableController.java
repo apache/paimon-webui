@@ -77,12 +77,12 @@ public class TableController {
     }
 
     /**
-     * Fetches column details for a specified table.
+     *  Lists columns given a table.
      *
-     * @param catalogName the catalog name
-     * @param databaseName the database name
-     * @param tableName the table name
-     * @return column details wrapped in a response object
+     * @param catalogName The name of the catalog.
+     * @param databaseName The name of the database.
+     * @param tableName The name of the table.
+     * @return Response object containing {@link TableVO} representing the table.
      */
     @GetMapping("/column/list")
     public R<TableVO> listColumns(
