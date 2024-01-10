@@ -27,6 +27,7 @@ import org.apache.paimon.web.server.service.TableService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,6 +74,22 @@ public class TableController {
     @PostMapping("/column/add")
     public R<Void> addColumn(@RequestBody TableDTO tableDTO) {
         return tableService.addColumn(tableDTO);
+    }
+
+    /**
+     *  Lists columns given a table.
+     *
+     * @param catalogName The name of the catalog.
+     * @param databaseName The name of the database.
+     * @param tableName The name of the table.
+     * @return Response object containing {@link TableVO} representing the table.
+     */
+    @GetMapping("/column/list")
+    public R<TableVO> listColumns(
+            @RequestParam String catalogName,
+            @RequestParam String databaseName,
+            @RequestParam String tableName) {
+        return R.succeed(tableService.listColumns(catalogName, databaseName, tableName));
     }
 
     /**
