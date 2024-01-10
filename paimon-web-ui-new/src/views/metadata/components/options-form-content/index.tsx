@@ -15,6 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { RemoveCircleOutline } from '@vicons/ionicons5'
+
 import type { TableOption } from '@/api/models/catalog'
 
 const props = {
@@ -26,8 +28,8 @@ const props = {
 }
 
 export const newOption: TableOption = {
-  k: '',
-  v: ''
+  key: '',
+  value: ''
 }
 
 export default defineComponent({
@@ -53,30 +55,32 @@ export default defineComponent({
             <n-form-item-gi
               span={11}
               showLabel={false}
-              path={`options[${index}].k`}
+              path={`options[${index}].key`}
               rule={{
                 required: true,
                 message: 'Key is required',
                 trigger: ['input', 'blur']
               }}
             >
-              <n-input v-model:value={item.k} placeholder="Key" />
+              <n-input v-model:value={item.key} placeholder="Key" />
             </n-form-item-gi>
             <n-form-item-gi
               span={11}
               showLabel={false}
-              path={`options[${index}].v`}
+              path={`options[${index}].value`}
               rule={{
                 required: true,
                 message: 'Value is required',
                 trigger: ['input', 'blur']
               }}
             >
-              <n-input v-model:value={item.v} placeholder="Value" />
+              <n-input v-model:value={item.value} placeholder="Value" />
             </n-form-item-gi>
-            <n-gi suffix block span={2} class="suffix">
-              <n-button onClick={() => this.onDelete(index)} tertiary type="error">
-                Remove
+            <n-gi span={2}>
+              <n-button block onClick={() => this.onDelete(index)} tertiary type="error">
+                {{
+                  icon: () => <n-icon component={RemoveCircleOutline} />
+                }}
               </n-button>
             </n-gi>
           </>

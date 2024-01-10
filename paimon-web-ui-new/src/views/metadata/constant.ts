@@ -15,17 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { useCDCList } from './cdc/use-cdc-list'
-import { useMYSQL } from './cdc/use-mysql'
-import { usePaimon } from './cdc/use-paimon'
+import type { OptionsDTO, TableDTO } from "@/api/models/catalog"
 
-import { useDatabase } from './metadata/use-database'
-import { useOptions } from './metadata/use-options'
-
-export default {
-  CDCLIST: useCDCList,
-  MYSQL: useMYSQL,
-  PAIMON: usePaimon,
-  DATABASE: useDatabase,
-  OPTIONS: useOptions
+export const transformOption = (value: TableDTO) => {
+  const tableOptions: OptionsDTO = {}
+  value.options?.forEach((item) => {
+    tableOptions[item.key] = item.value
+  })
+  return {
+    ...value,
+    tableOptions
+  }
 }
