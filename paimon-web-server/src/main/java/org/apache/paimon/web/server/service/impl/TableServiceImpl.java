@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.server.service.impl;
 
+import org.apache.paimon.table.Table;
+import org.apache.paimon.types.DataField;
 import org.apache.paimon.web.api.catalog.PaimonService;
 import org.apache.paimon.web.api.table.TableChange;
 import org.apache.paimon.web.api.table.metadata.ColumnMetadata;
@@ -313,6 +315,43 @@ public class TableServiceImpl implements TableService {
         }
 
         return resultList;
+    }
+
+    @Override
+    public TableVO listColumns(String catalogName, String databaseName, String tableName) {
+        PaimonService service = PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
+        Table table = service.getTable(databaseName, tableName);
+        TableVO.TableVOBuilder builder =
+                TableVO.builder()
+                        .catalogName(catalogName)
+                        .databaseName(databaseName)
+                        .name(tableName);
+        if (Objects.nonNull(table)) {
+            List<String> primaryKeys = table.primaryKeys();
+            List<DataField> fields = table.rowType().getFields();
+            List<TableColumn> tableColumns = new ArrayList<>();
+            Map<String, String> options = table.options();
+            if (CollectionUtils.isNotEmpty(fields)) {
+                for (DataField field : fields) {
+                    String key = FIELDS_PREFIX + "." + field.name() + "." + DEFAULT_VALUE_SUFFIX;
+                    TableColumn.TableColumnBuilder columnBuilder =
+                            TableColumn.builder()
+                                    .field(field.name())
+                                    .dataType(DataTypeConvertUtils.fromPaimonType(field.type()))
+                                    .comment(field.description());
+                    if (CollectionUtils.isNotEmpty(primaryKeys)
+                            && primaryKeys.contains(field.name())) {
+                        columnBuilder.isPk(true);
+                    }
+                    if (options.get(key) != null) {
+                        columnBuilder.defaultValue(options.get(key));
+                    }
+                    tableColumns.add(columnBuilder.build());
+                }
+            }
+            builder.columns(tableColumns).partitionKey(table.partitionKeys());
+        }
+        return builder.build();
     }
 
     private List<TableChange> createTableChanges(TableColumn oldColumn, TableColumn newColumn) {

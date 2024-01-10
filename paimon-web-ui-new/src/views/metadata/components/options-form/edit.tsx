@@ -15,51 +15,45 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Add } from '@vicons/ionicons5'
+import { CreateOutline } from '@vicons/ionicons5'
 
-import { createDatabase, type DatabaseFormDTO } from '@/api/models/catalog'
+import { createOption, type TableOption } from '@/api/models/catalog'
 import { useCatalogStore } from '@/store/catalog'
 import IModal from '@/components/modal'
 import type { IFormInst } from '@/components/dynamic-form/types'
+import { transformOption } from '@/views/metadata/constant'
 
 const props = {
-  catalogId: {
-    type: Number as PropType<number>,
-    require: true
-  }
+  value: Object as PropType<TableOption>,
+  onConfirm: [Function, Array] as PropType<() => Promise<void>>
 }
 
 export default defineComponent({
-  name: 'DatabaseForm',
+  name: 'OptionEditForm',
   props,
   setup(props) {
     const { t } = useLocaleHooks()
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [result, createFetch, { loading }] = createDatabase()
+    const [result, createFetch, { loading }] = createOption()
 
     const modalRef = ref<{ formRef: IFormInst }>()
     const showModal = ref(false)
 
-    const handleConfirm = async (values: DatabaseFormDTO) => {
+    const handleConfirm = async (values: TableOption) => {
       await modalRef.value?.formRef?.validate()
-      if (props.catalogId) {
-        await createFetch({
-          params: {
-            ...values,
-            catalogId: props.catalogId
-          }
+      await createFetch({
+        params: transformOption({
+          ...toRaw(catalogStore.currentTable),
+          options: [toRaw(values)]
         })
+      })
 
-        if (result.value.code === 200) {
-          handleCloseModal()
-          message.success(t('Create Successfully'))
-          values = reactive({
-            name: '',
-          })
-          catalogStore.getAllCatalogs(true)
-        }
+      if (result.value.code === 200) {
+        handleCloseModal()
+        message.success(t('Create Successfully'))
+        props.onConfirm!()
       }
     }
 
@@ -70,14 +64,13 @@ export default defineComponent({
 
     const handleCloseModal = () => {
       showModal.value = false
-      modalRef.value?.formRef?.resetValues({
-        name: '',
-      })
+      props.onConfirm!()
     }
 
     return {
       modalRef,
       showModal,
+      value: toRefs(props).value,
 
       t,
       handleOpenModal,
@@ -88,16 +81,17 @@ export default defineComponent({
   render() {
     return (
       <>
-        <n-button quaternary circle size="tiny" onClick={this.handleOpenModal}>
-          <n-icon>
-            <Add />
-          </n-icon>
+        <n-button onClick={this.handleOpenModal} strong secondary circle>
+          {{
+            icon: () => <n-icon component={CreateOutline} />
+          }}
         </n-button>
         <IModal
-          ref="modalRef"
+          ref='modalRef'
           showModal={this.showModal}
-          title={this.t(`metadata.create_database`)}
-          formType={'DATABASE'}
+          row={this.value}
+          title={'Edit Option'}
+          formType={'OPTIONS'}
           onCancel={this.handleCloseModal}
           onConfirm={this.handleConfirm}
         />

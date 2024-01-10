@@ -21,7 +21,6 @@
     "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
     "mitt": "^3.0.1",
-    "mockm": "1.1.27-alpha.2",
     "monaco-editor": "^0.43.0",
     "pinia": "^2.1.6",
     "pinia-plugin-persistedstate": "^3.2.0",

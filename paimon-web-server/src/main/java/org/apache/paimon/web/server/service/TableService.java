@@ -132,4 +132,15 @@ public interface TableService {
      * @return Response object containing a list of {@link TableVO} representing the tables.
      */
     List<TableVO> listTables(TableDTO tableDTO);
+
+    /**
+     * Retrieves the column details of a specific table within the specified catalog and database.
+     *
+     * @param catalogName The name of the catalog where the table is located.
+     * @param databaseName The name of the database where the table is located.
+     * @param tableName The name of the table whose columns are to be retrieved.
+     * @return A {@link TableVO} object containing the details of the columns of the specified
+     *     table.
+     */
+    TableVO listColumns(String catalogName, String databaseName, String tableName);
 }
