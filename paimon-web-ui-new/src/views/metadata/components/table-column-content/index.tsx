@@ -19,12 +19,25 @@ import type { DataTableColumns } from 'naive-ui'
 
 import type { ColumnDTO } from '@/api/models/catalog'
 
+import { hasLength, hasEndLength, dataTypeOptions } from './constant'
+
 const props = {
   data: {
     type: Array as PropType<ColumnDTO[]>,
     default: () => []
   },
   onUpdateColumns: [Function, Array] as PropType<((value: ColumnDTO[]) => void) | undefined>
+}
+
+export const newField: ColumnDTO = {
+  field: '',
+  dataType: {
+    nullable: true,
+    type: undefined
+  },
+  comment: '',
+  defaultValue: '',
+  pk: false
 }
 
 export default defineComponent({
@@ -80,7 +93,11 @@ export default defineComponent({
                 trigger: ['input', 'blur']
               }}
             >
-              <n-select v-model:value={row.dataType.type} />
+              <n-select
+                placeholder={t('metadata.column_type')}
+                v-model:value={row.dataType.type}
+                options={dataTypeOptions}
+              />
             </n-form-item>
           )
         }
@@ -88,20 +105,41 @@ export default defineComponent({
       {
         title: t('metadata.column_length'),
         key: 'length',
-        width: 150,
+        width: 190,
         render: (row, index) => {
+          const hasStartLength = hasLength.includes(row.dataType.type || '')
+          const hasScaleLength = hasEndLength.includes(row.dataType.type || '')
           return (
-            <n-form-item
-              show-feedback={false}
-              showLabel={false}
-              path={`tableColumns[${index}].dataType`}
-              rule={{
-                required: true,
-                trigger: ['input', 'blur']
-              }}
-            >
-              <n-select v-model:value={row.dataType} />
-            </n-form-item>
+            <n-space wrap={false}>
+              {hasStartLength && (
+                <n-form-item
+                  show-feedback={false}
+                  showLabel={false}
+                  path={`tableColumns[${index}].dataType.precision`}
+                  rule={{
+                    type: 'number',
+                    required: true,
+                    trigger: ['input', 'blur']
+                  }}
+                >
+                  <n-input-number v-model:value={row.dataType.precision} show-button={false} />
+                </n-form-item>
+              )}
+              {hasScaleLength && (
+                <n-form-item
+                  show-feedback={false}
+                  showLabel={false}
+                  path={`tableColumns[${index}].dataType.scale`}
+                  rule={{
+                    type: 'number',
+                    required: true,
+                    trigger: ['input', 'blur']
+                  }}
+                >
+                  <n-input-number v-model:value={row.dataType.scale} show-button={false} />
+                </n-form-item>
+              )}
+            </n-space>
           )
         }
       },
@@ -112,14 +150,14 @@ export default defineComponent({
         render: (row, index) => {
           return (
             <n-form-item show-feedback={false} showLabel={false} path={`tableColumns[${index}].pk`}>
-              <n-checkbox v-model:value={row.pk} />
+              <n-checkbox v-model:checked={row.pk} />
             </n-form-item>
           )
         }
       },
       {
         title: t('metadata.column_nullable'),
-        key: 'nullable',
+        key: 'dataType.nullable',
         width: 80,
         render: (row, index) => {
           return (
@@ -128,7 +166,7 @@ export default defineComponent({
               showLabel={false}
               path={`tableColumns[${index}].dataType.nullable`}
             >
-              <n-checkbox v-model:value={row.dataType.nullable} />
+              <n-checkbox v-model:checked={row.dataType.nullable} />
             </n-form-item>
           )
         }

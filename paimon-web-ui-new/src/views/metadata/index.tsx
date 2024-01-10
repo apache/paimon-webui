@@ -18,7 +18,7 @@ under the License. */
 import { useCatalogStore } from '@/store/catalog'
 
 import styles from './index.module.scss'
-import MenuTree from "./components/menu-tree"
+import MenuTree from './components/menu-tree'
 import Breadcrumb from './components/breadcrumb'
 import Tabs from './components/metadata-tabs'
 
@@ -37,14 +37,18 @@ export default defineComponent({
       <div class={styles.container}>
         <MenuTree />
         <div class={styles.content}>
-          {
-            this.currentTable ? <>
+          {this.currentTable ? (
+            <>
               <Breadcrumb />
               <Tabs />
-            </> : <n-empty description='Select the table. Please'></n-empty>
-          }
+            </>
+          ) : (
+            <div class={styles.empty}>
+              <n-empty description="Select the table. Please"></n-empty>
+            </div>
+          )}
         </div>
       </div>
-    );
-  },
-});
+    )
+  }
+})

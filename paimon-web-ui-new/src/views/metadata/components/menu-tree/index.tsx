@@ -57,7 +57,7 @@ export default defineComponent({
           return h(DatabaseFormButton, { catalogId: Number(catalogId) })
         case 'database':
           const [id, name, databaseName] = option.key?.toString()?.split(' ') || []
-          return h(TableFormButton, { catalogId: id, catalogName: name, databaseName })
+          return h(TableFormButton, { catalogId: Number(id), catalogName: name, databaseName })
         default:
           return undefined
       }
@@ -83,9 +83,10 @@ export default defineComponent({
       if (node.type === 'catalog') {
         node.children = await catalogStore.getDatabasesById(node.key as number)
       } else {
-        const [catalogId, databaseName] = (node.key as string)?.split(' ') || []
+        const [catalogId, catalogName, databaseName] = (node.key as string)?.split(' ') || []
         const params = {
           catalogId: Number(catalogId),
+          catalogName,
           databaseName
         }
         node.children = (await catalogStore.getTablesByDataBaseId(params)) || []
@@ -99,13 +100,12 @@ export default defineComponent({
         onClick() {
           const { type } = option
           if (type === 'table') {
-            const [catalogId, catalogName, databaseName, name] =
-              (option.key?.toString() || '')?.split(' ') || []
+            const { catalogId, name, ...tableData } = JSON.parse(option.key?.toString() || '')
             catalogStore.setCurrentTable({
               catalogId: Number(catalogId),
-              catalogName,
-              databaseName,
-              tableName: name
+              tableName: name,
+              name,
+              ...tableData
             })
           }
         }
@@ -139,7 +139,7 @@ export default defineComponent({
     return (
       <div class={styles.container}>
         <n-card class={styles.card} content-style={'padding:20px 18px;'}>
-          <n-space vertical>
+          <div class={styles.vertical}>
             <n-space justify="space-between" align="enter">
               <article>Catalog</article>
               <CatalogFormButton />
@@ -153,19 +153,23 @@ export default defineComponent({
               }}
               onKeyup={this.onSearch}
             ></n-input>
-            <n-spin show={this.menuLoading}>
-              <n-tree
-                block-line
-                expand-on-click
-                data={this.menuList}
-                defaultExpandAll={this.isSearch}
-                nodeProps={this.nodeProps}
-                renderSuffix={this.renderSuffix}
-                renderSwitcherIcon={this.renderPrefix}
-                onLoad={this.onLoadMenu}
-              />
-            </n-spin>
-          </n-space>
+            <div class={styles.scroll}>
+              <n-scrollbar style={'position: absolute'}>
+                <n-spin show={this.menuLoading}>
+                  <n-tree
+                    block-line
+                    expand-on-click
+                    data={this.menuList}
+                    defaultExpandAll={this.isSearch}
+                    nodeProps={this.nodeProps}
+                    renderSuffix={this.renderSuffix}
+                    renderSwitcherIcon={this.renderPrefix}
+                    onLoad={this.onLoadMenu}
+                  />
+                </n-spin>
+              </n-scrollbar>
+            </div>
+          </div>
         </n-card>
       </div>
     )

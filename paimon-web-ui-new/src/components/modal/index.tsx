@@ -15,10 +15,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormInst } from 'naive-ui'
+import Form from '@/components/dynamic-form'
+import type { IFormInst } from '@/components/dynamic-form/types'
 
-import Form from "@/components/dynamic-form"
-import { useTask } from "./use-task"
+import { useTask } from './use-task'
 
 const props = {
   title: {
@@ -53,7 +53,7 @@ export default defineComponent({
   emits: ['confirm', 'cancel'],
   setup(props, { expose, emit }) {
     const { t } = useLocaleHooks()
-    const formRef = ref<FormInst | null>()
+    const formRef = ref<IFormInst | null>()
     expose({ formRef })
 
     const { elementsRef, rulesRef, model } = useTask({

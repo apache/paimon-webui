@@ -20,6 +20,7 @@ import type { TabsInst } from 'naive-ui'
 import { useConfigStore } from '@/store/config'
 
 import Table from '../table'
+import Options from '../options'
 import Schema from '../schema'
 import SnapShot from '../snapshot'
 import Manifest from '../manifest'
@@ -52,7 +53,7 @@ export default defineComponent({
             <Table />
           </n-tab-pane>
           <n-tab-pane name='option' tab={this.t('metadata.option_info')}>
-            Option
+            <Options />
           </n-tab-pane>
           <n-tab-pane name='schema' tab={this.t('metadata.schema_info')}>
             <Schema />
