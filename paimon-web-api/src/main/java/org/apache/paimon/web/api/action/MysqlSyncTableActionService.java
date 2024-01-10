@@ -25,6 +25,7 @@ import com.google.auto.service.AutoService;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Mysql sync table action service . */
 @AutoService(ActionService.class)
 public class MysqlSyncTableActionService implements ActionService {
 

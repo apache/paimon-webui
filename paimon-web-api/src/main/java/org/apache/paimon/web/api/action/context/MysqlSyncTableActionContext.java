@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Mysql sync table action context. */
 public class MysqlSyncTableActionContext implements ActionContext {
 
     private String warehouse;
