@@ -73,6 +73,7 @@ public class MysqlSyncTableActionContext implements ActionContext {
     }
 
     public static class Builder {
+
         private String warehouse;
 
         private String database;
