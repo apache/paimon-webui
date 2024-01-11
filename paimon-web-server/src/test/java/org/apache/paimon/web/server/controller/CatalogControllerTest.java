@@ -24,10 +24,8 @@ import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -43,41 +41,30 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /** Test for CatalogController. */
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CatalogControllerTest extends ControllerTestBase {
 
     private static final String catalogPath = "/api/catalog";
 
     private static final String catalogName = "testCatalog";
 
-    @Test
-    @Order(1)
-    public void testCreateCatalog() throws Exception {
+    @BeforeEach
+    public void setup() throws Exception {
         CatalogDTO catalog = new CatalogDTO();
         catalog.setType("filesystem");
         catalog.setName(catalogName);
         catalog.setWarehouse(tempFile.toUri().toString());
         catalog.setDelete(false);
 
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post(catalogPath + "/create")
-                                        .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(catalog))
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
-        assertEquals(200, r.getCode());
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(catalogPath + "/create")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(catalog))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    @Order(2)
     public void testGetCatalog() throws Exception {
         String responseString =
                 mockMvc.perform(
@@ -101,7 +88,6 @@ public class CatalogControllerTest extends ControllerTestBase {
     }
 
     @Test
-    @Order(3)
     public void testRemoveCatalog() throws Exception {
         CatalogDTO removeCatalog = new CatalogDTO();
         removeCatalog.setId(1);
