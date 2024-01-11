@@ -16,7 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 import { type DataTableColumns } from 'naive-ui'
-import { CreateOutline, RemoveCircleOutline, Warning } from '@vicons/ionicons5'
+import { AddCircleOutline, RemoveCircleOutline, Warning } from '@vicons/ionicons5'
+import { EditOutlined } from '@vicons/antd'
 
 import { useCatalogStore } from '@/store/catalog'
 import { getColumns, type ColumnDTO, deleteColumns, type ColumnParams } from '@/api/models/catalog'
@@ -26,9 +27,27 @@ export default defineComponent({
   name: 'MetadataTable',
   setup() {
     const { t } = useLocaleHooks()
-
     const catalogStore = useCatalogStore()
     const [tableColumns, useColumns, { loading }] = getColumns()
+
+    const showModal = ref(false)
+    const isEdit = ref(false)
+
+    const handleEditModal = (e: Event) => {
+      e.stopPropagation()
+      isEdit.value = true
+      showModal.value = true
+    }
+
+    const handleOpenModal = (e: Event) => {
+      e.stopPropagation()
+      showModal.value = true
+    }
+
+    const handleCloseModal = () => {
+      showModal.value = false
+      isEdit.value = false
+    }
 
     const columns: DataTableColumns<ColumnDTO> = [
       {
@@ -85,26 +104,19 @@ export default defineComponent({
         key: 'operation',
         render(rowData) {
           return (
-            <n-space>
-              <n-button strong secondary circle>
-                {{
-                  icon: () => <n-icon component={CreateOutline} />
-                }}
-              </n-button>
-              <n-popconfirm onPositiveClick={() => onDeleteColumn(rowData?.field)}>
-                {{
-                  default: () => 'Confirm to delete ? ',
-                  trigger: () => (
-                    <n-button strong secondary circle type="error">
-                      {{
-                        icon: () => <n-icon component={RemoveCircleOutline} />
-                      }}
-                    </n-button>
-                  ),
-                  icon: () => <n-icon color="#EC4C4D" component={Warning} />
-                }}
-              </n-popconfirm>
-            </n-space>
+            <n-popconfirm onPositiveClick={() => onDeleteColumn(rowData?.field)}>
+              {{
+                default: () => 'Confirm to delete ? ',
+                trigger: () => (
+                  <n-button strong secondary circle type="error">
+                    {{
+                      icon: () => <n-icon component={RemoveCircleOutline} />
+                    }}
+                  </n-button>
+                ),
+                icon: () => <n-icon color="#EC4C4D" component={Warning} />
+              }}
+            </n-popconfirm>
           )
         }
       }
@@ -137,6 +149,12 @@ export default defineComponent({
         pageSize: 10
       },
 
+      isEdit,
+      showModal,
+      handleOpenModal,
+      handleEditModal,
+      handleCloseModal,
+
       onFetchData,
       t
     }
@@ -146,9 +164,22 @@ export default defineComponent({
       <n-spin show={this.loading}>
         <n-card title="Common Column">
           {{
-            'header-extra': () => (
-              <ColumnsForm onConfirm={this.onFetchData} />
-            ),
+            'header-extra': () => {
+              return (
+                <n-space>
+                  <n-button strong secondary circle onClick={this.handleOpenModal}>
+                    {{
+                      icon: () => <n-icon component={AddCircleOutline} />
+                    }}
+                  </n-button>
+                  <n-button strong secondary circle onClick={this.handleEditModal}>
+                    {{
+                      icon: () => <n-icon component={EditOutlined} />
+                    }}
+                  </n-button>
+                </n-space>
+              )
+            },
             default: () => (
               <n-data-table
                 columns={this.columns}
@@ -158,6 +189,12 @@ export default defineComponent({
             )
           }}
         </n-card>
+        <ColumnsForm
+          tableColumns={this.isEdit ? (this.tableColumns?.columns || []) : undefined}
+          visible={this.showModal}
+          onClose={this.handleCloseModal}
+          onConfirm={this.onFetchData}
+        />
       </n-spin>
     )
   }

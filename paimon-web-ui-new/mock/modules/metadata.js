@@ -109,20 +109,20 @@ module.exports = (mockUtil) => ({
     "code": 200,
     "msg": "Successfully",
     "data": [
-        {
-            "key": "bucket",
-            "value": "4"
-        },
-        {
-            "key": "changelog-producer",
-            "value": "input"
-        },
-        {
-            "key": "sink.parallelism",
-            "value": "4"
-        }
+      {
+        "key": "bucket",
+        "value": "4"
+      },
+      {
+        "key": "changelog-producer",
+        "value": "input"
+      },
+      {
+        "key": "sink.parallelism",
+        "value": "4"
+      }
     ]
-}),
+  }),
   'post /metadata/query/schema': mockUtil({
     code: 200,
     msg: 'Successfully',
@@ -220,5 +220,103 @@ module.exports = (mockUtil) => ({
     code: 200,
     msg: 'Successfully',
     data: null,
-  })
+  }),
+
+  'get /table/column/list': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": {
+      "catalogId": null,
+      "catalogName": "xiaomotexst",
+      "databaseName": "ddd3",
+      "name": "dd3",
+      "columns": [
+        {
+          "field": "df",
+          "dataType": {
+            "type": "SMALLINT",
+            "isNullable": true,
+            "precision": 0,
+            "scale": 0,
+            "nullable": true
+          },
+          "comment": "3",
+          "isPk": false,
+          "defaultValue": "2",
+          "pk": false
+        },
+        {
+          "field": "fe",
+          "dataType": {
+            "type": "DECIMAL",
+            "isNullable": true,
+            "precision": 38,
+            "scale": 2,
+            "nullable": true
+          },
+          "comment": "",
+          "isPk": false,
+          "defaultValue": "45",
+          "pk": false
+        },
+        {
+          "field": "ffg",
+          "dataType": {
+            "type": "TIMESTAMP_MILLIS",
+            "isNullable": true,
+            "precision": 3,
+            "scale": 0,
+            "nullable": true
+          },
+          "comment": "",
+          "isPk": false,
+          "defaultValue": "4",
+          "pk": false
+        },
+        {
+          "field": "11",
+          "dataType": {
+            "type": "TIME(precision)",
+            "isNullable": true,
+            "precision": 3,
+            "scale": 0,
+            "nullable": true
+          },
+          "comment": "",
+          "isPk": false,
+          "defaultValue": null,
+          "pk": false
+        },
+        {
+          "field": "232",
+          "dataType": {
+            "type": "TIME(precision)",
+            "isNullable": true,
+            "precision": 1,
+            "scale": 0,
+            "nullable": true
+          },
+          "comment": "",
+          "isPk": false,
+          "defaultValue": null,
+          "pk": false
+        }
+      ],
+      "partitionKey": [
+        "df",
+        "fe",
+        "ffg"
+      ]
+    }
+  }),
+  'post /table/column/add': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
+  'delete /api/table/column/drop/:catalogName/:databaseName/:tableName/:columnName': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
 })

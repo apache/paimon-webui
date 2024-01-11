@@ -28,26 +28,21 @@ type ColumnFormType = {
 }
 
 const props = {
-  onConfirm: [Function, Array] as PropType<() => Promise<void>>
+  visible: {
+    type: Boolean as PropType<boolean>,
+    required: true
+  },
+  tableColumns: {
+    type: Object as PropType<ColumnDTO[]>
+  },
+  onConfirm: [Function, Array] as PropType<() => Promise<void>>,
+  onClose: [Function, Array] as PropType<() => void>
 }
 
 export default defineComponent({
   name: 'ColumnForm',
   props,
   setup(props) {
-    const rules = {
-      key: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: 'Option key required'
-      },
-      value: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: 'Option value required'
-      }
-    }
-
     const { t } = useLocaleHooks()
     const message = useMessage()
 
@@ -55,10 +50,11 @@ export default defineComponent({
     const [, createFetch, { loading }] = createColumns()
 
     const formRef = ref()
-    const formValue = ref<ColumnFormType>({
-      tableColumns: [JSON.parse(JSON.stringify(newField))]
+    const formValue = ref<ColumnFormType>(resetState())
+
+    const isEdit = computed(() => {
+      return Boolean(props.tableColumns)
     })
-    const showModal = ref(false)
 
     const handleConfirm = async () => {
       await formRef.value.validate()
@@ -70,26 +66,31 @@ export default defineComponent({
       })
 
       handleCloseModal()
-      message.success(t('Create Successfully'))
-      resetState()
+      message.success(t(`${isEdit.value ? 'Edit' : 'Create'} Column`))
       props.onConfirm!()
     }
 
-    const handleOpenModal = (e: Event) => {
-      e.stopPropagation()
-      showModal.value = true
-    }
-
     const handleCloseModal = () => {
-      showModal.value = false
-      resetState()
+      props.onClose!()
+      nextTick(() => {
+        formValue.value = resetState()
+      })
     }
 
-    const resetState = () => {
-      formValue.value = {
-        tableColumns: [JSON.parse(JSON.stringify(newField))]
+    function resetState() {
+      return {
+        tableColumns: (Boolean(props.tableColumns)
+          ? [...(toRaw(props.tableColumns) || [])]
+          : [JSON.parse(JSON.stringify(newField))]) as ColumnDTO[]
       }
     }
+
+    watch(
+      () => isEdit.value,
+      () => {
+        formValue.value = resetState()
+      }
+    )
 
     const handleAddOption = () => {
       formValue.value?.tableColumns.push(JSON.parse(JSON.stringify(newField)))
@@ -98,13 +99,12 @@ export default defineComponent({
     return {
       formRef,
       formValue,
-      showModal,
       loading,
+      isEdit,
 
-      rules,
+      ...toRefs(props),
 
       t,
-      handleOpenModal,
       handleCloseModal,
       handleConfirm,
       handleAddOption
@@ -112,49 +112,45 @@ export default defineComponent({
   },
   render() {
     return (
-      <>
-        <n-button strong secondary circle onClick={this.handleOpenModal}>
+      <n-modal v-model:show={this.visible} mask-closable={false}>
+        <n-card
+          bordered={true}
+          title={`${this.isEdit ? 'Edit' : 'Create'} Column`}
+          style="width: 1100px"
+        >
           {{
-            icon: () => <n-icon component={AddCircleOutline} />
-          }}
-        </n-button>
-        <n-modal v-model:show={this.showModal} mask-closable={false}>
-          <n-card bordered={true} title={'Create Column'} style="width: 1100px">
-            {{
-              'header-extra': () => (
-                <n-button quaternary circle size="tiny" onClick={this.handleAddOption}>
-                  <n-icon>
-                    <Add />
-                  </n-icon>
+            'header-extra': () => (
+              <n-button quaternary circle size="tiny" onClick={this.handleAddOption}>
+                <n-icon>
+                  <Add />
+                </n-icon>
+              </n-button>
+            ),
+            default: () => (
+              <n-form
+                ref="formRef"
+                label-placement="top"
+                label-width="auto"
+                label-align="left"
+                model={this.formValue}
+              >
+                <ColumnFormContent
+                  data={this.formValue.tableColumns}
+                  onUpdateColumns={(value) => (this.formValue.tableColumns = [...value])}
+                />
+              </n-form>
+            ),
+            action: () => (
+              <n-space justify="end">
+                <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
+                <n-button type="primary" loading={this.loading} onClick={this.handleConfirm}>
+                  {this.t('layout.confirm')}
                 </n-button>
-              ),
-              default: () => (
-                <n-form
-                  ref="formRef"
-                  label-placement="top"
-                  label-width="auto"
-                  label-align="left"
-                  rules={this.rules}
-                  model={this.formValue}
-                >
-                  <ColumnFormContent
-                    data={this.formValue.tableColumns}
-                    onUpdateColumns={(value) => (this.formValue.tableColumns = [...value])}
-                  />
-                </n-form>
-              ),
-              action: () => (
-                <n-space justify="end">
-                  <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
-                  <n-button type="primary" loading={this.loading} onClick={this.handleConfirm}>
-                    {this.t('layout.confirm')}
-                  </n-button>
-                </n-space>
-              )
-            }}
-          </n-card>
-        </n-modal>
-      </>
+              </n-space>
+            )
+          }}
+        </n-card>
+      </n-modal>
     )
   }
 })

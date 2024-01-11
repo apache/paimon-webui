@@ -44,7 +44,7 @@ const props = {
   formType: {
     type: String as PropType<string>,
     default: ''
-  },
+  }
 }
 
 export default defineComponent({
@@ -79,13 +79,9 @@ export default defineComponent({
       model
     }
   },
-  render () {
+  render() {
     return (
-      <n-modal
-        v-model:show={this.showModal}
-        mask-closable={false}
-        auto-focus={this.autoFocus}
-      >
+      <n-modal v-model:show={this.showModal} mask-closable={false} auto-focus={this.autoFocus}>
         <n-card
           style="width: 600px"
           title={this.title}
@@ -96,11 +92,11 @@ export default defineComponent({
           {{
             default: () => (
               <Form
-                ref='formRef'
+                ref="formRef"
                 meta={{
                   model: this.model,
                   rules: this.rulesRef,
-                  elements: this.elementsRef,
+                  elements: this.elementsRef
                 }}
                 gridProps={{
                   xGap: 10
@@ -108,11 +104,9 @@ export default defineComponent({
               />
             ),
             action: () => (
-              <n-space justify='end'>
-                <n-button onClick={this.handleCancel}>
-                  {this.t('layout.cancel')}
-                </n-button>
-                <n-button type='primary' onClick={this.handleConfirm}>
+              <n-space justify="end">
+                <n-button onClick={this.handleCancel}>{this.t('layout.cancel')}</n-button>
+                <n-button type="primary" onClick={this.handleConfirm}>
                   {this.t('layout.confirm')}
                 </n-button>
               </n-space>

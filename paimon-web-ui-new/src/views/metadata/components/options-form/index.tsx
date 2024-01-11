@@ -35,19 +35,6 @@ export default defineComponent({
   name: 'OptionForm',
   props,
   setup(props) {
-    const rules = {
-      key: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: 'Option key required'
-      },
-      value: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: 'Option value required'
-      }
-    }
-
     const { t } = useLocaleHooks()
     const message = useMessage()
 
@@ -101,8 +88,6 @@ export default defineComponent({
       showModal,
       loading,
 
-      rules,
-
       t,
       handleOpenModal,
       handleCloseModal,
@@ -134,7 +119,6 @@ export default defineComponent({
                   label-placement="top"
                   label-width="auto"
                   label-align="left"
-                  rules={this.rules}
                   model={this.formValue}
                 >
                   <OptionContent

@@ -92,7 +92,7 @@ export default defineComponent({
           </n-icon>
         </n-button>
         <IModal
-          ref="modalRef"
+          ref='modalRef'
           showModal={this.showModal}
           title={this.t(`metadata.create_database`)}
           formType={'DATABASE'}
