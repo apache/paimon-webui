@@ -16,32 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.action;
-
-import org.apache.paimon.web.api.action.context.ActionContext;
+package org.apache.paimon.web.api.action.service;
 
 import com.google.auto.service.AutoService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /** Mysql sync table action service . */
 @AutoService(ActionService.class)
-public class MysqlSyncTableActionService implements ActionService {
+public class MysqlSyncTableActionService extends AbstractActionService implements ActionService {
 
     @Override
     public String name() {
         return "mysql_sync_table";
-    }
-
-    @Override
-    public List<String> getCommand(ActionContext actionContext) {
-        List<String> commandList = new ArrayList<>();
-        commandList.add("./bin/flink");
-        commandList.add("run");
-        commandList.add(getActionPath());
-        commandList.add(name());
-        commandList.addAll(actionContext.getCommand());
-        return commandList;
     }
 }

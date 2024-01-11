@@ -16,15 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.action.context;
+package org.apache.paimon.web.api.action.service;
 
-import java.util.List;
+import org.apache.paimon.web.api.action.context.ActionContext;
 
 /**
- * Action Context. Convert the user-defined CDC job to an ActionContext and then to a command line
- * argument
+ * Action service definition. Convert the user-configured CDC job into an ActionContext {@link
+ * ActionContext}, and then invoke the execute method to execute the action job.
  */
-public interface ActionContext {
+public interface ActionService {
 
-    List<String> getCommand();
+    String name();
+
+    void execute(ActionContext actionContext) throws Exception;
 }

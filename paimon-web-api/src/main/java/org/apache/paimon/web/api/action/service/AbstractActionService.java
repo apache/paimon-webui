@@ -16,20 +16,46 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.action;
+package org.apache.paimon.web.api.action.service;
 
 import org.apache.paimon.web.api.action.context.ActionContext;
 import org.apache.paimon.web.api.exception.ActionException;
 import org.apache.paimon.web.api.shell.ShellService;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/** Action service. */
-public interface ActionService {
+/** An abstract Action service that executes actions through the shell. */
+@Slf4j
+public abstract class AbstractActionService implements ActionService {
 
-    default String getFlinkHome() {
+    public List<String> getCommand(ActionContext actionContext) {
+        List<String> commandList = new ArrayList<>();
+        commandList.add("./bin/flink");
+        commandList.add("run");
+        commandList.add(getActionPath());
+        commandList.add(name());
+        commandList.addAll(actionContext.getCommand());
+        return commandList;
+    }
+
+    public void execute(ActionContext actionContext) throws Exception {
+        String flinkHome = getFlinkHome();
+        try {
+            List<String> commandList = new ArrayList<>();
+            beforeExecute(actionContext, commandList);
+            Process process = new ShellService(flinkHome, getCommand(actionContext)).execute();
+            afterExecute(process, actionContext);
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            catchException(exception);
+        }
+    }
+
+    protected String getFlinkHome() {
         String flinkHome = System.getenv("FLINK_HOME");
         if (StringUtils.isBlank(flinkHome)) {
             flinkHome = System.getProperty("FLINK_HOME");
@@ -40,7 +66,7 @@ public interface ActionService {
         return flinkHome;
     }
 
-    default String getActionPath() {
+    protected String getActionPath() {
         String actionPath = System.getenv("ACTION_PATH");
         if (StringUtils.isBlank(actionPath)) {
             actionPath = System.getProperty("ACTION_PATH");
@@ -51,24 +77,9 @@ public interface ActionService {
         return actionPath;
     }
 
-    String name();
+    public void beforeExecute(ActionContext actionContext, List<String> commandList) {}
 
-    default void execute(ActionContext actionContext) throws Exception {
-        String flinkHome = getFlinkHome();
-        beforeExecute(actionContext);
-        try {
-            Process process = new ShellService(flinkHome, getCommand(actionContext)).execute();
-            afterExecute(process, actionContext);
-        } catch (Exception exception) {
-            catchException(exception);
-        }
-    }
+    public void afterExecute(Process process, ActionContext actionContext) {}
 
-    List<String> getCommand(ActionContext actionContext);
-
-    default void beforeExecute(ActionContext actionContext) {}
-
-    default void afterExecute(Process process, ActionContext actionContext) {}
-
-    default void catchException(Exception exception) throws Exception {}
+    public void catchException(Exception exception) throws Exception {}
 }
