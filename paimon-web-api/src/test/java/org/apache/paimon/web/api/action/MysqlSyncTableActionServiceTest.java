@@ -19,6 +19,7 @@
 package org.apache.paimon.web.api.action;
 
 import org.apache.paimon.web.api.action.context.MysqlSyncTableActionContext;
+import org.apache.paimon.web.api.action.service.MysqlSyncTableActionService;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,16 +55,6 @@ public class MysqlSyncTableActionServiceTest {
         assertEquals("mysql_sync_table", new MysqlSyncTableActionService().name());
     }
 
-    @Test
-    public void testGetFlinkHome() {
-        assertEquals(getFlinkHome(), new MysqlSyncTableActionService().getFlinkHome());
-    }
-
-    @Test
-    public void testActionPath() {
-        assertEquals(getActionPath(), new MysqlSyncTableActionService().getActionPath());
-    }
-
     private String getActionPath() {
         return actionPath.toUri().toString();
     }
@@ -78,7 +69,8 @@ public class MysqlSyncTableActionServiceTest {
                 MysqlSyncTableActionContext.builder()
                         .warehouse("warehouse")
                         .table("table")
-                        .database("database");
+                        .database("database")
+                        .build();
         List<String> command = new MysqlSyncTableActionService().getCommand(actionContext);
         assertEquals(7, command.size());
         assertEquals("./bin/flink", command.get(0));

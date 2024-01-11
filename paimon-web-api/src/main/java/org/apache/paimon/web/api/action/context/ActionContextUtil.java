@@ -18,13 +18,26 @@
 
 package org.apache.paimon.web.api.action.context;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
-/**
- * Action Context. Convert the user-defined CDC job to an ActionContext and then to a command line
- * argument
- */
-public interface ActionContext {
+/** ActionContext Util. */
+public class ActionContextUtil {
 
-    List<String> getCommand();
+    private ActionContextUtil() {}
+
+    public static void addConf(List<String> commands, String confName, String conf) {
+        if (StringUtils.isNotBlank(conf)) {
+            commands.add("--" + confName + " " + conf);
+        }
+    }
+
+    public static void addConfList(List<String> commands, String confName, List<String> confList) {
+        if (confList != null && !confList.isEmpty()) {
+            for (String conf : confList) {
+                addConf(commands, confName, conf);
+            }
+        }
+    }
 }

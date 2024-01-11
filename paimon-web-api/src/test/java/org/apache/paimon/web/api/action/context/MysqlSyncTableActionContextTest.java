@@ -44,6 +44,7 @@ public class MysqlSyncTableActionContextTest {
                         .warehouse(warehouse)
                         .database(database)
                         .table(table)
+                        .build()
                         .getCommand();
         assertEquals(3, command.size());
         assertEquals(command.get(0), "--warehouse " + warehouse);
@@ -67,6 +68,7 @@ public class MysqlSyncTableActionContextTest {
                         .catalogConf("uri=thrift://hive-metastore:9083")
                         .tableConf("bucket=4")
                         .tableConf("changelog-producer=input")
+                        .build()
                         .getCommand();
         assertEquals(12, command.size());
         assertEquals("--warehouse " + warehouse, command.get(0));
@@ -97,7 +99,8 @@ public class MysqlSyncTableActionContextTest {
                         .catalogConf("metastore=hive")
                         .catalogConf("uri=thrift://hive-metastore:9083")
                         .tableConf("bucket=4")
-                        .tableConf("changelog-producer=input");
+                        .tableConf("changelog-producer=input")
+                        .build();
         ActionException actionException =
                 assertThrows(ActionException.class, mysqlSyncTableActionContext::getCommand);
         assertEquals("warehouse、database、table can not be null", actionException.getMessage());
