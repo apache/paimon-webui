@@ -18,11 +18,21 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.CatalogDTO;
+import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.dto.MetadataDTO;
+import org.apache.paimon.web.server.data.dto.TableDTO;
+import org.apache.paimon.web.server.data.model.CatalogInfo;
+import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
+import org.apache.paimon.web.server.util.PaimonDataType;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +41,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Tests for {@link MetadataController}. */
@@ -38,17 +52,127 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureMockMvc
 public class MetadataControllerTest extends ControllerTestBase {
 
+    private static final String catalogPath = "/api/catalog";
+    private static final String databasePath = "/api/database";
     private static final String METADATA_PATH = "/api/metadata/query";
 
     private static final String tablePath = "/api/table";
 
     private static final String catalogName = "paimon_catalog";
 
-    private static final Integer catalogId = 1;
-
     private static final String databaseName = "paimon_database";
 
     private static final String tableName = "paimon_table";
+
+    private Integer catalogId;
+
+    @BeforeEach
+    public void setup() throws Exception {
+        CatalogDTO catalog = new CatalogDTO();
+        catalog.setType("filesystem");
+        catalog.setName(catalogName);
+        catalog.setWarehouse(tempFile.toUri().toString());
+        catalog.setDelete(false);
+
+        // create catalog.
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(catalogPath + "/create")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(catalog))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // get catalog id.
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(catalogPath + "/list")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+        R<List<CatalogInfo>> r =
+                ObjectMapperUtils.fromJSON(
+                        responseString, new TypeReference<R<List<CatalogInfo>>>() {});
+        catalogId = r.getData().get(0).getId();
+
+        // create database.
+        DatabaseDTO database = new DatabaseDTO();
+        database.setCatalogId(catalogId);
+        database.setName(databaseName);
+        database.setCatalogName(catalogName);
+        database.setIgnoreIfExists(true);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(databasePath + "/create")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(database))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // create table.
+        List<TableColumn> tableColumns = new ArrayList<>();
+        TableColumn id =
+                new TableColumn("id", PaimonDataType.builder().type("INT").build(), "pk", true, "");
+        TableColumn name =
+                new TableColumn(
+                        "name", PaimonDataType.builder().type("STRING").build(), "", false, "");
+        TableColumn age =
+                new TableColumn(
+                        "age", PaimonDataType.builder().type("INT").build(), "", false, "0");
+        TableColumn createTime =
+                new TableColumn(
+                        "create_time",
+                        PaimonDataType.builder().type("STRING").build(),
+                        "partition key",
+                        true,
+                        "");
+        tableColumns.add(id);
+        tableColumns.add(name);
+        tableColumns.add(age);
+        tableColumns.add(createTime);
+
+        List<String> partitionKey = Lists.newArrayList("create_time");
+        Map<String, String> tableOptions = ImmutableMap.of("bucket", "2");
+        TableDTO table =
+                TableDTO.builder()
+                        .catalogName(catalogName)
+                        .databaseName(databaseName)
+                        .name(tableName)
+                        .tableColumns(tableColumns)
+                        .partitionKey(partitionKey)
+                        .tableOptions(tableOptions)
+                        .build();
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(tablePath + "/create")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(table))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @AfterEach
+    public void after() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(
+                                tablePath
+                                        + "/drop/"
+                                        + catalogName
+                                        + "/"
+                                        + databaseName
+                                        + "/"
+                                        + tableName)
+                        .cookie(cookie)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON_VALUE));
+    }
 
     @Test
     public void testGetSchemaInfo() throws Exception {

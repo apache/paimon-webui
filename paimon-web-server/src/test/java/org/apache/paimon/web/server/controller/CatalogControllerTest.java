@@ -91,9 +91,12 @@ public class CatalogControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<List<CatalogInfo>> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<List<CatalogInfo>>>() {});
+        R<List<CatalogInfo>> r =
+                ObjectMapperUtils.fromJSON(
+                        responseString, new TypeReference<R<List<CatalogInfo>>>() {});
         assertEquals(200, r.getCode());
         assertNotNull(r.getData());
+        assertEquals(1, r.getData().size());
         assertEquals(catalogName, r.getData().get(0).getCatalogName());
     }
 
@@ -105,17 +108,17 @@ public class CatalogControllerTest extends ControllerTestBase {
         removeCatalog.setName(catalogName);
 
         String responseString =
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post(catalogPath + "/remove")
-                                .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(removeCatalog))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post(catalogPath + "/remove")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(removeCatalog))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
 
         R<Void> remove =
                 ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});

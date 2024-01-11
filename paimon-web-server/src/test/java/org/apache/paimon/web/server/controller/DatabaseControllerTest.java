@@ -27,11 +27,7 @@ import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -39,17 +35,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.nio.file.Files;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Test for DatabaseController. */
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DatabaseControllerTest extends ControllerTestBase {
 
     private static final String catalogPath = "/api/catalog";
@@ -58,8 +51,6 @@ public class DatabaseControllerTest extends ControllerTestBase {
     private static final String databaseName = "test_db";
 
     private static final String catalogName = "paimon_catalog";
-
-    @TempDir java.nio.file.Path tempFile;
 
     private Integer catalogId;
 
@@ -71,18 +62,16 @@ public class DatabaseControllerTest extends ControllerTestBase {
         catalog.setWarehouse(tempFile.toUri().toString());
         catalog.setDelete(false);
 
+        // create catalog.
         mockMvc.perform(
                         MockMvcRequestBuilders.post(catalogPath + "/create")
                                 .cookie(cookie)
                                 .content(ObjectMapperUtils.toJSON(catalog))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
+        // get catalog id.
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(catalogPath + "/list")
@@ -94,42 +83,29 @@ public class DatabaseControllerTest extends ControllerTestBase {
                         .andReturn()
                         .getResponse()
                         .getContentAsString();
-
-        R<List<CatalogInfo>> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<List<CatalogInfo>>>() {});
+        R<List<CatalogInfo>> r =
+                ObjectMapperUtils.fromJSON(
+                        responseString, new TypeReference<R<List<CatalogInfo>>>() {});
         catalogId = r.getData().get(0).getId();
-    }
 
-    @Test
-    @Order(1)
-    public void testCreateDatabase() throws Exception {
+        // create database.
         DatabaseDTO database = new DatabaseDTO();
         database.setCatalogId(catalogId);
         database.setName(databaseName);
         database.setCatalogName(catalogName);
         database.setIgnoreIfExists(true);
 
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post(databasePath + "/create")
-                                        .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(database))
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
-        assertEquals(200, r.getCode());
-        assertTrue(Files.exists(tempFile.resolve("test_db.db")));
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(databasePath + "/create")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(database))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    @Order(2)
     public void testListDatabases() throws Exception {
-        assertTrue(Files.exists(tempFile.resolve("test_db.db")));
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(databasePath + "/list")
@@ -143,14 +119,16 @@ public class DatabaseControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<List<DatabaseVO>> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<List<DatabaseVO>>>() {});
+        R<List<DatabaseVO>> r =
+                ObjectMapperUtils.fromJSON(
+                        responseString, new TypeReference<R<List<DatabaseVO>>>() {});
         assertEquals(200, r.getCode());
         assertNotNull(r.getData());
+        assertEquals(1, r.getData().size());
         assertEquals(databaseName, r.getData().get(0).getName());
     }
 
     @Test
-    @Order(3)
     public void testDropDatabase() throws Exception {
         DatabaseDTO dropDatabase = new DatabaseDTO();
         dropDatabase.setCatalogName(catalogName);
@@ -160,17 +138,17 @@ public class DatabaseControllerTest extends ControllerTestBase {
         dropDatabase.setCascade(true);
 
         String responseString =
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post(databasePath + "/drop")
-                                .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(dropDatabase))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post(databasePath + "/drop")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(dropDatabase))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
 
         R<Void> remove =
                 ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
