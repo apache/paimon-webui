@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** Represents the outcome of a job submission process. */
-public class SubmissionResult implements Serializable {
+/** Represents the outcome of a job execution process. */
+public class ExecutionResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class SubmissionResult implements Serializable {
     private final List<Map<String, Object>> data;
     private final boolean shouldFetchResult;
 
-    private SubmissionResult(
+    private ExecutionResult(
             String submitId,
             String jobId,
             String status,
@@ -110,8 +110,8 @@ public class SubmissionResult implements Serializable {
             return this;
         }
 
-        public SubmissionResult build() {
-            return new SubmissionResult(submitId, jobId, status, data, shouldFetchResult);
+        public ExecutionResult build() {
+            return new ExecutionResult(submitId, jobId, status, data, shouldFetchResult);
         }
     }
 }

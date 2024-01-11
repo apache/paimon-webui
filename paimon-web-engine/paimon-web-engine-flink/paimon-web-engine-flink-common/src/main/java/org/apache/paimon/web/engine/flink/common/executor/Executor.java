@@ -18,8 +18,8 @@
 
 package org.apache.paimon.web.engine.flink.common.executor;
 
+import org.apache.paimon.web.engine.flink.common.result.ExecutionResult;
 import org.apache.paimon.web.engine.flink.common.result.FetchResultParams;
-import org.apache.paimon.web.engine.flink.common.result.SubmissionResult;
 
 /**
  * The Executor interface provides methods to submit SQL statements for execution, fetch results,
@@ -34,7 +34,7 @@ public interface Executor {
      * @return SubmitResult containing information about the execution result.
      * @throws Exception if there is an error executing the SQL statement.
      */
-    SubmissionResult executeSql(String statement) throws Exception;
+    ExecutionResult executeSql(String statement) throws Exception;
 
     /**
      * Fetches the results of a previously submitted SQL statement execution.
@@ -43,7 +43,7 @@ public interface Executor {
      * @return SubmitResult containing the execution results.
      * @throws Exception if there is an error fetching the results.
      */
-    SubmissionResult fetchResults(FetchResultParams params) throws Exception;
+    ExecutionResult fetchResults(FetchResultParams params) throws Exception;
 
     /**
      * Attempts to stop a running job identified by its jobId.

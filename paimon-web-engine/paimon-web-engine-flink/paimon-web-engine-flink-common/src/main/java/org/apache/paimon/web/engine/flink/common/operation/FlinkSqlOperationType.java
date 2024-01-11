@@ -45,8 +45,7 @@ public enum FlinkSqlOperationType {
     UNLOAD("UNLOAD"),
     SET("SET"),
     RESET("RESET"),
-    CALL("CALL"),
-    NO_SUPPORTED("NO_SUPPORTED");
+    CALL("CALL");
 
     private String type;
 
@@ -70,14 +69,12 @@ public enum FlinkSqlOperationType {
      */
     public static FlinkSqlOperationType getOperationType(String sql) {
         String sqlTrim = sql.replaceAll("[\\s\\t\\n\\r]", "").trim().toUpperCase();
-        FlinkSqlOperationType type = FlinkSqlOperationType.NO_SUPPORTED;
         for (FlinkSqlOperationType sqlType : FlinkSqlOperationType.values()) {
             if (sqlTrim.startsWith(sqlType.getType())) {
-                type = sqlType;
-                break;
+                return sqlType;
             }
         }
-        return type;
+        return null;
     }
 
     public SqlCategory getCategory() {

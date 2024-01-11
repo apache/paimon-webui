@@ -34,7 +34,7 @@ public enum JobStatus {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Unknown JobStatus value: " + value);
+        throw new IllegalArgumentException("Unknown job status: " + value);
     }
 
     JobStatus(String value) {

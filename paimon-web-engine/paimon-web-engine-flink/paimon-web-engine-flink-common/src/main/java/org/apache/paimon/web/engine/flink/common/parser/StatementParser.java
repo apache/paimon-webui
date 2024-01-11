@@ -20,7 +20,7 @@ package org.apache.paimon.web.engine.flink.common.parser;
 
 import java.util.Arrays;
 
-/** Class for parsing SQL statements. */
+/** The parser of the SQL statement. */
 public class StatementParser {
 
     private static final String STATEMENT_SPLIT = ";\n";
