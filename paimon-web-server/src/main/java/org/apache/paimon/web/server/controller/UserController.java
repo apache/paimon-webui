@@ -27,8 +27,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static org.apache.paimon.web.server.data.result.enums.Status.USER_NOT_EXIST;
 
@@ -56,4 +60,22 @@ public class UserController {
         user.setPassword(null);
         return R.succeed(user);
     }
+
+    /**
+     * Retrieves a list of all users.
+     *
+     * @return {@link R} with a list of {@link User} objects.
+     */
+    @SaCheckPermission("system:user:query")
+    @GetMapping("/list")
+    public R<List<User>> list() {
+        return R.succeed(userService.list());
+    }
+
+    @SaCheckPermission("system:role:add")
+    @PostMapping
+    public R<Void> add(@RequestBody User user) {
+
+    }
+
 }
