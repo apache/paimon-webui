@@ -316,6 +316,7 @@ public class TableControllerTest extends ControllerTestBase {
 
     @Test
     public void testAlterTable() throws Exception {
+        // modify age column.
         TableColumn oldColumn =
                 new TableColumn(
                         "age", PaimonDataType.builder().type("INT").build(), "", false, "0");
@@ -327,6 +328,7 @@ public class TableControllerTest extends ControllerTestBase {
         AlterTableRequest alterTableRequest = new AlterTableRequest();
         alterTableRequest.setOldColumn(oldColumn);
         alterTableRequest.setNewColumn(newColumn);
+        alterTableRequest.setMoveToFirst(true);
 
         String responseString =
                 mockMvc.perform(
@@ -348,11 +350,8 @@ public class TableControllerTest extends ControllerTestBase {
         assertEquals(200, r.getCode());
 
         List<TableColumn> columns = getColumns();
-        TableColumn ageColumn =
-                columns.stream()
-                        .filter(column -> "age".equals(column.getField()))
-                        .findFirst()
-                        .orElseThrow(() -> new AssertionError("Column 'age' not found"));
+        // Verify move to first and type modification.
+        TableColumn ageColumn = columns.get(0);
         assertEquals("BIGINT", ageColumn.getDataType().getType());
     }
 
