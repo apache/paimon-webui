@@ -68,7 +68,7 @@ export default defineComponent({
         <n-spin show={this.loading}>
           <n-data-table
             columns={this.columns}
-            data={this.datafiles?.data || []}
+            data={this.datafiles || []}
           />
         </n-spin>
       </n-card>

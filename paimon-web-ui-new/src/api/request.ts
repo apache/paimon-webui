@@ -19,6 +19,7 @@ import { createAxle, type AxleInstance } from '@varlet/axle'
 import { createUseAxle } from '@varlet/axle/use'
 
 import type { FetchOptions, ResponseOptions } from './types'
+import discreteApi from './message';
 
 const axle: AxleInstance & { createHooks?: typeof createHooks } = createAxle({
   baseURL: import.meta.env.MODE === 'mock' ? '/mock/api' : '/api'
@@ -43,23 +44,42 @@ axle.axios.interceptors.response.use(
 
     if (code !== 200 && msg) {
       // do something there
+      discreteApi.notification.error(
+        {
+          content: 'Error',
+          meta: response.data.msg,
+          duration: 2500,
+          keepAliveOnHover: true
+        }
+      )
       return Promise.reject(response.data)
     }
 
     return response.data
   },
   (error) => {
+    discreteApi.notification.error(
+      {
+        content: 'Error',
+        meta: error,
+        duration: 2500,
+        keepAliveOnHover: true
+      }
+    )
     // do something there
     return Promise.reject(error)
   }
 )
 
 const useAxle = createUseAxle({
-  axle
+  axle,
+  onTransform(response) {
+    return response.data
+  },
 })
 
 function createHooks<T, P = Record<string, any>>(options: FetchOptions<T, P>) {
-  return useAxle<ResponseOptions<T>, ResponseOptions<T>, P>(options)
+  return useAxle<T, ResponseOptions<T>, P>(options)
 }
 
 axle.createHooks = createHooks

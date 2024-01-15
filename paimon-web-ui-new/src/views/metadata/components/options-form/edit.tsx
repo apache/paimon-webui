@@ -15,50 +15,63 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { CreateOutline } from '@vicons/ionicons5'
+import { EditOutlined } from '@vicons/antd'
+import type { FormInst } from 'naive-ui'
 
 import { createOption, type TableOption } from '@/api/models/catalog'
 import { useCatalogStore } from '@/store/catalog'
-import IModal from '@/components/modal'
-import type { IFormInst } from '@/components/dynamic-form/types'
 import { transformOption } from '@/views/metadata/constant'
-
-const props = {
-  value: Object as PropType<TableOption>,
-  onConfirm: [Function, Array] as PropType<() => Promise<void>>
-}
 
 export default defineComponent({
   name: 'OptionEditForm',
-  props,
+  props: {
+    option: {
+      type: Object as PropType<TableOption>,
+      required: true
+    },
+    onConfirm: [Function, Array] as PropType<() => Promise<void>>
+  },
   setup(props) {
+    const rules = {
+      key: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'Option key required'
+      },
+      value: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'Option value required'
+      }
+    }
+
     const { t } = useLocaleHooks()
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [result, createFetch, { loading }] = createOption()
+    const [, createFetch, { loading }] = createOption()
 
-    const modalRef = ref<{ formRef: IFormInst }>()
+    const formRef = ref<FormInst>()
     const showModal = ref(false)
 
-    const handleConfirm = async (values: TableOption) => {
-      await modalRef.value?.formRef?.validate()
+    const formValue = ref({ ...toRaw(props.option) })
+
+    const handleConfirm = async () => {
+      await formRef.value?.validate()
       await createFetch({
         params: transformOption({
           ...toRaw(catalogStore.currentTable),
-          options: [toRaw(values)]
+          options: [toRaw(formValue.value)]
         })
       })
 
-      if (result.value.code === 200) {
-        handleCloseModal()
-        message.success(t('Create Successfully'))
-        props.onConfirm!()
-      }
+      handleCloseModal()
+      message.success(t('Edit Successfully'))
     }
 
     const handleOpenModal = (e: Event) => {
       e.stopPropagation()
+      formValue.value = { ...toRaw(props.option) }
       showModal.value = true
     }
 
@@ -68,9 +81,10 @@ export default defineComponent({
     }
 
     return {
-      modalRef,
       showModal,
-      value: toRefs(props).value,
+      formValue,
+      loading,
+      rules,
 
       t,
       handleOpenModal,
@@ -83,18 +97,40 @@ export default defineComponent({
       <>
         <n-button onClick={this.handleOpenModal} strong secondary circle>
           {{
-            icon: () => <n-icon component={CreateOutline} />
+            icon: () => <n-icon component={EditOutlined} />
           }}
         </n-button>
-        <IModal
-          ref='modalRef'
-          showModal={this.showModal}
-          row={this.value}
-          title={'Edit Option'}
-          formType={'OPTIONS'}
-          onCancel={this.handleCloseModal}
-          onConfirm={this.handleConfirm}
-        />
+        <n-modal v-model:show={this.showModal} mask-closable={false}>
+          <n-card bordered={true} title={'Edit Option'} style="width: 700px">
+            {{
+              default: () => (
+                <n-form
+                  ref="formRef"
+                  label-placement="top"
+                  label-width="auto"
+                  label-align="left"
+                  rules={this.rules}
+                  model={this.formValue}
+                >
+                  <n-form-item label="Key" path="key">
+                    <n-input disabled v-model:value={this.formValue.key} placeholder="Key" />
+                  </n-form-item>
+                  <n-form-item label="Value" path="value">
+                    <n-input v-model:value={this.formValue.value} placeholder="Value" />
+                  </n-form-item>
+                </n-form>
+              ),
+              action: () => (
+                <n-space justify="end">
+                  <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
+                  <n-button type="primary" loading={this.loading} onClick={this.handleConfirm}>
+                    {this.t('layout.confirm')}
+                  </n-button>
+                </n-space>
+              )
+            }}
+          </n-card>
+        </n-modal>
       </>
     )
   }

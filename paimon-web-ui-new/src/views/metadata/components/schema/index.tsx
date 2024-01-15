@@ -103,7 +103,7 @@ export default defineComponent({
           <n-data-table
             row-key={(rowData: Schema) => rowData.schemaId}
             columns={this.columns}
-            data={this.schemaData?.data || []}
+            data={this.schemaData || []}
             max-height="calc(100vh - 260px)"
           />
         </n-spin>

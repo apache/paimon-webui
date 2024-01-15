@@ -15,18 +15,27 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { RunnerMethod } from "@varlet/axle"
-import type { UseAxleOptions } from "@varlet/axle/use"
+import {
+  createDiscreteApi,
+  type ConfigProviderProps,
+  darkTheme,
+  lightTheme
+} from 'naive-ui'
 
-export interface ResponseOptions<P> {
-  code: number
-  data: P
-  msg: string
-}
+import { useConfigStore } from '@/store/config'
 
-export type RequestOptions<V, P = Record<string, any>> = Partial<UseAxleOptions<V, ResponseOptions<V>, P>>
 
-export type FetchOptions<V, P = Record<string, any>> = Partial<UseAxleOptions<V, ResponseOptions<V>, P>> & {
-  method: RunnerMethod
-  url: string
-}
+const configStore = useConfigStore()
+
+const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+  theme: configStore.getCurrentTheme === 'light' ? lightTheme : darkTheme
+}))
+
+const discreteApi = createDiscreteApi(
+  ['message', 'dialog', 'notification', 'loadingBar'],
+  {
+    configProviderProps: configProviderPropsRef
+  }
+)
+
+export default discreteApi

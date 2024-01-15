@@ -22,10 +22,9 @@ import { createTable, type TableDTO } from '@/api/models/catalog'
 import { transformOption } from '@/views/metadata/constant'
 
 import OptionContent, { newOption } from '../options-form-content'
-import TableColumnContent, { newField } from '../table-column-content'
+import ColumnFormContent, { newField } from '../table-column-content'
 
 import styles from './index.module.scss'
-
 
 const props = {
   catalogId: {
@@ -41,7 +40,6 @@ const props = {
     require: true
   }
 }
-
 
 const resetFormValue = () => {
   return {
@@ -72,7 +70,7 @@ export default defineComponent({
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [result, createFetch, { loading }] = createTable()
+    const [, createFetch, { loading }] = createTable()
 
     const formRef = ref()
     const formValue = ref<TableDTO>(resetFormValue())
@@ -99,12 +97,10 @@ export default defineComponent({
         }
       })
 
-      if (result.value.code === 200) {
-        handleCloseModal()
-        message.success(t('Create Successfully'))
-        formValue.value = resetFormValue()
-        await catalogStore.getAllCatalogs(true)
-      }
+      handleCloseModal()
+      message.success(t('Create Successfully'))
+      formValue.value = resetFormValue()
+      await catalogStore.getAllCatalogs(true)
     }
 
     const handleOpenModal = (e: Event) => {
@@ -124,7 +120,6 @@ export default defineComponent({
     const handleAddColumn = () => {
       formValue.value.tableColumns?.push(JSON.parse(JSON.stringify(newField)))
     }
-
 
     return {
       formRef,
@@ -180,7 +175,7 @@ export default defineComponent({
                       </n-icon>
                     </n-button>
                   </n-space>
-                  <TableColumnContent
+                  <ColumnFormContent
                     onUpdateColumns={(value) => {
                       this.formValue.tableColumns = value
                     }}
