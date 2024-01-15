@@ -69,8 +69,8 @@ public class UserController {
     /**
      * Gets user views with pagination.
      *
-     * @param user filter conditions.
-     * @return paginated user view objects.
+     * @param user filter conditions
+     * @return paginated user view objects
      */
     @SaCheckPermission("system:user:list")
     @GetMapping("/list")
@@ -83,7 +83,7 @@ public class UserController {
     /**
      * Obtain a list of user selection boxes.
      *
-     * @return {@link R} with a list of {@link UserVO} objects.
+     * @return {@link R} with a list of {@link UserVO} objects
      */
     @SaCheckPermission("system:user:query")
     @GetMapping("/all")
@@ -92,7 +92,7 @@ public class UserController {
     }
 
     @SaCheckPermission("system:role:add")
-    @PostMapping
+    @PostMapping("/add")
     public R<Void> add(@Validated @RequestBody User user) {
         if (!userService.checkUserNameUnique(user)) {
             return R.failed(Status.USER_NAME_ALREADY_EXISTS, user.getUsername());
