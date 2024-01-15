@@ -26,6 +26,7 @@ import org.apache.paimon.web.server.data.vo.DatabaseVO;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -99,6 +100,23 @@ public class DatabaseControllerTest extends ControllerTestBase {
                         MockMvcRequestBuilders.post(databasePath + "/create")
                                 .cookie(cookie)
                                 .content(ObjectMapperUtils.toJSON(database))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @AfterEach
+    public void after() throws Exception {
+        DatabaseDTO dropDatabase = new DatabaseDTO();
+        dropDatabase.setCatalogName(catalogName);
+        dropDatabase.setCatalogId(catalogId);
+        dropDatabase.setName(databaseName);
+        dropDatabase.setIgnoreIfExists(true);
+        dropDatabase.setCascade(true);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(databasePath + "/drop")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(dropDatabase))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk());

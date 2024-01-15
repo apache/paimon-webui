@@ -24,6 +24,7 @@ import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -47,6 +48,8 @@ public class CatalogControllerTest extends ControllerTestBase {
 
     private static final String catalogName = "testCatalog";
 
+    private Integer catalogId;
+
     @BeforeEach
     public void setup() throws Exception {
         CatalogDTO catalog = new CatalogDTO();
@@ -59,6 +62,37 @@ public class CatalogControllerTest extends ControllerTestBase {
                         MockMvcRequestBuilders.post(catalogPath + "/create")
                                 .cookie(cookie)
                                 .content(ObjectMapperUtils.toJSON(catalog))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // get catalog id.
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(catalogPath + "/list")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+        R<List<CatalogInfo>> r =
+                ObjectMapperUtils.fromJSON(
+                        responseString, new TypeReference<R<List<CatalogInfo>>>() {});
+        catalogId = r.getData().get(0).getId();
+    }
+
+    @AfterEach
+    public void after() throws Exception {
+        CatalogDTO removeCatalog = new CatalogDTO();
+        removeCatalog.setId(catalogId);
+        removeCatalog.setName(catalogName);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(catalogPath + "/remove")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(removeCatalog))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -90,7 +124,7 @@ public class CatalogControllerTest extends ControllerTestBase {
     @Test
     public void testRemoveCatalog() throws Exception {
         CatalogDTO removeCatalog = new CatalogDTO();
-        removeCatalog.setId(1);
+        removeCatalog.setId(catalogId);
         removeCatalog.setName(catalogName);
 
         String responseString =
