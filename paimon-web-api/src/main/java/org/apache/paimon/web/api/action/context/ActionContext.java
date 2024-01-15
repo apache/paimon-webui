@@ -21,7 +21,7 @@ package org.apache.paimon.web.api.action.context;
 import java.util.List;
 
 /**
- * Action Context. Convert the user-defined CDC job to an ActionContext and then to a command line
+ * The context of action which converts the user-defined action to command line.
  * argument
  */
 public interface ActionContext {
