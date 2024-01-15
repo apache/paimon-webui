@@ -27,9 +27,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
 /** The test class of mysql sync table action service in {@link MysqlSyncTableActionService}. */
 public class MysqlSyncTableActionServiceTest {
@@ -71,14 +73,19 @@ public class MysqlSyncTableActionServiceTest {
                         .table("table")
                         .database("database")
                         .build();
-        List<String> command = new MysqlSyncTableActionService().getCommand(actionContext);
-        assertEquals(7, command.size());
-        assertEquals("./bin/flink", command.get(0));
-        assertEquals("run", command.get(1));
-        assertEquals(getActionPath(), command.get(2));
-        assertEquals("mysql_sync_table", command.get(3));
-        assertEquals("--warehouse warehouse", command.get(4));
-        assertEquals("--database database", command.get(5));
-        assertEquals("--table table", command.get(6));
+        List<String> commands = new MysqlSyncTableActionService().getCommand(actionContext);
+        List<String> expectedCommands =
+                Arrays.asList(
+                        "${FLINK_HOME}/bin/flink",
+                        "run",
+                        getActionPath(),
+                        "mysql_sync_table",
+                        "--warehouse",
+                        "warehouse",
+                        "--database",
+                        "database",
+                        "--table",
+                        "table");
+        assertLinesMatch(expectedCommands, commands);
     }
 }

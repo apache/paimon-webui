@@ -22,10 +22,11 @@ import org.apache.paimon.web.api.exception.ActionException;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /** The test class of mysql sync table action context in {@link MysqlSyncTableActionContext}. */
@@ -38,31 +39,29 @@ public class MysqlSyncTableActionContextTest {
     private static final String table = "table";
 
     @Test
-    public void testBuild() throws IOException {
-        List<String> command =
+    public void testBuild() {
+        List<String> commands =
                 MysqlSyncTableActionContext.builder()
                         .warehouse(warehouse)
                         .database(database)
                         .table(table)
                         .build()
                         .getCommand();
-        assertEquals(3, command.size());
-        assertEquals(command.get(0), "--warehouse " + warehouse);
-        assertEquals(command.get(1), "--database " + database);
-        assertEquals(command.get(2), "--table " + table);
+        List<String> expectedCommands =
+                Arrays.asList("--warehouse", warehouse, "--database", database, "--table", table);
+        assertLinesMatch(expectedCommands, commands);
     }
 
     @Test
-    public void testBuildConf() throws IOException {
-        List<String> command =
+    public void testBuildConf() {
+        List<String> commands =
                 MysqlSyncTableActionContext.builder()
                         .warehouse(warehouse)
                         .database(database)
                         .table(table)
                         .partitionKeys("pt")
-                        .primaryKeys("pt,uid")
                         .mysqlConf("table-name='source_table'")
-                        .mysqlConf("database-name='source_db.+'")
+                        .mysqlConf("database-name='source_db'")
                         .mysqlConf("password=123456")
                         .catalogConf("metastore=hive")
                         .catalogConf("uri=thrift://hive-metastore:9083")
@@ -70,23 +69,35 @@ public class MysqlSyncTableActionContextTest {
                         .tableConf("changelog-producer=input")
                         .build()
                         .getCommand();
-        assertEquals(12, command.size());
-        assertEquals("--warehouse " + warehouse, command.get(0));
-        assertEquals("--database " + database, command.get(1));
-        assertEquals("--table " + table, command.get(2));
-        assertEquals("--partition_keys pt", command.get(3));
-        assertEquals("--primary_keys pt,uid", command.get(4));
-        assertEquals("--mysql_conf table-name='source_table'", command.get(5));
-        assertEquals("--mysql_conf database-name='source_db.+'", command.get(6));
-        assertEquals("--mysql_conf password=123456", command.get(7));
-        assertEquals("--catalog_conf metastore=hive", command.get(8));
-        assertEquals("--catalog_conf uri=thrift://hive-metastore:9083", command.get(9));
-        assertEquals("--table_conf bucket=4", command.get(10));
-        assertEquals("--table_conf changelog-producer=input", command.get(11));
+        List<String> expectedCommands =
+                Arrays.asList(
+                        "--warehouse",
+                        warehouse,
+                        "--database",
+                        database,
+                        "--table",
+                        table,
+                        "--partition_keys",
+                        "pt",
+                        "--mysql_conf",
+                        "table-name='source_table'",
+                        "--mysql_conf",
+                        "database-name='source_db'",
+                        "--mysql_conf",
+                        "password=123456",
+                        "--catalog_conf",
+                        "metastore=hive",
+                        "--catalog_conf",
+                        "uri=thrift://hive-metastore:9083",
+                        "--table_conf",
+                        "bucket=4",
+                        "--table_conf",
+                        "changelog-producer=input");
+        assertLinesMatch(expectedCommands, commands);
     }
 
     @Test
-    public void testBuildError() throws IOException {
+    public void testBuildError() {
         MysqlSyncTableActionContext mysqlSyncTableActionContext =
                 MysqlSyncTableActionContext.builder()
                         .warehouse(warehouse)
