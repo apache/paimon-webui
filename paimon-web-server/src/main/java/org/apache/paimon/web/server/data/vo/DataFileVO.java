@@ -19,11 +19,13 @@
 package org.apache.paimon.web.server.data.vo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /** VO of metadata data file. */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DataFileVO {

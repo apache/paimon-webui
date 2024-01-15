@@ -108,10 +108,10 @@ public class MetadataServiceImpl implements MetadataService {
                     internalRow -> {
                         SnapshotVO build =
                                 SnapshotVO.builder()
-                                        .setSnapshotId(internalRow.getLong(0))
-                                        .setSnapshotId(internalRow.getLong(1))
-                                        .setCommitIdentifier(internalRow.getLong(3))
-                                        .setCommitTime(
+                                        .snapshotId(internalRow.getLong(0))
+                                        .schemaId(internalRow.getLong(1))
+                                        .commitIdentifier(internalRow.getLong(3))
+                                        .commitTime(
                                                 internalRow.getTimestamp(5, 3).toLocalDateTime())
                                         .build();
                         result.add(build);
@@ -134,9 +134,9 @@ public class MetadataServiceImpl implements MetadataService {
                     internalRow -> {
                         ManifestsVO manifestsVo =
                                 ManifestsVO.builder()
-                                        .setFileName(internalRow.getString(0).toString())
-                                        .setFileSize(internalRow.getLong(1))
-                                        .setNumAddedFiles(internalRow.getLong(2))
+                                        .fileName(internalRow.getString(0).toString())
+                                        .fileSize(internalRow.getLong(1))
+                                        .numAddedFiles(internalRow.getLong(2))
                                         .build();
                         result.add(manifestsVo);
                     });

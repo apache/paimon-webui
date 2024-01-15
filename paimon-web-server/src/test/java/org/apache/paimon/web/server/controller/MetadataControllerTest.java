@@ -25,6 +25,7 @@ import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.vo.ManifestsVO;
 import org.apache.paimon.web.server.data.vo.SchemaVO;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
@@ -47,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /** Tests for {@link MetadataController}. */
 @SpringBootTest
@@ -207,7 +209,20 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getContentAsString();
 
         R<List<SchemaVO>> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<SchemaVO>>>() {});
+        List<SchemaVO> schemaVOS = result.getData();
         assertEquals(200, result.getCode());
+        assertNotNull(schemaVOS);
+        assertEquals(1, schemaVOS.size());
+
+        // Make assertions on each field of the SchemaVO class.
+        SchemaVO schemaVO = schemaVOS.get(0);
+        assertNotNull(schemaVO.getSchemaId());
+        assertNotNull(schemaVO.getFields());
+        assertNotNull(schemaVO.getPartitionKeys());
+        assertNotNull(schemaVO.getPrimaryKeys());
+        assertNotNull(schemaVO.getComment());
+        assertNotNull(schemaVO.getOption());
+        assertNotNull(schemaVO.getUpdateTime());
     }
 
     @Test
@@ -230,7 +245,7 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
+        R<List<ManifestsVO>> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<ManifestsVO>>>() {});
         assertEquals(200, result.getCode());
     }
 

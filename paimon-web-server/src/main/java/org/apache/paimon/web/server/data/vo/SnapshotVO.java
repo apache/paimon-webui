@@ -18,72 +18,25 @@
 
 package org.apache.paimon.web.server.data.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 /** VO of metadata snapshot. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SnapshotVO {
-    private final Long snapshotId;
-    private final Long schemaId;
-    private final Long commitIdentifier;
-    private final LocalDateTime commitTime;
 
-    public SnapshotVO(
-            Long snapshotId, Long schemaId, Long commitIdentifier, LocalDateTime commitTime) {
-        this.snapshotId = snapshotId;
-        this.schemaId = schemaId;
-        this.commitIdentifier = commitIdentifier;
-        this.commitTime = commitTime;
-    }
+    private Long snapshotId;
 
-    public Long getSnapshotId() {
-        return snapshotId;
-    }
+    private Long schemaId;
 
-    public Long getSchemaId() {
-        return schemaId;
-    }
+    private Long commitIdentifier;
 
-    public Long getCommitIdentifier() {
-        return commitIdentifier;
-    }
-
-    public LocalDateTime getCommitTime() {
-        return commitTime;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    /** Builder for SnapshotInfoVo. */
-    public static class Builder {
-        private Long snapshotId;
-        private Long schemaId;
-        private Long commitIdentifier;
-        private LocalDateTime commitTime;
-
-        public Builder setSnapshotId(Long snapshotId) {
-            this.snapshotId = snapshotId;
-            return this;
-        }
-
-        public Builder setSchemaId(Long schemaId) {
-            this.schemaId = schemaId;
-            return this;
-        }
-
-        public Builder setCommitIdentifier(Long commitIdentifier) {
-            this.commitIdentifier = commitIdentifier;
-            return this;
-        }
-
-        public Builder setCommitTime(LocalDateTime commitTime) {
-            this.commitTime = commitTime;
-            return this;
-        }
-
-        public SnapshotVO build() {
-            return new SnapshotVO(snapshotId, schemaId, commitIdentifier, commitTime);
-        }
-    }
+    private LocalDateTime commitTime;
 }

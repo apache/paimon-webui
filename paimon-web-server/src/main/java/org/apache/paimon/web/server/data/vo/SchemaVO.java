@@ -30,11 +30,11 @@ import javax.annotation.Nullable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/** VO of metadata schema. */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-/** VO of metadata schema. */
 public class SchemaVO {
 
     private Long schemaId;
