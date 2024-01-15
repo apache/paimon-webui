@@ -34,7 +34,7 @@ public abstract class AbstractActionService implements ActionService {
 
     public List<String> getCommand(ActionContext actionContext) {
         List<String> commandList = new ArrayList<>();
-        commandList.add("./bin/flink");
+        commandList.add("${FLINK_HOME}/bin/flink");
         commandList.add("run");
         commandList.add(getActionPath());
         commandList.add(name());
@@ -45,10 +45,7 @@ public abstract class AbstractActionService implements ActionService {
     public void execute(ActionContext actionContext) throws Exception {
         String flinkHome = getFlinkHome();
         try {
-            List<String> commandList = new ArrayList<>();
-            beforeExecute(actionContext, commandList);
             Process process = new ShellService(flinkHome, getCommand(actionContext)).execute();
-            afterExecute(process, actionContext);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             catchException(exception);

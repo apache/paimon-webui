@@ -20,11 +20,9 @@ package org.apache.paimon.web.api.action.context;
 
 import java.util.List;
 
-/**
- * The context of action which converts the user-defined action to command line.
- * argument
- */
+/** The context of action which converts the user-defined action to command line. */
 public interface ActionContext {
 
+    /** Converts the user-defined action to command line. */
     List<String> getCommand();
 }
