@@ -30,6 +30,7 @@ import org.apache.paimon.web.server.data.result.exception.user.UserDisabledExcep
 import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
 import org.apache.paimon.web.server.data.result.exception.user.UserPasswordNotMatchException;
 import org.apache.paimon.web.server.data.vo.UserInfoVO;
+import org.apache.paimon.web.server.data.vo.UserVO;
 import org.apache.paimon.web.server.mapper.UserMapper;
 import org.apache.paimon.web.server.service.LdapService;
 import org.apache.paimon.web.server.service.RoleMenuService;
@@ -38,17 +39,21 @@ import org.apache.paimon.web.server.service.SysRoleService;
 import org.apache.paimon.web.server.service.TenantService;
 import org.apache.paimon.web.server.service.UserRoleService;
 import org.apache.paimon.web.server.service.UserService;
+import org.apache.paimon.web.server.util.StringUtils;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /** UserServiceImpl. */
 @Service
@@ -61,6 +66,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired private RoleMenuService roleMenuService;
     @Autowired private SysMenuService sysMenuService;
     @Autowired private TenantService tenantService;
+
+    @Override
+    public UserVO getUserById(Integer id) {
+        User user = userMapper.selectUserById(id);
+        if (Objects.nonNull(user)) {
+            return toVo(user);
+        }
+        return null;
+    }
+
+    @Override
+    public List<UserVO> selectUserList(IPage<User> page, User user) {
+        return userMapper.selectUserList(page, user).stream()
+                .map(this::toVo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserVO> listUsers() {
+        return this.list().stream().map(this::toVo).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean checkUserNameUnique(User user) {
+        int roleId = user.getId() == null ? -1 : user.getId();
+        User info = this.lambdaQuery().eq(User::getUsername, user.getUsername()).one();
+        return info == null || info.getId() == roleId;
+    }
 
     /**
      * login by username and password.
@@ -188,5 +221,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public List<User> selectUnallocatedList(User user) {
         return userMapper.selectUnallocatedList(user);
+    }
+
+    @Override
+    public int insertUser(User user) {
+        return 0;
+    }
+
+    private UserVO toVo(User user) {
+        return UserVO.builder()
+                .username(user.getUsername())
+                .nickname(StringUtils.isNotEmpty(user.getNickname()) ? user.getNickname() : "")
+                .userType(user.getUserType() == 0 ? "LOCAL" : "LDAP")
+                .mobile(StringUtils.isNotEmpty(user.getMobile()) ? user.getMobile() : "")
+                .email(StringUtils.isNotEmpty(user.getEmail()) ? user.getEmail() : "")
+                .enabled(user.getEnabled())
+                .createTime(user.getCreateTime())
+                .updateTime(user.getUpdateTime())
+                .build();
     }
 }

@@ -21,6 +21,7 @@ package org.apache.paimon.web.server.mapper;
 import org.apache.paimon.web.server.data.model.User;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -32,9 +33,10 @@ public interface UserMapper extends BaseMapper<User> {
      * Query user list.
      *
      * @param user query params
+     * @param page paging params
      * @return user list
      */
-    List<User> selectUserList(User user);
+    List<User> selectUserList(IPage<User> page, User user);
 
     /**
      * Query user list by role ID.

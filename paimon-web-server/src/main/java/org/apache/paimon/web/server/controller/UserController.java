@@ -19,12 +19,18 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.data.vo.UserVO;
 import org.apache.paimon.web.server.service.UserService;
+import org.apache.paimon.web.server.util.PageSupport;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,34 +54,50 @@ public class UserController {
      * get user by id.
      *
      * @param id user-id
-     * @return {@link R} with {@link User}
+     * @return {@link R} with {@link UserVO}
      */
     @SaCheckPermission("system:user:query")
     @GetMapping("/{id}")
-    public R<User> getUserById(@PathVariable("id") Long id) {
-        User user = userService.getById(id);
+    public R<UserVO> getUserById(@PathVariable("id") Integer id) {
+        UserVO user = userService.getUserById(id);
         if (user == null) {
             return R.failed(USER_NOT_EXIST);
         }
-        user.setPassword(null);
         return R.succeed(user);
     }
 
     /**
-     * Retrieves a list of all users.
+     * Gets user views with pagination.
      *
-     * @return {@link R} with a list of {@link User} objects.
+     * @param user filter conditions.
+     * @return paginated user view objects.
+     */
+    @SaCheckPermission("system:user:list")
+    @GetMapping("/list")
+    public PageR<UserVO> selectUserList(User user) {
+        IPage<User> page = PageSupport.startPage();
+        List<UserVO> list = userService.selectUserList(page, user);
+        return PageR.<UserVO>builder().success(true).total(page.getTotal()).data(list).build();
+    }
+
+    /**
+     * Obtain a list of user selection boxes.
+     *
+     * @return {@link R} with a list of {@link UserVO} objects.
      */
     @SaCheckPermission("system:user:query")
-    @GetMapping("/list")
-    public R<List<User>> list() {
-        return R.succeed(userService.list());
+    @GetMapping("/all")
+    public R<List<UserVO>> all() {
+        return R.succeed(userService.listUsers());
     }
 
     @SaCheckPermission("system:role:add")
     @PostMapping
-    public R<Void> add(@RequestBody User user) {
+    public R<Void> add(@Validated @RequestBody User user) {
+        if (!userService.checkUserNameUnique(user)) {
+            return R.failed(Status.USER_NAME_ALREADY_EXISTS, user.getUsername());
+        }
 
+        return userService.insertUser(user) > 0 ? R.succeed() : R.failed();
     }
-
 }

@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <id     property="id"       column="id"      />
         <result property="username"     column="user_name"    />
         <result property="nickname"     column="nick_name"    />
+        <result property="userType"     column="user_type"    />
         <result property="email"        column="email"        />
         <result property="mobile"  column="mobile"  />
         <result property="url"          column="url"          />
@@ -46,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectUserVo">
-        select u.id, u.username, u.nickname, u.email, u.url, u.mobile, u.password, u.is_delete, u.enabled, u.create_time,
+        select u.id, u.username, u.nickname, u.user_type, u.email, u.url, u.mobile, u.password, u.is_delete, u.enabled, u.create_time,
         r.id, r.role_name, r.role_key, r.sort, r.enabled as role_status
         from user u
 		    left join user_role urole on u.id = urole.user_id
@@ -54,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <select id="selectUserList" parameterType="org.apache.paimon.web.server.data.model.User" resultMap="SysUserResult">
-		select u.id, u.nickname, u.username, u.email, u.url, u.mobile, u.enabled, u.is_delete, u.create_time from user u
+		select u.id, u.nickname, u.username, u.user_type, u.email, u.url, u.mobile, u.enabled, u.is_delete, u.create_time from user u
 		where u.is_delete = '0'
 		<if test="id != null and id != 0">
 			AND u.id = #{userId}

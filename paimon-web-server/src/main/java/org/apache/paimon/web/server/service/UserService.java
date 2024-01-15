@@ -22,13 +22,47 @@ import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 import org.apache.paimon.web.server.data.vo.UserInfoVO;
+import org.apache.paimon.web.server.data.vo.UserVO;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
 /** User Service. */
 public interface UserService extends IService<User> {
+
+    /**
+     * Gets a user by ID.
+     *
+     * @param id the user ID
+     * @return the UserVO or null if not found
+     */
+    UserVO getUserById(Integer id);
+
+    /**
+     * Selects users with pagination.
+     *
+     * @param page the pagination information
+     * @param user the filter criteria
+     * @return list of UserVO
+     */
+    List<UserVO> selectUserList(IPage<User> page, User user);
+
+    /**
+     * Lists all users.
+     *
+     * @return list of all UserVOs
+     */
+    List<UserVO> listUsers();
+
+    /**
+     * Checks if the username is unique.
+     *
+     * @param user the user to check
+     * @return true if unique, false otherwise
+     */
+    boolean checkUserNameUnique(User user);
 
     /**
      * login by username and password.
@@ -53,4 +87,6 @@ public interface UserService extends IService<User> {
      * @return user list
      */
     List<User> selectUnallocatedList(User user);
+
+    int insertUser(User user);
 }
