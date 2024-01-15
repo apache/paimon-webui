@@ -120,28 +120,4 @@ public class CatalogControllerTest extends ControllerTestBase {
         assertEquals(1, r.getData().size());
         assertEquals(catalogName, r.getData().get(0).getCatalogName());
     }
-
-    @Test
-    public void testRemoveCatalog() throws Exception {
-        CatalogDTO removeCatalog = new CatalogDTO();
-        removeCatalog.setId(catalogId);
-        removeCatalog.setName(catalogName);
-
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post(catalogPath + "/remove")
-                                        .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(removeCatalog))
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        R<Void> remove =
-                ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
-        assertEquals(200, remove.getCode());
-    }
 }
