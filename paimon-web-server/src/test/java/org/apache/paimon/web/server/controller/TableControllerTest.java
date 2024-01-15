@@ -171,6 +171,17 @@ public class TableControllerTest extends ControllerTestBase {
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE));
+
+        CatalogDTO removeCatalog = new CatalogDTO();
+        removeCatalog.setId(catalogId);
+        removeCatalog.setName(catalogName);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(catalogPath + "/remove")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(removeCatalog))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
