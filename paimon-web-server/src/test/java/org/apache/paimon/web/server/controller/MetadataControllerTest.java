@@ -25,6 +25,7 @@ import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.vo.SchemaVO;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
 
@@ -205,7 +206,7 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
+        R<List<SchemaVO>> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<SchemaVO>>>() {});
         assertEquals(200, result.getCode());
     }
 

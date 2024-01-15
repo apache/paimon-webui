@@ -71,20 +71,20 @@ public class MetadataServiceImpl implements MetadataService {
                     internalRow -> {
                         SchemaVO schemaVo =
                                 SchemaVO.builder()
-                                        .setSchemaId(internalRow.getLong(0))
-                                        .setFields(
+                                        .schemaId(internalRow.getLong(0))
+                                        .fields(
                                                 new Gson()
                                                         .fromJson(
                                                                 internalRow.getString(1).toString(),
                                                                 new TypeToken<
                                                                         LinkedList<
                                                                                 MetadataFieldsModel>>() {}))
-                                        .setPartitionKeys(internalRow.getString(2).toString())
-                                        .setPrimaryKeys(internalRow.getString(3).toString())
-                                        .setOption(
+                                        .partitionKeys(internalRow.getString(2).toString())
+                                        .primaryKeys(internalRow.getString(3).toString())
+                                        .option(
                                                 formatOptions(internalRow.getString(4).toString()))
-                                        .setComment(internalRow.getString(5).toString())
-                                        .setUpdateTime(
+                                        .comment(internalRow.getString(5).toString())
+                                        .updateTime(
                                                 internalRow.getTimestamp(6, 3).toLocalDateTime())
                                         .build();
                         result.add(schemaVo);
