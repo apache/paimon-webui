@@ -107,16 +107,13 @@ public class DatabaseControllerTest extends ControllerTestBase {
 
     @AfterEach
     public void after() throws Exception {
-        DatabaseDTO dropDatabase = new DatabaseDTO();
-        dropDatabase.setCatalogName(catalogName);
-        dropDatabase.setCatalogId(catalogId);
-        dropDatabase.setName(databaseName);
-        dropDatabase.setIgnoreIfExists(true);
-        dropDatabase.setCascade(true);
+        CatalogDTO removeCatalog = new CatalogDTO();
+        removeCatalog.setId(catalogId);
+        removeCatalog.setName(catalogName);
         mockMvc.perform(
-                        MockMvcRequestBuilders.post(databasePath + "/drop")
+                        MockMvcRequestBuilders.post(catalogPath + "/remove")
                                 .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(dropDatabase))
+                                .content(ObjectMapperUtils.toJSON(removeCatalog))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk());
