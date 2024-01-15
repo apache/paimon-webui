@@ -21,119 +21,32 @@ package org.apache.paimon.web.server.data.vo;
 import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
 import org.apache.paimon.web.server.data.model.MetadataOptionModel;
 
-import javax.annotation.Nullable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 /** VO of metadata schema. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SchemaVO {
 
-    private final Long schemaId;
-    private final List<MetadataFieldsModel> fields;
-    private final String partitionKeys;
-    private final String primaryKeys;
-    private final String comment;
-    private final List<MetadataOptionModel> option;
-    private final LocalDateTime updateTime;
+    private Long schemaId;
 
-    public SchemaVO(
-            Long schemaId,
-            List<MetadataFieldsModel> fields,
-            String partitionKeys,
-            String primaryKeys,
-            String comment,
-            List<MetadataOptionModel> option,
-            LocalDateTime updateTime) {
-        this.schemaId = schemaId;
-        this.fields = fields;
-        this.partitionKeys = partitionKeys;
-        this.primaryKeys = primaryKeys;
-        this.comment = comment;
-        this.option = option;
-        this.updateTime = updateTime;
-    }
+    private List<MetadataFieldsModel> fields;
 
-    public Long getSchemaId() {
-        return schemaId;
-    }
+    private String partitionKeys;
 
-    public List<MetadataFieldsModel> getFields() {
-        return fields;
-    }
+    private String primaryKeys;
 
-    public String getPartitionKeys() {
-        return partitionKeys;
-    }
+    private String comment;
 
-    public String getPrimaryKeys() {
-        return primaryKeys;
-    }
+    private List<MetadataOptionModel> option;
 
-    public String getComment() {
-        return comment;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public List<MetadataOptionModel> getOption() {
-        return option;
-    }
-
-    public static SchemaVO.Builder builder() {
-        return new Builder();
-    }
-
-    /** Builder for SchemaInfoVo. */
-    public static class Builder {
-        private Long schemaId;
-        private List<MetadataFieldsModel> fields;
-        private String partitionKeys;
-        private String primaryKeys;
-        @Nullable private String comment;
-        @Nullable private List<MetadataOptionModel> option;
-        private LocalDateTime updateTime;
-
-        public Builder setSchemaId(Long schemaId) {
-            this.schemaId = schemaId;
-            return this;
-        }
-
-        public Builder setFields(List<MetadataFieldsModel> fields) {
-            this.fields = fields;
-            return this;
-        }
-
-        public Builder setPartitionKeys(String partitionKeys) {
-            this.partitionKeys = partitionKeys;
-            return this;
-        }
-
-        public Builder setPrimaryKeys(String primaryKeys) {
-            this.primaryKeys = primaryKeys;
-            return this;
-        }
-
-        public Builder setComment(String comment) {
-            this.comment = comment;
-            return this;
-        }
-
-        public Builder setOption(List<MetadataOptionModel> option) {
-            this.option = option;
-            return this;
-        }
-
-        public Builder setUpdateTime(LocalDateTime updateTime) {
-            this.updateTime = updateTime;
-            return this;
-        }
-
-        public SchemaVO build() {
-            return new SchemaVO(
-                    schemaId, fields, partitionKeys, primaryKeys, comment, option, updateTime);
-        }
-    }
+    private LocalDateTime updateTime;
 }
