@@ -41,7 +41,7 @@ export const newField: ColumnDTO = {
 }
 
 export default defineComponent({
-  name: 'OptionFormContent',
+  name: 'ColumnFormContent',
   props,
   setup(props) {
     const { t } = useLocaleHooks()
@@ -219,7 +219,6 @@ export default defineComponent({
     return {
       columns,
 
-      onDelete,
       ...toRefs(props)
     }
   },

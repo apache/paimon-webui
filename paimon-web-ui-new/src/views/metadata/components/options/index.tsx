@@ -26,7 +26,6 @@ import OptionsEditForm from '../options-form/edit'
 export default defineComponent({
   name: 'MetadataOptions',
   setup() {
-    const { t } = useLocaleHooks()
     const catalogStore = useCatalogStore()
 
     const [optionsList, useOptionsList, { loading }] = getOptions()
@@ -47,7 +46,7 @@ export default defineComponent({
         render(rowData) {
           return (
             <n-space>
-              <OptionsEditForm onConfirm={onFetchData} value={rowData} />
+              <OptionsEditForm onConfirm={onFetchData} option={rowData} />
               <n-popconfirm onPositiveClick={() => onDeleteOption(rowData?.key)}>
                 {{
                   default: () => 'Confirm to delete ? ',
@@ -101,7 +100,6 @@ export default defineComponent({
       },
 
       onFetchData,
-      t
     }
   },
   render() {
@@ -115,7 +113,7 @@ export default defineComponent({
             default: () => (
               <n-data-table
                 columns={this.columns}
-                data={this.optionsList?.data || []}
+                data={this.optionsList || []}
                 pagination={this.pagination}
               />
             )

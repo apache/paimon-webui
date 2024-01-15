@@ -66,7 +66,7 @@ export default defineComponent({
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [result, createFetch, { loading }] = createCatalog()
+    const [, createFetch, { loading }] = createCatalog()
 
     const formRef = ref()
     const formValue = ref<CatalogDTO>({
@@ -88,12 +88,10 @@ export default defineComponent({
         params: toRaw(formValue.value)
       })
 
-      if (result.value.code === 200) {
-        handleCloseModal()
-        message.success(t('Create Successfully'))
-        resetState()
-        catalogStore.getAllCatalogs(true)
-      }
+      handleCloseModal()
+      message.success(t('Create Successfully'))
+      resetState()
+      catalogStore.getAllCatalogs(true)
     }
 
     const handleOpenModal = (e: Event) => {

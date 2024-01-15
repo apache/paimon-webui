@@ -15,8 +15,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { UseAxleOptions } from '@varlet/axle/use'
-
 import httpRequest from '@/api/request'
 import type {
   Catalog,
@@ -32,10 +30,11 @@ import type {
   TableDTO,
   TableParams,
   SearchTable,
-  OptionsDTO,
-  TableOption
+  TableOption,
+  TableDetail,
+  ColumnParams
 } from './types'
-import type { ResponseOptions } from '@/api/types'
+import type { RequestOptions, ResponseOptions } from '@/api/types'
 
 export * from './types'
 
@@ -121,6 +120,36 @@ export const deleteOption = () => {
     url: '/table/option/remove',
     method: 'post',
   })
+}
+
+/**
+ * # Get columns
+ */
+export const getColumns = (options?: RequestOptions<TableDetail, TableParams>) => {
+  return httpRequest.createHooks!<TableDetail, TableParams>({
+    ...options,
+    url: '/table/column/list',
+    method: 'get'
+  })
+}
+
+/**
+ * # Create new Columns
+ */
+export const createColumns = () => {
+  return httpRequest.createHooks!<unknown, TableDTO>({
+    url: '/table/column/add',
+    method: 'post'
+  })
+}
+
+/**
+ * # Delete columns
+ */
+export const deleteColumns = (query: ColumnParams) => {
+  const { catalogName, databaseName, name, columnName } = query
+  
+  return httpRequest.delete!<unknown, unknown>(`/table/column/drop/${catalogName}/${databaseName}/${name}/${columnName}`)
 }
 
 /**

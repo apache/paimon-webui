@@ -35,24 +35,11 @@ export default defineComponent({
   name: 'OptionForm',
   props,
   setup(props) {
-    const rules = {
-      key: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: 'Option key required'
-      },
-      value: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: 'Option value required'
-      }
-    }
-
     const { t } = useLocaleHooks()
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [result, createFetch, { loading }] = createOption()
+    const [, createFetch, { loading }] = createOption()
 
     const formRef = ref()
     const formValue = ref<OptionsFormType>({
@@ -69,12 +56,10 @@ export default defineComponent({
         })
       })
 
-      if (result.value.code === 200) {
-        handleCloseModal()
-        message.success(t('Create Successfully'))
-        resetState()
-        props.onConfirm!()
-      }
+      handleCloseModal()
+      message.success(t('Create Successfully'))
+      resetState()
+      props.onConfirm!()
     }
 
     const handleOpenModal = (e: Event) => {
@@ -102,8 +87,6 @@ export default defineComponent({
       formValue,
       showModal,
       loading,
-
-      rules,
 
       t,
       handleOpenModal,
@@ -136,7 +119,6 @@ export default defineComponent({
                   label-placement="top"
                   label-width="auto"
                   label-align="left"
-                  rules={this.rules}
                   model={this.formValue}
                 >
                   <OptionContent
