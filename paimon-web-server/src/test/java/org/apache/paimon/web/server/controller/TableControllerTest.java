@@ -334,38 +334,54 @@ public class TableControllerTest extends ControllerTestBase {
 
     @Test
     public void testAlterTable() throws Exception {
+        // before modification.
+        List<TableColumn> columns = getColumns();
+        assertEquals(4, columns.size());
+        List<String> actualColumnNames =
+                columns.stream().map(TableColumn::getField).collect(Collectors.toList());
+        List<String> expectedColumnNamesList = Arrays.asList("id", "name", "age", "create_time");
+        assertEquals(expectedColumnNamesList, actualColumnNames);
+
         List<TableColumn> tableColumns = new ArrayList<>();
         TableColumn id =
                 TableColumn.builder()
+                        .id(0)
                         .field("id")
                         .dataType(PaimonDataType.builder().type("INT").build())
                         .comment("pk")
                         .isPk(true)
                         .defaultValue("")
+                        .sort(2)
                         .build();
         TableColumn name =
                 TableColumn.builder()
+                        .id(1)
                         .field("name")
                         .dataType(PaimonDataType.builder().type("STRING").build())
                         .comment("")
                         .isPk(false)
                         .defaultValue("")
+                        .sort(3)
                         .build();
         TableColumn age =
                 TableColumn.builder()
-                        .field("age")
+                        .id(2)
+                        .field("age1")
                         .dataType(PaimonDataType.builder().type("BIGINT").build())
                         .comment("")
                         .isPk(false)
                         .defaultValue("0")
+                        .sort(0)
                         .build();
         TableColumn createTime =
                 TableColumn.builder()
+                        .id(3)
                         .field("create_time")
                         .dataType(PaimonDataType.builder().type("STRING").build())
                         .comment("partition key")
                         .isPk(true)
-                        .defaultValue("0")
+                        .defaultValue("1970-01-01 00:00:00")
+                        .sort(1)
                         .build();
         tableColumns.add(id);
         tableColumns.add(name);
@@ -396,10 +412,29 @@ public class TableControllerTest extends ControllerTestBase {
         R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
         assertEquals(200, r.getCode());
 
-        List<TableColumn> columns = getColumns();
-        // Verify move to first and type modification.
-        TableColumn ageColumn = columns.get(0);
-        assertEquals("BIGINT", ageColumn.getDataType().getType());
+        // after modification.
+        columns = getColumns();
+        List<String> afterActualColumnNames =
+                columns.stream().map(TableColumn::getField).collect(Collectors.toList());
+        List<String> afterExpectedColumnNamesList =
+                Arrays.asList("age1", "create_time", "id", "name");
+        assertEquals(afterExpectedColumnNamesList, afterActualColumnNames);
+
+        TableColumn age1Column =
+                columns.stream()
+                        .filter(column -> "age1".equals(column.getField()))
+                        .findFirst()
+                        .orElse(null);
+        assert age1Column != null;
+        assertEquals("BIGINT", age1Column.getDataType().getType());
+
+        TableColumn createTimeColumn =
+                columns.stream()
+                        .filter(column -> "create_time".equals(column.getField()))
+                        .findFirst()
+                        .orElse(null);
+        assert createTimeColumn != null;
+        assertEquals("1970-01-01 00:00:00", createTimeColumn.getDefaultValue());
     }
 
     @Test

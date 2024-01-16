@@ -43,6 +43,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -184,17 +185,34 @@ public class TableServiceImpl implements TableService {
                             getCatalogInfo(alterTableDTO.getCatalogName()));
 
             Table table = service.getTable(databaseName, tableName);
+            List<DataField> fields = table.rowType().getFields();
+            Map<Integer, DataField> oldFieldsMap =
+                    fields.stream().collect(Collectors.toMap(DataField::id, Function.identity()));
             Map<String, String> options = table.options();
-            Map<Integer, DataField> dataFieldMap = getFields(table);
 
-            DataField dataField;
+            Map<Integer, Integer> fieldIdIndexMap = new HashMap<>();
+            for (int i = 0; i < fields.size(); i++) {
+                fieldIdIndexMap.put(fields.get(i).id(), i);
+            }
+
             List<TableChange> tableChanges = new ArrayList<>();
             List<TableColumn> tableColumns = alterTableDTO.getTableColumns();
-            for (TableColumn tableColumn : tableColumns) {
-                dataField = dataFieldMap.get(tableColumn.getId());
-                addTableChanges(tableColumn, dataField, options, tableChanges);
+            tableColumns.sort(Comparator.comparing(TableColumn::getSort));
+            Map<Integer, String> tableColumnIndexMap = new HashMap<>();
+            for (int i = 0; i < tableColumns.size(); i++) {
+                tableColumnIndexMap.put(i, tableColumns.get(i).getField());
             }
-            if (tableChanges.size() > 0) {
+            for (TableColumn tableColumn : tableColumns) {
+                DataField dataField = oldFieldsMap.get(tableColumn.getId());
+                addTableChanges(
+                        tableColumn,
+                        dataField,
+                        options,
+                        fieldIdIndexMap,
+                        tableColumnIndexMap,
+                        tableChanges);
+            }
+            if (!tableChanges.isEmpty()) {
                 service.alterTable(databaseName, tableName, tableChanges);
             }
             return R.succeed();
@@ -202,11 +220,6 @@ public class TableServiceImpl implements TableService {
             log.error("Exception with altering table.", e);
             return R.failed(Status.TABLE_AlTER_COLUMN_ERROR);
         }
-    }
-
-    private Map<Integer, DataField> getFields(Table table) {
-        List<DataField> fields = table.rowType().getFields();
-        return fields.stream().collect(Collectors.toMap(DataField::id, Function.identity()));
     }
 
     @Override
@@ -338,7 +351,7 @@ public class TableServiceImpl implements TableService {
                             TableColumn.builder()
                                     .id(field.id())
                                     .field(field.name())
-                                    .sort(field.id() + 1)
+                                    .sort(field.id())
                                     .dataType(DataTypeConvertUtils.fromPaimonType(field.type()))
                                     .comment(field.description());
                     if (CollectionUtils.isNotEmpty(primaryKeys)
@@ -360,6 +373,8 @@ public class TableServiceImpl implements TableService {
             TableColumn tableColumn,
             DataField dataField,
             Map<String, String> options,
+            Map<Integer, Integer> fieldIdIndexMap,
+            Map<Integer, String> tableColumnIndexMap,
             List<TableChange> tableChanges) {
         if (!Objects.equals(tableColumn.getField(), dataField.name())) {
             ColumnMetadata columnMetadata =
@@ -402,6 +417,22 @@ public class TableServiceImpl implements TableService {
                                 tableColumn.getDefaultValue());
                 tableChanges.add(setOption);
             }
+        }
+
+        if (tableColumn.getSort().equals(0) && fieldIdIndexMap.get(tableColumn.getId()) != 0) {
+            TableChange.ModifyColumnPosition modifyColumnPosition =
+                    TableChange.modifyColumnPosition(
+                            columnMetadata, TableChange.ColumnPosition.first());
+            tableChanges.add(modifyColumnPosition);
+        }
+
+        if (!tableColumn.getSort().equals(0)
+                && !tableColumn.getSort().equals(fieldIdIndexMap.get(tableColumn.getId()))) {
+            String referenceFieldName = tableColumnIndexMap.get(tableColumn.getSort() - 1);
+            TableChange.ModifyColumnPosition modifyColumnPosition =
+                    TableChange.modifyColumnPosition(
+                            columnMetadata, TableChange.ColumnPosition.after(referenceFieldName));
+            tableChanges.add(modifyColumnPosition);
         }
     }
 
