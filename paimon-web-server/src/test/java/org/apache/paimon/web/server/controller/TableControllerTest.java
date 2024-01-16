@@ -18,10 +18,10 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.AlterTableDTO;
 import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
-import org.apache.paimon.web.server.data.model.AlterTableRequest;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
@@ -117,20 +117,37 @@ public class TableControllerTest extends ControllerTestBase {
         // create table.
         List<TableColumn> tableColumns = new ArrayList<>();
         TableColumn id =
-                new TableColumn("id", PaimonDataType.builder().type("INT").build(), "pk", true, "");
+                TableColumn.builder()
+                        .field("id")
+                        .dataType(PaimonDataType.builder().type("INT").build())
+                        .comment("pk")
+                        .isPk(true)
+                        .defaultValue("")
+                        .build();
         TableColumn name =
-                new TableColumn(
-                        "name", PaimonDataType.builder().type("STRING").build(), "", false, "");
+                TableColumn.builder()
+                        .field("name")
+                        .dataType(PaimonDataType.builder().type("STRING").build())
+                        .comment("")
+                        .isPk(false)
+                        .defaultValue("")
+                        .build();
         TableColumn age =
-                new TableColumn(
-                        "age", PaimonDataType.builder().type("INT").build(), "", false, "0");
+                TableColumn.builder()
+                        .field("age")
+                        .dataType(PaimonDataType.builder().type("INT").build())
+                        .comment("")
+                        .isPk(false)
+                        .defaultValue("0")
+                        .build();
         TableColumn createTime =
-                new TableColumn(
-                        "create_time",
-                        PaimonDataType.builder().type("STRING").build(),
-                        "partition key",
-                        true,
-                        "");
+                TableColumn.builder()
+                        .field("create_time")
+                        .dataType(PaimonDataType.builder().type("STRING").build())
+                        .comment("partition key")
+                        .isPk(true)
+                        .defaultValue("0")
+                        .build();
         tableColumns.add(id);
         tableColumns.add(name);
         tableColumns.add(age);
@@ -188,12 +205,13 @@ public class TableControllerTest extends ControllerTestBase {
     public void testAddColumn() throws Exception {
         List<TableColumn> tableColumns = new ArrayList<>();
         TableColumn address =
-                new TableColumn(
-                        "address",
-                        PaimonDataType.builder().type("STRING").isNullable(true).build(),
-                        "",
-                        false,
-                        "");
+                TableColumn.builder()
+                        .field("address")
+                        .dataType(PaimonDataType.builder().type("STRING").build())
+                        .comment("")
+                        .isPk(false)
+                        .defaultValue("")
+                        .build();
         tableColumns.add(address);
         TableDTO table =
                 TableDTO.builder()
@@ -316,28 +334,57 @@ public class TableControllerTest extends ControllerTestBase {
 
     @Test
     public void testAlterTable() throws Exception {
-        // modify age column.
-        TableColumn oldColumn =
-                new TableColumn(
-                        "age", PaimonDataType.builder().type("INT").build(), "", false, "0");
+        List<TableColumn> tableColumns = new ArrayList<>();
+        TableColumn id =
+                TableColumn.builder()
+                        .field("id")
+                        .dataType(PaimonDataType.builder().type("INT").build())
+                        .comment("pk")
+                        .isPk(true)
+                        .defaultValue("")
+                        .build();
+        TableColumn name =
+                TableColumn.builder()
+                        .field("name")
+                        .dataType(PaimonDataType.builder().type("STRING").build())
+                        .comment("")
+                        .isPk(false)
+                        .defaultValue("")
+                        .build();
+        TableColumn age =
+                TableColumn.builder()
+                        .field("age")
+                        .dataType(PaimonDataType.builder().type("BIGINT").build())
+                        .comment("")
+                        .isPk(false)
+                        .defaultValue("0")
+                        .build();
+        TableColumn createTime =
+                TableColumn.builder()
+                        .field("create_time")
+                        .dataType(PaimonDataType.builder().type("STRING").build())
+                        .comment("partition key")
+                        .isPk(true)
+                        .defaultValue("0")
+                        .build();
+        tableColumns.add(id);
+        tableColumns.add(name);
+        tableColumns.add(age);
+        tableColumns.add(createTime);
 
-        TableColumn newColumn =
-                new TableColumn(
-                        "age", PaimonDataType.builder().type("BIGINT").build(), "", false, "0");
-
-        AlterTableRequest alterTableRequest = new AlterTableRequest();
-        alterTableRequest.setOldColumn(oldColumn);
-        alterTableRequest.setNewColumn(newColumn);
-        alterTableRequest.setMoveToFirst(true);
+        AlterTableDTO alterTableDTO =
+                AlterTableDTO.builder()
+                        .catalogName(catalogName)
+                        .databaseName(databaseName)
+                        .tableName(tableName)
+                        .tableColumns(tableColumns)
+                        .build();
 
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(tablePath + "/alter")
                                         .cookie(cookie)
-                                        .param("catalogName", catalogName)
-                                        .param("databaseName", databaseName)
-                                        .param("tableName", tableName)
-                                        .content(ObjectMapperUtils.toJSON(alterTableRequest))
+                                        .content(ObjectMapperUtils.toJSON(alterTableDTO))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())

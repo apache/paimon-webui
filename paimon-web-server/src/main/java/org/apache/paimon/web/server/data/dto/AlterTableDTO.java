@@ -16,35 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.dto;
 
-import org.apache.paimon.web.server.util.PaimonDataType;
+import org.apache.paimon.web.server.data.model.TableColumn;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
-/** TableColumn model. */
+/** DTO of alter table. */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TableColumn {
+public class AlterTableDTO {
 
-    private Integer id;
+    private String catalogName;
 
-    private String field;
+    private String databaseName;
 
-    private PaimonDataType dataType;
+    private String tableName;
 
-    @Nullable private String comment;
-
-    @Nullable private boolean isPk;
-
-    @Nullable private String defaultValue;
-
-    private Integer sort;
+    private List<TableColumn> tableColumns;
 }
