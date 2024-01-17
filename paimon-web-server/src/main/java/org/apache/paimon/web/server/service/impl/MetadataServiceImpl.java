@@ -81,8 +81,7 @@ public class MetadataServiceImpl implements MetadataService {
                                                                                 MetadataFieldsModel>>() {}))
                                         .partitionKeys(internalRow.getString(2).toString())
                                         .primaryKeys(internalRow.getString(3).toString())
-                                        .option(
-                                                formatOptions(internalRow.getString(4).toString()))
+                                        .option(formatOptions(internalRow.getString(4).toString()))
                                         .comment(internalRow.getString(5).toString())
                                         .updateTime(
                                                 internalRow.getTimestamp(6, 3).toLocalDateTime())

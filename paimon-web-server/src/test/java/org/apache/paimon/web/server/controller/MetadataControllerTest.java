@@ -18,6 +18,14 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.data.BinaryString;
+import org.apache.paimon.data.GenericRow;
+import org.apache.paimon.table.Table;
+import org.apache.paimon.table.sink.BatchTableCommit;
+import org.apache.paimon.table.sink.BatchTableWrite;
+import org.apache.paimon.table.sink.BatchWriteBuilder;
+import org.apache.paimon.table.sink.CommitMessage;
+import org.apache.paimon.web.api.catalog.PaimonService;
 import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.dto.MetadataDTO;
@@ -25,10 +33,13 @@ import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.vo.DataFileVO;
 import org.apache.paimon.web.server.data.vo.ManifestsVO;
 import org.apache.paimon.web.server.data.vo.SchemaVO;
+import org.apache.paimon.web.server.data.vo.SnapshotVO;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.PaimonDataType;
+import org.apache.paimon.web.server.util.PaimonServiceUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
@@ -48,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /** Tests for {@link MetadataController}. */
@@ -142,7 +154,7 @@ public class MetadataControllerTest extends ControllerTestBase {
 
         List<String> partitionKey = Lists.newArrayList("create_time");
         Map<String, String> tableOptions = ImmutableMap.of("bucket", "2");
-        TableDTO table =
+        TableDTO tableDTO =
                 TableDTO.builder()
                         .catalogName(catalogName)
                         .databaseName(databaseName)
@@ -155,10 +167,49 @@ public class MetadataControllerTest extends ControllerTestBase {
         mockMvc.perform(
                         MockMvcRequestBuilders.post(tablePath + "/create")
                                 .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(table))
+                                .content(ObjectMapperUtils.toJSON(tableDTO))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // insert
+        CatalogInfo catalogInfo =
+                CatalogInfo.builder()
+                        .catalogName(catalog.getName())
+                        .catalogType(catalog.getType())
+                        .warehouse(catalog.getWarehouse())
+                        .build();
+        PaimonService paimonService = PaimonServiceUtils.getPaimonService(catalogInfo);
+        Table table = paimonService.getTable(databaseName, tableName);
+        BatchWriteBuilder writeBuilder = table.newBatchWriteBuilder().withOverwrite();
+        BatchTableWrite write = writeBuilder.newWrite();
+
+        GenericRow record1 =
+                GenericRow.of(
+                        1,
+                        BinaryString.fromString("Alice"),
+                        24,
+                        BinaryString.fromString("2023-12-04 00:00:00"));
+        GenericRow record2 =
+                GenericRow.of(
+                        2,
+                        BinaryString.fromString("Bob"),
+                        28,
+                        BinaryString.fromString("2023-10-11 00:00:00"));
+        GenericRow record3 =
+                GenericRow.of(
+                        3,
+                        BinaryString.fromString("Emily"),
+                        32,
+                        BinaryString.fromString("2023-10-04 00:00:00"));
+
+        write.write(record1);
+        write.write(record2);
+        write.write(record3);
+
+        List<CommitMessage> messages = write.prepareCommit();
+        BatchTableCommit commit = writeBuilder.newCommit();
+        commit.commit(messages);
     }
 
     @AfterEach
@@ -208,11 +259,11 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<List<SchemaVO>> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<SchemaVO>>>() {});
+        R<List<SchemaVO>> result =
+                ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<SchemaVO>>>() {});
         List<SchemaVO> schemaVOS = result.getData();
         assertEquals(200, result.getCode());
-        assertNotNull(schemaVOS);
-        assertEquals(1, schemaVOS.size());
+        assertFalse(schemaVOS.isEmpty());
 
         // Make assertions on each field of the SchemaVO class.
         SchemaVO schemaVO = schemaVOS.get(0);
@@ -245,8 +296,17 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<List<ManifestsVO>> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<ManifestsVO>>>() {});
+        R<List<ManifestsVO>> result =
+                ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<ManifestsVO>>>() {});
         assertEquals(200, result.getCode());
+        List<ManifestsVO> manifestsVOS = result.getData();
+        assertFalse(manifestsVOS.isEmpty());
+
+        // Make assertions on each field of the ManifestsVO class.
+        ManifestsVO manifestsVO = manifestsVOS.get(0);
+        assertNotNull(manifestsVO.getFileName());
+        assertNotNull(manifestsVO.getFileSize());
+        assertNotNull(manifestsVO.getNumAddedFiles());
     }
 
     @Test
@@ -269,8 +329,18 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
+        R<List<DataFileVO>> result =
+                ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<DataFileVO>>>() {});
         assertEquals(200, result.getCode());
+        List<DataFileVO> dataFileVOS = result.getData();
+        assertFalse(dataFileVOS.isEmpty());
+
+        // Make assertions on each field of the DataFileVO class.
+        DataFileVO dataFileVO = dataFileVOS.get(0);
+        assertNotNull(dataFileVO.getPartition());
+        assertNotNull(dataFileVO.getBucket());
+        assertNotNull(dataFileVO.getFilePath());
+        assertNotNull(dataFileVO.getFileFormat());
     }
 
     @Test
@@ -293,7 +363,17 @@ public class MetadataControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
+        R<List<SnapshotVO>> result =
+                ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<SnapshotVO>>>() {});
         assertEquals(200, result.getCode());
+        List<SnapshotVO> snapshotVOS = result.getData();
+        assertFalse(snapshotVOS.isEmpty());
+
+        // Make assertions on each field of the SnapshotVO class.
+        SnapshotVO snapshotVO = snapshotVOS.get(0);
+        assertNotNull(snapshotVO.getSnapshotId());
+        assertNotNull(snapshotVO.getSchemaId());
+        assertNotNull(snapshotVO.getCommitIdentifier());
+        assertNotNull(snapshotVO.getCommitTime());
     }
 }

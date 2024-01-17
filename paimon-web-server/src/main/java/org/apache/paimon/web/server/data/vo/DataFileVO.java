@@ -32,7 +32,7 @@ public class DataFileVO {
 
     private String partition;
 
-    private long bucket;
+    private Integer bucket;
 
     private String filePath;
 

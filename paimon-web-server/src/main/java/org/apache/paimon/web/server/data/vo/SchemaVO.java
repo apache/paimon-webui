@@ -18,14 +18,13 @@
 
 package org.apache.paimon.web.server.data.vo;
 
+import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
+import org.apache.paimon.web.server.data.model.MetadataOptionModel;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
-import org.apache.paimon.web.server.data.model.MetadataOptionModel;
-
-import javax.annotation.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
