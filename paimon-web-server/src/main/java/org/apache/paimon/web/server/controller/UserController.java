@@ -31,9 +31,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -91,13 +93,71 @@ public class UserController {
         return R.succeed(userService.listUsers());
     }
 
+    /**
+     * Adds a new user.
+     *
+     * @param user the user to be added, must not be null
+     * @return a {@code R<Void>} response indicating success or failure
+     */
     @SaCheckPermission("system:role:add")
-    @PostMapping("/add")
+    @PostMapping
     public R<Void> add(@Validated @RequestBody User user) {
         if (!userService.checkUserNameUnique(user)) {
             return R.failed(Status.USER_NAME_ALREADY_EXISTS, user.getUsername());
         }
 
         return userService.insertUser(user) > 0 ? R.succeed() : R.failed();
+    }
+
+    /**
+     * Edits an existing user's details.
+     *
+     * @param user the user with updated details, must not be null
+     * @return a {@code R<Void>} response indicating success or failure
+     */
+    @SaCheckPermission("system:user:edit")
+    @PutMapping
+    public R<Void> edit(@Validated @RequestBody User user) {
+        if (!userService.checkUserNameUnique(user)) {
+            return R.failed(Status.USER_NAME_ALREADY_EXISTS, user.getUsername());
+        }
+
+        return userService.updateUser(user) > 0 ? R.succeed() : R.failed();
+    }
+
+    /**
+     * Changes the status of a user.
+     *
+     * @param user the user whose status is to be updated, must not be null
+     * @return a {@code R<Void>} response indicating success or failure
+     */
+    @SaCheckPermission("system:user:edit")
+    @PutMapping("/changeStatus")
+    public R<Void> changeStatus(@Validated @RequestBody User user) {
+        return userService.updateUserStatus(user) ? R.succeed() : R.failed();
+    }
+
+    /**
+     * Removes one or more users by user IDs.
+     *
+     * @param userIds an array of user IDs to be deleted
+     * @return a {@code R<Void>} response indicating success or failure
+     */
+    @SaCheckPermission("system:user:remove")
+    @DeleteMapping("/{userIds}")
+    public R<Void> remove(@PathVariable Integer[] userIds) {
+        return userService.deleteUserByIds(userIds) > 0 ? R.succeed() : R.failed();
+    }
+
+    /**
+     * Allocates a role to a user.
+     *
+     * @param user the user to whom the role is to be allocated
+     * @return a {@code R<Void>} response indicating success or failure
+     */
+    @SaCheckPermission("system:role:allocate")
+    @PostMapping("/allocate")
+    public R<Void> allocateRole(@RequestBody User user) {
+        return userService.allocateRole(user) > 0 ? R.succeed() : R.failed();
     }
 }

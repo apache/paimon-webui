@@ -88,5 +88,43 @@ public interface UserService extends IService<User> {
      */
     List<User> selectUnallocatedList(User user);
 
+    /**
+     * Inserts a new user.
+     *
+     * @param user the user to be inserted
+     * @return the number of rows affected
+     */
     int insertUser(User user);
+
+    /**
+     * Updates an existing user.
+     *
+     * @param user the user with updated information
+     * @return the number of rows affected
+     */
+    int updateUser(User user);
+
+    /**
+     * Changes the status of a user.
+     *
+     * @param user the user whose status is to be updated
+     * @return {@code true} if the update was successful, {@code false} otherwise
+     */
+    boolean updateUserStatus(User user);
+
+    /**
+     * Deletes users by their identifiers.
+     *
+     * @param userIds the identifiers of the users to delete
+     * @return the number of rows affected
+     */
+    int deleteUserByIds(Integer[] userIds);
+
+    /**
+     * Allocates a role to a user.
+     *
+     * @param user the user to whom the role should be allocated
+     * @return the number of rows affected
+     */
+    int allocateRole(User user);
 }

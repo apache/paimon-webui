@@ -32,6 +32,7 @@ import org.apache.paimon.web.server.data.result.exception.user.UserPasswordNotMa
 import org.apache.paimon.web.server.data.vo.UserInfoVO;
 import org.apache.paimon.web.server.data.vo.UserVO;
 import org.apache.paimon.web.server.mapper.UserMapper;
+import org.apache.paimon.web.server.mapper.UserRoleMapper;
 import org.apache.paimon.web.server.service.LdapService;
 import org.apache.paimon.web.server.service.RoleMenuService;
 import org.apache.paimon.web.server.service.SysMenuService;
@@ -48,8 +49,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -66,6 +69,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired private RoleMenuService roleMenuService;
     @Autowired private SysMenuService sysMenuService;
     @Autowired private TenantService tenantService;
+    @Autowired private UserRoleMapper userRoleMapper;
 
     @Override
     public UserVO getUserById(Integer id) {
@@ -224,8 +228,55 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertUser(User user) {
-        return 0;
+        this.save(user);
+        return insertUserRole(user);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateUser(User user) {
+        this.updateById(user);
+        userRoleMapper.deleteUserRoleByUserId(user.getId());
+        return insertUserRole(user);
+    }
+
+    @Override
+    public boolean updateUserStatus(User user) {
+        return this.lambdaUpdate()
+                .set(User::getEnabled, user.getEnabled())
+                .eq(User::getId, user.getId())
+                .update();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteUserByIds(Integer[] userIds) {
+        userRoleMapper.deleteUserRole(userIds);
+        return userMapper.deleteBatchIds(Arrays.asList(userIds));
+    }
+
+    @Override
+    public int allocateRole(User user) {
+        return this.insertUserRole(user);
+    }
+
+    private int insertUserRole(User user) {
+        int rows = 1;
+        if (user.getRoleIds() != null && user.getRoleIds().length > 0) {
+            List<UserRole> list = new ArrayList<>();
+            for (Integer roleId : user.getRoleIds()) {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(user.getId());
+                userRole.setRoleId(roleId);
+                list.add(userRole);
+            }
+            if (list.size() > 0) {
+                rows = userRoleMapper.batchUserRole(list);
+            }
+        }
+        return rows;
     }
 
     private UserVO toVo(User user) {
