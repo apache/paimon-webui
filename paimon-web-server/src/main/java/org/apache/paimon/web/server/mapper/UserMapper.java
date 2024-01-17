@@ -18,11 +18,13 @@
 
 package org.apache.paimon.web.server.mapper;
 
+import org.apache.paimon.web.server.data.dto.UserWithRolesDTO;
 import org.apache.paimon.web.server.data.model.User;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -36,7 +38,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param page paging params
      * @return user list
      */
-    List<User> selectUserList(IPage<User> page, User user);
+    List<User> selectUserList(IPage<User> page, @Param("user") User user);
 
     /**
      * Query user list by role ID.
@@ -63,10 +65,10 @@ public interface UserMapper extends BaseMapper<User> {
     User selectUserByUserName(String username);
 
     /**
-     * Query user info by user ID.
+     * Retrieves a user along with their roles based on the user's ID.
      *
-     * @param userId user ID
-     * @return user info
+     * @param userId the ID of the user to retrieve
+     * @return the UserWithRolesDTO containing user and role information
      */
-    User selectUserById(Integer userId);
+    UserWithRolesDTO selectUserWithRolesById(Integer userId);
 }

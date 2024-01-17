@@ -19,6 +19,7 @@
 package org.apache.paimon.web.server.service.impl;
 
 import org.apache.paimon.web.server.data.dto.LoginDTO;
+import org.apache.paimon.web.server.data.dto.UserWithRolesDTO;
 import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.RoleMenu;
 import org.apache.paimon.web.server.data.model.SysMenu;
@@ -73,9 +74,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public UserVO getUserById(Integer id) {
-        User user = userMapper.selectUserById(id);
-        if (Objects.nonNull(user)) {
-            return toVo(user);
+        UserWithRolesDTO userWithRolesDTO = userMapper.selectUserWithRolesById(id);
+        if (Objects.nonNull(userWithRolesDTO)) {
+            return toVo(userWithRolesDTO);
         }
         return null;
     }
@@ -281,6 +282,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private UserVO toVo(User user) {
         return UserVO.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .nickname(StringUtils.isNotEmpty(user.getNickname()) ? user.getNickname() : "")
                 .userType(user.getUserType() == 0 ? "LOCAL" : "LDAP")
@@ -289,6 +291,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .enabled(user.getEnabled())
                 .createTime(user.getCreateTime())
                 .updateTime(user.getUpdateTime())
+                .build();
+    }
+
+    private UserVO toVo(UserWithRolesDTO userWithRolesDTO) {
+        return UserVO.builder()
+                .id(userWithRolesDTO.getId())
+                .username(userWithRolesDTO.getUsername())
+                .nickname(
+                        StringUtils.isNotEmpty(userWithRolesDTO.getNickname())
+                                ? userWithRolesDTO.getNickname()
+                                : "")
+                .userType(userWithRolesDTO.getUserType() == 0 ? "LOCAL" : "LDAP")
+                .mobile(
+                        StringUtils.isNotEmpty(userWithRolesDTO.getMobile())
+                                ? userWithRolesDTO.getMobile()
+                                : "")
+                .email(
+                        StringUtils.isNotEmpty(userWithRolesDTO.getEmail())
+                                ? userWithRolesDTO.getEmail()
+                                : "")
+                .enabled(userWithRolesDTO.getEnabled())
+                .createTime(userWithRolesDTO.getCreateTime())
+                .updateTime(userWithRolesDTO.getUpdateTime())
+                .roles(userWithRolesDTO.getRoles())
                 .build();
     }
 }

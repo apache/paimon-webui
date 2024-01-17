@@ -18,11 +18,13 @@
 
 package org.apache.paimon.web.server.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import org.apache.paimon.web.server.data.model.SysRole;
 import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.vo.UserVO;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -36,12 +38,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Test for {@link UserController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserControllerTest extends ControllerTestBase{
+public class UserControllerTest extends ControllerTestBase {
 
     private static final String userPath = "/api/user";
 
@@ -84,10 +87,128 @@ public class UserControllerTest extends ControllerTestBase{
                         .getResponse()
                         .getContentAsString();
 
-        R<User> r =
-                ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<User>>() {});
+        R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
         assertEquals(200, r.getCode());
         assertNotNull(r.getData());
         assertEquals(r.getData().getUsername(), username);
+    }
+
+    @Test
+    @Order(3)
+    public void testEditUser() throws Exception {
+        String newUserName = username + "-edit";
+        User user = new User();
+        user.setId(userId);
+        user.setUsername(newUserName);
+        user.setNickname(newUserName);
+        user.setUserType(0);
+        user.setEnabled(true);
+        user.setIsDelete(false);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.put(userPath)
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(user))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(userPath + "/" + userId)
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
+        assertEquals(200, r.getCode());
+        assertNotNull(r.getData());
+        assertEquals(r.getData().getUsername(), newUserName);
+    }
+
+    @Test
+    @Order(4)
+    public void testAllocateRole() throws Exception {
+        User user = new User();
+        user.setId(userId);
+        user.setUsername(username);
+        user.setNickname(username);
+        user.setUserType(0);
+        user.setEnabled(true);
+        user.setIsDelete(false);
+        user.setRoleIds(new Integer[] {2});
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(userPath + "/allocate")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(user))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(userPath + "/" + userId)
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
+        assertEquals(200, r.getCode());
+        assertNotNull(r.getData());
+        assertTrue(r.getData().getRoles().size() > 0);
+    }
+
+    @Test
+    @Order(5)
+    public void testGetUserList() throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(userPath + "/list")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        PageR<?> r = ObjectMapperUtils.fromJSON(responseString, PageR.class);
+        assertNotNull(r);
+        assertTrue(
+                r.getData() != null
+                        && ((r.getTotal() > 0 && r.getData().size() > 0)
+                                || (r.getTotal() == 0 && r.getData().size() == 0)));
+    }
+
+    @Test
+    @Order(6)
+    public void testDeleteUser() throws Exception {
+        String delResponseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.delete(userPath + "/" + userId)
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<?> result = ObjectMapperUtils.fromJSON(delResponseString, R.class);
+        assertEquals(200, result.getCode());
     }
 }

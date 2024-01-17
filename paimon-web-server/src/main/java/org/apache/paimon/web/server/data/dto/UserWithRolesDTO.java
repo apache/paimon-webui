@@ -16,42 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.vo;
+package org.apache.paimon.web.server.data.dto;
 
 import org.apache.paimon.web.server.data.model.SysRole;
+import org.apache.paimon.web.server.data.model.User;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-/** VO of User. */
+/** DTO of UserWithRoles. */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserVO {
-
-    private Integer id;
-
-    private String username;
-
-    private String nickname;
-
-    private String userType;
-
-    private String mobile;
-
-    private String email;
-
-    private Boolean enabled;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
+@EqualsAndHashCode(callSuper = true)
+public class UserWithRolesDTO extends User {
 
     private List<SysRole> roles;
 }
