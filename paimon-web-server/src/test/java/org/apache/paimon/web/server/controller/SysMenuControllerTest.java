@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Test for SysMenuController. */
+/** Test for {@link SysMenuController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SysMenuControllerTest extends ControllerTestBase {

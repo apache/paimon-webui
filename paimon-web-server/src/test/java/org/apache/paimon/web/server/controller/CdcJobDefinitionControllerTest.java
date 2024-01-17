@@ -39,7 +39,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** Test for CdcJobDefinitionController . */
+/** Test for {@link CdcJobDefinitionController} . */
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

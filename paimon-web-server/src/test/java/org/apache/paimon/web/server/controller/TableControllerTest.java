@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** Test for TableController. */
+/** Test for {@link TableController}. */
 public class TableControllerTest extends ControllerTestBase {
 
     private static final String catalogPath = "/api/catalog";

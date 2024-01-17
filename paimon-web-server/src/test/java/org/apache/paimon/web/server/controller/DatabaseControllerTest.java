@@ -41,7 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/** Test for DatabaseController. */
+/** Test for {@link DatabaseController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class DatabaseControllerTest extends ControllerTestBase {
