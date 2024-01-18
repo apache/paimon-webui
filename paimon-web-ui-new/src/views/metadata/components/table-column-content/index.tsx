@@ -16,6 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 import type { DataTableColumns } from 'naive-ui'
+import { VueDraggable } from 'vue-draggable-plus'
+import { UnorderedListOutlined } from '@vicons/antd'
 
 import type { ColumnDTO } from '@/api/models/catalog'
 
@@ -26,7 +28,7 @@ const props = {
     type: Array as PropType<ColumnDTO[]>,
     default: () => []
   },
-  onUpdateColumns: [Function, Array] as PropType<((value: ColumnDTO[]) => void) | undefined>
+  'onUpdate:data': [Function, Array] as PropType<((value: ColumnDTO[]) => void) | undefined>,
 }
 
 export const newField: ColumnDTO = {
@@ -51,15 +53,25 @@ export default defineComponent({
       if (_data.length <= 1) {
         return
       }
-      _data.splice(i, 1)
-      props.onUpdateColumns!(_data)
+      props.data.splice(i, 1)
     }
 
     const columns: DataTableColumns<ColumnDTO> = [
       {
+        title: '#',
+        key: 'field',
+        render: () => {
+          return (
+            <n-icon class="drag-handle">
+              <UnorderedListOutlined />
+            </n-icon>
+          )
+        }
+      },
+      {
         title: t('metadata.column_field'),
         key: 'field',
-        width: 150,
+        width: 120,
         render: (row, index) => {
           return (
             <n-form-item
@@ -223,6 +235,10 @@ export default defineComponent({
     }
   },
   render() {
-    return <n-data-table columns={this.columns} data={this.data} style={{ marginBottom: '24px' }} />
+    return (
+      <VueDraggable v-model:value={this.data} animation={150} handle='.drag-handle' target='.n-data-table-tbody'>
+        <n-data-table columns={this.columns} data={this.data} style={{ marginBottom: '24px' }} />
+      </VueDraggable>
+    )
   }
 })

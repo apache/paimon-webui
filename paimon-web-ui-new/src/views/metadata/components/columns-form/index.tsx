@@ -135,8 +135,7 @@ export default defineComponent({
                 model={this.formValue}
               >
                 <ColumnFormContent
-                  data={this.formValue.tableColumns}
-                  onUpdateColumns={(value) => (this.formValue.tableColumns = [...value])}
+                  v-model:data={this.formValue.tableColumns}
                 />
               </n-form>
             ),
