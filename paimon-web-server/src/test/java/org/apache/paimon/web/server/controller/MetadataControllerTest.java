@@ -118,20 +118,38 @@ public class MetadataControllerTest extends ControllerTestBase {
         // create table.
         List<TableColumn> tableColumns = new ArrayList<>();
         TableColumn id =
-                new TableColumn("id", PaimonDataType.builder().type("INT").build(), "pk", true, "");
+                TableColumn.builder()
+                        .field("id")
+                        .dataType(PaimonDataType.builder().type("INT").build())
+                        .comment("pk")
+                        .isPk(true)
+                        .defaultValue("")
+                        .build();
         TableColumn name =
-                new TableColumn(
-                        "name", PaimonDataType.builder().type("STRING").build(), "", false, "");
+                TableColumn.builder()
+                        .field("name")
+                        .dataType(PaimonDataType.builder().type("STRING").build())
+                        .comment("")
+                        .isPk(false)
+                        .defaultValue("")
+                        .build();
         TableColumn age =
-                new TableColumn(
-                        "age", PaimonDataType.builder().type("INT").build(), "", false, "0");
+                TableColumn.builder()
+                        .field("age")
+                        .dataType(PaimonDataType.builder().type("INT").build())
+                        .comment("")
+                        .isPk(false)
+                        .defaultValue("0")
+                        .build();
         TableColumn createTime =
-                new TableColumn(
-                        "create_time",
-                        PaimonDataType.builder().type("STRING").build(),
-                        "partition key",
-                        true,
-                        "");
+                TableColumn.builder()
+                        .field("create_time")
+                        .dataType(PaimonDataType.builder().type("STRING").build())
+                        .comment("partition key")
+                        .isPk(true)
+                        .defaultValue("0")
+                        .build();
+
         tableColumns.add(id);
         tableColumns.add(name);
         tableColumns.add(age);

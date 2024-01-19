@@ -16,19 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.data.dto;
+
+import org.apache.paimon.web.server.data.model.TableColumn;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Alter table request. */
+import java.util.List;
+
+/** DTO of alter table. */
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class AlterTableRequest {
+@AllArgsConstructor
+public class AlterTableDTO {
 
-    private TableColumn oldColumn;
+    private String catalogName;
 
-    private TableColumn newColumn;
+    private String databaseName;
+
+    private String tableName;
+
+    private List<TableColumn> tableColumns;
 }

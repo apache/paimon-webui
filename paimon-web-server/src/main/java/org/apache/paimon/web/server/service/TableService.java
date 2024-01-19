@@ -18,8 +18,8 @@
 
 package org.apache.paimon.web.server.service;
 
+import org.apache.paimon.web.server.data.dto.AlterTableDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
-import org.apache.paimon.web.server.data.model.AlterTableRequest;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.TableVO;
@@ -61,17 +61,10 @@ public interface TableService {
     /**
      * Alters a table.
      *
-     * @param catalogName The name of the catalog.
-     * @param databaseName The name of the database.
-     * @param tableName The name of the table.
-     * @param alterTableRequest The param of the alter table request.
+     * @param alterTableDTO the DTO containing alteration details.
      * @return A response indicating the success or failure of the operation.
      */
-    R<Void> alterTable(
-            String catalogName,
-            String databaseName,
-            String tableName,
-            AlterTableRequest alterTableRequest);
+    R<Void> alterTable(AlterTableDTO alterTableDTO);
 
     /**
      * Adds options to a table.
