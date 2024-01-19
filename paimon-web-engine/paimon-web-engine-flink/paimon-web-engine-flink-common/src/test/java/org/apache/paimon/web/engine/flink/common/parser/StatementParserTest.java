@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** The test of {@link StatementParser}. */
+/** Tests of {@link StatementParser}. */
 public class StatementParserTest {
 
     private String statement =
