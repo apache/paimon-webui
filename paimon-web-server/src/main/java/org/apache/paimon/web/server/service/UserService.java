@@ -47,14 +47,7 @@ public interface UserService extends IService<User> {
      * @param user the filter criteria
      * @return list of UserVO
      */
-    List<UserVO> selectUserList(IPage<User> page, User user);
-
-    /**
-     * Lists all users.
-     *
-     * @return list of all UserVOs
-     */
-    List<UserVO> listUsers();
+    List<UserVO> listUsers(IPage<User> page, User user);
 
     /**
      * Checks if the username is unique.

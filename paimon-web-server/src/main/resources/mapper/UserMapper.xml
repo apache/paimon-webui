@@ -69,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    left join sys_role r on r.id = urole.role_id
     </sql>
     
-    <select id="selectUserList" parameterType="org.apache.paimon.web.server.data.model.User" resultMap="SysUserResult">
+    <select id="listUsers" parameterType="org.apache.paimon.web.server.data.model.User" resultMap="SysUserResult">
 		select u.id, u.nickname, u.username, u.user_type, u.email, u.url, u.mobile, u.enabled, u.is_delete, u.create_time from user u
 		where u.is_delete = '0'
 		<if test="user.id != null and user.id != 0">

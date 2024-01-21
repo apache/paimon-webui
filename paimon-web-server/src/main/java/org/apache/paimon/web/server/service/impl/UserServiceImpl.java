@@ -82,15 +82,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public List<UserVO> selectUserList(IPage<User> page, User user) {
-        return userMapper.selectUserList(page, user).stream()
+    public List<UserVO> listUsers(IPage<User> page, User user) {
+        return userMapper.listUsers(page, user).stream()
                 .map(this::toVo)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<UserVO> listUsers() {
-        return this.list().stream().map(this::toVo).collect(Collectors.toList());
     }
 
     @Override

@@ -38,7 +38,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param page paging params
      * @return user list
      */
-    List<User> selectUserList(IPage<User> page, @Param("user") User user);
+    List<User> listUsers(IPage<User> page, @Param("user") User user);
 
     /**
      * Query user list by role ID.

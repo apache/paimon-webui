@@ -78,19 +78,8 @@ public class UserController {
     @GetMapping("/list")
     public PageR<UserVO> selectUserList(User user) {
         IPage<User> page = PageSupport.startPage();
-        List<UserVO> list = userService.selectUserList(page, user);
+        List<UserVO> list = userService.listUsers(page, user);
         return PageR.<UserVO>builder().success(true).total(page.getTotal()).data(list).build();
-    }
-
-    /**
-     * Obtain a list of user selection boxes.
-     *
-     * @return {@link R} with a list of {@link UserVO} objects
-     */
-    @SaCheckPermission("system:user:query")
-    @GetMapping("/all")
-    public R<List<UserVO>> all() {
-        return R.succeed(userService.listUsers());
     }
 
     /**
@@ -110,14 +99,14 @@ public class UserController {
     }
 
     /**
-     * Edits an existing user's details.
+     * Update an existing user's details.
      *
      * @param user the user with updated details, must not be null
      * @return a {@code R<Void>} response indicating success or failure
      */
-    @SaCheckPermission("system:user:edit")
+    @SaCheckPermission("system:user:update")
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody User user) {
+    public R<Void> update(@Validated @RequestBody User user) {
         if (!userService.checkUserNameUnique(user)) {
             return R.failed(Status.USER_NAME_ALREADY_EXISTS, user.getUsername());
         }
