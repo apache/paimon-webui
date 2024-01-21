@@ -39,7 +39,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/** Test for CatalogController. */
+/** Test for {@link CatalogController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class CatalogControllerTest extends ControllerTestBase {
