@@ -22,7 +22,8 @@ import com.google.auto.service.AutoService;
 
 /** Mysql sync table action service . */
 @AutoService(ActionService.class)
-public class MysqlSyncTableCdcActionService extends AbstractCdcActionService implements ActionService {
+public class MysqlSyncTableCdcActionService extends AbstractCdcActionService
+        implements ActionService {
 
     @Override
     public String name() {
