@@ -57,9 +57,6 @@ public class MysqlSyncTableActionContext implements ActionContext {
 
     @Override
     public List<String> getCommand() {
-        if (StringUtils.isAnyBlank(warehouse, database, table)) {
-            throw new ActionException("warehouse、database、table can not be null");
-        }
         List<String> command = new ArrayList<>();
         addConf(command, "warehouse", warehouse);
         addConf(command, "database", database);
@@ -140,6 +137,9 @@ public class MysqlSyncTableActionContext implements ActionContext {
         }
 
         public MysqlSyncTableActionContext build() {
+            if (StringUtils.isAnyBlank(warehouse, database, table)) {
+                throw new ActionException("warehouse、database、table can not be null");
+            }
             return new MysqlSyncTableActionContext(
                     warehouse,
                     database,
