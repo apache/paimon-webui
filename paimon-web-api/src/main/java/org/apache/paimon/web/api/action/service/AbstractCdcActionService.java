@@ -74,9 +74,5 @@ public abstract class AbstractCdcActionService implements ActionService {
         return actionPath;
     }
 
-    public void beforeExecute(ActionContext actionContext, List<String> commandList) {}
-
-    public void afterExecute(Process process, ActionContext actionContext) {}
-
     public void catchException(Exception exception) throws Exception {}
 }
