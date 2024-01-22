@@ -19,6 +19,7 @@
 package org.apache.paimon.web.engine.flink.sql.gateway.client;
 
 import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
+import org.apache.paimon.web.engine.flink.sql.gateway.utils.SqlGateWayRestClient;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.runtime.rest.messages.EmptyMessageParameters;
@@ -47,7 +48,6 @@ import org.apache.flink.table.gateway.rest.message.statement.ExecuteStatementReq
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsMessageParameters;
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
 import org.apache.flink.table.gateway.rest.util.RowFormat;
-import org.apache.paimon.web.engine.flink.sql.gateway.utils.SqlGateWayRestClient;
 
 import javax.annotation.Nullable;
 

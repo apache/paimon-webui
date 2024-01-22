@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /** The flink sql gateway implementation of the {@link Executor}. */
 public class FlinkSqlGatewayExecutor implements Executor {
@@ -48,7 +47,6 @@ public class FlinkSqlGatewayExecutor implements Executor {
     private static final Long DEFAULT_FETCH_TOKEN = 0L;
     private static final String STOP_JOB_BASE_SQL = "STOP JOB '%s'";
     private static final String WITH_SAVEPOINT = " WITH SAVEPOINT";
-    private static final String EXECUTE_SUCCESS = "OK";
 
     private final SqlGatewayClient client;
     private final SessionEntity session;
@@ -62,30 +60,43 @@ public class FlinkSqlGatewayExecutor implements Executor {
     public ExecutionResult executeSql(String multiStatement) throws SqlExecutionException {
         String[] statements = StatementParser.parse(multiStatement);
         List<String> insertStatements = new ArrayList<>();
+        ExecutionResult executionResult = null;
 
         for (String statement : statements) {
             FlinkSqlOperationType operationType = FlinkSqlOperationType.getOperationType(statement);
 
-            switch (operationType.getCategory()) {
+            switch (Objects.requireNonNull(operationType).getCategory()) {
                 case DQL:
-                    if (insertStatements.isEmpty()) {
-                        return executeDqlStatement(statement, operationType);
+                    if (!insertStatements.isEmpty()) {
+                        throw new SqlExecutionException(
+                                "Cannot execute DQL statement with pending INSERT statements.");
                     }
+                    executionResult = executeDqlStatement(statement, operationType);
                     break;
                 case DML:
                     if (operationType.getType().equals(FlinkSqlOperationType.INSERT.getType())) {
                         insertStatements.add(statement);
-                    } else if (insertStatements.isEmpty()) {
-                        return executeDmlStatement(statement);
+                    } else {
+                        executionResult = executeDmlStatement(statement);
                     }
                     break;
                 default:
                     executeStatement(statement);
                     break;
             }
+
+            if (executionResult != null) {
+                return executionResult;
+            }
         }
 
-        return executeInsertStatements(insertStatements);
+        if (!insertStatements.isEmpty()) {
+            String combinedStatement =
+                    FlinkSqlStatementSetBuilder.buildStatementSet(insertStatements);
+            executionResult = executeDmlStatement(combinedStatement);
+        }
+
+        return executionResult;
     }
 
     private ExecutionResult executeDqlStatement(
@@ -131,33 +142,6 @@ public class FlinkSqlGatewayExecutor implements Executor {
         }
     }
 
-    private ExecutionResult executeInsertStatements(List<String> insertStatements)
-            throws SqlExecutionException {
-        if (!insertStatements.isEmpty()) {
-            try {
-                String combinedStatement =
-                        FlinkSqlStatementSetBuilder.buildStatementSet(insertStatements);
-                String operationId =
-                        client.executeStatement(session.getSessionId(), combinedStatement, null);
-                FetchResultsResponseBody results =
-                        client.fetchResults(
-                                session.getSessionId(), operationId, DEFAULT_FETCH_TOKEN);
-                return new ExecutionResult.Builder()
-                        .submitId(operationId)
-                        .jobId(getJobIdFromResults(results))
-                        .build();
-            } catch (Exception e) {
-                String errorMessage =
-                        FormatSqlExceptionUtil.formatSqlBatchExceptionMessage(insertStatements);
-                throw new SqlExecutionException(errorMessage, e);
-            }
-        }
-        return ExecutionResult.builder()
-                .submitId(UUID.randomUUID().toString())
-                .status(EXECUTE_SUCCESS)
-                .build();
-    }
-
     private String getJobIdFromResults(FetchResultsResponseBody results) {
         return Objects.requireNonNull(results.getJobID(), "Job ID not found in results").toString();
     }
@@ -173,7 +157,6 @@ public class FlinkSqlGatewayExecutor implements Executor {
         ExecutionResult.Builder builder =
                 CollectResultUtil.collectSqlGatewayResult(fetchResultsResponseBody.getResults());
         builder.submitId(params.getSubmitId());
-        builder.status(EXECUTE_SUCCESS);
         return builder.build();
     }
 

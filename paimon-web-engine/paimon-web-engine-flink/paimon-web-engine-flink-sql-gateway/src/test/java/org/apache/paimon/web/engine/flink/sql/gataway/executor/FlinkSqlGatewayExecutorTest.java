@@ -16,12 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.engine.flink.sql.gateway.excption;
+package org.apache.paimon.web.engine.flink.sql.gataway.executor;
 
-/** Exception of SQL execution. */
-public class SqlExecutionException extends Exception {
+import org.apache.paimon.web.engine.flink.sql.gateway.executor.FlinkSqlGatewayExecutor;
 
-    public SqlExecutionException(String message, Throwable cause) {
-        super(message, cause);
-    }
-}
+/** Test for {@link FlinkSqlGatewayExecutor}. */
+public class FlinkSqlGatewayExecutorTest {}

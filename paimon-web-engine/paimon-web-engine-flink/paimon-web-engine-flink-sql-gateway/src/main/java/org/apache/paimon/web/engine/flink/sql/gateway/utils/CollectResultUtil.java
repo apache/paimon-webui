@@ -34,8 +34,7 @@ public class CollectResultUtil {
 
     private static final String NULL_COLUMN = "";
 
-    public static ExecutionResult.Builder collectSqlGatewayResult(ResultInfo resultInfo)
-            throws Exception {
+    public static ExecutionResult.Builder collectSqlGatewayResult(ResultInfo resultInfo) {
         List<RowData> data = resultInfo.getData();
         List<Map<String, Object>> results =
                 rowDatasToList(resultInfo.getResultSchema().getColumnNames(), data);

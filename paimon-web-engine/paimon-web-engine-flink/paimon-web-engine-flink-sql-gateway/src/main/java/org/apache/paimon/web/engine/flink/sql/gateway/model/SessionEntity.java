@@ -30,7 +30,13 @@ public class SessionEntity {
     private final Map<String, String> properties;
     private final int status;
 
-    private SessionEntity(String sessionId, String sessionName, String host, int port, Map<String, String> properties, int status) {
+    private SessionEntity(
+            String sessionId,
+            String sessionName,
+            String host,
+            int port,
+            Map<String, String> properties,
+            int status) {
         this.sessionId = sessionId;
         this.sessionName = sessionName;
         this.host = host;
