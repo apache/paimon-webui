@@ -19,7 +19,7 @@
 package org.apache.paimon.web.api.action;
 
 import org.apache.paimon.web.api.action.context.MysqlSyncTableActionContext;
-import org.apache.paimon.web.api.action.service.MysqlSyncTableActionService;
+import org.apache.paimon.web.api.action.service.MysqlSyncTableCdcActionService;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
-/** The test class of mysql sync table action service in {@link MysqlSyncTableActionService}. */
+/** The test class of mysql sync table action service in {@link MysqlSyncTableCdcActionService}. */
 public class MysqlSyncTableActionServiceTest {
 
     @TempDir private Path flinkHomePath;
@@ -54,7 +54,7 @@ public class MysqlSyncTableActionServiceTest {
 
     @Test
     public void testGetName() {
-        assertEquals("mysql_sync_table", new MysqlSyncTableActionService().name());
+        assertEquals("mysql_sync_table", new MysqlSyncTableCdcActionService().name());
     }
 
     private String getActionPath() {
@@ -66,14 +66,14 @@ public class MysqlSyncTableActionServiceTest {
     }
 
     @Test
-    public void testBuildCommand() {
+    public void testGetCommand() {
         MysqlSyncTableActionContext actionContext =
                 MysqlSyncTableActionContext.builder()
                         .warehouse("warehouse")
                         .table("table")
                         .database("database")
                         .build();
-        List<String> commands = new MysqlSyncTableActionService().getCommand(actionContext);
+        List<String> commands = new MysqlSyncTableCdcActionService().getCommand(actionContext);
         List<String> expectedCommands =
                 Arrays.asList(
                         "${FLINK_HOME}/bin/flink",

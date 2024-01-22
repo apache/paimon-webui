@@ -30,7 +30,7 @@ import java.util.List;
 
 /** An abstract Action service that executes actions through the shell. */
 @Slf4j
-public abstract class AbstractActionService implements ActionService {
+public abstract class AbstractCdcActionService implements ActionService {
 
     public List<String> getCommand(ActionContext actionContext) {
         List<String> commandList = new ArrayList<>();
