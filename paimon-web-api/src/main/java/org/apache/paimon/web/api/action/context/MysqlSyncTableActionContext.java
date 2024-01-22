@@ -18,10 +18,7 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import org.apache.paimon.web.api.exception.ActionException;
-
-import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +27,7 @@ import static org.apache.paimon.web.api.action.context.ActionContextUtil.addConf
 import static org.apache.paimon.web.api.action.context.ActionContextUtil.addConfList;
 
 /** Mysql sync table action context. */
-@AllArgsConstructor
+@Builder
 public class MysqlSyncTableActionContext implements ActionContext {
 
     private String warehouse;
@@ -51,10 +48,6 @@ public class MysqlSyncTableActionContext implements ActionContext {
 
     private MysqlSyncTableActionContext() {}
 
-    public static MysqlSyncTableActionContext.Builder builder() {
-        return new MysqlSyncTableActionContext.Builder();
-    }
-
     @Override
     public List<String> getCommand() {
         List<String> command = new ArrayList<>();
@@ -67,88 +60,5 @@ public class MysqlSyncTableActionContext implements ActionContext {
         addConfList(command, "catalog_conf", catalogConfList);
         addConfList(command, "table_conf", tableConfList);
         return command;
-    }
-
-    public static class Builder {
-
-        private String warehouse;
-
-        private String database;
-
-        private String table;
-
-        private String partitionKeys;
-
-        private String primaryKeys;
-
-        private List<String> mysqlConfList;
-
-        private List<String> catalogConfList;
-
-        private List<String> tableConfList;
-
-        public Builder warehouse(String warehouse) {
-            this.warehouse = warehouse;
-            return this;
-        }
-
-        public Builder database(String database) {
-            this.database = database;
-            return this;
-        }
-
-        public Builder table(String table) {
-            this.table = table;
-            return this;
-        }
-
-        public Builder partitionKeys(String partitionKeys) {
-            this.partitionKeys = partitionKeys;
-            return this;
-        }
-
-        public Builder primaryKeys(String primaryKeys) {
-            this.primaryKeys = primaryKeys;
-            return this;
-        }
-
-        public Builder mysqlConf(String mysqlConf) {
-            if (mysqlConfList == null) {
-                mysqlConfList = new ArrayList<>();
-            }
-            mysqlConfList.add(mysqlConf);
-            return this;
-        }
-
-        public Builder catalogConf(String catalogConf) {
-            if (catalogConfList == null) {
-                catalogConfList = new ArrayList<>();
-            }
-            catalogConfList.add(catalogConf);
-            return this;
-        }
-
-        public Builder tableConf(String tableConf) {
-            if (tableConfList == null) {
-                tableConfList = new ArrayList<>();
-            }
-            tableConfList.add(tableConf);
-            return this;
-        }
-
-        public MysqlSyncTableActionContext build() {
-            if (StringUtils.isAnyBlank(warehouse, database, table)) {
-                throw new ActionException("warehouse、database、table can not be null");
-            }
-            return new MysqlSyncTableActionContext(
-                    warehouse,
-                    database,
-                    table,
-                    partitionKeys,
-                    primaryKeys,
-                    mysqlConfList,
-                    catalogConfList,
-                    tableConfList);
-        }
     }
 }

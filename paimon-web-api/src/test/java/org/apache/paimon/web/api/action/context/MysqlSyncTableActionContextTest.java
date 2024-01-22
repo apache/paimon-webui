@@ -60,13 +60,14 @@ public class MysqlSyncTableActionContextTest {
                         .database(database)
                         .table(table)
                         .partitionKeys("pt")
-                        .mysqlConf("table-name='source_table'")
-                        .mysqlConf("database-name='source_db'")
-                        .mysqlConf("password=123456")
-                        .catalogConf("metastore=hive")
-                        .catalogConf("uri=thrift://hive-metastore:9083")
-                        .tableConf("bucket=4")
-                        .tableConf("changelog-producer=input")
+                        .mysqlConfList(
+                                Arrays.asList(
+                                        "table-name='source_table'",
+                                        "database-name='source_db'",
+                                        "password=123456"))
+                        .catalogConfList(
+                                Arrays.asList("metastore=hive", "uri=thrift://hive-metastore:9083"))
+                        .tableConfList(Arrays.asList("bucket=4", "changelog-producer=input"))
                         .build()
                         .getCommand();
         List<String> expectedCommands =
@@ -98,22 +99,21 @@ public class MysqlSyncTableActionContextTest {
 
     @Test
     public void testBuildError() {
-        MysqlSyncTableActionContext mysqlSyncTableActionContext =
+        MysqlSyncTableActionContext.MysqlSyncTableActionContextBuilder builder =
                 MysqlSyncTableActionContext.builder()
                         .warehouse(warehouse)
                         .database(database)
                         .partitionKeys("pt")
                         .primaryKeys("pt,uid")
-                        .mysqlConf("table-name='source_table'")
-                        .mysqlConf("database-name='source_db.+'")
-                        .mysqlConf("password=123456")
-                        .catalogConf("metastore=hive")
-                        .catalogConf("uri=thrift://hive-metastore:9083")
-                        .tableConf("bucket=4")
-                        .tableConf("changelog-producer=input")
-                        .build();
-        ActionException actionException =
-                assertThrows(ActionException.class, mysqlSyncTableActionContext::getCommand);
+                        .mysqlConfList(
+                                Arrays.asList(
+                                        "table-name='source_table'",
+                                        "database-name='source_db'",
+                                        "password=123456"))
+                        .catalogConfList(
+                                Arrays.asList("metastore=hive", "uri=thrift://hive-metastore:9083"))
+                        .tableConfList(Arrays.asList("bucket=4", "changelog-producer=input"));
+        ActionException actionException = assertThrows(ActionException.class, builder::build);
         assertEquals("warehouse、database、table can not be null", actionException.getMessage());
     }
 }
