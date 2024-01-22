@@ -18,25 +18,17 @@
 
 package org.apache.paimon.web.engine.flink.sql.gateway.utils;
 
-import java.util.List;
-
 /**
  * Utility class for formatting SQL exception messages. This class provides static methods to format
- * exception messages for SQL queries and batch SQL statements, ensuring that long SQL texts are
- * truncated to a predefined maximum length.
+ * exception messages for SQL statements, ensuring that long SQL texts are truncated to a predefined
+ * maximum length.
  */
 public class FormatSqlExceptionUtil {
 
     private static final int MAX_SQL_DISPLAY_LENGTH = 500;
 
     public static String formatSqlExceptionMessage(String sql) {
-        return String.format("Failed to execute query statement: '%s'", formatSql(sql));
-    }
-
-    public static String formatSqlBatchExceptionMessage(List<String> sqlStatements) {
-        String combinedStatements = String.join("; ", sqlStatements);
-        return String.format(
-                "Failed to execute insert statements: %s", formatSql(combinedStatements));
+        return String.format("Failed to execute sql statement: '%s'", formatSql(sql));
     }
 
     private static String formatSql(String sql) {

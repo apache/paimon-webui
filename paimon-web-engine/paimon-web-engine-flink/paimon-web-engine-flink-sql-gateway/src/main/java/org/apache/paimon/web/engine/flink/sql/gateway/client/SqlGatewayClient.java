@@ -66,7 +66,6 @@ public class SqlGatewayClient {
     private static final String DEFAULT_SESSION_NAME_PREFIX = "FLINK_SQL_GATEWAY_SESSION";
     private static final int REQUEST_WAITE_TIME = 1000;
     private static final int ACTIVE_STATUS = 1;
-    private static final int INACTIVE_STATUS = 0;
 
     private final SqlGateWayRestClient restClient;
     private final String sqlGatewayHost;
@@ -127,32 +126,23 @@ public class SqlGatewayClient {
                 .get();
     }
 
-    public boolean closeSession(String sessionId) {
-        try {
-            restClient
-                    .sendRequest(
-                            CloseSessionHeaders.getInstance(),
-                            new SessionMessageParameters(buildSessionHandleBySessionId(sessionId)),
-                            EmptyRequestBody.getInstance())
-                    .get();
-            return true;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public String closeSession(String sessionId) throws Exception {
+        return restClient
+                .sendRequest(
+                        CloseSessionHeaders.getInstance(),
+                        new SessionMessageParameters(buildSessionHandleBySessionId(sessionId)),
+                        EmptyRequestBody.getInstance())
+                .get()
+                .getStatus();
     }
 
-    public int triggerSessionHeartbeat(String sessionId) {
-        try {
-            restClient
-                    .sendRequest(
-                            TriggerSessionHeartbeatHeaders.getInstance(),
-                            new SessionMessageParameters(buildSessionHandleBySessionId(sessionId)),
-                            EmptyRequestBody.getInstance())
-                    .get();
-            return ACTIVE_STATUS;
-        } catch (Exception e) {
-            return INACTIVE_STATUS;
-        }
+    public void triggerSessionHeartbeat(String sessionId) throws Exception {
+        restClient
+                .sendRequest(
+                        TriggerSessionHeartbeatHeaders.getInstance(),
+                        new SessionMessageParameters(buildSessionHandleBySessionId(sessionId)),
+                        EmptyRequestBody.getInstance())
+                .get();
     }
 
     public String executeStatement(String sessionId, String statement, @Nullable Long timeout)
@@ -209,7 +199,7 @@ public class SqlGatewayClient {
         return fetchResultsResponseBody;
     }
 
-    private String getOperationStatus(String sessionId, String operationId) throws Exception {
+    public String getOperationStatus(String sessionId, String operationId) throws Exception {
         return restClient
                 .sendRequest(
                         GetOperationStatusHeaders.getInstance(),
@@ -221,36 +211,28 @@ public class SqlGatewayClient {
                 .getStatus();
     }
 
-    public boolean cancelOperation(String sessionId, String operationId) {
-        try {
-            restClient
-                    .sendRequest(
-                            CancelOperationHeaders.getInstance(),
-                            new OperationMessageParameters(
-                                    buildSessionHandleBySessionId(sessionId),
-                                    buildOperationHandleByOperationId(operationId)),
-                            EmptyRequestBody.getInstance())
-                    .get();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public String cancelOperation(String sessionId, String operationId) throws Exception {
+        return restClient
+                .sendRequest(
+                        CancelOperationHeaders.getInstance(),
+                        new OperationMessageParameters(
+                                buildSessionHandleBySessionId(sessionId),
+                                buildOperationHandleByOperationId(operationId)),
+                        EmptyRequestBody.getInstance())
+                .get()
+                .getStatus();
     }
 
-    public boolean closeOperation(String sessionId, String operationId) {
-        try {
-            restClient
-                    .sendRequest(
-                            CloseOperationHeaders.getInstance(),
-                            new OperationMessageParameters(
-                                    buildSessionHandleBySessionId(sessionId),
-                                    buildOperationHandleByOperationId(operationId)),
-                            EmptyRequestBody.getInstance())
-                    .get();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public String closeOperation(String sessionId, String operationId) throws Exception {
+        return restClient
+                .sendRequest(
+                        CloseOperationHeaders.getInstance(),
+                        new OperationMessageParameters(
+                                buildSessionHandleBySessionId(sessionId),
+                                buildOperationHandleByOperationId(operationId)),
+                        EmptyRequestBody.getInstance())
+                .get()
+                .getStatus();
     }
 
     private SessionHandle buildSessionHandleBySessionId(String sessionId) {

@@ -21,25 +21,89 @@ package org.apache.paimon.web.engine.flink.sql.gataway.client;
 import org.apache.paimon.web.engine.flink.sql.gataway.TestBase;
 import org.apache.paimon.web.engine.flink.sql.gateway.client.SqlGatewayClient;
 import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
-import org.junit.jupiter.api.BeforeAll;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Test for {@link SqlGatewayClient}. */
 public class SqlGatewayClientTest extends TestBase {
 
-    static SqlGatewayClient client;
+    SqlGatewayClient client;
+    SessionEntity session;
 
-    @BeforeAll
-    static void before () throws Exception {
+    private static final String SESSION_NAME = "test_session";
+
+    @BeforeEach
+    void before() throws Exception {
         client = new SqlGatewayClient(targetAddress, port);
+        session = client.openSession(SESSION_NAME);
     }
 
     @Test
-    public void testOpenSession() throws Exception {
-        SessionEntity session = client.openSession("test");
-        assertNotNull(session);
+    public void testGetSessionConfig() throws Exception {
+        Map<String, String> sessionConfig = client.getSessionConfig(session.getSessionId());
+        assertTrue(MapUtils.isNotEmpty(sessionConfig));
     }
 
+    @Test
+    public void testCloseSession() throws Exception {
+        String status = client.closeSession(session.getSessionId());
+        assertEquals("CLOSED", status);
+    }
+
+    @Test
+    public void testExecuteStatement() throws Exception {
+        String operationHandle = client.executeStatement(session.getSessionId(), "SELECT 1", null);
+        assertNotNull(operationHandle);
+    }
+
+    @Test
+    public void testCompleteStatementHints() throws Exception {
+        List<String> list = client.completeStatementHints(session.getSessionId(), "CREATE TA");
+        assertFalse(list.isEmpty());
+    }
+
+    @Test
+    public void testFetchResults() throws Exception {
+        String operationHandle = client.executeStatement(session.getSessionId(), "SELECT 1", null);
+        FetchResultsResponseBody fetchResultsResponseBody =
+                client.fetchResults(session.getSessionId(), operationHandle, 0);
+        assertNotNull(fetchResultsResponseBody);
+        assertEquals("PAYLOAD", fetchResultsResponseBody.getResultType().name());
+        FetchResultsResponseBody fetchResultsResponseBodyNext =
+                client.fetchResults(session.getSessionId(), operationHandle, 1);
+        assertNotNull(fetchResultsResponseBodyNext);
+        assertEquals("EOS", fetchResultsResponseBodyNext.getResultType().name());
+    }
+
+    @Test
+    public void testGetOperationStatus() throws Exception {
+        String operationHandle = client.executeStatement(session.getSessionId(), "SELECT 1", null);
+        String operationStatus = client.getOperationStatus(session.getSessionId(), operationHandle);
+        assertNotNull(operationStatus);
+    }
+
+    @Test
+    public void testCancelOperation() throws Exception {
+        String operationHandle = client.executeStatement(session.getSessionId(), "SELECT 1", null);
+        String status = client.cancelOperation(session.getSessionId(), operationHandle);
+        assertEquals("CANCELED", status);
+    }
+
+    @Test
+    public void testCloseOperation() throws Exception {
+        String operationHandle = client.executeStatement(session.getSessionId(), "SELECT 1", null);
+        String status = client.closeOperation(session.getSessionId(), operationHandle);
+        assertEquals("CLOSED", status);
+    }
 }

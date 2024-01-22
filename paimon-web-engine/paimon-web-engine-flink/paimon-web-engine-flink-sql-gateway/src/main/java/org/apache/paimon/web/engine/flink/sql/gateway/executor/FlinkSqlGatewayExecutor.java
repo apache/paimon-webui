@@ -32,8 +32,6 @@ import org.apache.paimon.web.engine.flink.sql.gateway.utils.FormatSqlExceptionUt
 import org.apache.flink.table.gateway.api.results.ResultSet;
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
 import org.apache.flink.table.gateway.service.utils.SqlExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +39,6 @@ import java.util.Objects;
 
 /** The flink sql gateway implementation of the {@link Executor}. */
 public class FlinkSqlGatewayExecutor implements Executor {
-
-    private static final Logger log = LoggerFactory.getLogger(FlinkSqlGatewayExecutor.class);
 
     private static final Long DEFAULT_FETCH_TOKEN = 0L;
     private static final String STOP_JOB_BASE_SQL = "STOP JOB '%s'";
@@ -161,18 +157,11 @@ public class FlinkSqlGatewayExecutor implements Executor {
     }
 
     @Override
-    public boolean stop(String jobId, boolean withSavepoint) throws Exception {
-        try {
-            StringBuilder sqlBuilder = new StringBuilder(String.format(STOP_JOB_BASE_SQL, jobId));
-            if (withSavepoint) {
-                sqlBuilder.append(WITH_SAVEPOINT);
-            }
-            client.executeStatement(session.getSessionId(), sqlBuilder.toString(), null);
-            return true;
-        } catch (Exception e) {
-            log.error(
-                    "Failed to stop job with job ID: {}. Savepoint: {}.", jobId, withSavepoint, e);
-            throw new SqlExecutionException("Failed to stop job with job ID: " + jobId, e);
+    public void stop(String jobId, boolean withSavepoint) throws Exception {
+        StringBuilder sqlBuilder = new StringBuilder(String.format(STOP_JOB_BASE_SQL, jobId));
+        if (withSavepoint) {
+            sqlBuilder.append(WITH_SAVEPOINT);
         }
+        client.executeStatement(session.getSessionId(), sqlBuilder.toString(), null);
     }
 }

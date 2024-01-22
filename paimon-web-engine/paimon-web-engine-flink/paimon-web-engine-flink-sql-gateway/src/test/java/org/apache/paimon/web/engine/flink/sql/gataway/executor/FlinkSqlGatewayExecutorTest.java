@@ -18,7 +18,31 @@
 
 package org.apache.paimon.web.engine.flink.sql.gataway.executor;
 
+import org.apache.paimon.web.engine.flink.sql.gataway.TestBase;
+import org.apache.paimon.web.engine.flink.sql.gateway.client.SqlGatewayClient;
 import org.apache.paimon.web.engine.flink.sql.gateway.executor.FlinkSqlGatewayExecutor;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Test for {@link FlinkSqlGatewayExecutor}. */
-public class FlinkSqlGatewayExecutorTest {}
+public class FlinkSqlGatewayExecutorTest extends TestBase {
+
+    SqlGatewayClient client;
+    FlinkSqlGatewayExecutor executor;
+
+    private static final String SESSION_NAME = "test_session";
+
+    @BeforeEach
+    void before() throws Exception {
+        client = new SqlGatewayClient(targetAddress, port);
+        SessionEntity session = client.openSession(SESSION_NAME);
+        executor = new FlinkSqlGatewayExecutor(session);
+    }
+
+    @Test
+    public void testStop() throws Exception {
+        executor.stop("1", false);
+    }
+}
