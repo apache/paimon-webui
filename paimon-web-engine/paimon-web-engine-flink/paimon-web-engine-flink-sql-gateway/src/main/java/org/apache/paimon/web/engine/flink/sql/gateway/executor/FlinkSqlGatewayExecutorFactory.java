@@ -16,26 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.engine.flink.sql.gateway.utils;
+package org.apache.paimon.web.engine.flink.sql.gateway.executor;
 
-/**
- * Utility class for formatting SQL exception messages. This class provides static methods to format
- * exception messages for SQL statements, ensuring that long SQL texts are truncated to a predefined
- * maximum length.
- */
-public class FormatSqlExceptionUtil {
+import org.apache.paimon.web.engine.flink.common.executor.Executor;
+import org.apache.paimon.web.engine.flink.common.executor.ExecutorFactory;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
 
-    private static final int MAX_SQL_DISPLAY_LENGTH = 500;
+/** Factory to create {@link FlinkSqlGatewayExecutor}. */
+public class FlinkSqlGatewayExecutorFactory implements ExecutorFactory {
 
-    public static String formatSqlExceptionMessage(String sql) {
-        return String.format("Failed to execute sql statement: '%s'", formatSql(sql));
+    private final SessionEntity sessionEntity;
+
+    public FlinkSqlGatewayExecutorFactory(SessionEntity sessionEntity) {
+        this.sessionEntity = sessionEntity;
     }
 
-    private static String formatSql(String sql) {
-        if (sql.length() > MAX_SQL_DISPLAY_LENGTH) {
-            return sql.substring(0, MAX_SQL_DISPLAY_LENGTH) + "...";
-        } else {
-            return sql;
-        }
+    @Override
+    public Executor createExecutor() throws Exception {
+        return new FlinkSqlGatewayExecutor(sessionEntity);
     }
 }
