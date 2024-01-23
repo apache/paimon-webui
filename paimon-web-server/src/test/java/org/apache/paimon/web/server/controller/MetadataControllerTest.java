@@ -298,4 +298,28 @@ public class MetadataControllerTest extends ControllerTestBase {
         R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
         assertEquals(200, result.getCode());
     }
+
+    @Test
+    public void testGetOptionInfo() throws Exception {
+        MetadataDTO metadata = new MetadataDTO();
+        metadata.setCatalogId(catalogId);
+        metadata.setDatabaseName(databaseName);
+        metadata.setTableName(tableName);
+
+        String response =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post(METADATA_PATH + "/options")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(metadata))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<Void> result = ObjectMapperUtils.fromJSON(response, new TypeReference<R<Void>>() {});
+        assertEquals(200, result.getCode());
+    }
 }

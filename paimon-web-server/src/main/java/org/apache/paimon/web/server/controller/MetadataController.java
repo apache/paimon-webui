@@ -22,6 +22,7 @@ import org.apache.paimon.web.server.data.dto.MetadataDTO;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.vo.DataFileVO;
 import org.apache.paimon.web.server.data.vo.ManifestsVO;
+import org.apache.paimon.web.server.data.vo.OptionVO;
 import org.apache.paimon.web.server.data.vo.SchemaVO;
 import org.apache.paimon.web.server.data.vo.SnapshotVO;
 import org.apache.paimon.web.server.service.MetadataService;
@@ -64,5 +65,10 @@ public class MetadataController {
     @PostMapping("/dataFile")
     public R<List<DataFileVO>> getDataFileInfo(@RequestBody MetadataDTO dto) {
         return R.succeed(metadataService.getDataFile(dto));
+    }
+
+    @PostMapping("/options")
+    public R<List<OptionVO>> getOptionInfo(@RequestBody MetadataDTO dto) {
+        return R.succeed(metadataService.getOption(dto));
     }
 }
