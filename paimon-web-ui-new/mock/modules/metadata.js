@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 module.exports = (mockUtil) => ({
-  '/catalog/getAllCatalogs': mockUtil({
+  '/catalog/list': mockUtil({
     code: 200,
     msg: 'Successfully',
     'data|5': [
