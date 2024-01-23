@@ -98,14 +98,6 @@ public interface UserService extends IService<User> {
     int updateUser(User user);
 
     /**
-     * Changes the status of a user.
-     *
-     * @param user the user whose status is to be updated
-     * @return {@code true} if the update was successful, {@code false} otherwise
-     */
-    boolean updateUserStatus(User user);
-
-    /**
      * Deletes users by their identifiers.
      *
      * @param userIds the identifiers of the users to delete

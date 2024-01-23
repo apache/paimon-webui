@@ -239,14 +239,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public boolean updateUserStatus(User user) {
-        return this.lambdaUpdate()
-                .set(User::getEnabled, user.getEnabled())
-                .eq(User::getId, user.getId())
-                .update();
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteUserByIds(Integer[] userIds) {
         userRoleMapper.deleteUserRole(userIds);
@@ -268,25 +260,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 userRole.setRoleId(roleId);
                 list.add(userRole);
             }
-            if (list.size() > 0) {
+            if (!list.isEmpty()) {
                 rows = userRoleMapper.batchUserRole(list);
             }
         }
         return rows;
-    }
-
-    private UserVO toVo(User user) {
-        return UserVO.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .nickname(StringUtils.isNotEmpty(user.getNickname()) ? user.getNickname() : "")
-                .userType(user.getUserType() == 0 ? "LOCAL" : "LDAP")
-                .mobile(StringUtils.isNotEmpty(user.getMobile()) ? user.getMobile() : "")
-                .email(StringUtils.isNotEmpty(user.getEmail()) ? user.getEmail() : "")
-                .enabled(user.getEnabled())
-                .createTime(user.getCreateTime())
-                .updateTime(user.getUpdateTime())
-                .build();
     }
 
     private UserVO toVo(UserWithRolesDTO userWithRolesDTO) {

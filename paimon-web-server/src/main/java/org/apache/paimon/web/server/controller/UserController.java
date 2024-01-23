@@ -60,7 +60,7 @@ public class UserController {
      */
     @SaCheckPermission("system:user:query")
     @GetMapping("/{id}")
-    public R<UserVO> getUserById(@PathVariable("id") Integer id) {
+    public R<UserVO> getUser(@PathVariable("id") Integer id) {
         UserVO user = userService.getUserById(id);
         if (user == null) {
             return R.failed(USER_NOT_EXIST);
@@ -76,7 +76,7 @@ public class UserController {
      */
     @SaCheckPermission("system:user:list")
     @GetMapping("/list")
-    public PageR<UserVO> selectUserList(User user) {
+    public PageR<UserVO> listUsers(User user) {
         IPage<User> page = PageSupport.startPage();
         List<UserVO> list = userService.listUsers(page, user);
         return PageR.<UserVO>builder().success(true).total(page.getTotal()).data(list).build();
@@ -115,26 +115,14 @@ public class UserController {
     }
 
     /**
-     * Changes the status of a user.
-     *
-     * @param user the user whose status is to be updated, must not be null
-     * @return a {@code R<Void>} response indicating success or failure
-     */
-    @SaCheckPermission("system:user:edit")
-    @PutMapping("/changeStatus")
-    public R<Void> changeStatus(@Validated @RequestBody User user) {
-        return userService.updateUserStatus(user) ? R.succeed() : R.failed();
-    }
-
-    /**
-     * Removes one or more users by user IDs.
+     * delete one or more users by user IDs.
      *
      * @param userIds an array of user IDs to be deleted
      * @return a {@code R<Void>} response indicating success or failure
      */
-    @SaCheckPermission("system:user:remove")
+    @SaCheckPermission("system:user:delete")
     @DeleteMapping("/{userIds}")
-    public R<Void> remove(@PathVariable Integer[] userIds) {
+    public R<Void> delete(@PathVariable Integer[] userIds) {
         return userService.deleteUserByIds(userIds) > 0 ? R.succeed() : R.failed();
     }
 

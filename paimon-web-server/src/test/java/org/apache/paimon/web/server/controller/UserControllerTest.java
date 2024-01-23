@@ -74,7 +74,7 @@ public class UserControllerTest extends ControllerTestBase {
 
     @Test
     @Order(2)
-    public void testQueryUser() throws Exception {
+    public void testGetUser() throws Exception {
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(userPath + "/" + userId)
@@ -95,7 +95,7 @@ public class UserControllerTest extends ControllerTestBase {
 
     @Test
     @Order(3)
-    public void testEditUser() throws Exception {
+    public void testUpdateUser() throws Exception {
         String newUserName = username + "-edit";
         User user = new User();
         user.setId(userId);
@@ -172,7 +172,7 @@ public class UserControllerTest extends ControllerTestBase {
 
     @Test
     @Order(5)
-    public void testGetUserList() throws Exception {
+    public void testListUsers() throws Exception {
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(userPath + "/list")
