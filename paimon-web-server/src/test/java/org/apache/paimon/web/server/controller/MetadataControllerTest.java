@@ -295,6 +295,10 @@ public class MetadataControllerTest extends ControllerTestBase {
         assertNotNull(schemaVO.getComment());
         assertNotNull(schemaVO.getOption());
         assertNotNull(schemaVO.getUpdateTime());
+
+        assertEquals("[\"id\",\"create_time\"]", schemaVO.getPrimaryKeys());
+        assertEquals("[\"create_time\"]", schemaVO.getPartitionKeys());
+        assertEquals(4, schemaVO.getFields().size());
     }
 
     @Test
