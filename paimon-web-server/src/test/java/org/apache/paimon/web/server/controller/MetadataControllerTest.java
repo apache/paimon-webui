@@ -315,7 +315,7 @@ public class MetadataControllerTest extends ControllerTestBase {
                 Lists.newArrayList(
                         new MetadataOptionModel("bucket", "2"),
                         new MetadataOptionModel("FIELDS.create_time.default-value", "0"),
-                        new MetadataOptionModel("FIELDS.age.default-value", 0));
+                        new MetadataOptionModel("FIELDS.age.default-value", "0"));
         assertEquals(expectedOptions, schemaVO.getOption());
     }
 
