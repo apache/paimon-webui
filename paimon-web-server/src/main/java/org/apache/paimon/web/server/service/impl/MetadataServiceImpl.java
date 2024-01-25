@@ -30,6 +30,7 @@ import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
 import org.apache.paimon.web.server.data.model.MetadataOptionModel;
 import org.apache.paimon.web.server.data.vo.DataFileVO;
 import org.apache.paimon.web.server.data.vo.ManifestsVO;
+import org.apache.paimon.web.server.data.vo.OptionVO;
 import org.apache.paimon.web.server.data.vo.SchemaVO;
 import org.apache.paimon.web.server.data.vo.SnapshotVO;
 import org.apache.paimon.web.server.service.CatalogService;
@@ -162,6 +163,26 @@ public class MetadataServiceImpl implements MetadataService {
                         dataFileVo.setFilePath(getSafeString(internalRow, 2));
                         dataFileVo.setFileFormat(getSafeString(internalRow, 2));
                         result.add(dataFileVo);
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<OptionVO> getOption(MetadataDTO dto) {
+        initEnvironment(dto, MetadataConstant.OPTIONS);
+
+        List<OptionVO> result = new LinkedList<>();
+
+        try {
+            reader.forEachRemaining(
+                    internalRow -> {
+                        OptionVO optionVo = new OptionVO();
+                        optionVo.setKey(internalRow.getString(0).toString());
+                        optionVo.setValue(internalRow.getString(1).toString());
+                        result.add(optionVo);
                     });
         } catch (IOException e) {
             throw new RuntimeException(e);

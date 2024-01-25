@@ -33,6 +33,7 @@ import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.vo.OptionVO;
 import org.apache.paimon.web.server.data.vo.DataFileVO;
 import org.apache.paimon.web.server.data.vo.ManifestsVO;
 import org.apache.paimon.web.server.data.vo.SchemaVO;
@@ -55,6 +56,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -400,5 +402,37 @@ public class MetadataControllerTest extends ControllerTestBase {
         assertNotNull(snapshotVO.getSchemaId());
         assertNotNull(snapshotVO.getCommitIdentifier());
         assertNotNull(snapshotVO.getCommitTime());
+    }
+
+    @Test
+    public void testGetOptionInfo() throws Exception {
+        MetadataDTO metadata = new MetadataDTO();
+        metadata.setCatalogId(catalogId);
+        metadata.setDatabaseName(databaseName);
+        metadata.setTableName(tableName);
+
+        String response =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post(METADATA_PATH + "/options")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(metadata))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<List<OptionVO>> result =
+                ObjectMapperUtils.fromJSON(response, new TypeReference<R<List<OptionVO>>>() {});
+
+        assertEquals(200, result.getCode());
+        List<OptionVO> expected =
+                Arrays.asList(
+                        new OptionVO("bucket", "2"),
+                        new OptionVO("FIELDS.create_time.default-value", "0"),
+                        new OptionVO("FIELDS.age.default-value", "0"));
+        assertEquals(expected, result.getData());
     }
 }
