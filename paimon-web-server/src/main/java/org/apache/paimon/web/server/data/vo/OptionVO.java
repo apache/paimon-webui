@@ -19,21 +19,16 @@
 package org.apache.paimon.web.server.data.vo;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
-/** VO of metadata snapshot. */
+/** VO of metadata table option. */
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SnapshotVO {
-    private Long snapshotId;
-    private Long schemaId;
-    private Long commitIdentifier;
-    private String commitKind;
-    private LocalDateTime commitTime;
+public class OptionVO {
+
+    private String key;
+
+    private String value;
 }

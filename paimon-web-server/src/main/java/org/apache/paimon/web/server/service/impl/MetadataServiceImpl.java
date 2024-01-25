@@ -30,6 +30,7 @@ import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
 import org.apache.paimon.web.server.data.model.MetadataOptionModel;
 import org.apache.paimon.web.server.data.vo.DataFileVO;
 import org.apache.paimon.web.server.data.vo.ManifestsVO;
+import org.apache.paimon.web.server.data.vo.OptionVO;
 import org.apache.paimon.web.server.data.vo.SchemaVO;
 import org.apache.paimon.web.server.data.vo.SnapshotVO;
 import org.apache.paimon.web.server.service.CatalogService;
@@ -108,10 +109,11 @@ public class MetadataServiceImpl implements MetadataService {
                     internalRow -> {
                         SnapshotVO build =
                                 SnapshotVO.builder()
-                                        .setSnapshotId(internalRow.getLong(0))
-                                        .setSnapshotId(internalRow.getLong(1))
-                                        .setCommitIdentifier(internalRow.getLong(3))
-                                        .setCommitTime(
+                                        .snapshotId(internalRow.getLong(0))
+                                        .schemaId(internalRow.getLong(1))
+                                        .commitIdentifier(internalRow.getLong(3))
+                                        .commitKind(internalRow.getString(4).toString())
+                                        .commitTime(
                                                 internalRow.getTimestamp(5, 3).toLocalDateTime())
                                         .build();
                         result.add(build);
@@ -163,6 +165,26 @@ public class MetadataServiceImpl implements MetadataService {
                         dataFileVo.setFilePath(internalRow.getString(2).toString());
                         dataFileVo.setFileFormat(internalRow.getString(3).toString());
                         result.add(dataFileVo);
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<OptionVO> getOption(MetadataDTO dto) {
+        initEnvironment(dto, MetadataConstant.OPTIONS);
+
+        List<OptionVO> result = new LinkedList<>();
+
+        try {
+            reader.forEachRemaining(
+                    internalRow -> {
+                        OptionVO optionVo = new OptionVO();
+                        optionVo.setKey(internalRow.getString(0).toString());
+                        optionVo.setValue(internalRow.getString(1).toString());
+                        result.add(optionVo);
                     });
         } catch (IOException e) {
             throw new RuntimeException(e);

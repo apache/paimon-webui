@@ -44,7 +44,7 @@ export * from './types'
  * # Get all catalog
  */
 export const getAllCatalogs = () => {
-  return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/getAllCatalogs')
+  return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/list')
 }
 
 /**
