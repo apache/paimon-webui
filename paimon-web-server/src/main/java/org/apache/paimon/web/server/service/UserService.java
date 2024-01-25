@@ -33,7 +33,7 @@ import java.util.List;
 public interface UserService extends IService<User> {
 
     /**
-     * Gets a user by ID.
+     * Get a user by ID.
      *
      * @param id the user ID
      * @return the UserVO or null if not found
@@ -41,7 +41,7 @@ public interface UserService extends IService<User> {
     UserVO getUserById(Integer id);
 
     /**
-     * Selects users with pagination.
+     * Select users with pagination.
      *
      * @param page the pagination information
      * @param user the filter criteria
@@ -50,7 +50,7 @@ public interface UserService extends IService<User> {
     List<UserVO> listUsers(IPage<User> page, User user);
 
     /**
-     * Checks if the username is unique.
+     * Check if the username is unique.
      *
      * @param user the user to check
      * @return true if unique, false otherwise
@@ -58,7 +58,7 @@ public interface UserService extends IService<User> {
     boolean checkUserNameUnique(User user);
 
     /**
-     * login by username and password.
+     * Login by username and password.
      *
      * @param loginDTO login params
      * @return {@link String}
@@ -82,7 +82,7 @@ public interface UserService extends IService<User> {
     List<User> selectUnallocatedList(User user);
 
     /**
-     * Inserts a new user.
+     * Insert a new user.
      *
      * @param user the user to be inserted
      * @return the number of rows affected
@@ -90,7 +90,7 @@ public interface UserService extends IService<User> {
     int insertUser(User user);
 
     /**
-     * Updates an existing user.
+     * Update an existing user.
      *
      * @param user the user with updated information
      * @return the number of rows affected
@@ -98,15 +98,15 @@ public interface UserService extends IService<User> {
     int updateUser(User user);
 
     /**
-     * Deletes users by their identifiers.
+     * Delete users by user ID.
      *
-     * @param userIds the identifiers of the users to delete
+     * @param userIds the ids of the users to delete
      * @return the number of rows affected
      */
     int deleteUserByIds(Integer[] userIds);
 
     /**
-     * Allocates a role to a user.
+     * Allocate a role to a user.
      *
      * @param user the user to whom the role should be allocated
      * @return the number of rows affected

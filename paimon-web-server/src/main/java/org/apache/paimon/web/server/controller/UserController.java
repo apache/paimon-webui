@@ -53,7 +53,7 @@ public class UserController {
     @Autowired private UserService userService;
 
     /**
-     * get user by id.
+     * Get user by id.
      *
      * @param id user-id
      * @return {@link R} with {@link UserVO}
@@ -69,7 +69,7 @@ public class UserController {
     }
 
     /**
-     * Gets user views with pagination.
+     * Get user views with pagination.
      *
      * @param user filter conditions
      * @return paginated user view objects
@@ -83,12 +83,12 @@ public class UserController {
     }
 
     /**
-     * Adds a new user.
+     * Add a new user.
      *
      * @param user the user to be added, must not be null
      * @return a {@code R<Void>} response indicating success or failure
      */
-    @SaCheckPermission("system:role:add")
+    @SaCheckPermission("system:user:add")
     @PostMapping
     public R<Void> add(@Validated @RequestBody User user) {
         if (!userService.checkUserNameUnique(user)) {
@@ -115,7 +115,7 @@ public class UserController {
     }
 
     /**
-     * delete one or more users by user IDs.
+     * Delete one or more users by user ID.
      *
      * @param userIds an array of user IDs to be deleted
      * @return a {@code R<Void>} response indicating success or failure
@@ -127,12 +127,12 @@ public class UserController {
     }
 
     /**
-     * Allocates a role to a user.
+     * Allocate a role to a user.
      *
      * @param user the user to whom the role is to be allocated
      * @return a {@code R<Void>} response indicating success or failure
      */
-    @SaCheckPermission("system:role:allocate")
+    @SaCheckPermission("system:user:allocate")
     @PostMapping("/allocate")
     public R<Void> allocateRole(@RequestBody User user) {
         return userService.allocateRole(user) > 0 ? R.succeed() : R.failed();
