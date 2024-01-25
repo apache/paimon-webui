@@ -109,7 +109,7 @@ public class MetadataServiceImpl implements MetadataService {
                         SnapshotVO build =
                                 SnapshotVO.builder()
                                         .setSnapshotId(internalRow.getLong(0))
-                                        .setSchemaId(internalRow.getLong(1))
+                                        .setSnapshotId(internalRow.getLong(1))
                                         .setCommitIdentifier(internalRow.getLong(3))
                                         .setCommitTime(
                                                 internalRow.getTimestamp(5, 3).toLocalDateTime())
