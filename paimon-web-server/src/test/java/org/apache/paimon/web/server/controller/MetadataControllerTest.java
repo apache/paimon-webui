@@ -31,11 +31,13 @@ import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.dto.MetadataDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
+import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
+import org.apache.paimon.web.server.data.model.MetadataOptionModel;
 import org.apache.paimon.web.server.data.model.TableColumn;
 import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.vo.OptionVO;
 import org.apache.paimon.web.server.data.vo.DataFileVO;
 import org.apache.paimon.web.server.data.vo.ManifestsVO;
+import org.apache.paimon.web.server.data.vo.OptionVO;
 import org.apache.paimon.web.server.data.vo.SchemaVO;
 import org.apache.paimon.web.server.data.vo.SnapshotVO;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
@@ -63,6 +65,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Tests for {@link MetadataController}. */
 @SpringBootTest
@@ -287,20 +290,33 @@ public class MetadataControllerTest extends ControllerTestBase {
         List<SchemaVO> schemaVOS = result.getData();
         assertEquals(200, result.getCode());
         assertFalse(schemaVOS.isEmpty());
+        assertEquals(1, schemaVOS.size());
 
         // Make assertions on each field of the SchemaVO class.
         SchemaVO schemaVO = schemaVOS.get(0);
-        assertNotNull(schemaVO.getSchemaId());
-        assertNotNull(schemaVO.getFields());
-        assertNotNull(schemaVO.getPartitionKeys());
-        assertNotNull(schemaVO.getPrimaryKeys());
-        assertNotNull(schemaVO.getComment());
-        assertNotNull(schemaVO.getOption());
         assertNotNull(schemaVO.getUpdateTime());
 
+        assertEquals(0, schemaVO.getSchemaId());
         assertEquals("[\"id\",\"create_time\"]", schemaVO.getPrimaryKeys());
         assertEquals("[\"create_time\"]", schemaVO.getPartitionKeys());
+        assertEquals("", schemaVO.getComment());
+
         assertEquals(4, schemaVO.getFields().size());
+        ArrayList<MetadataFieldsModel> expectedFields =
+                Lists.newArrayList(
+                        new MetadataFieldsModel(0, "id", "INT NOT NULL", null),
+                        new MetadataFieldsModel(1, "name", "STRING NOT NULL", null),
+                        new MetadataFieldsModel(2, "age", "INT NOT NULL", null),
+                        new MetadataFieldsModel(3, "create_time", "STRING NOT NULL", null));
+        assertEquals(expectedFields, schemaVO.getFields());
+
+        assertEquals(3, schemaVO.getOption().size());
+        ArrayList<MetadataOptionModel> expectedOptions =
+                Lists.newArrayList(
+                        new MetadataOptionModel("bucket", "2"),
+                        new MetadataOptionModel("FIELDS.create_time.default-value", "0"),
+                        new MetadataOptionModel("FIELDS.age.default-value", 0));
+        assertEquals(expectedOptions, schemaVO.getOption());
     }
 
     @Test
@@ -332,8 +348,8 @@ public class MetadataControllerTest extends ControllerTestBase {
         // Make assertions on each field of the ManifestsVO class.
         ManifestsVO manifestsVO = manifestsVOS.get(0);
         assertNotNull(manifestsVO.getFileName());
-        assertNotNull(manifestsVO.getFileSize());
-        assertNotNull(manifestsVO.getNumAddedFiles());
+        assertTrue(manifestsVO.getFileSize() > 0);
+        assertTrue(manifestsVO.getNumAddedFiles() > 0);
     }
 
     @Test
@@ -361,13 +377,21 @@ public class MetadataControllerTest extends ControllerTestBase {
         assertEquals(200, result.getCode());
         List<DataFileVO> dataFileVOS = result.getData();
         assertFalse(dataFileVOS.isEmpty());
+        assertEquals(3, dataFileVOS.size());
 
         // Make assertions on each field of the DataFileVO class.
         DataFileVO dataFileVO = dataFileVOS.get(0);
-        assertNotNull(dataFileVO.getPartition());
-        assertNotNull(dataFileVO.getBucket());
+        assertEquals("[2023-12-04 00:00:00]", dataFileVO.getPartition());
+        assertEquals(0, dataFileVO.getBucket());
         assertNotNull(dataFileVO.getFilePath());
         assertNotNull(dataFileVO.getFileFormat());
+
+        List<String> actualPartitions = new ArrayList<>();
+        List<String> expectedPartitions =
+                Lists.newArrayList(
+                        "[2023-12-04 00:00:00]", "[2023-10-11 00:00:00]", "[2023-10-04 00:00:00]");
+        dataFileVOS.forEach(item -> actualPartitions.add(item.getPartition()));
+        assertEquals(actualPartitions, expectedPartitions);
     }
 
     @Test
@@ -395,11 +419,13 @@ public class MetadataControllerTest extends ControllerTestBase {
         assertEquals(200, result.getCode());
         List<SnapshotVO> snapshotVOS = result.getData();
         assertFalse(snapshotVOS.isEmpty());
+        assertEquals(1, snapshotVOS.size());
 
         // Make assertions on each field of the SnapshotVO class.
         SnapshotVO snapshotVO = snapshotVOS.get(0);
-        assertNotNull(snapshotVO.getSnapshotId());
-        assertNotNull(snapshotVO.getSchemaId());
+        assertEquals(1, snapshotVO.getSnapshotId());
+        assertEquals(0, snapshotVO.getSchemaId());
+        assertEquals("OVERWRITE", snapshotVO.getCommitKind());
         assertNotNull(snapshotVO.getCommitIdentifier());
         assertNotNull(snapshotVO.getCommitTime());
     }
