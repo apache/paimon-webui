@@ -58,6 +58,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -439,8 +440,8 @@ public class MetadataControllerTest extends ControllerTestBase {
         assertEquals(1, snapshotVO.getSnapshotId());
         assertEquals(0, snapshotVO.getSchemaId());
         assertEquals("OVERWRITE", snapshotVO.getCommitKind());
-        assertNotNull(snapshotVO.getCommitIdentifier());
-        assertNotNull(snapshotVO.getCommitTime());
+        assertTrue(snapshotVO.getCommitIdentifier() > 0);
+        assertTrue(snapshotVO.getCommitTime().isBefore(LocalDateTime.now()));
     }
 
     @Test
