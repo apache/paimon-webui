@@ -161,7 +161,7 @@ public class MetadataServiceImpl implements MetadataService {
                         dataFileVo.setPartition(getSafeString(internalRow, 0));
                         dataFileVo.setBucket(internalRow.getInt(1));
                         dataFileVo.setFilePath(getSafeString(internalRow, 2));
-                        dataFileVo.setFileFormat(getSafeString(internalRow, 2));
+                        dataFileVo.setFileFormat(getSafeString(internalRow, 3));
                         result.add(dataFileVo);
                     });
         } catch (IOException e) {
