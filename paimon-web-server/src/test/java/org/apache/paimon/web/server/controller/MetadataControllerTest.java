@@ -349,7 +349,7 @@ public class MetadataControllerTest extends ControllerTestBase {
         ManifestsVO manifestsVO = manifestsVOS.get(0);
         assertNotNull(manifestsVO.getFileName());
         assertTrue(manifestsVO.getFileSize() > 0);
-        assertTrue(manifestsVO.getNumAddedFiles() > 0);
+        assertEquals(3, manifestsVO.getNumAddedFiles());
     }
 
     @Test
