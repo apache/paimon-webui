@@ -18,11 +18,6 @@ target/
 .vim
 .tmp
 node/
-paimon-manager-ui/.vscode
-paimon-manager-ui/.idea
-paimon-manager-ui/node/*
-paimon-manager-ui/dist/*
-paimon-manager-ui/**/*.proxy.js
 logs/*
 .mvn/
 .www
@@ -53,6 +48,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+node
 .DS_Store
 dist
 dist-ssr
@@ -72,7 +68,7 @@ coverage
 *.sln
 *.sw?
 
-# paimon-web-ui-new
-paimon-web-ui-new/auto-imports.d.ts
-paimon-web-ui-new/httpData
-paimon-web-ui-new/apiWeb.json
+# paimon-web-ui
+paimon-web-ui/auto-imports.d.ts
+paimon-web-ui/httpData
+paimon-web-ui/apiWeb.json
