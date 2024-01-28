@@ -28,15 +28,61 @@ export default defineComponent({
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
 
+    const menuTreeWidth = ref('20%')
+    const isResizing = ref(false)
+
+    const startMenuTreeResize = (event: MouseEvent) => {
+      isResizing.value = true
+      event.preventDefault()
+    }
+
+    const doMenuTreeResize = (event: MouseEvent) => {
+      if (isResizing.value) {
+        const parentWidth = document.documentElement.clientWidth
+        let newWidth = event.clientX
+
+        let widthInPercent = (newWidth / parentWidth) * 100
+
+        widthInPercent = Math.max(15, Math.min(widthInPercent, 40))
+
+        menuTreeWidth.value = `${widthInPercent}%`
+      }
+    }
+
+    const stopMenuTreeResize = () => {
+      isResizing.value = false
+    }
+
+    const contentAreaStyle = computed(() => {
+      const menuWidthPercent = parseFloat(menuTreeWidth.value)
+      return {
+        width: `calc(100% - ${menuWidthPercent}%)`
+      }
+    })
+
+    onMounted(() => {
+      document.addEventListener('mousemove', doMenuTreeResize)
+      document.addEventListener('mouseup', stopMenuTreeResize)
+    })
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('mousemove', doMenuTreeResize)
+      document.removeEventListener('mouseup', stopMenuTreeResize)
+    })
+
     return {
-      currentTable: catalogStoreRef.currentTable
+      currentTable: catalogStoreRef.currentTable,
+      menuTreeWidth,
+      startMenuTreeResize,
+      contentAreaStyle
     }
   },
   render() {
     return (
       <div class={styles.container}>
-        <MenuTree />
-        <div class={styles.content}>
+        <MenuTree style={{ width: this.menuTreeWidth }} />
+        <div class={styles.splitter} onMousedown={this.startMenuTreeResize}></div>
+        <div class={styles.content} style={this.contentAreaStyle}>
           {this.currentTable ? (
             <>
               <Breadcrumb />
