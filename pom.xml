@@ -372,7 +372,6 @@ under the License.
                         <exclude>release/**</exclude>
                         <exclude>paimon-web-ui/node_modules/**</exclude>
                         <exclude>paimon-web-ui/dist/**</exclude>
-                        <exclude>paimon-web-ui-new/node_modules/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
