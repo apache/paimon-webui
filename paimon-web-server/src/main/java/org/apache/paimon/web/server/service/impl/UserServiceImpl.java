@@ -245,11 +245,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.deleteBatchIds(Arrays.asList(userIds));
     }
 
-    @Override
-    public int allocateRole(User user) {
-        return this.insertUserRole(user);
-    }
-
     private int insertUserRole(User user) {
         int rows = 1;
         if (user.getRoleIds() != null && user.getRoleIds().length > 0) {

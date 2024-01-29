@@ -125,16 +125,4 @@ public class UserController {
     public R<Void> delete(@PathVariable Integer[] userIds) {
         return userService.deleteUserByIds(userIds) > 0 ? R.succeed() : R.failed();
     }
-
-    /**
-     * Allocate a role to a user.
-     *
-     * @param user the user to whom the role is to be allocated
-     * @return a {@code R<Void>} response indicating success or failure
-     */
-    @SaCheckPermission("system:user:allocate")
-    @PostMapping("/allocate")
-    public R<Void> allocateRole(@RequestBody User user) {
-        return userService.allocateRole(user) > 0 ? R.succeed() : R.failed();
-    }
 }

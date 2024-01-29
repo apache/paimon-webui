@@ -133,45 +133,6 @@ public class UserControllerTest extends ControllerTestBase {
 
     @Test
     @Order(4)
-    public void testAllocateRole() throws Exception {
-        User user = new User();
-        user.setId(userId);
-        user.setUsername(username);
-        user.setNickname(username);
-        user.setUserType(0);
-        user.setEnabled(true);
-        user.setIsDelete(false);
-        user.setRoleIds(new Integer[] {2});
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post(userPath + "/allocate")
-                                .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(user))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
-
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.get(userPath + "/" + userId)
-                                        .cookie(cookie)
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
-        assertEquals(200, r.getCode());
-        assertNotNull(r.getData());
-        assertTrue(r.getData().getRoles().size() > 0);
-    }
-
-    @Test
-    @Order(5)
     public void testListUsers() throws Exception {
         String responseString =
                 mockMvc.perform(
@@ -194,7 +155,7 @@ public class UserControllerTest extends ControllerTestBase {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     public void testDeleteUser() throws Exception {
         String delResponseString =
                 mockMvc.perform(

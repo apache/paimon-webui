@@ -104,12 +104,4 @@ public interface UserService extends IService<User> {
      * @return the number of rows affected
      */
     int deleteUserByIds(Integer[] userIds);
-
-    /**
-     * Allocate a role to a user.
-     *
-     * @param user the user to whom the role should be allocated
-     * @return the number of rows affected
-     */
-    int allocateRole(User user);
 }
