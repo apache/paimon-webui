@@ -18,11 +18,8 @@ target/
 .vim
 .tmp
 node/
-paimon-manager-ui/.vscode
-paimon-manager-ui/.idea
-paimon-manager-ui/node/*
-paimon-manager-ui/dist/*
-paimon-manager-ui/**/*.proxy.js
+paimon-web-ui/.idea
+paimon-web-ui/.vscode
 paimon-web-ui/auto-imports.d.ts
 paimon-web-ui/components.d.ts
 paimon-web-ui/.eslintrc-auto-import.json
