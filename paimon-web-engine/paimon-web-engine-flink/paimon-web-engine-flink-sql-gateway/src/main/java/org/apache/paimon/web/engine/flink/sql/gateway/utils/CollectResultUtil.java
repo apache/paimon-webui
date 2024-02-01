@@ -28,11 +28,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /** Collect result util. */
 public class CollectResultUtil {
-
-    private static final String NULL_COLUMN = "";
 
     public static ExecutionResult.Builder collectSqlGatewayResult(ResultInfo resultInfo) {
         List<RowData> data = resultInfo.getData();
@@ -50,9 +49,7 @@ public class CollectResultUtil {
                 if (rowData instanceof GenericRowData) {
                     GenericRowData data = (GenericRowData) rowData;
                     Object field = data.getField(i);
-                    if (field == null) {
-                        map.put(columns.get(i), NULL_COLUMN);
-                    } else {
+                    if (Objects.nonNull(field)) {
                         map.put(columns.get(i), field.toString());
                     }
                 } else {

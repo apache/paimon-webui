@@ -36,4 +36,12 @@ under the License.
     <modules>
         <module>paimon-web-engine-flink</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.paimon</groupId>
+            <artifactId>paimon-web-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
