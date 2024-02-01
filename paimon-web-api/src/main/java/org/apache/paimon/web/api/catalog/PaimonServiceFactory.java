@@ -46,8 +46,8 @@ public class PaimonServiceFactory {
             options.set(CatalogProperties.S3_SECRET_KEY, catalogOptions.get("secretKey"));
         } else if ("oss".equalsIgnoreCase(fileSystemType)) {
             options.set(CatalogProperties.OSS_ENDPOINT, catalogOptions.get("endpoint"));
-            options.set(CatalogProperties.OSS_ACCESS_KEY, catalogOptions.get("accessKey"));
-            options.set(CatalogProperties.OSS_SECRET_KEY, catalogOptions.get("secretKey"));
+            options.set(CatalogProperties.OSS_ACCESS_KEY_ID, catalogOptions.get("accessKey"));
+            options.set(CatalogProperties.OSS_ACCESS_KEY_SECRET, catalogOptions.get("secretKey"));
         }
         CatalogContext context = CatalogContext.create(options);
         return new PaimonService(CatalogFactory.createCatalog(context), name);
