@@ -18,6 +18,13 @@ target/
 .vim
 .tmp
 node/
+paimon-web-ui/.idea
+paimon-web-ui/.vscode
+paimon-web-ui/auto-imports.d.ts
+paimon-web-ui/components.d.ts
+paimon-web-ui/.eslintrc-auto-import.json
+paimon-web-ui/httpData
+paimon-web-ui/apiWeb.json
 logs/*
 .mvn/
 .www
@@ -67,8 +74,3 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-
-# paimon-web-ui
-paimon-web-ui/auto-imports.d.ts
-paimon-web-ui/httpData
-paimon-web-ui/apiWeb.json

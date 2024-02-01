@@ -62,3 +62,10 @@ pnpm lint
 # License
 
 [Apache 2.0 License.](/LICENSE)
+
+You can run this command to automatically generate the corresponding protocol before commit.
+
+```sh
+pnpm run gen:license
+```
+
