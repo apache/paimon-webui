@@ -24,23 +24,17 @@ under the License.
 
     <parent>
         <groupId>org.apache.paimon</groupId>
-        <artifactId>paimon-webui</artifactId>
+        <artifactId>paimon-web-engine-flink</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>paimon-web-engine</artifactId>
-    <name>Paimon : Web : Engine</name>
-
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>paimon-web-engine-flink</module>
-    </modules>
+    <artifactId>paimon-web-engine-flink-sql-gateway</artifactId>
+    <name>Paimon : Web : Engine : Flink : SQL : Gateway</name>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.paimon</groupId>
-            <artifactId>paimon-web-common</artifactId>
+            <artifactId>paimon-web-engine-flink-common</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
