@@ -25,6 +25,7 @@ import org.apache.paimon.table.sink.BatchTableCommit;
 import org.apache.paimon.table.sink.BatchTableWrite;
 import org.apache.paimon.table.sink.BatchWriteBuilder;
 import org.apache.paimon.table.sink.CommitMessage;
+import org.apache.paimon.table.sink.CommitMessageImpl;
 import org.apache.paimon.web.api.catalog.PaimonService;
 import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.dto.DatabaseDTO;
@@ -57,6 +58,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,6 +87,8 @@ public class MetadataControllerTest extends ControllerTestBase {
     private static final String tableName = "paimon_table";
 
     private Integer catalogId;
+
+    private List<CommitMessage> messages;
 
     @BeforeEach
     public void setup() throws Exception {
@@ -230,7 +234,7 @@ public class MetadataControllerTest extends ControllerTestBase {
         write.write(record2);
         write.write(record3);
 
-        List<CommitMessage> messages = write.prepareCommit();
+        messages = write.prepareCommit();
         BatchTableCommit commit = writeBuilder.newCommit();
         commit.commit(messages);
 
@@ -384,7 +388,7 @@ public class MetadataControllerTest extends ControllerTestBase {
         assertEquals("[2023-12-04 00:00:00]", dataFileVO.getPartition());
         assertEquals(0, dataFileVO.getBucket());
         assertNotNull(dataFileVO.getFilePath());
-        assertNotNull(dataFileVO.getFileFormat());
+        assertEquals("orc", dataFileVO.getFileFormat());
 
         List<String> actualPartitions = new ArrayList<>();
         List<String> expectedPartitions =
@@ -392,6 +396,16 @@ public class MetadataControllerTest extends ControllerTestBase {
                         "[2023-12-04 00:00:00]", "[2023-10-11 00:00:00]", "[2023-10-04 00:00:00]");
         dataFileVOS.forEach(item -> actualPartitions.add(item.getPartition()));
         assertEquals(actualPartitions, expectedPartitions);
+
+        List<String> actualFilePaths = new ArrayList<>();
+        dataFileVOS.forEach(item -> actualFilePaths.add(item.getFilePath()));
+        List<String> expectedFilePaths = new ArrayList<>();
+        messages.forEach(
+                item -> {
+                    CommitMessageImpl message = (CommitMessageImpl) item;
+                    expectedFilePaths.add(message.newFilesIncrement().newFiles().get(0).fileName());
+                });
+        assertEquals(actualFilePaths, expectedFilePaths);
     }
 
     @Test
@@ -426,8 +440,8 @@ public class MetadataControllerTest extends ControllerTestBase {
         assertEquals(1, snapshotVO.getSnapshotId());
         assertEquals(0, snapshotVO.getSchemaId());
         assertEquals("OVERWRITE", snapshotVO.getCommitKind());
-        assertNotNull(snapshotVO.getCommitIdentifier());
-        assertNotNull(snapshotVO.getCommitTime());
+        assertTrue(snapshotVO.getCommitIdentifier() > 0);
+        assertTrue(snapshotVO.getCommitTime().isBefore(LocalDateTime.now()));
     }
 
     @Test
