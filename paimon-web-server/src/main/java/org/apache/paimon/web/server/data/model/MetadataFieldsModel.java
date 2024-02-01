@@ -18,10 +18,14 @@
 
 package org.apache.paimon.web.server.data.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** Model of metadata fields. */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MetadataFieldsModel {
 
     private int id;
