@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.mapper;
 
+import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
 import org.apache.paimon.web.server.data.model.User;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -39,18 +40,18 @@ public interface UserMapper extends BaseMapper<User> {
     /**
      * Query user list by role ID.
      *
-     * @param user query params
+     * @param roleWithUserDTO query params
      * @return user list
      */
-    List<User> selectAllocatedList(User user);
+    List<User> selectAllocatedList(RoleWithUserDTO roleWithUserDTO);
 
     /**
      * Query the list of unassigned user roles.
      *
-     * @param user query params
+     * @param roleWithUserDTO query params
      * @return user list
      */
-    List<User> selectUnallocatedList(User user);
+    List<User> selectUnallocatedList(RoleWithUserDTO roleWithUserDTO);
 
     /**
      * Query user info by username.

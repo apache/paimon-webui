@@ -19,6 +19,7 @@
 package org.apache.paimon.web.server.service.impl;
 
 import org.apache.paimon.web.server.data.dto.LoginDTO;
+import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
 import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.RoleMenu;
 import org.apache.paimon.web.server.data.model.SysMenu;
@@ -171,22 +172,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * Query the list of assigned user roles.
      *
-     * @param user query params
+     * @param roleWithUserDTO query params
      * @return user list
      */
     @Override
-    public List<User> selectAllocatedList(User user) {
-        return userMapper.selectAllocatedList(user);
+    public List<User> selectAllocatedList(RoleWithUserDTO roleWithUserDTO) {
+        return userMapper.selectAllocatedList(roleWithUserDTO);
     }
 
     /**
      * Query the list of unassigned user roles.
      *
-     * @param user query params
+     * @param roleWithUserDTO query params
      * @return user list
      */
     @Override
-    public List<User> selectUnallocatedList(User user) {
-        return userMapper.selectUnallocatedList(user);
+    public List<User> selectUnallocatedList(RoleWithUserDTO roleWithUserDTO) {
+        return userMapper.selectUnallocatedList(roleWithUserDTO);
     }
 }
