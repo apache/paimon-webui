@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.engine.flink.sql.gateway.executor;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.paimon.web.engine.flink.common.executor.Executor;
+import org.apache.paimon.web.engine.flink.common.executor.ExecutorFactory;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
 
-/** Model of metadata fields. */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class MetadataFieldsModel {
+/** Factory to create {@link FlinkSqlGatewayExecutor}. */
+public class FlinkSqlGatewayExecutorFactory implements ExecutorFactory {
 
-    private int id;
+    private final SessionEntity sessionEntity;
 
-    private String name;
+    public FlinkSqlGatewayExecutorFactory(SessionEntity sessionEntity) {
+        this.sessionEntity = sessionEntity;
+    }
 
-    private String type;
-
-    private String comment;
+    @Override
+    public Executor createExecutor() throws Exception {
+        return new FlinkSqlGatewayExecutor(sessionEntity);
+    }
 }

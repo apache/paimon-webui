@@ -12,5 +12,6 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "types": ["node"]
-  }
+  },
+  "exclude": ["./license.node.js"]
 }

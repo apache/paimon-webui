@@ -16,23 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.engine.flink.sql.gateway.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
-/** Model of metadata fields. */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class MetadataFieldsModel {
+import java.util.Map;
 
-    private int id;
+/** The session entity. */
+@Builder
+@Getter
+public class SessionEntity {
 
-    private String name;
-
-    private String type;
-
-    private String comment;
+    private final String sessionId;
+    private final String sessionName;
+    private final String host;
+    private final int port;
+    private final Map<String, String> properties;
+    private final int status;
 }

@@ -16,23 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.engine.flink.common.executor;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+/** Factory to create {@link Executor}. */
+public interface ExecutorFactory {
 
-/** Model of metadata fields. */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class MetadataFieldsModel {
-
-    private int id;
-
-    private String name;
-
-    private String type;
-
-    private String comment;
+    /**
+     * Creates a new {@link Executor}.
+     *
+     * @return A new instance of {@link Executor}
+     * @throws Exception if executor creation fails
+     */
+    Executor createExecutor() throws Exception;
 }
