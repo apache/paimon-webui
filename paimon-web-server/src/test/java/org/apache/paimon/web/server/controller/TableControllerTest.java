@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -293,6 +294,7 @@ public class TableControllerTest extends ControllerTestBase {
                                                         + "id")
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .locale(Locale.US)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
                         .andDo(MockMvcResultHandlers.print())
@@ -301,7 +303,7 @@ public class TableControllerTest extends ControllerTestBase {
                         .getContentAsString();
         R<Void> pkRes = ObjectMapperUtils.fromJSON(responsePkStr, new TypeReference<R<Void>>() {});
         assertEquals(10506, pkRes.getCode());
-        assertEquals("Exception calling Paimon Catalog API to drop a Column.", pkRes.getMsg());
+        assertEquals("Exception calling Paimon Catalog API to drop a column.", pkRes.getMsg());
 
         // drop partition key.
         String responsePartitionKeyStr =
@@ -318,6 +320,7 @@ public class TableControllerTest extends ControllerTestBase {
                                                         + "create_time")
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .locale(Locale.US)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
                         .andDo(MockMvcResultHandlers.print())
@@ -329,7 +332,7 @@ public class TableControllerTest extends ControllerTestBase {
                         responsePartitionKeyStr, new TypeReference<R<Void>>() {});
         assertEquals(10506, partitionKeyRes.getCode());
         assertEquals(
-                "Exception calling Paimon Catalog API to drop a Column.", partitionKeyRes.getMsg());
+                "Exception calling Paimon Catalog API to drop a column.", partitionKeyRes.getMsg());
     }
 
     @Test
