@@ -90,9 +90,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean checkUserNameUnique(User user) {
-        int roleId = user.getId() == null ? -1 : user.getId();
+        int userId = user.getId() == null ? -1 : user.getId();
         User info = this.lambdaQuery().eq(User::getUsername, user.getUsername()).one();
-        return info == null || info.getId() == roleId;
+        return info == null || info.getId() == userId;
     }
 
     /**
