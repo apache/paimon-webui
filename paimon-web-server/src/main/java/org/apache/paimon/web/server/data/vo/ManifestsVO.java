@@ -35,4 +35,8 @@ public class ManifestsVO {
     private Long fileSize;
 
     private Long numAddedFiles;
+
+    private Long numDeletedFiles;
+
+    private Long schemaId;
 }

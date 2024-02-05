@@ -59,6 +59,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,6 +68,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Tests for {@link MetadataController}. */
@@ -354,6 +356,8 @@ public class MetadataControllerTest extends ControllerTestBase {
         assertNotNull(manifestsVO.getFileName());
         assertTrue(manifestsVO.getFileSize() > 0);
         assertEquals(3, manifestsVO.getNumAddedFiles());
+        assertEquals(0, manifestsVO.getNumDeletedFiles());
+        assertEquals(0, manifestsVO.getSchemaId());
     }
 
     @Test
@@ -385,10 +389,34 @@ public class MetadataControllerTest extends ControllerTestBase {
 
         // Make assertions on each field of the DataFileVO class.
         DataFileVO dataFileVO = dataFileVOS.get(0);
+        CommitMessageImpl commitMessage = (CommitMessageImpl) messages.get(0);
         assertEquals("[2023-12-04 00:00:00]", dataFileVO.getPartition());
         assertEquals(0, dataFileVO.getBucket());
         assertNotNull(dataFileVO.getFilePath());
         assertEquals("orc", dataFileVO.getFileFormat());
+        assertEquals(0, dataFileVO.getLevel());
+        assertEquals(1, dataFileVO.getRecordCount());
+        assertEquals(
+                commitMessage.newFilesIncrement().newFiles().get(0).fileSize(),
+                dataFileVO.getFileSizeInBytes());
+        assertEquals("[1]", dataFileVO.getMinKey());
+        assertEquals("[1]", dataFileVO.getMaxKey());
+        assertEquals("{age=0, create_time=0, id=0, name=0}", dataFileVO.getNullValueCounts());
+        assertEquals(
+                "{age=24, create_time=2023-12-04 00:00, id=1, name=Alice}",
+                dataFileVO.getMinValueStats());
+        assertEquals(
+                "{age=24, create_time=2023-12-04 00:01, id=1, name=Alice}",
+                dataFileVO.getMaxValueStats());
+        assertEquals(0, dataFileVO.getMinSequenceNumber());
+        assertEquals(0, dataFileVO.getMaxSequenceNumber());
+        assertEquals(
+                commitMessage.newFilesIncrement().newFiles().get(0).creationTimeEpochMillis(),
+                dataFileVO
+                        .getCreationTime()
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant()
+                        .toEpochMilli());
 
         List<String> actualPartitions = new ArrayList<>();
         List<String> expectedPartitions =
@@ -439,9 +467,20 @@ public class MetadataControllerTest extends ControllerTestBase {
         SnapshotVO snapshotVO = snapshotVOS.get(0);
         assertEquals(1, snapshotVO.getSnapshotId());
         assertEquals(0, snapshotVO.getSchemaId());
+        assertFalse(snapshotVO.getCommitUser().isEmpty());
         assertEquals("OVERWRITE", snapshotVO.getCommitKind());
         assertTrue(snapshotVO.getCommitIdentifier() > 0);
         assertTrue(snapshotVO.getCommitTime().isBefore(LocalDateTime.now()));
+        assertEquals(0, snapshotVO.getSchemaId());
+        assertFalse(snapshotVO.getDeltaManifestList().isEmpty());
+        assertFalse(snapshotVO.getBaseManifestList().isEmpty());
+        assertEquals("", snapshotVO.getChangelogManifestList());
+        assertEquals(3, snapshotVO.getTotalRecordCount());
+        assertEquals(3, snapshotVO.getDeltaRecordCount());
+        assertEquals(0, snapshotVO.getChangelogRecordCount());
+        assertEquals(3, snapshotVO.getAddedFileCount());
+        assertEquals(0, snapshotVO.getDeletedFileCount());
+        assertNull(snapshotVO.getWatermark());
     }
 
     @Test

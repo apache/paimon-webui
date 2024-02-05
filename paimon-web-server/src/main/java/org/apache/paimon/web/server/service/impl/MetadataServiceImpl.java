@@ -110,9 +110,19 @@ public class MetadataServiceImpl implements MetadataService {
                                 SnapshotVO.builder()
                                         .snapshotId(internalRow.getLong(0))
                                         .schemaId(internalRow.getLong(1))
+                                        .commitUser(getSafeString(internalRow, 2))
                                         .commitIdentifier(internalRow.getLong(3))
                                         .commitKind(getSafeString(internalRow, 4))
                                         .commitTime(getSafeLocalDateTime(internalRow, 5))
+                                        .baseManifestList(getSafeString(internalRow, 6))
+                                        .deltaManifestList(getSafeString(internalRow, 7))
+                                        .changelogManifestList(getSafeString(internalRow, 8))
+                                        .totalRecordCount(internalRow.getLong(9))
+                                        .deltaRecordCount(internalRow.getLong(10))
+                                        .changelogRecordCount(internalRow.getLong(11))
+                                        .addedFileCount(internalRow.getInt(12))
+                                        .deletedFileCount(internalRow.getInt(13))
+                                        .watermark(getSafeLong(internalRow, 14))
                                         .build();
                         result.add(build);
                     });
@@ -137,6 +147,8 @@ public class MetadataServiceImpl implements MetadataService {
                                         .fileName(getSafeString(internalRow, 0))
                                         .fileSize(internalRow.getLong(1))
                                         .numAddedFiles(internalRow.getLong(2))
+                                        .numDeletedFiles(internalRow.getLong(3))
+                                        .schemaId(internalRow.getLong(4))
                                         .build();
                         result.add(manifestsVo);
                     });
@@ -157,12 +169,26 @@ public class MetadataServiceImpl implements MetadataService {
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        DataFileVO dataFileVo = new DataFileVO();
-                        dataFileVo.setPartition(getSafeString(internalRow, 0));
-                        dataFileVo.setBucket(internalRow.getInt(1));
-                        dataFileVo.setFilePath(getSafeString(internalRow, 2));
-                        dataFileVo.setFileFormat(getSafeString(internalRow, 3));
-                        result.add(dataFileVo);
+                        DataFileVO dataFileVO =
+                                DataFileVO.builder()
+                                        .partition(getSafeString(internalRow, 0))
+                                        .bucket(internalRow.getInt(1))
+                                        .filePath(getSafeString(internalRow, 2))
+                                        .fileFormat(getSafeString(internalRow, 3))
+                                        .schemaId(internalRow.getLong(4))
+                                        .level(internalRow.getInt(5))
+                                        .recordCount(internalRow.getLong(6))
+                                        .fileSizeInBytes(internalRow.getLong(7))
+                                        .minKey(getSafeString(internalRow, 8))
+                                        .maxKey(getSafeString(internalRow, 9))
+                                        .nullValueCounts(getSafeString(internalRow, 10))
+                                        .minValueStats(getSafeString(internalRow, 11))
+                                        .maxValueStats(getSafeString(internalRow, 12))
+                                        .minSequenceNumber(internalRow.getLong(13))
+                                        .maxSequenceNumber(internalRow.getLong(14))
+                                        .creationTime(getSafeLocalDateTime(internalRow, 15))
+                                        .build();
+                        result.add(dataFileVO);
                     });
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -229,6 +255,10 @@ public class MetadataServiceImpl implements MetadataService {
 
     private String getSafeString(InternalRow internalRow, int index) {
         return internalRow.isNullAt(index) ? "" : internalRow.getString(index).toString();
+    }
+
+    private Long getSafeLong(InternalRow internalRow, int index) {
+        return internalRow.isNullAt(index) ? null : internalRow.getLong(14);
     }
 
     private LocalDateTime getSafeLocalDateTime(InternalRow internalRow, int index) {
