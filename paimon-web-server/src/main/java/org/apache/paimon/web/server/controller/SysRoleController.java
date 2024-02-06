@@ -21,7 +21,6 @@ package org.apache.paimon.web.server.controller;
 import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
 import org.apache.paimon.web.server.data.model.SysRole;
 import org.apache.paimon.web.server.data.model.User;
-import org.apache.paimon.web.server.data.model.UserRole;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
@@ -125,8 +124,8 @@ public class SysRoleController {
     @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/allocatedList")
     public PageR<User> allocatedList(@RequestBody RoleWithUserDTO roleWithUserDTO) {
-        IPage<SysRole> page = PageSupport.startPage();
-        List<User> list = userService.selectAllocatedList(roleWithUserDTO);
+        IPage<RoleWithUserDTO> page = PageSupport.startPage();
+        List<User> list = userService.selectAllocatedList(page, roleWithUserDTO);
         return PageR.<User>builder().success(true).total(page.getTotal()).data(list).build();
     }
 
@@ -134,16 +133,9 @@ public class SysRoleController {
     @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/unallocatedList")
     public PageR<User> unallocatedList(@RequestBody RoleWithUserDTO roleWithUserDTO) {
-        IPage<SysRole> page = PageSupport.startPage();
-        List<User> list = userService.selectUnallocatedList(roleWithUserDTO);
+        IPage<RoleWithUserDTO> page = PageSupport.startPage();
+        List<User> list = userService.selectUnallocatedList(page, roleWithUserDTO);
         return PageR.<User>builder().success(true).total(page.getTotal()).data(list).build();
-    }
-
-    /** Unauthorize User. */
-    @SaCheckPermission("system:role:update")
-    @PutMapping("/authUser/cancel")
-    public R<Void> cancelAuthUser(@RequestBody UserRole userRole) {
-        return roleService.deleteAuthUser(userRole) > 0 ? R.succeed() : R.failed();
     }
 
     /** Batch Unauthorize User. */

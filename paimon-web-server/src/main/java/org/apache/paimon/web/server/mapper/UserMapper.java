@@ -22,7 +22,9 @@ import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
 import org.apache.paimon.web.server.data.model.User;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -40,18 +42,22 @@ public interface UserMapper extends BaseMapper<User> {
     /**
      * Query user list by role ID.
      *
+     * @param page paging params
      * @param roleWithUserDTO query params
      * @return user list
      */
-    List<User> selectAllocatedList(RoleWithUserDTO roleWithUserDTO);
+    List<User> selectAllocatedList(
+            IPage<RoleWithUserDTO> page, @Param("role") RoleWithUserDTO roleWithUserDTO);
 
     /**
      * Query the list of unassigned user roles.
      *
+     * @param page paging params
      * @param roleWithUserDTO query params
      * @return user list
      */
-    List<User> selectUnallocatedList(RoleWithUserDTO roleWithUserDTO);
+    List<User> selectUnallocatedList(
+            IPage<RoleWithUserDTO> page, @Param("role") RoleWithUserDTO roleWithUserDTO);
 
     /**
      * Query user info by username.

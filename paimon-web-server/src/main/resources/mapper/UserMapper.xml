@@ -80,12 +80,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    from user u
 			 left join user_role urole on u.id = urole.user_id
 			 left join sys_role r on r.id = urole.role_id
-	    where u.is_delete = '0' and r.id = #{roleId}
-	    <if test="username != null and username != ''">
-			AND u.username like concat('%', #{username}, '%')
+	    where u.is_delete = '0' and r.id = #{role.roleId}
+	    <if test="role.username != null and role.username != ''">
+			AND u.username like concat('%', #{role.username}, '%')
 		</if>
-		<if test="mobile != null and mobile != ''">
-			AND u.mobile like concat('%', #{mobile}, '%')
+		<if test="role.mobile != null and role.mobile != ''">
+			AND u.mobile like concat('%', #{role.mobile}, '%')
 		</if>
 	</select>
 	
@@ -94,13 +94,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    from user u
 			 left join user_role urole on u.id = urole.user_id
 			 left join sys_role r on r.id = urole.role_id
-	    where u.is_delete = '0' and (r.id != #{roleId} or r.id IS NULL)
-	    and u.id not in (select u.id from user u inner join user_role urole on u.id = urole.user_id and urole.role_id = #{roleId})
-	    <if test="username != null and username != ''">
-			AND u.username like concat('%', #{username}, '%')
+	    where u.is_delete = '0' and (r.id != #{role.roleId} or r.id IS NULL)
+	    and u.id not in (select u.id from user u inner join user_role urole on u.id = urole.user_id and urole.role_id = #{role.roleId})
+	    <if test="role.username != null and role.username != ''">
+			AND u.username like concat('%', #{role.username}, '%')
 		</if>
-		<if test="mobile != null and mobile != ''">
-			AND u.mobile like concat('%', #{mobile}, '%')
+		<if test="role.mobile != null and role.mobile != ''">
+			AND u.mobile like concat('%', #{role.mobile}, '%')
 		</if>
 	</select>
 	
