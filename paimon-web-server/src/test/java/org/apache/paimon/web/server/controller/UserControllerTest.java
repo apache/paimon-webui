@@ -159,7 +159,8 @@ public class UserControllerTest extends ControllerTestBase {
     public void testDeleteUser() throws Exception {
         String delResponseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.delete(userPath + "/" + userId)
+                                MockMvcRequestBuilders.delete(
+                                                userPath + "/" + userId + "," + userId)
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))

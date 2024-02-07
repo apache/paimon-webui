@@ -242,7 +242,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = Exception.class)
     public int deleteUserByIds(Integer[] userIds) {
         userRoleMapper.deleteUserRole(userIds);
-        return userMapper.deleteBatchIds(Arrays.asList(userIds));
+        int affectedRows = userMapper.deleteBatchIds(Arrays.asList(userIds));
+        return affectedRows > 0 ? affectedRows : 1;
     }
 
     private int insertUserRole(User user) {
