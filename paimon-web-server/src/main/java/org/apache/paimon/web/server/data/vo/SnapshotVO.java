@@ -31,9 +31,34 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SnapshotVO {
+
     private Long snapshotId;
+
     private Long schemaId;
+
+    private String commitUser;
+
     private Long commitIdentifier;
+
     private String commitKind;
+
     private LocalDateTime commitTime;
+
+    private String baseManifestList;
+
+    private String deltaManifestList;
+
+    private String changelogManifestList;
+
+    private Long totalRecordCount;
+
+    private Long deltaRecordCount;
+
+    private Long changelogRecordCount;
+
+    private Integer addedFileCount;
+
+    private Integer deletedFileCount;
+
+    private Long watermark;
 }

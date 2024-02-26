@@ -50,8 +50,7 @@ public interface Executor {
      *
      * @param jobId The unique identifier of the job to stop.
      * @param withSavepoint If true, the job will create a savepoint before stopping.
-     * @return true if the job was successfully stopped, false otherwise.
      * @throws Exception if the job cannot be stopped or savepoint cannot be created.
      */
-    boolean stop(String jobId, boolean withSavepoint) throws Exception;
+    void stop(String jobId, boolean withSavepoint) throws Exception;
 }
