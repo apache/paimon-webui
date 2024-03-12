@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.api.action.context;
 
+/** FlinkCdcActionContextTestBase. */
 public class FlinkCdcActionContextTestBase {
 
     protected static final String warehouse = "warehouse";

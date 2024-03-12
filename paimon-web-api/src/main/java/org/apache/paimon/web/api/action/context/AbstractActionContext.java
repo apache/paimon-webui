@@ -26,6 +26,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The AbstractActionContext provides a default implementation for getActionArgs. Its concrete
+ * subclasses only need to annotate the parameter fields of the action with the {@link ActionConf}
+ * annotation.
+ */
 @SuperBuilder
 public abstract class AbstractActionContext implements ActionContext {
 
@@ -38,7 +43,7 @@ public abstract class AbstractActionContext implements ActionContext {
         return args;
     }
 
-    public void addArgs(List<String> args, Class<?> clazz, Object obj) {
+    private void addArgs(List<String> args, Class<?> clazz, Object obj) {
         if (clazz == null || clazz == Object.class) {
             return;
         }

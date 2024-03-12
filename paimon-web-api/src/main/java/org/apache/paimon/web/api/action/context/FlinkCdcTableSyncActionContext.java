@@ -22,6 +22,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+/** The FlinkCdcDatabasesActionContext for the table synchronization. */
 @SuperBuilder
 public abstract class FlinkCdcTableSyncActionContext extends AbstractActionContext
         implements ActionContext {
