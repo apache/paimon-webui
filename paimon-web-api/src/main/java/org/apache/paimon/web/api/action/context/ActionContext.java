@@ -28,5 +28,4 @@ public interface ActionContext {
     List<String> getActionArgs();
 
     String getActionJarPath();
-
 }

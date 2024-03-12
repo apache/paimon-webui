@@ -62,7 +62,7 @@ public abstract class AbstractActionContext implements ActionContext {
             try {
                 declaredField.setAccessible(true);
                 confValue = declaredField.get(obj);
-            } catch (Exception ignore) {
+            } catch (IllegalArgumentException | IllegalAccessException ignore) {
 
             }
             if (!nullable && confValue == null) {
