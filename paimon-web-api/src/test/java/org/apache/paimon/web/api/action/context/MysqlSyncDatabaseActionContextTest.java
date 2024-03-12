@@ -18,19 +18,29 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import lombok.experimental.SuperBuilder;
+import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
-/** Mysql sync databases action context. */
-@SuperBuilder
-public class MysqlSyncDatabasesActionContext extends FlinkCdcDatabasesSyncActionContext
-        implements ActionContext {
+import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
-    @ActionConf(value = "mysql_conf", confList = true)
-    private final List<String> mysqlConfList;
+/**
+ * The test class of mysql sync databases action context in {@link MysqlSyncDatabaseActionContext}.
+ */
+public class MysqlSyncDatabaseActionContextTest extends FlinkCdcActionContextTestBase {
 
-    public String name() {
-        return "mysql_sync_database";
+    @Test
+    public void testGetArgs() {
+        List<String> args =
+                MysqlSyncDatabaseActionContext.builder()
+                        .warehouse(warehouse)
+                        .database(database)
+                        .build()
+                        .getActionArgs();
+        List<String> expectedCommands =
+                Arrays.asList(
+                        "mysql_sync_database", "--warehouse", warehouse, "--database", database);
+        assertLinesMatch(expectedCommands, args);
     }
 }
