@@ -36,7 +36,7 @@ public class FlinkCdcActionService implements ActionService {
         List<String> commandList = new ArrayList<>();
         commandList.add("bin/flink");
         commandList.add("run");
-        commandList.add(getActionPath());
+        commandList.add(actionContext.getActionJarPath());
         commandList.addAll(actionContext.getActionArgs());
         return commandList;
     }
@@ -50,7 +50,7 @@ public class FlinkCdcActionService implements ActionService {
         }
     }
 
-    protected String getFlinkHome() {
+    private String getFlinkHome() {
         String flinkHome = System.getenv("FLINK_HOME");
         if (StringUtils.isBlank(flinkHome)) {
             flinkHome = System.getProperty("FLINK_HOME");
@@ -59,16 +59,5 @@ public class FlinkCdcActionService implements ActionService {
             throw new ActionException("FLINK_HOME is null");
         }
         return flinkHome;
-    }
-
-    protected String getActionPath() {
-        String actionPath = System.getenv("ACTION_PATH");
-        if (StringUtils.isBlank(actionPath)) {
-            actionPath = System.getProperty("ACTION_PATH");
-        }
-        if (StringUtils.isBlank(actionPath)) {
-            throw new ActionException("ACTION_PATH is null");
-        }
-        return actionPath;
     }
 }

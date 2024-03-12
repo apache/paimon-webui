@@ -29,19 +29,19 @@ import java.util.List;
 public class ShellService {
 
     private final String workingDirectory;
-    private final List<String> executeCommands;
+    private final List<String> executeCommand;
 
-    public ShellService(String workingDirectory, List<String> executeCommands) {
+    public ShellService(String workingDirectory, List<String> executeCommand) {
         this.workingDirectory = workingDirectory;
-        this.executeCommands = executeCommands;
+        this.executeCommand = executeCommand;
     }
 
     public Process execute() throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(new File(workingDirectory));
         processBuilder.redirectErrorStream(true);
-        processBuilder.command(executeCommands);
-        log.info("Executing shell command : {}", String.join(" ", executeCommands));
+        processBuilder.command(executeCommand);
+        log.info("Executing shell command : {}", String.join(" ", executeCommand));
         return processBuilder.start();
     }
 }

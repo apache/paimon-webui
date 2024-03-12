@@ -24,7 +24,7 @@ import java.util.List;
 
 /** Mysql sync databases action context. */
 @SuperBuilder
-public class MysqlSyncDatabasesActionContext extends FlinkCdcDatabasesActionContext
+public class MysqlSyncDatabasesActionContext extends FlinkCdcDatabasesSyncActionContext
         implements ActionContext {
 
     @ActionConf(value = "mysql_conf", confList = true)

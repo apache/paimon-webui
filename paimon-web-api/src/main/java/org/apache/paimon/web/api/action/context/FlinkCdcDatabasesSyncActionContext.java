@@ -24,7 +24,7 @@ import java.util.List;
 
 /** The FlinkCdcDatabasesActionContext for the entire database synchronization. */
 @SuperBuilder
-public abstract class FlinkCdcDatabasesActionContext extends AbstractActionContext
+public abstract class FlinkCdcDatabasesSyncActionContext extends AbstractActionContext
         implements ActionContext {
 
     @ActionConf(value = "warehouse", nullable = false)
