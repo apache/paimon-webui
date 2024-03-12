@@ -22,15 +22,14 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-
 @SuperBuilder
-public abstract class FlinkCdcTableSyncActionContext extends AbstractActionContext implements ActionContext {
+public abstract class FlinkCdcTableSyncActionContext extends AbstractActionContext
+        implements ActionContext {
 
-
-    @ActionConf(value = "warehouse",nullable = false)
+    @ActionConf(value = "warehouse", nullable = false)
     protected String warehouse;
 
-    @ActionConf(value = "database",nullable = false)
+    @ActionConf(value = "database", nullable = false)
     protected String database;
 
     @ActionConf("table")
@@ -42,11 +41,9 @@ public abstract class FlinkCdcTableSyncActionContext extends AbstractActionConte
     @ActionConf("primary_keys")
     protected String primaryKeys;
 
-    @ActionConf(value = "catalog_conf",confList = true)
+    @ActionConf(value = "catalog_conf", confList = true)
     protected List<String> catalogConfList;
 
-    @ActionConf(value = "table_conf",confList = true)
+    @ActionConf(value = "table_conf", confList = true)
     protected List<String> tableConfList;
-
-
 }

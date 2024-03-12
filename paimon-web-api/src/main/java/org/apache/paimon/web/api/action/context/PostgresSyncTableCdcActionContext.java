@@ -29,7 +29,7 @@ public class PostgresSyncTableCdcActionContext extends FlinkCdcTableSyncActionCo
     @ActionConf(value = "postgres_conf", confList = true)
     private final List<String> postgresConfList;
 
-    public String name(){
+    public String name() {
         return "postgres_sync_table";
     }
 }
