@@ -25,7 +25,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
-/** The test class of mysql sync databases action context in {@link MysqlSyncDatabasesActionContext}. */
+/**
+ * The test class of mysql sync databases action context in {@link MysqlSyncDatabasesActionContext}.
+ */
 public class MysqlSyncDatabasesActionContextTest extends FlinkCdcActionContextTestBase {
 
     @Test
