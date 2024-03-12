@@ -18,27 +18,23 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import org.apache.commons.lang3.StringUtils;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-/** ActionContext Util. */
-public class ActionContextUtil {
+@SuperBuilder
+public abstract class FlinkCdcDatabasesActionContext extends AbstractActionContext implements ActionContext {
 
-    private ActionContextUtil() {}
+    @ActionConf(value = "warehouse",nullable = false)
+    protected String warehouse;
 
-    public static void addConf(List<String> args, String confName, String conf) {
-        if (StringUtils.isNotBlank(conf)) {
-            args.add("--" + confName);
-            args.add(conf);
-        }
-    }
+    @ActionConf(value = "database",nullable = false)
+    protected String database;
 
-    public static void addConfList(List<String> args, String confName, List<String> confList) {
-        if (confList != null && !confList.isEmpty()) {
-            for (String conf : confList) {
-                addConf(args, confName, conf);
-            }
-        }
-    }
+    @ActionConf(value = "catalog_conf",confList = true)
+    protected List<String> catalogConfList;
+
+    @ActionConf(value = "table_conf",confList = true)
+    protected List<String> tableConfList;
+
 }

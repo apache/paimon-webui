@@ -40,21 +40,21 @@ public class MysqlSyncTableActionContextTest {
 
     @Test
     public void testBuild() {
-        List<String> commands =
+        List<String> args =
                 MysqlSyncTableActionContext.builder()
                         .warehouse(warehouse)
                         .database(database)
                         .table(table)
                         .build()
-                        .getCommand();
+                        .getActionArgs();
         List<String> expectedCommands =
-                Arrays.asList("--warehouse", warehouse, "--database", database, "--table", table);
-        assertLinesMatch(expectedCommands, commands);
+                Arrays.asList("mysql_sync_table","--warehouse", warehouse, "--database", database, "--table", table);
+        assertLinesMatch(expectedCommands, args);
     }
 
     @Test
     public void testBuildConf() {
-        List<String> commands =
+        List<String> args =
                 MysqlSyncTableActionContext.builder()
                         .warehouse(warehouse)
                         .database(database)
@@ -69,9 +69,10 @@ public class MysqlSyncTableActionContextTest {
                                 Arrays.asList("metastore=hive", "uri=thrift://hive-metastore:9083"))
                         .tableConfList(Arrays.asList("bucket=4", "changelog-producer=input"))
                         .build()
-                        .getCommand();
+                        .getActionArgs();
         List<String> expectedCommands =
                 Arrays.asList(
+                        "mysql_sync_table",
                         "--warehouse",
                         warehouse,
                         "--database",
@@ -80,12 +81,6 @@ public class MysqlSyncTableActionContextTest {
                         table,
                         "--partition_keys",
                         "pt",
-                        "--mysql_conf",
-                        "table-name='source_table'",
-                        "--mysql_conf",
-                        "database-name='source_db'",
-                        "--mysql_conf",
-                        "password=123456",
                         "--catalog_conf",
                         "metastore=hive",
                         "--catalog_conf",
@@ -93,27 +88,32 @@ public class MysqlSyncTableActionContextTest {
                         "--table_conf",
                         "bucket=4",
                         "--table_conf",
-                        "changelog-producer=input");
-        assertLinesMatch(expectedCommands, commands);
+                        "changelog-producer=input",
+                        "--mysql_conf",
+                        "table-name='source_table'",
+                        "--mysql_conf",
+                        "database-name='source_db'",
+                        "--mysql_conf",
+                        "password=123456");
+        assertLinesMatch(expectedCommands, args);
     }
 
     @Test
     public void testBuildError() {
-        MysqlSyncTableActionContext.MysqlSyncTableActionContextBuilder builder =
-                MysqlSyncTableActionContext.builder()
-                        .warehouse(warehouse)
-                        .database(database)
-                        .partitionKeys("pt")
-                        .primaryKeys("pt,uid")
-                        .mysqlConfList(
-                                Arrays.asList(
-                                        "table-name='source_table'",
-                                        "database-name='source_db'",
-                                        "password=123456"))
-                        .catalogConfList(
-                                Arrays.asList("metastore=hive", "uri=thrift://hive-metastore:9083"))
-                        .tableConfList(Arrays.asList("bucket=4", "changelog-producer=input"));
-        ActionException actionException = assertThrows(ActionException.class, builder::build);
-        assertEquals("warehouse、database、table can not be null", actionException.getMessage());
+        MysqlSyncTableActionContext context = MysqlSyncTableActionContext.builder()
+                .warehouse(warehouse)
+                .database(database)
+                .partitionKeys("pt")
+                .primaryKeys("pt,uid")
+                .mysqlConfList(
+                        Arrays.asList(
+                                "table-name='source_table'",
+                                "database-name='source_db'",
+                                "password=123456"))
+                .catalogConfList(
+                        Arrays.asList("metastore=hive", "uri=thrift://hive-metastore:9083"))
+                .tableConfList(Arrays.asList("bucket=4", "changelog-producer=input")).build();
+        ActionException actionException = assertThrows(ActionException.class, context::getActionArgs);
+        assertEquals("table can not be null", actionException.getMessage());
     }
 }

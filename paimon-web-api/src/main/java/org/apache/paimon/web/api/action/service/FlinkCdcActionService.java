@@ -30,15 +30,14 @@ import java.util.List;
 
 /** An abstract Action service that executes actions through the shell. */
 @Slf4j
-public abstract class AbstractCdcActionService implements ActionService {
+public class FlinkCdcActionService implements ActionService {
 
-    public List<String> getCommand(ActionContext actionContext) {
+    private List<String> getCommand(ActionContext actionContext) {
         List<String> commandList = new ArrayList<>();
-        commandList.add("${FLINK_HOME}/bin/flink");
+        commandList.add("bin/flink");
         commandList.add("run");
         commandList.add(getActionPath());
-        commandList.add(name());
-        commandList.addAll(actionContext.getCommand());
+        commandList.addAll(actionContext.getActionArgs());
         return commandList;
     }
 
@@ -48,7 +47,6 @@ public abstract class AbstractCdcActionService implements ActionService {
             Process process = new ShellService(flinkHome, getCommand(actionContext)).execute();
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
-            catchException(exception);
         }
     }
 
@@ -73,6 +71,4 @@ public abstract class AbstractCdcActionService implements ActionService {
         }
         return actionPath;
     }
-
-    public void catchException(Exception exception) throws Exception {}
 }

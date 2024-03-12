@@ -18,27 +18,18 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import org.apache.commons.lang3.StringUtils;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-/** ActionContext Util. */
-public class ActionContextUtil {
+/** Postgres sync table action context. */
+@SuperBuilder
+public class PostgresSyncTableCdcActionContext extends FlinkCdcTableSyncActionContext {
 
-    private ActionContextUtil() {}
+    @ActionConf(value = "postgres_conf", confList = true)
+    private final List<String> postgresConfList;
 
-    public static void addConf(List<String> args, String confName, String conf) {
-        if (StringUtils.isNotBlank(conf)) {
-            args.add("--" + confName);
-            args.add(conf);
-        }
-    }
-
-    public static void addConfList(List<String> args, String confName, List<String> confList) {
-        if (confList != null && !confList.isEmpty()) {
-            for (String conf : confList) {
-                addConf(args, confName, conf);
-            }
-        }
+    public String name(){
+        return "postgres_sync_table";
     }
 }
