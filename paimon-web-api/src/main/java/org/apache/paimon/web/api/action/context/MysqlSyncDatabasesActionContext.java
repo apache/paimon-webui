@@ -16,17 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.action.service;
+package org.apache.paimon.web.api.action.context;
 
-import com.google.auto.service.AutoService;
+import lombok.experimental.SuperBuilder;
 
-/** Mysql sync table action service . */
-@AutoService(ActionService.class)
-public class MysqlSyncTableCdcActionService extends AbstractCdcActionService
-        implements ActionService {
+import java.util.List;
 
-    @Override
-    public String name() {
-        return "mysql_sync_table";
+
+/** Mysql sync databases action context. */
+@SuperBuilder
+public class MysqlSyncDatabasesActionContext extends FlinkCdcDatabasesActionContext
+        implements ActionContext {
+
+    @ActionConf(value = "mysql_conf", confList = true)
+    private final List<String> mysqlConfList;
+
+    public String name(){
+        return "mysql_sync_database";
     }
 }

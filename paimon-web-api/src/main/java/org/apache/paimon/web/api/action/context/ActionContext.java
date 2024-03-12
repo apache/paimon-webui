@@ -22,7 +22,9 @@ import java.util.List;
 
 /** The context of action which converts the user-defined action to command line. */
 public interface ActionContext {
+    String name();
 
     /** Converts the user-defined action to command line. */
-    List<String> getCommand();
+    List<String> getActionArgs();
+
 }

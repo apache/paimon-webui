@@ -18,47 +18,22 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.paimon.web.api.action.context.ActionContextUtil.addConf;
-import static org.apache.paimon.web.api.action.context.ActionContextUtil.addConfList;
 
 /** Mysql sync table action context. */
-@Builder
-public class MysqlSyncTableActionContext implements ActionContext {
+@SuperBuilder
+public class MysqlSyncTableActionContext extends FlinkCdcTableSyncActionContext
+        implements ActionContext {
 
-    private String warehouse;
-
-    private String database;
-
-    private String table;
-
-    private String partitionKeys;
-
-    private String primaryKeys;
-
-    private List<String> mysqlConfList;
-
-    private List<String> catalogConfList;
-
-    private List<String> tableConfList;
-
-    private MysqlSyncTableActionContext() {}
+    @ActionConf(value = "mysql_conf", confList = true)
+    private final List<String> mysqlConfList;
 
     @Override
-    public List<String> getCommand() {
-        List<String> command = new ArrayList<>();
-        addConf(command, "warehouse", warehouse);
-        addConf(command, "database", database);
-        addConf(command, "table", table);
-        addConf(command, "partition_keys", partitionKeys);
-        addConf(command, "primary_keys", primaryKeys);
-        addConfList(command, "mysql_conf", mysqlConfList);
-        addConfList(command, "catalog_conf", catalogConfList);
-        addConfList(command, "table_conf", tableConfList);
-        return command;
+    public String name() {
+        return "mysql_sync_table";
     }
+
 }

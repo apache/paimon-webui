@@ -26,7 +26,5 @@ import org.apache.paimon.web.api.action.context.ActionContext;
  */
 public interface ActionService {
 
-    String name();
-
     void execute(ActionContext actionContext) throws Exception;
 }
