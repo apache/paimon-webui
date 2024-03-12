@@ -34,6 +34,8 @@ import java.util.List;
 @SuperBuilder
 public abstract class AbstractActionContext implements ActionContext {
 
+    private String actionPath;
+
     @Override
     public List<String> getActionArgs() {
         Class<?> clazz = this.getClass();
@@ -76,5 +78,9 @@ public abstract class AbstractActionContext implements ActionContext {
                 ActionContextUtil.addConf(args, confKey, String.valueOf(confValue));
             }
         }
+    }
+
+    public String getActionJarPath() {
+        return actionPath;
     }
 }
