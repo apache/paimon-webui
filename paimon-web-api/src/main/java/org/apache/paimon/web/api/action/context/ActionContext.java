@@ -26,5 +26,4 @@ public interface ActionContext {
 
     /** Converts the user-defined action to command line. */
     List<String> getActionArgs();
-
 }

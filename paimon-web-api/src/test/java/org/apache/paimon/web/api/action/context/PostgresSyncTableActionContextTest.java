@@ -25,20 +25,29 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
-/** The test class of mysql sync databases action context in {@link MysqlSyncDatabasesActionContext}. */
-public class MysqlSyncDatabasesActionContextTest extends FlinkCdcActionContextTestBase {
+/**
+ * The test class of postgres sync table action context in {@link PostgresSyncTableCdcActionContext}.
+ */
+public class PostgresSyncTableActionContextTest extends FlinkCdcActionContextTestBase {
 
     @Test
-    public void testGetArgs() {
+    public void testBuild() {
         List<String> args =
-                MysqlSyncDatabasesActionContext.builder()
+                PostgresSyncTableCdcActionContext.builder()
                         .warehouse(warehouse)
                         .database(database)
+                        .table(table)
                         .build()
                         .getActionArgs();
         List<String> expectedCommands =
                 Arrays.asList(
-                        "mysql_sync_database", "--warehouse", warehouse, "--database", database);
+                        "postgres_sync_table",
+                        "--warehouse",
+                        warehouse,
+                        "--database",
+                        database,
+                        "--table",
+                        table);
         assertLinesMatch(expectedCommands, args);
     }
 }

@@ -22,7 +22,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-
 /** Mysql sync databases action context. */
 @SuperBuilder
 public class MysqlSyncDatabasesActionContext extends FlinkCdcDatabasesActionContext
@@ -31,7 +30,7 @@ public class MysqlSyncDatabasesActionContext extends FlinkCdcDatabasesActionCont
     @ActionConf(value = "mysql_conf", confList = true)
     private final List<String> mysqlConfList;
 
-    public String name(){
+    public String name() {
         return "mysql_sync_database";
     }
 }

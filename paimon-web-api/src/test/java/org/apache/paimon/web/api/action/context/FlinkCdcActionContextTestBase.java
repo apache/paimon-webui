@@ -18,20 +18,11 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import lombok.experimental.SuperBuilder;
+public class FlinkCdcActionContextTestBase {
 
-import java.util.List;
+    protected static final String warehouse = "warehouse";
 
-/** Mysql sync table action context. */
-@SuperBuilder
-public class MysqlSyncTableActionContext extends FlinkCdcTableSyncActionContext
-        implements ActionContext {
+    protected static final String database = "database";
 
-    @ActionConf(value = "mysql_conf", confList = true)
-    private final List<String> mysqlConfList;
-
-    @Override
-    public String name() {
-        return "mysql_sync_table";
-    }
+    protected static final String table = "table";
 }
