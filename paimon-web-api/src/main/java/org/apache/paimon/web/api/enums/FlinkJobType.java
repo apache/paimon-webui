@@ -16,22 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.action.context;
+package org.apache.paimon.web.api.enums;
 
-import org.apache.paimon.web.api.enums.ActionExecuteResult;
-
-import java.util.List;
-
-/** The context of action which converts the user-defined action to command line. */
-public interface ActionContext {
-    String name();
-
-    /** Converts the user-defined action to command line. */
-    List<String> getActionArgs();
-
-    String getActionJarPath();
-
-    String getErrorMessage();
-
-    ActionExecuteResult getExecuteResult();
+/** FlinkJobType. */
+public enum FlinkJobType {
+    SESSION,
+    JOB,
+    APPLICATION
 }
