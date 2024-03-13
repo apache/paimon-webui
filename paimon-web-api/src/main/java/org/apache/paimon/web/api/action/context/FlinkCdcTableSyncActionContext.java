@@ -22,9 +22,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-/** The FlinkCdcDatabasesActionContext for the table synchronization. */
+/** The FlinkCdcTableSyncActionContext for the table synchronization. */
 @SuperBuilder
-public abstract class FlinkCdcTableSyncActionContext extends AbstractActionContext
+public abstract class FlinkCdcTableSyncActionContext extends FlinkActionContext
         implements ActionContext {
 
     @ActionConf(value = "warehouse", nullable = false)
@@ -33,7 +33,7 @@ public abstract class FlinkCdcTableSyncActionContext extends AbstractActionConte
     @ActionConf(value = "database", nullable = false)
     protected String database;
 
-    @ActionConf("table")
+    @ActionConf(value = "table", nullable = false)
     protected String table;
 
     @ActionConf("partition_keys")

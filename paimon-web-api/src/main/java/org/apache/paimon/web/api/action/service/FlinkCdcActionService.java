@@ -19,6 +19,9 @@
 package org.apache.paimon.web.api.action.service;
 
 import org.apache.paimon.web.api.action.context.ActionContext;
+import org.apache.paimon.web.api.action.context.FlinkActionContext;
+import org.apache.paimon.web.api.enums.ActionExecuteResult;
+import org.apache.paimon.web.api.enums.FlinkJobType;
 import org.apache.paimon.web.api.exception.ActionException;
 import org.apache.paimon.web.api.shell.ShellService;
 
@@ -32,10 +35,18 @@ import java.util.List;
 @Slf4j
 public class FlinkCdcActionService implements ActionService {
 
-    private List<String> getCommand(ActionContext actionContext) {
+    private List<String> getCommand(FlinkActionContext actionContext) {
         List<String> commandList = new ArrayList<>();
         commandList.add("bin/flink");
         commandList.add("run");
+        if (actionContext.getFlinkJobType() != FlinkJobType.SESSION) {
+            throw new ActionException("Only support session job now.");
+        }
+        String sessionUrl = actionContext.getSessionUrl();
+        if (StringUtils.isNotBlank(sessionUrl)) {
+            commandList.add("-m");
+            commandList.add(sessionUrl);
+        }
         commandList.add(actionContext.getActionJarPath());
         commandList.addAll(actionContext.getActionArgs());
         return commandList;
@@ -43,10 +54,21 @@ public class FlinkCdcActionService implements ActionService {
 
     public void execute(ActionContext actionContext) throws Exception {
         String flinkHome = getFlinkHome();
+        FlinkActionContext flinkActionContext;
+        if (!(actionContext instanceof FlinkActionContext)) {
+            throw new ActionException("Only support FlinkActionContext. ");
+        }
+        flinkActionContext = (FlinkActionContext) actionContext;
         try {
-            Process process = new ShellService(flinkHome, getCommand(actionContext)).execute();
+            List<String> command = getCommand(flinkActionContext);
+            System.out.println(String.join(" ", command));
+            log.info("Action will execute cdc job, command is {}", String.join(" ", command));
+            Process process = new ShellService(flinkHome, command).execute();
+            flinkActionContext.setExecuteResult(ActionExecuteResult.SUCCESS);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
+            flinkActionContext.setErrorMessage(exception.getMessage());
+            flinkActionContext.setExecuteResult(ActionExecuteResult.FAILED);
         }
     }
 

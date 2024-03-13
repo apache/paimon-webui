@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.api.action.context;
 
+import org.apache.paimon.web.api.enums.ActionExecuteResult;
 import org.apache.paimon.web.api.exception.ActionException;
 
 import lombok.experimental.SuperBuilder;
@@ -35,6 +36,10 @@ import java.util.List;
 public abstract class AbstractActionContext implements ActionContext {
 
     private String actionPath;
+
+    private ActionExecuteResult executeResult;
+
+    private String errorMessage;
 
     @Override
     public List<String> getActionArgs() {
@@ -66,7 +71,7 @@ public abstract class AbstractActionContext implements ActionContext {
 
             }
             if (!nullable && confValue == null) {
-                throw new ActionException(confKey + "can not be null");
+                throw new ActionException(confKey + " can not be null");
             }
             if (nullable && confValue == null) {
                 continue;
@@ -82,5 +87,21 @@ public abstract class AbstractActionContext implements ActionContext {
 
     public String getActionJarPath() {
         return actionPath;
+    }
+
+    public ActionExecuteResult getExecuteResult() {
+        return executeResult;
+    }
+
+    public void setExecuteResult(ActionExecuteResult executeResult) {
+        this.executeResult = executeResult;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

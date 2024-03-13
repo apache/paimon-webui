@@ -18,20 +18,23 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import org.apache.paimon.web.api.enums.ActionExecuteResult;
+import org.apache.paimon.web.api.enums.FlinkJobType;
 
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
-/** The context of action which converts the user-defined action to command line. */
-public interface ActionContext {
-    String name();
+/** FlinkActionContext. */
+@SuperBuilder
+public abstract class FlinkActionContext extends AbstractActionContext implements ActionContext {
 
-    /** Converts the user-defined action to command line. */
-    List<String> getActionArgs();
+    private String sessionUrl;
 
-    String getActionJarPath();
+    private FlinkJobType flinkJobType;
 
-    String getErrorMessage();
+    public String getSessionUrl() {
+        return sessionUrl;
+    }
 
-    ActionExecuteResult getExecuteResult();
+    public FlinkJobType getFlinkJobType() {
+        return flinkJobType;
+    }
 }
