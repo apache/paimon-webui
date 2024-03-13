@@ -61,8 +61,6 @@ public class FlinkCdcActionService implements ActionService {
         flinkActionContext = (FlinkActionContext) actionContext;
         try {
             List<String> command = getCommand(flinkActionContext);
-            System.out.println(String.join(" ", command));
-            log.info("Action will execute cdc job, command is {}", String.join(" ", command));
             Process process = new ShellService(flinkHome, command).execute();
             flinkActionContext.setExecuteResult(ActionExecuteResult.SUCCESS);
         } catch (Exception exception) {
