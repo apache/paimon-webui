@@ -40,7 +40,7 @@ public class PostgresSyncTableActionContextTest extends FlinkCdcActionContextTes
                         .table(table)
                         .build()
                         .getActionArgs();
-        List<String> expectedCommands =
+        List<String> expectedArgs =
                 Arrays.asList(
                         "postgres_sync_table",
                         "--warehouse",
@@ -49,6 +49,6 @@ public class PostgresSyncTableActionContextTest extends FlinkCdcActionContextTes
                         database,
                         "--table",
                         table);
-        assertLinesMatch(expectedCommands, args);
+        assertLinesMatch(expectedArgs, args);
     }
 }

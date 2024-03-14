@@ -41,7 +41,7 @@ public class MysqlSyncTableActionContextTest extends FlinkCdcActionContextTestBa
                         .table(table)
                         .build()
                         .getActionArgs();
-        List<String> expectedCommands =
+        List<String> expectedArgs =
                 Arrays.asList(
                         "mysql_sync_table",
                         "--warehouse",
@@ -50,7 +50,7 @@ public class MysqlSyncTableActionContextTest extends FlinkCdcActionContextTestBa
                         database,
                         "--table",
                         table);
-        assertLinesMatch(expectedCommands, args);
+        assertLinesMatch(expectedArgs, args);
     }
 
     @Test
