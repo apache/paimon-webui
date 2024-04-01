@@ -26,7 +26,7 @@ export default defineComponent({
     const { t, setLanguage } = useLocaleHooks()
 
     const handleLink = () => {
-      window.open('https://github.com/apache/incubator-paimon-webui')
+      window.open('https://github.com/apache/paimon-webui')
     }
 
     const configStore = useConfigStore()

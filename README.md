@@ -1,4 +1,4 @@
-# Apache Paimon (incubating) Web UI
+# Apache Paimon Web UI
 
 This repository is web ui for the [Apache Paimon](https://paimon.apache.org/) project.
 
