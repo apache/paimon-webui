@@ -146,12 +146,14 @@ public class UserControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        PageR<?> r = ObjectMapperUtils.fromJSON(responseString, PageR.class);
-        assertNotNull(r);
+        PageR<UserVO> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<UserVO>>() {});
         assertTrue(
                 r.getData() != null
                         && ((r.getTotal() > 0 && r.getData().size() > 0)
                                 || (r.getTotal() == 0 && r.getData().size() == 0)));
+        assertEquals(r.getData().get(0).getUsername(), "admin");
+        assertEquals(r.getData().get(1).getUsername(), "common");
     }
 
     @Test
