@@ -20,15 +20,15 @@ package org.apache.paimon.web.gateway.provider;
 
 import org.apache.paimon.web.engine.flink.common.executor.ExecutorFactory;
 import org.apache.paimon.web.engine.flink.sql.gateway.executor.FlinkSqlGatewayExecutorFactory;
-import org.apache.paimon.web.gateway.config.ExecuteConfig;
+import org.apache.paimon.web.gateway.config.ExecutionConfig;
 import org.apache.paimon.web.gateway.enums.TaskType;
 
 /** ExecutorFactoryProvider is responsible for providing the appropriate ExecutorFactory. */
 public class ExecutorFactoryProvider {
 
-    private final ExecuteConfig executeConfig;
+    private final ExecutionConfig executeConfig;
 
-    public ExecutorFactoryProvider(ExecuteConfig executeConfig) {
+    public ExecutorFactoryProvider(ExecutionConfig executeConfig) {
         this.executeConfig = executeConfig;
     }
 

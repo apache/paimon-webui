@@ -28,11 +28,11 @@ import java.util.Map;
 /** Configuration for execution context. */
 @Builder
 @Getter
-public class ExecuteConfig {
+public class ExecutionConfig {
 
     private boolean isStreaming;
 
     private SessionEntity sessionEntity;
 
-    private Map<String, String> config;
+    private Map<String, String> configs;
 }

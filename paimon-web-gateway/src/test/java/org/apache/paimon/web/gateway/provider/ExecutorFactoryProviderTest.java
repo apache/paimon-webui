@@ -20,7 +20,7 @@ package org.apache.paimon.web.gateway.provider;
 
 import org.apache.paimon.web.engine.flink.sql.gateway.executor.FlinkSqlGatewayExecutorFactory;
 import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
-import org.apache.paimon.web.gateway.config.ExecuteConfig;
+import org.apache.paimon.web.gateway.config.ExecutionConfig;
 import org.apache.paimon.web.gateway.enums.TaskType;
 
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,8 @@ public class ExecutorFactoryProviderTest {
 
     @Test
     public void testGetExecutorFactory() {
-        ExecuteConfig config =
-                ExecuteConfig.builder().sessionEntity(SessionEntity.builder().build()).build();
+        ExecutionConfig config =
+                ExecutionConfig.builder().sessionEntity(SessionEntity.builder().build()).build();
         TaskType taskType = TaskType.fromValue("FLINK SQL GATEWAY");
         ExecutorFactoryProvider executorFactoryProvider = new ExecutorFactoryProvider(config);
         assertSame(
