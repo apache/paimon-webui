@@ -152,8 +152,20 @@ public class UserControllerTest extends ControllerTestBase {
                 r.getData() != null
                         && ((r.getTotal() > 0 && r.getData().size() > 0)
                                 || (r.getTotal() == 0 && r.getData().size() == 0)));
-        assertEquals(r.getData().get(0).getUsername(), "admin");
-        assertEquals(r.getData().get(1).getUsername(), "common");
+
+        UserVO firstUser = r.getData().get(0);
+        assertEquals("admin", firstUser.getUsername());
+        assertEquals("Admin", firstUser.getNickname());
+        assertEquals("admin@paimon.com", firstUser.getEmail());
+        assertEquals("LOCAL", firstUser.getUserType());
+        assertTrue(firstUser.getEnabled());
+
+        UserVO secondUser = r.getData().get(1);
+        assertEquals("common", secondUser.getUsername());
+        assertEquals("common", secondUser.getNickname());
+        assertEquals("common@paimon.com", secondUser.getEmail());
+        assertEquals("LOCAL", secondUser.getUserType());
+        assertTrue(secondUser.getEnabled());
     }
 
     @Test
