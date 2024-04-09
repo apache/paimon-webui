@@ -20,25 +20,15 @@ package org.apache.paimon.web.gateway.enums;
 
 /** The {@code EngineType} enum defines the types of engines that can be supported. */
 public enum EngineType {
-    SPARK("SPARK"),
-    FLINK("FLINK");
-
-    private final String value;
+    SPARK,
+    FLINK;
 
     public static EngineType fromValue(String value) {
         for (EngineType type : values()) {
-            if (type.getValue().equals(value)) {
+            if (type.name().equals(value)) {
                 return type;
             }
         }
         throw new IllegalArgumentException("Unknown engine type value: " + value);
-    }
-
-    EngineType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return this.value;
     }
 }

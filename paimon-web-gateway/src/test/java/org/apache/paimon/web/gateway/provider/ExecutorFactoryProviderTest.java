@@ -26,12 +26,13 @@ import org.apache.paimon.web.gateway.enums.EngineType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /** Test for {@link ExecutorFactoryProvider}. */
 public class ExecutorFactoryProviderTest {
 
     @Test
-    public void testGetExecutorFactory() {
+    public void testGetExecutorFactoryWithFlink() {
         ExecutionConfig config =
                 ExecutionConfig.builder().sessionEntity(SessionEntity.builder().build()).build();
         EngineType engineType = EngineType.fromValue("FLINK");
@@ -39,5 +40,16 @@ public class ExecutorFactoryProviderTest {
         assertSame(
                 FlinkSqlGatewayExecutorFactory.class,
                 executorFactoryProvider.getExecutorFactory(engineType).getClass());
+    }
+
+    @Test
+    public void testGetExecutorFactoryWithSpark() {
+        ExecutionConfig config =
+                ExecutionConfig.builder().sessionEntity(SessionEntity.builder().build()).build();
+        EngineType engineType = EngineType.SPARK;
+        ExecutorFactoryProvider executorFactoryProvider = new ExecutorFactoryProvider(config);
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> executorFactoryProvider.getExecutorFactory(engineType));
     }
 }
