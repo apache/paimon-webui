@@ -34,13 +34,11 @@ public class ExecutorFactoryProvider {
 
     public ExecutorFactory getExecutorFactory(EngineType type) {
         switch (type) {
-            case SPARK:
-                throw new UnsupportedOperationException(
-                        "Spark engine are not currently supported.");
             case FLINK:
                 return new FlinkSqlGatewayExecutorFactory(executionConfig.getSessionEntity());
             default:
-                throw new IllegalArgumentException("Unsupported engine type: " + type);
+                throw new UnsupportedOperationException(
+                        type + " engine is not currently supported.");
         }
     }
 }

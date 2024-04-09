@@ -46,7 +46,7 @@ public class ExecutorFactoryProviderTest {
     public void testGetExecutorFactoryWithSpark() {
         ExecutionConfig config =
                 ExecutionConfig.builder().sessionEntity(SessionEntity.builder().build()).build();
-        EngineType engineType = EngineType.SPARK;
+        EngineType engineType = EngineType.fromValue("SPARK");
         ExecutorFactoryProvider executorFactoryProvider = new ExecutorFactoryProvider(config);
         assertThrows(
                 UnsupportedOperationException.class,
