@@ -21,26 +21,26 @@ package org.apache.paimon.web.gateway.provider;
 import org.apache.paimon.web.engine.flink.common.executor.ExecutorFactory;
 import org.apache.paimon.web.engine.flink.sql.gateway.executor.FlinkSqlGatewayExecutorFactory;
 import org.apache.paimon.web.gateway.config.ExecutionConfig;
-import org.apache.paimon.web.gateway.enums.TaskType;
+import org.apache.paimon.web.gateway.enums.EngineType;
 
 /** ExecutorFactoryProvider is responsible for providing the appropriate ExecutorFactory. */
 public class ExecutorFactoryProvider {
 
-    private final ExecutionConfig executeConfig;
+    private final ExecutionConfig executionConfig;
 
-    public ExecutorFactoryProvider(ExecutionConfig executeConfig) {
-        this.executeConfig = executeConfig;
+    public ExecutorFactoryProvider(ExecutionConfig executionConfig) {
+        this.executionConfig = executionConfig;
     }
 
-    public ExecutorFactory getExecutorFactory(TaskType type) {
+    public ExecutorFactory getExecutorFactory(EngineType type) {
         switch (type) {
-                // Currently only supports Flink SQL Gateway.
             case SPARK:
-                throw new UnsupportedOperationException("Spark task are not currently supported.");
+                throw new UnsupportedOperationException(
+                        "Spark engine are not currently supported.");
             case FLINK:
-                return new FlinkSqlGatewayExecutorFactory(executeConfig.getSessionEntity());
+                return new FlinkSqlGatewayExecutorFactory(executionConfig.getSessionEntity());
             default:
-                throw new IllegalArgumentException("Unsupported task type: " + type);
+                throw new IllegalArgumentException("Unsupported engine type: " + type);
         }
     }
 }

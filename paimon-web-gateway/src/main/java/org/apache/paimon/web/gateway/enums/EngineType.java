@@ -18,23 +18,23 @@
 
 package org.apache.paimon.web.gateway.enums;
 
-/** The {@code TaskType} enum defines the types of tasks that can be executed. */
-public enum TaskType {
+/** The {@code EngineType} enum defines the types of engines that can be supported. */
+public enum EngineType {
     SPARK("SPARK"),
     FLINK("FLINK");
 
     private final String value;
 
-    public static TaskType fromValue(String value) {
-        for (TaskType type : values()) {
+    public static EngineType fromValue(String value) {
+        for (EngineType type : values()) {
             if (type.getValue().equals(value)) {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Unknown task type value: " + value);
+        throw new IllegalArgumentException("Unknown engine type value: " + value);
     }
 
-    TaskType(String value) {
+    EngineType(String value) {
         this.value = value;
     }
 
