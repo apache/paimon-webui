@@ -21,7 +21,7 @@ package org.apache.paimon.web.gateway.enums;
 /** The {@code TaskType} enum defines the types of tasks that can be executed. */
 public enum TaskType {
     SPARK("SPARK"),
-    FLINK_SQL_GATEWAY("FLINK SQL GATEWAY");
+    FLINK("FLINK");
 
     private final String value;
 

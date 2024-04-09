@@ -37,7 +37,7 @@ public class ExecutorFactoryProvider {
                 // Currently only supports Flink SQL Gateway.
             case SPARK:
                 throw new UnsupportedOperationException("Spark task are not currently supported.");
-            case FLINK_SQL_GATEWAY:
+            case FLINK:
                 return new FlinkSqlGatewayExecutorFactory(executeConfig.getSessionEntity());
             default:
                 throw new IllegalArgumentException("Unsupported task type: " + type);
