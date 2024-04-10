@@ -23,12 +23,12 @@ public enum EngineType {
     SPARK,
     FLINK;
 
-    public static EngineType fromValue(String value) {
+    public static EngineType fromName(String name) {
         for (EngineType type : values()) {
-            if (type.name().equals(value)) {
+            if (type.name().equals(name)) {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Unknown engine type value: " + value);
+        throw new IllegalArgumentException("Unknown engine type value: " + name);
     }
 }

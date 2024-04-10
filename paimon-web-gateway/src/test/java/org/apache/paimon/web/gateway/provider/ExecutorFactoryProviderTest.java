@@ -35,7 +35,7 @@ public class ExecutorFactoryProviderTest {
     public void testGetExecutorFactoryWithFlink() {
         ExecutionConfig config =
                 ExecutionConfig.builder().sessionEntity(SessionEntity.builder().build()).build();
-        EngineType engineType = EngineType.fromValue("FLINK");
+        EngineType engineType = EngineType.fromName("FLINK");
         ExecutorFactoryProvider executorFactoryProvider = new ExecutorFactoryProvider(config);
         assertSame(
                 FlinkSqlGatewayExecutorFactory.class,
@@ -46,7 +46,7 @@ public class ExecutorFactoryProviderTest {
     public void testGetExecutorFactoryWithSpark() {
         ExecutionConfig config =
                 ExecutionConfig.builder().sessionEntity(SessionEntity.builder().build()).build();
-        EngineType engineType = EngineType.fromValue("SPARK");
+        EngineType engineType = EngineType.fromName("SPARK");
         ExecutorFactoryProvider executorFactoryProvider = new ExecutorFactoryProvider(config);
         assertThrows(
                 UnsupportedOperationException.class,
