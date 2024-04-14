@@ -16,27 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.vo;
+package org.apache.paimon.web.gateway.config;
 
-import lombok.AllArgsConstructor;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
+
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-/** VO of metadata manifest. */
-@Data
+import java.util.Map;
+
+/** Configuration for execution context. */
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ManifestsVO {
+@Getter
+public class ExecutionConfig {
 
-    private String fileName;
+    private boolean isStreaming;
 
-    private Long fileSize;
+    private SessionEntity sessionEntity;
 
-    private Long numAddedFiles;
-
-    private Long numDeletedFiles;
-
-    private Long schemaId;
+    private Map<String, String> configs;
 }

@@ -16,27 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.vo;
+package org.apache.paimon.web.gateway.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+/** The {@code EngineType} enum defines the types of engines that can be supported. */
+public enum EngineType {
+    SPARK,
+    FLINK;
 
-/** VO of metadata manifest. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ManifestsVO {
-
-    private String fileName;
-
-    private Long fileSize;
-
-    private Long numAddedFiles;
-
-    private Long numDeletedFiles;
-
-    private Long schemaId;
+    public static EngineType fromName(String name) {
+        for (EngineType type : values()) {
+            if (type.name().equals(name)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown engine type value: " + name);
+    }
 }

@@ -16,27 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.vo;
+package org.apache.paimon.web.server.data.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import org.apache.paimon.web.server.data.model.SysRole;
+import org.apache.paimon.web.server.data.model.User;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 
-/** VO of metadata manifest. */
+import java.util.List;
+
+/** DTO of UserWithRoles. */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ManifestsVO {
+@EqualsAndHashCode(callSuper = true)
+public class UserWithRolesDTO extends User {
 
-    private String fileName;
-
-    private Long fileSize;
-
-    private Long numAddedFiles;
-
-    private Long numDeletedFiles;
-
-    private Long schemaId;
+    private List<SysRole> roles;
 }

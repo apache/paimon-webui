@@ -18,25 +18,40 @@
 
 package org.apache.paimon.web.server.data.vo;
 
+import org.apache.paimon.web.server.data.model.SysRole;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** VO of metadata manifest. */
+import java.time.LocalDateTime;
+import java.util.List;
+
+/** VO of User. */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ManifestsVO {
+public class UserVO {
 
-    private String fileName;
+    private Integer id;
 
-    private Long fileSize;
+    private String username;
 
-    private Long numAddedFiles;
+    private String nickname;
 
-    private Long numDeletedFiles;
+    private String userType;
 
-    private Long schemaId;
+    private String mobile;
+
+    private String email;
+
+    private Boolean enabled;
+
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
+
+    private List<SysRole> roles;
 }

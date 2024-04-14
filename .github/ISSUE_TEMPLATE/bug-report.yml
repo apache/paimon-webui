@@ -29,10 +29,10 @@ body:
     attributes:
       label: Search before asking
       description: >
-        Please search [issues](https://github.com/apache/incubator-paimon-webui/issues) to check if your issue has already been reported.
+        Please search [issues](https://github.com/apache/paimon-webui/issues) to check if your issue has already been reported.
       options:
         - label: >
-            I searched in the [issues](https://github.com/apache/incubator-paimon-webui/issues) and found nothing similar.
+            I searched in the [issues](https://github.com/apache/paimon-webui/issues) and found nothing similar.
           required: true
   - type: dropdown
     attributes:
