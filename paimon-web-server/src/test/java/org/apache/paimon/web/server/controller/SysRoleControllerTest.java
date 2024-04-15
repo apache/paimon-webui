@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -173,12 +174,37 @@ public class SysRoleControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        PageR<?> r = ObjectMapperUtils.fromJSON(responseString, PageR.class);
+        PageR<SysRole> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<SysRole>>() {});
         assertNotNull(r);
         assertTrue(
                 r.getData() != null
                         && ((r.getTotal() > 0 && r.getData().size() > 0)
                                 || (r.getTotal() == 0 && r.getData().size() == 0)));
+
+        SysRole firstRole = r.getData().get(0);
+        assertEquals(1, firstRole.getId());
+        assertEquals("admin", firstRole.getRoleName());
+        assertEquals("admin", firstRole.getRoleKey());
+        assertEquals(1, firstRole.getSort());
+        assertTrue(firstRole.getEnabled());
+        assertFalse(firstRole.getIsDelete());
+
+        SysRole secondRole = r.getData().get(1);
+        assertEquals(2, secondRole.getId());
+        assertEquals("common", secondRole.getRoleName());
+        assertEquals("common", secondRole.getRoleKey());
+        assertEquals(2, secondRole.getSort());
+        assertTrue(secondRole.getEnabled());
+        assertFalse(secondRole.getIsDelete());
+
+        SysRole thirdRole = r.getData().get(2);
+        assertEquals(3, thirdRole.getId());
+        assertEquals("test-edit", thirdRole.getRoleName());
+        assertEquals("test-edit", thirdRole.getRoleKey());
+        assertEquals(3, thirdRole.getSort());
+        assertTrue(secondRole.getEnabled());
+        assertFalse(secondRole.getIsDelete());
     }
 
     @Test
@@ -248,13 +274,30 @@ public class SysRoleControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        PageR<?> r = ObjectMapperUtils.fromJSON(responseString, PageR.class);
+        PageR<User> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<User>>() {});
         assertNotNull(r);
 
         assertTrue(
                 r.getData() != null
                         && ((r.getTotal() > 0 && r.getData().size() > 0)
                                 || (r.getTotal() == 0 && r.getData().size() == 0)));
+
+        User firstUser = r.getData().get(0);
+        assertEquals(1, firstUser.getId());
+        assertEquals("admin", firstUser.getUsername());
+        assertEquals("Admin", firstUser.getNickname());
+        assertEquals("admin@paimon.com", firstUser.getEmail());
+        assertTrue(firstUser.getEnabled());
+        assertTrue(firstUser.isAdmin());
+
+        User secondUser = r.getData().get(1);
+        assertEquals(2, secondUser.getId());
+        assertEquals("common", secondUser.getUsername());
+        assertEquals("common", secondUser.getNickname());
+        assertEquals("common@paimon.com", secondUser.getEmail());
+        assertTrue(secondUser.getEnabled());
+        assertFalse(secondUser.isAdmin());
     }
 
     private List<User> getAllLocatedUsers(Integer roleId) throws Exception {
@@ -281,7 +324,7 @@ public class SysRoleControllerTest extends ControllerTestBase {
     @Order(8)
     public void testUnAllocatedList() throws Exception {
         RoleWithUserDTO roleWithUser = new RoleWithUserDTO();
-        roleWithUser.setRoleId(2);
+        roleWithUser.setRoleId(1);
         roleWithUser.setUsername(commonUserName);
         String responseString =
                 mockMvc.perform(
@@ -296,13 +339,21 @@ public class SysRoleControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        PageR<?> r = ObjectMapperUtils.fromJSON(responseString, PageR.class);
+        PageR<User> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<User>>() {});
         assertNotNull(r);
 
         assertTrue(
                 r.getData() != null
                         && ((r.getTotal() > 0 && r.getData().size() > 0)
                                 || (r.getTotal() == 0 && r.getData().size() == 0)));
+
+        User firstExpectUser = r.getData().get(0);
+        assertEquals(2, firstExpectUser.getId());
+        assertEquals("common", firstExpectUser.getUsername());
+        assertEquals("common", firstExpectUser.getNickname());
+        assertEquals("common@paimon.com", firstExpectUser.getEmail());
+        assertTrue(firstExpectUser.getEnabled());
+        assertFalse(firstExpectUser.isAdmin());
     }
 
     @Test
