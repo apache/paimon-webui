@@ -339,7 +339,8 @@ public class SysRoleControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        PageR<User> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<User>>() {});
+        PageR<User> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<User>>() {});
         assertNotNull(r);
 
         assertTrue(
