@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.mapper;
 
+import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
 import org.apache.paimon.web.server.data.dto.UserWithRolesDTO;
 import org.apache.paimon.web.server.data.model.User;
 
@@ -43,18 +44,22 @@ public interface UserMapper extends BaseMapper<User> {
     /**
      * Query user list by role ID.
      *
-     * @param user query params
+     * @param page paging params
+     * @param roleWithUserDTO query params
      * @return user list
      */
-    List<User> selectAllocatedList(User user);
+    List<User> selectAllocatedList(
+            IPage<RoleWithUserDTO> page, @Param("role") RoleWithUserDTO roleWithUserDTO);
 
     /**
      * Query the list of unassigned user roles.
      *
-     * @param user query params
+     * @param page paging params
+     * @param roleWithUserDTO query params
      * @return user list
      */
-    List<User> selectUnallocatedList(User user);
+    List<User> selectUnallocatedList(
+            IPage<RoleWithUserDTO> page, @Param("role") RoleWithUserDTO roleWithUserDTO);
 
     /**
      * Query user info by username.
