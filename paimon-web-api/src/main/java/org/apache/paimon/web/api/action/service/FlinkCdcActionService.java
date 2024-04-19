@@ -19,8 +19,8 @@
 package org.apache.paimon.web.api.action.service;
 
 import org.apache.paimon.web.api.action.context.ActionContext;
+import org.apache.paimon.web.api.action.context.ActionExecutionResult;
 import org.apache.paimon.web.api.action.context.FlinkActionContext;
-import org.apache.paimon.web.api.enums.ActionExecuteResult;
 import org.apache.paimon.web.api.enums.FlinkJobType;
 import org.apache.paimon.web.api.exception.ActionException;
 import org.apache.paimon.web.api.shell.ShellService;
@@ -47,27 +47,28 @@ public class FlinkCdcActionService implements ActionService {
             commandList.add("-m");
             commandList.add(sessionUrl);
         }
-        commandList.add(actionContext.getActionJarPath());
-        commandList.addAll(actionContext.getActionArgs());
+        commandList.add(actionContext.getJarPath());
+        commandList.addAll(actionContext.getArguments());
         return commandList;
     }
 
-    public void execute(ActionContext actionContext) throws Exception {
+    public ActionExecutionResult execute(ActionContext actionContext) throws Exception {
         String flinkHome = getFlinkHome();
         FlinkActionContext flinkActionContext;
         if (!(actionContext instanceof FlinkActionContext)) {
             throw new ActionException("Only support FlinkActionContext. ");
         }
         flinkActionContext = (FlinkActionContext) actionContext;
+        ActionExecutionResult result;
         try {
             List<String> command = getCommand(flinkActionContext);
             Process process = new ShellService(flinkHome, command).execute();
-            flinkActionContext.setExecuteResult(ActionExecuteResult.SUCCESS);
+            result = ActionExecutionResult.success();
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
-            flinkActionContext.setErrorMessage(exception.getMessage());
-            flinkActionContext.setExecuteResult(ActionExecuteResult.FAILED);
+            result = ActionExecutionResult.fail(exception.getMessage());
         }
+        return result;
     }
 
     private String getFlinkHome() {

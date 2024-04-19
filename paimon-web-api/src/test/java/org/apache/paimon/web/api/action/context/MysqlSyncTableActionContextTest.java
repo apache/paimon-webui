@@ -40,7 +40,7 @@ public class MysqlSyncTableActionContextTest extends FlinkCdcActionContextTestBa
                         .database(database)
                         .table(table)
                         .build()
-                        .getActionArgs();
+                        .getArguments();
         List<String> expectedArgs =
                 Arrays.asList(
                         "mysql_sync_table",
@@ -70,7 +70,7 @@ public class MysqlSyncTableActionContextTest extends FlinkCdcActionContextTestBa
                                 Arrays.asList("metastore=hive", "uri=thrift://hive-metastore:9083"))
                         .tableConfList(Arrays.asList("bucket=4", "changelog-producer=input"))
                         .build()
-                        .getActionArgs();
+                        .getArguments();
         List<String> expectedCommands =
                 Arrays.asList(
                         "mysql_sync_table",
@@ -117,7 +117,7 @@ public class MysqlSyncTableActionContextTest extends FlinkCdcActionContextTestBa
                         .tableConfList(Arrays.asList("bucket=4", "changelog-producer=input"))
                         .build();
         ActionException actionException =
-                assertThrows(ActionException.class, context::getActionArgs);
+                assertThrows(ActionException.class, context::getArguments);
         assertEquals("table can not be null", actionException.getMessage());
     }
 }

@@ -18,8 +18,6 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import org.apache.paimon.web.api.enums.ActionExecuteResult;
-
 import java.util.List;
 
 /** The context of action which converts the user-defined action to command line. */
@@ -27,11 +25,7 @@ public interface ActionContext {
     String name();
 
     /** Converts the user-defined action to command line. */
-    List<String> getActionArgs();
+    List<String> getArguments();
 
-    String getActionJarPath();
-
-    String getErrorMessage();
-
-    ActionExecuteResult getExecuteResult();
+    String getJarPath();
 }
