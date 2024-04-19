@@ -37,7 +37,7 @@ public class MysqlSyncDatabaseActionContextTest extends FlinkCdcActionContextTes
                         .warehouse(warehouse)
                         .database(database)
                         .build()
-                        .getActionArgs();
+                        .getArguments();
         List<String> expectedArgs =
                 Arrays.asList(
                         "mysql_sync_database", "--warehouse", warehouse, "--database", database);

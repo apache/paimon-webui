@@ -39,7 +39,7 @@ public class PostgresSyncTableActionContextTest extends FlinkCdcActionContextTes
                         .database(database)
                         .table(table)
                         .build()
-                        .getActionArgs();
+                        .getArguments();
         List<String> expectedArgs =
                 Arrays.asList(
                         "postgres_sync_table",

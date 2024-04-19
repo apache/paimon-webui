@@ -19,6 +19,7 @@
 package org.apache.paimon.web.api.action.service;
 
 import org.apache.paimon.web.api.action.context.ActionContext;
+import org.apache.paimon.web.api.action.context.ActionExecutionResult;
 
 /**
  * Action service definition. Convert the user-configured CDC job into an ActionContext {@link
@@ -26,5 +27,5 @@ import org.apache.paimon.web.api.action.context.ActionContext;
  */
 public interface ActionService {
 
-    void execute(ActionContext actionContext) throws Exception;
+    ActionExecutionResult execute(ActionContext actionContext) throws Exception;
 }

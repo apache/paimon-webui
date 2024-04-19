@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import org.apache.paimon.web.api.enums.ActionExecuteResult;
 import org.apache.paimon.web.api.exception.ActionException;
 
 import lombok.experimental.SuperBuilder;
@@ -37,12 +36,8 @@ public abstract class AbstractActionContext implements ActionContext {
 
     private String actionPath;
 
-    private ActionExecuteResult executeResult;
-
-    private String errorMessage;
-
     @Override
-    public List<String> getActionArgs() {
+    public List<String> getArguments() {
         Class<?> clazz = this.getClass();
         List<String> args = new ArrayList<>();
         args.add(name());
@@ -85,23 +80,7 @@ public abstract class AbstractActionContext implements ActionContext {
         }
     }
 
-    public String getActionJarPath() {
+    public String getJarPath() {
         return actionPath;
-    }
-
-    public ActionExecuteResult getExecuteResult() {
-        return executeResult;
-    }
-
-    public void setExecuteResult(ActionExecuteResult executeResult) {
-        this.executeResult = executeResult;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

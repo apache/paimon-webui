@@ -21,6 +21,6 @@ package org.apache.paimon.web.api.enums;
 /** FlinkJobType. */
 public enum FlinkJobType {
     SESSION,
-    JOB,
+    PER_JOB,
     APPLICATION
 }
