@@ -32,5 +32,5 @@ public @interface ActionConf {
 
     boolean nullable() default true;
 
-    boolean confList() default false;
+    boolean isConfList() default false;
 }

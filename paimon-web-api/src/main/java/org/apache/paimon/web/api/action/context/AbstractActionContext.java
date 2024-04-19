@@ -71,7 +71,7 @@ public abstract class AbstractActionContext implements ActionContext {
             if (nullable && confValue == null) {
                 continue;
             }
-            boolean isConfList = actionConf.confList();
+            boolean isConfList = actionConf.isConfList();
             if (isConfList) {
                 ActionContextUtil.addConfList(args, confKey, (List<String>) confValue);
             } else {

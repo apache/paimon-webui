@@ -42,9 +42,9 @@ public abstract class FlinkCdcTableSyncActionContext extends FlinkActionContext
     @ActionConf("primary_keys")
     protected String primaryKeys;
 
-    @ActionConf(value = "catalog_conf", confList = true)
+    @ActionConf(value = "catalog_conf", isConfList = true)
     protected List<String> catalogConfList;
 
-    @ActionConf(value = "table_conf", confList = true)
+    @ActionConf(value = "table_conf", isConfList = true)
     protected List<String> tableConfList;
 }
