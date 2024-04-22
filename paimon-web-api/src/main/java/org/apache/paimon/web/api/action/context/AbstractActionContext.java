@@ -22,6 +22,8 @@ import org.apache.paimon.web.api.exception.ActionException;
 
 import lombok.experimental.SuperBuilder;
 
+import javax.annotation.Nullable;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,20 +55,10 @@ public abstract class AbstractActionContext implements ActionContext {
         Field[] declaredFields = clazz.getDeclaredFields();
         for (Field declaredField : declaredFields) {
             ActionConf actionConf = declaredField.getAnnotation(ActionConf.class);
-            ActionConfList actionConfList = declaredField.getAnnotation(ActionConfList.class);
-            String confKey;
-            boolean nullable;
-            boolean isConfList = false;
-            if (actionConf != null) {
-                confKey = actionConf.value();
-                nullable = actionConf.nullable();
-            } else if (actionConfList != null) {
-                confKey = actionConfList.value();
-                nullable = actionConfList.nullable();
-                isConfList = true;
-            } else {
+            if (actionConf == null) {
                 continue;
             }
+            String confKey = actionConf.value();
             Object confValue = null;
             try {
                 declaredField.setAccessible(true);
@@ -74,14 +66,15 @@ public abstract class AbstractActionContext implements ActionContext {
             } catch (IllegalArgumentException | IllegalAccessException ignore) {
 
             }
+            boolean nullable = declaredField.getAnnotation(Nullable.class) != null;
             if (!nullable && confValue == null) {
                 throw new ActionException(confKey + " can not be null");
             }
             if (nullable && confValue == null) {
                 continue;
             }
-            if (isConfList) {
-                ActionContextUtil.addConfList(args, confKey, (List<String>) confValue);
+            if (confValue instanceof List) {
+                ActionContextUtil.addConfList(args, confKey, (List<?>) confValue);
             } else {
                 ActionContextUtil.addConf(args, confKey, String.valueOf(confValue));
             }

@@ -20,13 +20,16 @@ package org.apache.paimon.web.api.action.context;
 
 import lombok.experimental.SuperBuilder;
 
+import javax.annotation.Nullable;
+
 import java.util.List;
 
 /** Postgres sync table action context. */
 @SuperBuilder
 public class PostgresSyncTableCdcActionContext extends FlinkCdcTableSyncActionContext {
 
-    @ActionConfList(value = "postgres_conf")
+    @ActionConf(value = "postgres_conf")
+    @Nullable
     private final List<String> postgresConfList;
 
     public String name() {

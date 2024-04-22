@@ -20,6 +20,8 @@ package org.apache.paimon.web.api.action.context;
 
 import lombok.experimental.SuperBuilder;
 
+import javax.annotation.Nullable;
+
 import java.util.List;
 
 /** The FlinkCdcDatabasesActionContext for the entire database synchronization. */
@@ -27,15 +29,17 @@ import java.util.List;
 public abstract class FlinkCdcDatabasesSyncActionContext extends FlinkActionContext
         implements ActionContext {
 
-    @ActionConf(value = "warehouse", nullable = false)
+    @ActionConf(value = "warehouse")
     protected String warehouse;
 
-    @ActionConf(value = "database", nullable = false)
+    @ActionConf(value = "database")
     protected String database;
 
-    @ActionConfList(value = "catalog_conf")
+    @ActionConf(value = "catalog_conf")
+    @Nullable
     protected List<String> catalogConfList;
 
-    @ActionConfList(value = "table_conf")
+    @ActionConf(value = "table_conf")
+    @Nullable
     protected List<String> tableConfList;
 }
