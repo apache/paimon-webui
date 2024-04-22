@@ -18,12 +18,17 @@
 
 package org.apache.paimon.web.api.action.context;
 
-/** FlinkCdcActionContextTestBase. */
-public class FlinkCdcActionContextTestBase {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    protected static final String WAREHOUSE = "warehouse";
+/** ActionConfList. */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface ActionConfList {
 
-    protected static final String DATABASE = "database";
+    String value();
 
-    protected static final String TABLE = "table";
+    boolean nullable() default true;
 }

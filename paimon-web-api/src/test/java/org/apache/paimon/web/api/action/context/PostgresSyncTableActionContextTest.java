@@ -35,20 +35,20 @@ public class PostgresSyncTableActionContextTest extends FlinkCdcActionContextTes
     public void testBuild() {
         List<String> args =
                 PostgresSyncTableCdcActionContext.builder()
-                        .warehouse(warehouse)
-                        .database(database)
-                        .table(table)
+                        .warehouse(WAREHOUSE)
+                        .database(DATABASE)
+                        .table(TABLE)
                         .build()
                         .getArguments();
         List<String> expectedArgs =
                 Arrays.asList(
                         "postgres_sync_table",
                         "--warehouse",
-                        warehouse,
+                        WAREHOUSE,
                         "--database",
-                        database,
+                        DATABASE,
                         "--table",
-                        table);
+                        TABLE);
         assertLinesMatch(expectedArgs, args);
     }
 }

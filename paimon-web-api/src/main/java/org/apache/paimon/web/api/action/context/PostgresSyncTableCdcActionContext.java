@@ -26,7 +26,7 @@ import java.util.List;
 @SuperBuilder
 public class PostgresSyncTableCdcActionContext extends FlinkCdcTableSyncActionContext {
 
-    @ActionConf(value = "postgres_conf", isConfList = true)
+    @ActionConfList(value = "postgres_conf")
     private final List<String> postgresConfList;
 
     public String name() {
