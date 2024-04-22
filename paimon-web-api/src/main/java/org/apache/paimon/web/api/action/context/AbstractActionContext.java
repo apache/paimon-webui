@@ -43,15 +43,15 @@ public abstract class AbstractActionContext implements ActionContext {
         Class<?> clazz = this.getClass();
         List<String> args = new ArrayList<>();
         args.add(name());
-        addArgs(args, clazz, this);
+        addArgument(args, clazz, this);
         return args;
     }
 
-    private void addArgs(List<String> args, Class<?> clazz, Object obj) {
+    private void addArgument(List<String> args, Class<?> clazz, Object obj) {
         if (clazz == null || clazz == Object.class) {
             return;
         }
-        addArgs(args, clazz.getSuperclass(), obj);
+        addArgument(args, clazz.getSuperclass(), obj);
         Field[] declaredFields = clazz.getDeclaredFields();
         for (Field declaredField : declaredFields) {
             ActionConf actionConf = declaredField.getAnnotation(ActionConf.class);
