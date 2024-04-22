@@ -34,10 +34,10 @@ public class ActionContextUtil {
         }
     }
 
-    public static void addConfList(List<String> args, String confName, List<String> confList) {
+    public static void addConfList(List<String> args, String confName, List<?> confList) {
         if (confList != null && !confList.isEmpty()) {
-            for (String conf : confList) {
-                addConf(args, confName, conf);
+            for (Object conf : confList) {
+                addConf(args, confName, String.valueOf(conf));
             }
         }
     }

@@ -20,6 +20,8 @@ package org.apache.paimon.web.api.action.context;
 
 import lombok.experimental.SuperBuilder;
 
+import javax.annotation.Nullable;
+
 import java.util.List;
 
 /** Mysql sync table action context. */
@@ -27,7 +29,8 @@ import java.util.List;
 public class MysqlSyncTableActionContext extends FlinkCdcTableSyncActionContext
         implements ActionContext {
 
-    @ActionConfList(value = "mysql_conf")
+    @ActionConf(value = "mysql_conf")
+    @Nullable
     private final List<String> mysqlConfList;
 
     @Override

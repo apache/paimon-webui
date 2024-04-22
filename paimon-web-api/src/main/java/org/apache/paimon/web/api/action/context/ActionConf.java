@@ -29,6 +29,4 @@ import java.lang.annotation.Target;
 public @interface ActionConf {
 
     String value();
-
-    boolean nullable() default true;
 }
