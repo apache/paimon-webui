@@ -33,9 +33,9 @@ public abstract class FlinkCdcDatabasesSyncActionContext extends FlinkActionCont
     @ActionConf(value = "database", nullable = false)
     protected String database;
 
-    @ActionConf(value = "catalog_conf", isConfList = true)
+    @ActionConfList(value = "catalog_conf")
     protected List<String> catalogConfList;
 
-    @ActionConf(value = "table_conf", isConfList = true)
+    @ActionConfList(value = "table_conf")
     protected List<String> tableConfList;
 }

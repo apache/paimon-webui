@@ -31,6 +31,4 @@ public @interface ActionConf {
     String value();
 
     boolean nullable() default true;
-
-    boolean isConfList() default false;
 }

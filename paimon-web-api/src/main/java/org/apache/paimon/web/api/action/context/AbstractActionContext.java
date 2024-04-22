@@ -53,11 +53,20 @@ public abstract class AbstractActionContext implements ActionContext {
         Field[] declaredFields = clazz.getDeclaredFields();
         for (Field declaredField : declaredFields) {
             ActionConf actionConf = declaredField.getAnnotation(ActionConf.class);
-            if (actionConf == null) {
+            ActionConfList actionConfList = declaredField.getAnnotation(ActionConfList.class);
+            String confKey;
+            boolean nullable;
+            boolean isConfList = false;
+            if (actionConf != null) {
+                confKey = actionConf.value();
+                nullable = actionConf.nullable();
+            } else if (actionConfList != null) {
+                confKey = actionConfList.value();
+                nullable = actionConfList.nullable();
+                isConfList = true;
+            } else {
                 continue;
             }
-            String confKey = actionConf.value();
-            boolean nullable = actionConf.nullable();
             Object confValue = null;
             try {
                 declaredField.setAccessible(true);
@@ -71,7 +80,6 @@ public abstract class AbstractActionContext implements ActionContext {
             if (nullable && confValue == null) {
                 continue;
             }
-            boolean isConfList = actionConf.isConfList();
             if (isConfList) {
                 ActionContextUtil.addConfList(args, confKey, (List<String>) confValue);
             } else {

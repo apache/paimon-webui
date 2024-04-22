@@ -36,20 +36,20 @@ public class MysqlSyncTableActionContextTest extends FlinkCdcActionContextTestBa
     public void testBuild() {
         List<String> args =
                 MysqlSyncTableActionContext.builder()
-                        .warehouse(warehouse)
-                        .database(database)
-                        .table(table)
+                        .warehouse(WAREHOUSE)
+                        .database(DATABASE)
+                        .table(TABLE)
                         .build()
                         .getArguments();
         List<String> expectedArgs =
                 Arrays.asList(
                         "mysql_sync_table",
                         "--warehouse",
-                        warehouse,
+                        WAREHOUSE,
                         "--database",
-                        database,
+                        DATABASE,
                         "--table",
-                        table);
+                        TABLE);
         assertLinesMatch(expectedArgs, args);
     }
 
@@ -57,9 +57,9 @@ public class MysqlSyncTableActionContextTest extends FlinkCdcActionContextTestBa
     public void testBuildConf() {
         List<String> args =
                 MysqlSyncTableActionContext.builder()
-                        .warehouse(warehouse)
-                        .database(database)
-                        .table(table)
+                        .warehouse(WAREHOUSE)
+                        .database(DATABASE)
+                        .table(TABLE)
                         .partitionKeys("pt")
                         .mysqlConfList(
                                 Arrays.asList(
@@ -75,11 +75,11 @@ public class MysqlSyncTableActionContextTest extends FlinkCdcActionContextTestBa
                 Arrays.asList(
                         "mysql_sync_table",
                         "--warehouse",
-                        warehouse,
+                        WAREHOUSE,
                         "--database",
-                        database,
+                        DATABASE,
                         "--table",
-                        table,
+                        TABLE,
                         "--partition_keys",
                         "pt",
                         "--catalog_conf",
@@ -103,8 +103,8 @@ public class MysqlSyncTableActionContextTest extends FlinkCdcActionContextTestBa
     public void testBuildError() {
         MysqlSyncTableActionContext context =
                 MysqlSyncTableActionContext.builder()
-                        .warehouse(warehouse)
-                        .database(database)
+                        .warehouse(WAREHOUSE)
+                        .database(DATABASE)
                         .partitionKeys("pt")
                         .primaryKeys("pt,uid")
                         .mysqlConfList(
