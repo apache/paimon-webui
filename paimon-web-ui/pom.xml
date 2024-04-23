@@ -40,7 +40,7 @@ under the License.
 
     <profiles>
         <profile>
-            <id>release</id>
+            <id>web</id>
             <build>
                 <finalName>${project.artifactId}-${project.version}</finalName>
                 <plugins>

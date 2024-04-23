@@ -28,6 +28,7 @@ under the License.
         <module>paimon-web-common</module>
         <module>paimon-web-gateway</module>
         <module>paimon-web-api</module>
+        <module>paimon-web-engine</module>
     </modules>
 
     <parent>
@@ -56,9 +57,9 @@ under the License.
     </licenses>
 
     <scm>
-        <url>https://github.com/apache/incubator-paimon-webui</url>
-        <connection>git@github.com:apache/incubator-paimon-webui.git</connection>
-        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/incubator-paimon-webui.git</developerConnection>
+        <url>https://github.com/apache/paimon-webui</url>
+        <connection>git@github.com:apache/paimon-webui.git</connection>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/paimon-webui.git</developerConnection>
     </scm>
 
     <properties>
@@ -371,7 +372,6 @@ under the License.
                         <exclude>release/**</exclude>
                         <exclude>paimon-web-ui/node_modules/**</exclude>
                         <exclude>paimon-web-ui/dist/**</exclude>
-                        <exclude>paimon-web-ui-new/node_modules/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -435,7 +435,7 @@ under the License.
                                 <!-- The ApacheNoticeResourceTransformer collects and aggregates NOTICE files -->
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
-                                    <projectName>Apache Paimon (incubating)</projectName>
+                                    <projectName>Apache Paimon</projectName>
                                     <inceptionYear>${project.inceptionYear}</inceptionYear>
                                     <encoding>UTF-8</encoding>
                                 </transformer>
@@ -456,9 +456,6 @@ under the License.
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
-                    <configuration>
-                        <skip>true</skip>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -603,24 +600,6 @@ under the License.
                         <execution>
                             <id>attach-descriptor</id>
                             <phase>none</phase>
-                        </execution>
-                    </executions>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-remote-resources-plugin</artifactId>
-                    <version>1.7.0</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>process</goal>
-                            </goals>
-                            <configuration>
-                                <resourceBundles>
-                                    <resourceBundle>org.apache.apache.resources:apache-incubator-disclaimer-resource-bundle:1.5</resourceBundle>
-                                </resourceBundles>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

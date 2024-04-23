@@ -35,9 +35,9 @@ public class CatalogProperties {
 
     public static final String OSS_ENDPOINT = "fs.oss.endpoint";
 
-    public static final String OSS_SECRET_KEY = "fs.oss.accessKeyId";
+    public static final String OSS_ACCESS_KEY_ID = "fs.oss.accessKeyId";
 
-    public static final String OSS_ACCESS_KEY = "fs.oss.accessKeySecret";
+    public static final String OSS_ACCESS_KEY_SECRET = "fs.oss.accessKeySecret";
 
     public static final String HIVE_CONF_DIR = "hive-conf-dir";
 }
