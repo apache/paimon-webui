@@ -20,6 +20,7 @@ package org.apache.paimon.web.api.action.context;
 
 import lombok.experimental.SuperBuilder;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /** Mysql sync database action context. */
@@ -28,6 +29,7 @@ public class MysqlSyncDatabaseActionContext extends FlinkCdcDatabasesSyncActionC
         implements ActionContext {
 
     @ActionConf(value = "mysql_conf")
+    @Nullable
     private final List<String> mysqlConfList;
 
     public String name() {
