@@ -30,6 +30,7 @@ import org.apache.paimon.web.server.data.model.MetadataFieldsModel;
 import org.apache.paimon.web.server.data.model.MetadataOptionModel;
 import org.apache.paimon.web.server.data.vo.DataFileVO;
 import org.apache.paimon.web.server.data.vo.ManifestsVO;
+import org.apache.paimon.web.server.data.vo.OptionVO;
 import org.apache.paimon.web.server.data.vo.SchemaVO;
 import org.apache.paimon.web.server.data.vo.SnapshotVO;
 import org.apache.paimon.web.server.service.CatalogService;
@@ -43,6 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -71,21 +73,19 @@ public class MetadataServiceImpl implements MetadataService {
                     internalRow -> {
                         SchemaVO schemaVo =
                                 SchemaVO.builder()
-                                        .setSchemaId(internalRow.getLong(0))
-                                        .setFields(
+                                        .schemaId(internalRow.getLong(0))
+                                        .fields(
                                                 new Gson()
                                                         .fromJson(
                                                                 internalRow.getString(1).toString(),
                                                                 new TypeToken<
                                                                         LinkedList<
                                                                                 MetadataFieldsModel>>() {}))
-                                        .setPartitionKeys(internalRow.getString(2).toString())
-                                        .setPrimaryKeys(internalRow.getString(3).toString())
-                                        .setOption(
-                                                formatOptions(internalRow.getString(4).toString()))
-                                        .setComment(internalRow.getString(5).toString())
-                                        .setUpdateTime(
-                                                internalRow.getTimestamp(6, 3).toLocalDateTime())
+                                        .partitionKeys(getSafeString(internalRow, 2))
+                                        .primaryKeys(getSafeString(internalRow, 3))
+                                        .option(formatOptions(getSafeString(internalRow, 4)))
+                                        .comment(getSafeString(internalRow, 5))
+                                        .updateTime(getSafeLocalDateTime(internalRow, 6))
                                         .build();
                         result.add(schemaVo);
                     });
@@ -108,11 +108,21 @@ public class MetadataServiceImpl implements MetadataService {
                     internalRow -> {
                         SnapshotVO build =
                                 SnapshotVO.builder()
-                                        .setSnapshotId(internalRow.getLong(0))
-                                        .setSnapshotId(internalRow.getLong(1))
-                                        .setCommitIdentifier(internalRow.getLong(3))
-                                        .setCommitTime(
-                                                internalRow.getTimestamp(5, 3).toLocalDateTime())
+                                        .snapshotId(internalRow.getLong(0))
+                                        .schemaId(internalRow.getLong(1))
+                                        .commitUser(getSafeString(internalRow, 2))
+                                        .commitIdentifier(internalRow.getLong(3))
+                                        .commitKind(getSafeString(internalRow, 4))
+                                        .commitTime(getSafeLocalDateTime(internalRow, 5))
+                                        .baseManifestList(getSafeString(internalRow, 6))
+                                        .deltaManifestList(getSafeString(internalRow, 7))
+                                        .changelogManifestList(getSafeString(internalRow, 8))
+                                        .totalRecordCount(internalRow.getLong(9))
+                                        .deltaRecordCount(internalRow.getLong(10))
+                                        .changelogRecordCount(internalRow.getLong(11))
+                                        .addedFileCount(internalRow.getInt(12))
+                                        .deletedFileCount(internalRow.getInt(13))
+                                        .watermark(getSafeLong(internalRow, 14))
                                         .build();
                         result.add(build);
                     });
@@ -134,9 +144,11 @@ public class MetadataServiceImpl implements MetadataService {
                     internalRow -> {
                         ManifestsVO manifestsVo =
                                 ManifestsVO.builder()
-                                        .setFileName(internalRow.getString(0).toString())
-                                        .setFileSize(internalRow.getLong(1))
-                                        .setNumAddedFiles(internalRow.getLong(2))
+                                        .fileName(getSafeString(internalRow, 0))
+                                        .fileSize(internalRow.getLong(1))
+                                        .numAddedFiles(internalRow.getLong(2))
+                                        .numDeletedFiles(internalRow.getLong(3))
+                                        .schemaId(internalRow.getLong(4))
                                         .build();
                         result.add(manifestsVo);
                     });
@@ -157,12 +169,46 @@ public class MetadataServiceImpl implements MetadataService {
         try {
             reader.forEachRemaining(
                     internalRow -> {
-                        DataFileVO dataFileVo = new DataFileVO();
-                        dataFileVo.setPartition(internalRow.getString(0).toString());
-                        dataFileVo.setBucket(internalRow.getInt(1));
-                        dataFileVo.setFilePath(internalRow.getString(2).toString());
-                        dataFileVo.setFileFormat(internalRow.getString(3).toString());
-                        result.add(dataFileVo);
+                        DataFileVO dataFileVO =
+                                DataFileVO.builder()
+                                        .partition(getSafeString(internalRow, 0))
+                                        .bucket(internalRow.getInt(1))
+                                        .filePath(getSafeString(internalRow, 2))
+                                        .fileFormat(getSafeString(internalRow, 3))
+                                        .schemaId(internalRow.getLong(4))
+                                        .level(internalRow.getInt(5))
+                                        .recordCount(internalRow.getLong(6))
+                                        .fileSizeInBytes(internalRow.getLong(7))
+                                        .minKey(getSafeString(internalRow, 8))
+                                        .maxKey(getSafeString(internalRow, 9))
+                                        .nullValueCounts(getSafeString(internalRow, 10))
+                                        .minValueStats(getSafeString(internalRow, 11))
+                                        .maxValueStats(getSafeString(internalRow, 12))
+                                        .minSequenceNumber(internalRow.getLong(13))
+                                        .maxSequenceNumber(internalRow.getLong(14))
+                                        .creationTime(getSafeLocalDateTime(internalRow, 15))
+                                        .build();
+                        result.add(dataFileVO);
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<OptionVO> getOption(MetadataDTO dto) {
+        initEnvironment(dto, MetadataConstant.OPTIONS);
+
+        List<OptionVO> result = new LinkedList<>();
+
+        try {
+            reader.forEachRemaining(
+                    internalRow -> {
+                        OptionVO optionVo = new OptionVO();
+                        optionVo.setKey(internalRow.getString(0).toString());
+                        optionVo.setValue(internalRow.getString(1).toString());
+                        result.add(optionVo);
                     });
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -205,5 +251,19 @@ public class MetadataServiceImpl implements MetadataService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getSafeString(InternalRow internalRow, int index) {
+        return internalRow.isNullAt(index) ? "" : internalRow.getString(index).toString();
+    }
+
+    private Long getSafeLong(InternalRow internalRow, int index) {
+        return internalRow.isNullAt(index) ? null : internalRow.getLong(14);
+    }
+
+    private LocalDateTime getSafeLocalDateTime(InternalRow internalRow, int index) {
+        return internalRow.isNullAt(index)
+                ? null
+                : internalRow.getTimestamp(index, 3).toLocalDateTime();
     }
 }

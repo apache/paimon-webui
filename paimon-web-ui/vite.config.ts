@@ -15,36 +15,68 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import SemiPlugin from "vite-plugin-semi-theme";
-import { resolve } from 'path'
+import { fileURLToPath, URL } from 'node:url'
 
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    /*SemiPlugin({
-      theme: "@semi-bot/semi-theme-figma"
-    }),*/
-    react()
-  ],
-  resolve: {
-    alias: {
-      '@src': resolve(__dirname, './src'),
-      '@assets': resolve(__dirname, './src/assets'),
-      '@components': resolve(__dirname, './src/components'),
-      '@pages': resolve(__dirname, './src/pages'),
-      '@utils': resolve(__dirname, './src/utils'),
-      '@config': resolve(__dirname, './src/config'),
-      '@mock': resolve(__dirname, './mock'),
-      '@api': resolve(__dirname, './src/api')
-    }
-  },
   server: {
     proxy: {
+      '/mock': {
+        target: 'http://127.0.0.1:10088',
+        changeOrigin: true,
+      },
       '/api': {
-        target: 'http://localhost:10088',
-        changeOrigin: true
+        target: 'http://127.0.0.1:10088',
+        changeOrigin: true,
       }
+    }
+  },
+  plugins: [
+    vue(),
+    vueJsx(),
+    AutoImport({
+      imports: [
+        'vue',
+        'vue-router',
+        'pinia',
+        {
+          'naive-ui': [
+            'useDialog',
+            'useMessage',
+            'useNotification',
+            'useLoadingBar'
+          ]
+        }
+      ],
+      dts: './auto-imports.d.ts',
+      dirs: [
+        './src/composables',
+      ],
+      eslintrc: {
+        enabled: false
+      }
+    }),
+    Components({
+      resolvers: [NaiveUiResolver()]
+    })
+  ],
+  css: {
+    postcss: {
+      plugins: [
+        require("autoprefixer")
+      ]
+    }
+  },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   }
 })

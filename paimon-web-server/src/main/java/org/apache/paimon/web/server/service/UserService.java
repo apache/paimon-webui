@@ -19,10 +19,13 @@
 package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.dto.LoginDTO;
+import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
 import org.apache.paimon.web.server.data.vo.UserInfoVO;
+import org.apache.paimon.web.server.data.vo.UserVO;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -31,7 +34,32 @@ import java.util.List;
 public interface UserService extends IService<User> {
 
     /**
-     * login by username and password.
+     * Get a user by ID.
+     *
+     * @param id the user ID
+     * @return the UserVO or null if not found
+     */
+    UserVO getUserById(Integer id);
+
+    /**
+     * Select users with pagination.
+     *
+     * @param page the pagination information
+     * @param user the filter criteria
+     * @return list of UserVO
+     */
+    List<UserVO> listUsers(IPage<User> page, User user);
+
+    /**
+     * Check if the username is unique.
+     *
+     * @param user the user to check
+     * @return true if unique, false otherwise
+     */
+    boolean checkUserNameUnique(User user);
+
+    /**
+     * Login by username and password.
      *
      * @param loginDTO login params
      * @return {@link String}
@@ -41,16 +69,42 @@ public interface UserService extends IService<User> {
     /**
      * Query the list of assigned user roles.
      *
-     * @param user query params
+     * @param page the pagination information
+     * @param roleWithUserDTO query params
      * @return user list
      */
-    List<User> selectAllocatedList(User user);
+    List<User> selectAllocatedList(IPage<RoleWithUserDTO> page, RoleWithUserDTO roleWithUserDTO);
 
     /**
      * Query the list of unassigned user roles.
      *
-     * @param user query params
+     * @param page the pagination information
+     * @param roleWithUserDTO query params
      * @return user list
      */
-    List<User> selectUnallocatedList(User user);
+    List<User> selectUnallocatedList(IPage<RoleWithUserDTO> page, RoleWithUserDTO roleWithUserDTO);
+
+    /**
+     * Insert a new user.
+     *
+     * @param user the user to be inserted
+     * @return the number of rows affected
+     */
+    int insertUser(User user);
+
+    /**
+     * Update an existing user.
+     *
+     * @param user the user with updated information
+     * @return the number of rows affected
+     */
+    int updateUser(User user);
+
+    /**
+     * Delete users by user ID.
+     *
+     * @param userIds the ids of the users to delete
+     * @return the number of rows affected
+     */
+    int deleteUserByIds(Integer[] userIds);
 }

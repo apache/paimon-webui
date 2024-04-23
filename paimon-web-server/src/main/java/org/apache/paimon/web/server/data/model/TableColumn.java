@@ -34,6 +34,8 @@ import javax.annotation.Nullable;
 @AllArgsConstructor
 public class TableColumn {
 
+    private Integer id;
+
     private String field;
 
     private PaimonDataType dataType;
@@ -43,4 +45,6 @@ public class TableColumn {
     @Nullable private boolean isPk;
 
     @Nullable private String defaultValue;
+
+    private Integer sort;
 }
