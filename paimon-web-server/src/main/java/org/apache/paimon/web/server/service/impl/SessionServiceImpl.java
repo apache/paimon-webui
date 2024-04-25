@@ -27,15 +27,13 @@ import org.apache.paimon.web.server.service.UserService;
 import org.apache.paimon.web.server.service.UserSessionManager;
 
 import cn.dev33.satoken.stp.StpUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-/** SessionServiceImpl. */
+/** The implementation of {@link SessionService}. */
 @Service
-@Slf4j
 public class SessionServiceImpl implements SessionService {
 
     private static final Integer ACTIVE_STATUS = 1;
@@ -56,8 +54,7 @@ public class SessionServiceImpl implements SessionService {
                 sessionManager.addSession(getCurrentUser().getUsername(), sessionEntity);
             }
         } catch (Exception e) {
-            log.error("Failed to create session", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to create session", e);
         }
     }
 
@@ -73,8 +70,7 @@ public class SessionServiceImpl implements SessionService {
                 }
             }
         } catch (Exception e) {
-            log.error("Failed to close session", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to close session", e);
         }
     }
 
@@ -88,7 +84,6 @@ public class SessionServiceImpl implements SessionService {
                 client.triggerSessionHeartbeat(session.getSessionId());
             }
         } catch (Exception e) {
-            log.error("Unexpected error during session heartbeat", e);
             return INACTIVE_STATUS;
         }
         return ACTIVE_STATUS;

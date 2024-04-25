@@ -18,10 +18,13 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.JobSubmitDTO;
+import org.apache.paimon.web.server.service.JobService;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.paimon.web.server.data.dto.SessionDTO;
-import org.apache.paimon.web.server.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,10 +38,10 @@ public class JobController {
     private static final String BATCH_MODE = "Batch";
     private static final String SHOW_JOBS_STATEMENT = "SHOW JOBS";
 
-    @Autowired
-    SessionService sessionService;
+    @Autowired private JobService jobService;
 
-    public void submit() {
-        sessionService.createSession(new SessionDTO());
+    @PostMapping("/submit")
+    public void submit(@RequestBody JobSubmitDTO jobSubmitDTO) {
+        jobService.getExecutor(jobSubmitDTO);
     }
 }

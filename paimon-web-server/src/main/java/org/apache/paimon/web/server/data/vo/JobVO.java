@@ -16,23 +16,45 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server;
+package org.apache.paimon.web.server.data.vo;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/** Paimon Manager Server Application. */
-@SpringBootApplication
-@EnableScheduling
-public class PaimonWebServerApplication {
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
-    /**
-     * Main.
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(PaimonWebServerApplication.class, args);
-    }
+/** VO of job. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class JobVO {
+
+    private String submitId;
+
+    private String jobId;
+
+    private String jobName;
+
+    private String type;
+
+    private String executeMode;
+
+    private String sessionId;
+
+    private String status;
+
+    private Boolean shouldFetchResult;
+
+    private List<Map<String, Object>> resultData;
+
+    private Long token;
+
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
 }

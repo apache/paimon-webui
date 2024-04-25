@@ -18,30 +18,29 @@
 
 package org.apache.paimon.web.server.service;
 
-import org.apache.paimon.web.server.data.dto.SessionDTO;
+import org.apache.paimon.web.engine.flink.common.executor.Executor;
+import org.apache.paimon.web.server.data.dto.JobSubmitDTO;
+import org.apache.paimon.web.server.data.model.JobInfo;
 
-/** Session Service. */
-public interface SessionService {
+import com.baomidou.mybatisplus.extension.service.IService;
 
-    /**
-     * Creates a new session.
-     *
-     * @param sessionDTO the data transfer object containing session details
-     */
-    void createSession(SessionDTO sessionDTO);
+import java.time.LocalDateTime;
+import java.util.List;
 
-    /**
-     * Closes an existing session.
-     *
-     * @param sessionDTO the data transfer object containing session details
-     */
-    void closeSession(SessionDTO sessionDTO);
+/** Job Service. */
+public interface JobService extends IService<JobInfo> {
 
-    /**
-     * Triggers a heartbeat update for a session.
-     *
-     * @param sessionDTO the data transfer object containing session details
-     * @return the status code after triggering the heartbeat
-     */
-    int triggerSessionHeartbeat(SessionDTO sessionDTO);
+    boolean shouldCreateSession();
+
+    Executor getExecutor(JobSubmitDTO jobSubmitDTO) throws Exception;
+
+    boolean saveJob(JobInfo jobInfo);
+
+    boolean updateJobStatusAndEndTime(String jobId, String newStatus, LocalDateTime endTime);
+
+    boolean updateJobStatusAndStartTime(String jobId, String newStatus, LocalDateTime startTime);
+
+    List<JobInfo> listJobsByPage(int current, int size);
+
+    JobInfo getJobByJobId(String jobId);
 }

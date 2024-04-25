@@ -16,23 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server;
+package org.apache.paimon.web.server.service.impl;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.apache.paimon.web.server.data.model.ClusterInfo;
+import org.apache.paimon.web.server.mapper.ClusterMapper;
+import org.apache.paimon.web.server.service.ClusterService;
 
-/** Paimon Manager Server Application. */
-@SpringBootApplication
-@EnableScheduling
-public class PaimonWebServerApplication {
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
 
-    /**
-     * Main.
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(PaimonWebServerApplication.class, args);
-    }
-}
+/** The implementation of {@link ClusterService}. */
+@Service
+public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
+        implements ClusterService {}

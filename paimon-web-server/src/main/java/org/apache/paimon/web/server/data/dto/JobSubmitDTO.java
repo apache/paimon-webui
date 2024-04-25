@@ -16,23 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server;
+package org.apache.paimon.web.server.data.dto;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import lombok.Data;
 
-/** Paimon Manager Server Application. */
-@SpringBootApplication
-@EnableScheduling
-public class PaimonWebServerApplication {
+import java.util.Map;
 
-    /**
-     * Main.
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(PaimonWebServerApplication.class, args);
-    }
+/** DTO of jobSubmit. */
+@Data
+public class JobSubmitDTO {
+
+    private String jobName;
+
+    private String taskType;
+
+    private boolean isStreaming;
+
+    private String clusterId;
+
+    private Map<String, String> config;
+
+    private String statements;
 }
