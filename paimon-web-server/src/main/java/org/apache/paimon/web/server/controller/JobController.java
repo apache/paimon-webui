@@ -19,14 +19,26 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.JobSubmitDTO;
+import org.apache.paimon.web.server.data.dto.ResultFetchDTO;
+import org.apache.paimon.web.server.data.dto.StopJobDTO;
+import org.apache.paimon.web.server.data.model.JobInfo;
+import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
+import org.apache.paimon.web.server.data.vo.JobStatusVO;
+import org.apache.paimon.web.server.data.vo.JobVO;
+import org.apache.paimon.web.server.data.vo.ResultDataVO;
 import org.apache.paimon.web.server.service.JobService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /** Job submit api controller. */
 @Slf4j
@@ -34,14 +46,59 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/job")
 public class JobController {
 
-    private static final String STREAMING_MODE = "Streaming";
-    private static final String BATCH_MODE = "Batch";
-    private static final String SHOW_JOBS_STATEMENT = "SHOW JOBS";
-
     @Autowired private JobService jobService;
 
     @PostMapping("/submit")
-    public void submit(@RequestBody JobSubmitDTO jobSubmitDTO) {
-        jobService.getExecutor(jobSubmitDTO);
+    public R<JobVO> submit(@RequestBody JobSubmitDTO jobSubmitDTO) {
+        try {
+            return R.succeed(jobService.submitJob(jobSubmitDTO));
+        } catch (Exception e) {
+            log.error("Exception with submitting a job.", e);
+            return R.failed(Status.JOB_SUBMIT_ERROR);
+        }
+    }
+
+    @PostMapping("/fetch")
+    public R<ResultDataVO> fetchResult(@RequestBody ResultFetchDTO resultFetchDTO) {
+        try {
+            return R.succeed(jobService.fetchResult(resultFetchDTO));
+        } catch (Exception e) {
+            log.error("Exception with fetching result data.", e);
+            return R.failed(Status.RESULT_FETCH_ERROR);
+        }
+    }
+
+    @GetMapping("/list")
+    public R<List<JobVO>> list() {
+        return R.succeed(jobService.listJobs());
+    }
+
+    @GetMapping("/list/page")
+    public R<List<JobVO>> listJobsByPage(int current, int size) {
+        return R.succeed(jobService.listJobsByPage(current, size));
+    }
+
+    @GetMapping("/status/get")
+    public R<JobStatusVO> getJobStatus(String jobId) {
+        JobInfo job = jobService.getJobByJobId(jobId);
+        JobStatusVO jobStatusVO =
+                JobStatusVO.builder().jobId(job.getJobId()).status(job.getStatus()).build();
+        return R.succeed(jobStatusVO);
+    }
+
+    @GetMapping("/statistics/get")
+    public R<JobStatisticsVO> getJobStatistics() {
+        return R.succeed(jobService.getJobStatistics());
+    }
+
+    @PostMapping("/stop")
+    public R<Void> stop(@RequestBody StopJobDTO stopJobDTO) {
+        try {
+            jobService.stop(stopJobDTO);
+            return R.succeed();
+        } catch (Exception e) {
+            log.error("Exception with stopping a job.", e);
+            return R.failed(Status.JOB_STOP_ERROR);
+        }
     }
 }

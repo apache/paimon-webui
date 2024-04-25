@@ -78,7 +78,13 @@ public enum Status {
     TABLE_RENAME_ERROR(10511, "table.rename.error"),
 
     CDC_JOB_EXIST_ERROR(10601, "cdc.job.exist.error"),
-    CDC_JOB_NO_EXIST_ERROR(10602, "cdc.job.not.exist.error");
+    CDC_JOB_NO_EXIST_ERROR(10602, "cdc.job.not.exist.error"),
+
+    /** ------------job-----------------. */
+    JOB_SUBMIT_ERROR(10701, "job.submit.error"),
+    RESULT_FETCH_ERROR(10702, "result.fetch.error"),
+    JOB_STOP_ERROR(10703, "job.stop.error"),
+    JOB_UPDATE_STATUS_ERROR(10704, "job.update.status.error");
 
     private final int code;
     private final String msg;

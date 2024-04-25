@@ -18,29 +18,72 @@
 
 package org.apache.paimon.web.server.service;
 
-import org.apache.paimon.web.engine.flink.common.executor.Executor;
 import org.apache.paimon.web.server.data.dto.JobSubmitDTO;
+import org.apache.paimon.web.server.data.dto.ResultFetchDTO;
+import org.apache.paimon.web.server.data.dto.StopJobDTO;
 import org.apache.paimon.web.server.data.model.JobInfo;
+import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
+import org.apache.paimon.web.server.data.vo.JobVO;
+import org.apache.paimon.web.server.data.vo.ResultDataVO;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /** Job Service. */
 public interface JobService extends IService<JobInfo> {
 
-    boolean shouldCreateSession();
+    /**
+     * Submits a new job based on the provided job submission data.
+     *
+     * @param jobSubmitDTO the data transfer object containing job submission details
+     * @return the job view object after submission
+     */
+    JobVO submitJob(JobSubmitDTO jobSubmitDTO);
 
-    Executor getExecutor(JobSubmitDTO jobSubmitDTO) throws Exception;
+    /**
+     * Fetches the result of a job specified by the result fetch data transfer object.
+     *
+     * @param resultFetchDTO the data transfer object containing job result fetching details
+     * @return result data view object containing the job results
+     */
+    ResultDataVO fetchResult(ResultFetchDTO resultFetchDTO);
 
-    boolean saveJob(JobInfo jobInfo);
+    /**
+     * Lists all jobs.
+     *
+     * @return a list of job view objects
+     */
+    List<JobVO> listJobs();
 
-    boolean updateJobStatusAndEndTime(String jobId, String newStatus, LocalDateTime endTime);
+    /**
+     * Lists jobs in a paginated format.
+     *
+     * @param current the current page number
+     * @param size the number of jobs per page
+     * @return a list of job view objects for the specified page
+     */
+    List<JobVO> listJobsByPage(int current, int size);
 
-    boolean updateJobStatusAndStartTime(String jobId, String newStatus, LocalDateTime startTime);
-
-    List<JobInfo> listJobsByPage(int current, int size);
-
+    /**
+     * Retrieves detailed information about a job identified by its job ID.
+     *
+     * @param jobId the unique identifier of the job
+     * @return job information object
+     */
     JobInfo getJobByJobId(String jobId);
+
+    /**
+     * Retrieves statistics about jobs.
+     *
+     * @return a job statistics view object containing aggregated job data
+     */
+    JobStatisticsVO getJobStatistics();
+
+    /**
+     * Stops a job as specified by the stop job data transfer object.
+     *
+     * @param stopJobDTO the data transfer object containing job stopping details
+     */
+    void stop(StopJobDTO stopJobDTO);
 }
