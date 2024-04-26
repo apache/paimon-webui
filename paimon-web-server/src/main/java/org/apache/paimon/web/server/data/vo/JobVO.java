@@ -46,6 +46,8 @@ public class JobVO {
 
     private String sessionId;
 
+    private Integer uid;
+
     private String status;
 
     private Boolean shouldFetchResult;

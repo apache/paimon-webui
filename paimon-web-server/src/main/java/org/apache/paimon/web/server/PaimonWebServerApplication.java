@@ -20,11 +20,13 @@ package org.apache.paimon.web.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /** Paimon Manager Server Application. */
 @SpringBootApplication
 @EnableScheduling
+@EnableCaching
 public class PaimonWebServerApplication {
 
     /**

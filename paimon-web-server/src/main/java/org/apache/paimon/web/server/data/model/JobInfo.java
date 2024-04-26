@@ -46,6 +46,8 @@ public class JobInfo extends BaseModel {
 
     private String sessionId;
 
+    private Integer uid;
+
     private String config;
 
     private String statements;

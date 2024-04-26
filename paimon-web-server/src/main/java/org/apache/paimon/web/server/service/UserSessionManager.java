@@ -22,6 +22,8 @@ import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /** Manages user sessions for Flink SQL Gateway. */
@@ -36,5 +38,9 @@ public class UserSessionManager {
 
     public void addSession(String username, SessionEntity session) {
         sessions.put(username, session);
+    }
+
+    public List<SessionEntity> getAllSessions() {
+        return new ArrayList<>(sessions.values());
     }
 }

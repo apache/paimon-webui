@@ -16,17 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.dto;
+package org.apache.paimon.web.server.configrue;
 
-import lombok.Data;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-/** DTO of session. */
-@Data
-public class SessionDTO {
+/** CacheConfig. */
+@Configuration
+public class CacheConfig {
 
-    private Integer uid;
-
-    private String host;
-
-    private Integer port;
+    @Bean
+    public CacheManager cacheManager() {
+        return new ConcurrentMapCacheManager("userCache");
+    }
 }

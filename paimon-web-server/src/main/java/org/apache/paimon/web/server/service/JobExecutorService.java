@@ -16,17 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.dto;
+package org.apache.paimon.web.server.service;
 
-import lombok.Data;
+import org.apache.paimon.web.engine.flink.common.executor.Executor;
 
-/** DTO of session. */
-@Data
-public class SessionDTO {
+import org.springframework.stereotype.Service;
 
-    private Integer uid;
+import java.util.concurrent.ConcurrentHashMap;
 
-    private String host;
+/** Job executor service. */
+@Service
+public class JobExecutorService {
 
-    private Integer port;
+    private final ConcurrentHashMap<String, Executor> executors = new ConcurrentHashMap<>();
+
+    public Executor getExecutor(String sessionId) {
+        return executors.get(sessionId);
+    }
+
+    public void addExecutor(String sessionId, Executor executor) {
+        executors.put(sessionId, executor);
+    }
 }

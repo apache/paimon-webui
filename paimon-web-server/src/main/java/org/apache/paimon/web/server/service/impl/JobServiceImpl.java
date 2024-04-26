@@ -39,6 +39,7 @@ import org.apache.paimon.web.server.data.vo.ResultDataVO;
 import org.apache.paimon.web.server.data.vo.UserVO;
 import org.apache.paimon.web.server.mapper.JobMapper;
 import org.apache.paimon.web.server.service.ClusterService;
+import org.apache.paimon.web.server.service.JobExecutorService;
 import org.apache.paimon.web.server.service.JobService;
 import org.apache.paimon.web.server.service.SessionService;
 import org.apache.paimon.web.server.service.UserService;
@@ -55,6 +56,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -63,7 +66,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -87,6 +89,10 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     @Autowired private ClusterService clusterService;
 
+    @Autowired private JobExecutorService jobExecutorService;
+
+    @Autowired private CacheManager cacheManager;
+
     private boolean shouldCreateSession() {
         if (StpUtil.isLogin()) {
             UserVO user = userService.getUserById(StpUtil.getLoginIdAsInt());
@@ -95,6 +101,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                 SessionDTO sessionDTO = new SessionDTO();
                 sessionDTO.setHost(session.getHost());
                 sessionDTO.setPort(session.getPort());
+                sessionDTO.setUid(StpUtil.getLoginIdAsInt());
                 return sessionService.triggerSessionHeartbeat(sessionDTO) <= 0;
             }
         }
@@ -103,21 +110,28 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     private Executor getExecutor(String clusterId, String taskType) {
         try {
-            if (shouldCreateSession()) {
-                ClusterInfo clusterInfo = clusterService.getById(clusterId);
-                SessionDTO sessionDTO = new SessionDTO();
-                sessionDTO.setHost(clusterInfo.getHost());
-                sessionDTO.setPort(clusterInfo.getPort());
-                sessionService.createSession(sessionDTO);
-            }
             if (StpUtil.isLogin()) {
+                if (shouldCreateSession()) {
+                    ClusterInfo clusterInfo = clusterService.getById(clusterId);
+                    SessionDTO sessionDTO = new SessionDTO();
+                    sessionDTO.setHost(clusterInfo.getHost());
+                    sessionDTO.setPort(clusterInfo.getPort());
+                    sessionDTO.setUid(StpUtil.getLoginIdAsInt());
+                    sessionService.createSession(sessionDTO);
+                }
+
                 UserVO user = userService.getUserById(StpUtil.getLoginIdAsInt());
                 SessionEntity session = sessionManager.getSession(user.getUsername());
-                ExecutionConfig config = ExecutionConfig.builder().sessionEntity(session).build();
-                EngineType engineType = EngineType.fromName(taskType.toUpperCase());
-                ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
-                ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
-                return executorFactory.createExecutor();
+
+                if (jobExecutorService.getExecutor(session.getSessionId()) == null) {
+                    ExecutionConfig config = ExecutionConfig.builder().sessionEntity(session).build();
+                    EngineType engineType = EngineType.fromName(taskType.toUpperCase());
+                    ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
+                    ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
+                    Executor executor = executorFactory.createExecutor();
+                    jobExecutorService.addExecutor(session.getSessionId(), executor);
+                }
+                return jobExecutorService.getExecutor(session.getSessionId());
             }
         } catch (Exception e) {
             log.error("Failed to create executor: {}", e.getMessage(), e);
@@ -259,45 +273,87 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
     @Async
     @Scheduled(initialDelay = 60000, fixedDelay = 10000)
     public void refreshFlinkJobStatus() {
-        try {
-            ClusterInfo clusterInfo = getRandomCluster();
-            if (clusterInfo == null) {
-                throw new IllegalStateException("Failed to obtain cluster information.");
-            }
-            Executor executor =
-                    getExecutor(String.valueOf(clusterInfo.getId()), clusterInfo.getType());
-            if (executor == null) {
-                throw new RuntimeException("No executor available for status refreshing.");
-            }
-            ExecutionResult submitResult = executor.executeSql(SHOW_JOBS_STATEMENT);
-            List<Map<String, Object>> jobsData = submitResult.getData();
-            for (Map<String, Object> jobData : jobsData) {
-                String jobId = (String) jobData.get("job id");
-                String jobStatus = (String) jobData.get("status");
-                String utcTimeString = (String) jobData.get("start time");
-                LocalDateTime startTime =
-                        LocalDateTimeUtil.convertUtcStringToLocalDateTime(utcTimeString);
-                JobInfo job = getJobByJobId(jobId);
-                if (job != null) {
-                    String currentStatus = job.getStatus();
-                    if (!jobStatus.equals(currentStatus)) {
-                        if (JobStatus.RUNNING.getValue().equals(jobStatus)) {
-                            updateJobStatusAndStartTime(jobId, jobStatus, startTime);
-                        } else if (JobStatus.FINISHED.getValue().equals(jobStatus)
-                                || JobStatus.CANCELED.getValue().equals(jobStatus)) {
-                            LocalDateTime endTime =
-                                    job.getEndTime() == null
-                                            ? LocalDateTime.now()
-                                            : job.getEndTime();
-                            updateJobStatusAndEndTime(jobId, jobStatus, endTime);
+        Cache userCache = cacheManager.getCache("userCache");
+        Map<Integer, String> cacheMap = (Map<Integer, String>) userCache.getNativeCache();
+        cacheMap.forEach(
+                (userId, username) -> {
+                    try {
+                        SessionEntity session = sessionManager.getSession(username);
+                        if (session == null) {
+                            return;
                         }
+
+                        Executor executor = jobExecutorService.getExecutor(session.getSessionId());
+                        if (executor == null) {
+                            return;
+                        }
+
+                        ExecutionResult executionResult = executor.executeSql(SHOW_JOBS_STATEMENT);
+                        List<Map<String, Object>> jobsData = executionResult.getData();
+                        for (Map<String, Object> jobData : jobsData) {
+                            String jobId = (String) jobData.get("job id");
+                            String jobStatus = (String) jobData.get("status");
+                            String utcTimeString = (String) jobData.get("start time");
+                            LocalDateTime startTime =
+                                    LocalDateTimeUtil.convertUtcStringToLocalDateTime(
+                                            utcTimeString);
+                            JobInfo job = getJobByJobId(jobId);
+                            if (job != null && job.getUid().equals(userId)) {
+                                String currentStatus = job.getStatus();
+                                if (!jobStatus.equals(currentStatus)) {
+                                    if (JobStatus.RUNNING.getValue().equals(jobStatus)) {
+                                        updateJobStatusAndStartTime(jobId, jobStatus, startTime);
+                                    } else if (JobStatus.FINISHED.getValue().equals(jobStatus)
+                                            || JobStatus.CANCELED.getValue().equals(jobStatus)) {
+                                        LocalDateTime endTime =
+                                                job.getEndTime() == null
+                                                        ? LocalDateTime.now()
+                                                        : job.getEndTime();
+                                        updateJobStatusAndEndTime(jobId, jobStatus, endTime);
+                                    }
+                                }
+                            } else {
+                                log.warn("Job with ID {} not found in the database.", jobId);
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.error("Exception with refreshing job status.", e);
                     }
-                } else {
-                    log.warn("Job with ID {} not found in the database.", jobId);
+                });
+    }
+
+    @Async
+    @Scheduled(initialDelay = 10000, fixedDelay = 6000)
+    public void triggerSessionHeartbeat() {
+        List<ClusterInfo> clusterInfos = clusterService.list();
+        Map<Integer, String> cacheUser = getCacheUser();
+        for (ClusterInfo cluster : clusterInfos) {
+            cacheUser.forEach((userId, username) -> {
+                SessionDTO sessionDTO = new SessionDTO();
+                sessionDTO.setHost(cluster.getHost());
+                sessionDTO.setPort(cluster.getPort());
+                sessionDTO.setUid(userId);
+                if (sessionService.triggerSessionHeartbeat(sessionDTO) < 1) {
+                    sessionService.createSession(sessionDTO);
                 }
+            });
+        }
+    }
+
+    @Async
+    @Scheduled(initialDelay = 60000, fixedDelay = 30000)
+    public void initializeExecutorsIfNeeded() {
+        List<SessionEntity> sessions = sessionManager.getAllSessions();
+        for (SessionEntity session : sessions) {
+            Executor executor = jobExecutorService.getExecutor(session.getSessionId());
+            if (executor == null) {
+                ExecutionConfig config = ExecutionConfig.builder().sessionEntity(session).build();
+                EngineType engineType = EngineType.fromName(taskType.toUpperCase());
+                ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
+                ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
+                Executor executor = executorFactory.createExecutor();
+                jobExecutorService.addExecutor(session.getSessionId(), executor);
             }
-        } catch (Exception e) {
-            log.error("Exception with refreshing job status.", e);
         }
     }
 
@@ -345,11 +401,14 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                         .statements(jobSubmitDTO.getStatements())
                         .status(JobStatus.CREATED.getValue())
                         .sessionId(jobSubmitDTO.getClusterId());
+
         String jobName = jobSubmitDTO.getJobName() != null ? jobSubmitDTO.getJobName() : "";
         builder.jobName(jobName);
+
         if (StringUtils.isNotBlank(executionResult.getStatus())) {
             builder.status(executionResult.getStatus());
         }
+
         Map<String, String> config =
                 MapUtils.isNotEmpty(jobSubmitDTO.getConfig())
                         ? jobSubmitDTO.getConfig()
@@ -362,8 +421,13 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
             jsonConfig = "{}";
         }
         builder.config(jsonConfig);
+
         String executeMode = jobSubmitDTO.isStreaming() ? STREAMING_MODE : BATCH_MODE;
         builder.executeMode(executeMode);
+
+        if (StpUtil.isLogin()) {
+            builder.uid(StpUtil.getLoginIdAsInt());
+        }
         return builder.build();
     }
 
@@ -385,6 +449,9 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
         if (StringUtils.isNotBlank(executionResult.getStatus())) {
             builder.status(executionResult.getStatus());
         }
+        if (StpUtil.isLogin()) {
+            builder.uid(StpUtil.getLoginIdAsInt());
+        }
         return builder.build();
     }
 
@@ -403,15 +470,23 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
         return "SET 'pipeline.name' = '" + pipelineName + "';\n" + statements;
     }
 
-    private ClusterInfo getRandomCluster() {
-        List<ClusterInfo> clusters = clusterService.list();
-        if (clusters == null || clusters.isEmpty()) {
-            log.error("No clusters available.");
-            return null;
+    private Map<Integer, String> getCacheUser() {
+        Cache userCache = cacheManager.getCache("userCache");
+        if (userCache == null) {
+            throw new IllegalStateException("Requested cache is not configured");
         }
+        Object nativeCache = userCache.getNativeCache();
 
-        Random random = new Random();
-        int index = random.nextInt(clusters.size());
-        return clusters.get(index);
+        if (nativeCache instanceof Map) {
+            Map<?, ?> uncheckedMap = (Map<?, ?>) nativeCache;
+            for (Map.Entry<?, ?> entry : uncheckedMap.entrySet()) {
+                if (!(entry.getKey() instanceof Integer && entry.getValue() instanceof String)) {
+                    throw new ClassCastException("Cache contains keys or values of incorrect type");
+                }
+            }
+            return (Map<Integer, String>) uncheckedMap;
+        } else {
+            throw new IllegalStateException("Native cache is not of type Map");
+        }
     }
 }

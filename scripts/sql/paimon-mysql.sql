@@ -156,6 +156,23 @@ CREATE TABLE if not exists `cluster`
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
     )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE if not exists `job`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `job_id`     varchar(100)  not null comment 'job id',
+    `job_name`     varchar(200) comment 'job name',
+    `type`     varchar(100)  comment 'job type',
+    `execute_mode`     varchar(50)  comment 'execute mode',
+    `session_id`     varchar(100)  comment 'session id',
+    `uid`          INT(11) COMMENT 'User ID',
+    `config`     text   comment 'config',
+    `statements`   text COMMENT 'statements',
+    `status` varchar(50) COMMENT 'status',
+    `start_time` datetime(0) NULL COMMENT 'start time',
+    `end_time` datetime(0) NULL COMMENT 'end time',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `user` ( id, username, password, nickname, mobile
                    , email, enabled, is_delete)
