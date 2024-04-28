@@ -36,7 +36,6 @@ import org.apache.paimon.web.server.data.model.JobInfo;
 import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
 import org.apache.paimon.web.server.data.vo.JobVO;
 import org.apache.paimon.web.server.data.vo.ResultDataVO;
-import org.apache.paimon.web.server.data.vo.UserVO;
 import org.apache.paimon.web.server.mapper.JobMapper;
 import org.apache.paimon.web.server.service.ClusterService;
 import org.apache.paimon.web.server.service.JobExecutorService;
@@ -95,8 +94,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     private boolean shouldCreateSession() {
         if (StpUtil.isLogin()) {
-            UserVO user = userService.getUserById(StpUtil.getLoginIdAsInt());
-            SessionEntity session = sessionManager.getSession(user.getUsername());
+            SessionEntity session = sessionManager.getSession(StpUtil.getLoginIdAsInt());
             if (session != null) {
                 SessionDTO sessionDTO = new SessionDTO();
                 sessionDTO.setHost(session.getHost());
@@ -110,29 +108,32 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     private Executor getExecutor(String clusterId, String taskType) {
         try {
-            if (StpUtil.isLogin()) {
-                if (shouldCreateSession()) {
-                    ClusterInfo clusterInfo = clusterService.getById(clusterId);
-                    SessionDTO sessionDTO = new SessionDTO();
-                    sessionDTO.setHost(clusterInfo.getHost());
-                    sessionDTO.setPort(clusterInfo.getPort());
-                    sessionDTO.setUid(StpUtil.getLoginIdAsInt());
-                    sessionService.createSession(sessionDTO);
-                }
-
-                UserVO user = userService.getUserById(StpUtil.getLoginIdAsInt());
-                SessionEntity session = sessionManager.getSession(user.getUsername());
-
-                if (jobExecutorService.getExecutor(session.getSessionId()) == null) {
-                    ExecutionConfig config = ExecutionConfig.builder().sessionEntity(session).build();
-                    EngineType engineType = EngineType.fromName(taskType.toUpperCase());
-                    ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
-                    ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
-                    Executor executor = executorFactory.createExecutor();
-                    jobExecutorService.addExecutor(session.getSessionId(), executor);
-                }
-                return jobExecutorService.getExecutor(session.getSessionId());
+            if (!StpUtil.isLogin()) {
+                throw new IllegalStateException("User must be logged in to access this resource");
             }
+            if (shouldCreateSession()) {
+                ClusterInfo clusterInfo = clusterService.getById(clusterId);
+                if (clusterInfo == null) {
+                    throw new IllegalStateException("No cluster found with ID: " + clusterId);
+                }
+                SessionDTO sessionDTO = new SessionDTO();
+                sessionDTO.setHost(clusterInfo.getHost());
+                sessionDTO.setPort(clusterInfo.getPort());
+                sessionDTO.setUid(StpUtil.getLoginIdAsInt());
+                sessionService.createSession(sessionDTO);
+            }
+
+            SessionEntity session = sessionManager.getSession(StpUtil.getLoginIdAsInt());
+
+            if (jobExecutorService.getExecutor(session.getSessionId()) == null) {
+                ExecutionConfig config = ExecutionConfig.builder().sessionEntity(session).build();
+                EngineType engineType = EngineType.fromName(taskType.toUpperCase());
+                ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
+                ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
+                Executor executor = executorFactory.createExecutor();
+                jobExecutorService.addExecutor(session.getSessionId(), executor);
+            }
+            return jobExecutorService.getExecutor(session.getSessionId());
         } catch (Exception e) {
             log.error("Failed to create executor: {}", e.getMessage(), e);
         }
@@ -271,14 +272,14 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
     }
 
     @Async
-    @Scheduled(initialDelay = 60000, fixedDelay = 10000)
+    @Scheduled(initialDelay = 30000, fixedDelay = 10000)
     public void refreshFlinkJobStatus() {
         Cache userCache = cacheManager.getCache("userCache");
         Map<Integer, String> cacheMap = (Map<Integer, String>) userCache.getNativeCache();
         cacheMap.forEach(
                 (userId, username) -> {
                     try {
-                        SessionEntity session = sessionManager.getSession(username);
+                        SessionEntity session = sessionManager.getSession(userId);
                         if (session == null) {
                             return;
                         }
@@ -328,15 +329,16 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
         List<ClusterInfo> clusterInfos = clusterService.list();
         Map<Integer, String> cacheUser = getCacheUser();
         for (ClusterInfo cluster : clusterInfos) {
-            cacheUser.forEach((userId, username) -> {
-                SessionDTO sessionDTO = new SessionDTO();
-                sessionDTO.setHost(cluster.getHost());
-                sessionDTO.setPort(cluster.getPort());
-                sessionDTO.setUid(userId);
-                if (sessionService.triggerSessionHeartbeat(sessionDTO) < 1) {
-                    sessionService.createSession(sessionDTO);
-                }
-            });
+            cacheUser.forEach(
+                    (userId, username) -> {
+                        SessionDTO sessionDTO = new SessionDTO();
+                        sessionDTO.setHost(cluster.getHost());
+                        sessionDTO.setPort(cluster.getPort());
+                        sessionDTO.setUid(userId);
+                        if (sessionService.triggerSessionHeartbeat(sessionDTO) < 1) {
+                            sessionService.createSession(sessionDTO);
+                        }
+                    });
         }
     }
 
@@ -345,14 +347,20 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
     public void initializeExecutorsIfNeeded() {
         List<SessionEntity> sessions = sessionManager.getAllSessions();
         for (SessionEntity session : sessions) {
-            Executor executor = jobExecutorService.getExecutor(session.getSessionId());
-            if (executor == null) {
-                ExecutionConfig config = ExecutionConfig.builder().sessionEntity(session).build();
-                EngineType engineType = EngineType.fromName(taskType.toUpperCase());
-                ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
-                ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
-                Executor executor = executorFactory.createExecutor();
-                jobExecutorService.addExecutor(session.getSessionId(), executor);
+            try {
+                Executor executor = jobExecutorService.getExecutor(session.getSessionId());
+                if (executor == null) {
+                    ExecutionConfig config =
+                            ExecutionConfig.builder().sessionEntity(session).build();
+                    EngineType engineType = EngineType.fromName("FLINK");
+                    ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
+                    ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
+                    executor = executorFactory.createExecutor();
+                    jobExecutorService.addExecutor(session.getSessionId(), executor);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(
+                        "Failed to create executor for session ID:" + session.getSessionId(), e);
             }
         }
     }
@@ -437,7 +445,6 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                         .type(jobSubmitDTO.getTaskType())
                         .shouldFetchResult(executionResult.shouldFetchResult())
                         .submitId(executionResult.getSubmitId())
-                        .sessionId(jobSubmitDTO.getClusterId())
                         .resultData(executionResult.getData())
                         .jobName(jobSubmitDTO.getJobName())
                         .token(0L);
@@ -450,7 +457,8 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
             builder.status(executionResult.getStatus());
         }
         if (StpUtil.isLogin()) {
-            builder.uid(StpUtil.getLoginIdAsInt());
+            builder.uid(StpUtil.getLoginIdAsInt())
+                    .sessionId(sessionManager.getSession(StpUtil.getLoginIdAsInt()).getSessionId());
         }
         return builder.build();
     }

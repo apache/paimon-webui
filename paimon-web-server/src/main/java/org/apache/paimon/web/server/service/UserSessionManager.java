@@ -30,14 +30,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class UserSessionManager {
 
-    private final ConcurrentHashMap<String, SessionEntity> sessions = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, SessionEntity> sessions = new ConcurrentHashMap<>();
 
-    public SessionEntity getSession(String username) {
-        return sessions.get(username);
+    public SessionEntity getSession(Integer uid) {
+        return sessions.get(uid);
     }
 
-    public void addSession(String username, SessionEntity session) {
-        sessions.put(username, session);
+    public void addSession(Integer uid, SessionEntity session) {
+        sessions.put(uid, session);
     }
 
     public List<SessionEntity> getAllSessions() {

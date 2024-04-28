@@ -26,7 +26,6 @@ import org.apache.paimon.web.server.service.UserService;
 import org.apache.paimon.web.server.service.UserSessionManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -51,7 +50,7 @@ public class SessionServiceImpl implements SessionService {
                 String username = userService.getUserById(sessionDTO.getUid()).getUsername();
                 String sessionName = username + "_" + UUID.randomUUID();
                 SessionEntity sessionEntity = client.openSession(sessionName);
-                sessionManager.addSession(username, sessionEntity);
+                sessionManager.addSession(sessionDTO.getUid(), sessionEntity);
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to create session", e);
@@ -64,9 +63,7 @@ public class SessionServiceImpl implements SessionService {
             SqlGatewayClient client =
                     new SqlGatewayClient(sessionDTO.getHost(), sessionDTO.getPort());
             if (sessionDTO.getUid() != null) {
-                SessionEntity session =
-                        sessionManager.getSession(
-                                userService.getUserById(sessionDTO.getUid()).getUsername());
+                SessionEntity session = sessionManager.getSession(sessionDTO.getUid());
                 if (session != null) {
                     client.closeSession(session.getSessionId());
                 }
@@ -82,9 +79,7 @@ public class SessionServiceImpl implements SessionService {
             if (sessionDTO.getUid() != null) {
                 SqlGatewayClient client =
                         new SqlGatewayClient(sessionDTO.getHost(), sessionDTO.getPort());
-                SessionEntity session =
-                        sessionManager.getSession(
-                                userService.getUserById(sessionDTO.getUid()).getUsername());
+                SessionEntity session = sessionManager.getSession(sessionDTO.getUid());
                 client.triggerSessionHeartbeat(session.getSessionId());
             }
         } catch (Exception e) {

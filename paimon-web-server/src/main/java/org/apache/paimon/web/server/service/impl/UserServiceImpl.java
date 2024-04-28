@@ -127,7 +127,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         StpUtil.login(user.getId(), loginDTO.isRememberMe());
 
         Cache userCache = cacheManager.getCache("userCache");
-        userCache.put(user.getId(), username);
+        if (userCache != null) {
+            userCache.put(user.getId(), username);
+        }
 
         return userInfoVo;
     }
