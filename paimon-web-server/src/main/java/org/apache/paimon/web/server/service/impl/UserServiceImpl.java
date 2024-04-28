@@ -50,6 +50,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired private SysMenuService sysMenuService;
     @Autowired private TenantService tenantService;
     @Autowired private UserRoleMapper userRoleMapper;
+    @Autowired private CacheManager cacheManager;
 
     @Override
     public UserVO getUserById(Integer id) {
@@ -122,6 +125,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }*/
 
         StpUtil.login(user.getId(), loginDTO.isRememberMe());
+
+        Cache userCache = cacheManager.getCache("userCache");
+        if (userCache != null) {
+            userCache.put(user.getId(), username);
+        }
 
         return userInfoVo;
     }
