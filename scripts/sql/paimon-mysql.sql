@@ -126,6 +126,19 @@ CREATE TABLE if not exists `catalog`
     options       varchar(512)                         null
     ) engine = innodb;
 
+DROP TABLE IF EXISTS `cluster`;
+CREATE TABLE if not exists `cluster`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `cluster_name`  varchar(100)  comment 'cluster name',
+    `host`     varchar(100)  comment 'host',
+    `port`   int(11) COMMENT 'port',
+    `enabled`   tinyint(1)  NOT NULL DEFAULT 1 COMMENT 'enabled',
+    `type`    varchar(100)  comment 'cluster type',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `cdc_job_definition`;
 CREATE TABLE if not exists `cdc_job_definition`
 (
