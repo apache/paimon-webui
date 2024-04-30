@@ -52,6 +52,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -248,6 +249,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public int deleteUserByIds(Integer[] userIds) {
         userRoleMapper.deleteUserRole(userIds);
         return userMapper.deleteBatchIds(Arrays.asList(userIds));
+    }
+
+    @Override
+    public boolean changePassword(User user) {
+        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        return this.updateById(user);
     }
 
     private int insertUserRole(User user) {
