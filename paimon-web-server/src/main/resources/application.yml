@@ -70,10 +70,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: info,health
   endpoint:
     health:
-      show-details: always
+      show-details: when-authorized
   health:
     ldap:
       enabled: false
