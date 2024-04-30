@@ -67,7 +67,7 @@ public class CatalogController {
     }
 
     /**
-     * Get all catalog information
+     * Get all catalog information.
      *
      * @return The list of all catalogs
      */
