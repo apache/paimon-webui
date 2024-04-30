@@ -50,13 +50,16 @@ public class CatalogController {
     /**
      * Create a catalog.
      *
-     * @param catalogDTO The catalogDTO for the catalog.
-     * @return The created catalog.
+     * @param catalogDTO The catalogDTO for the catalog
+     * @return A response indicating the success or failure of the operation
      */
     @PostMapping("/create")
     public R<Void> createCatalog(@RequestBody CatalogDTO catalogDTO) {
         try {
-            return catalogService.createCatalog(catalogDTO);
+            if (catalogService.checkCatalogNameUnique(catalogDTO)) {
+                return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogDTO.getName());
+            }
+            return catalogService.createCatalog(catalogDTO) ? R.succeed() : R.failed();
         } catch (Exception e) {
             log.error("Exception with creating catalog.", e);
             return R.failed(Status.CATALOG_CREATE_ERROR);
@@ -64,9 +67,9 @@ public class CatalogController {
     }
 
     /**
-     * Get all catalog information.
+     * Get all catalog information
      *
-     * @return The list of all catalogs.
+     * @return The list of all catalogs
      */
     @GetMapping("/list")
     public R<List<CatalogInfo>> getCatalog() {
@@ -77,8 +80,8 @@ public class CatalogController {
     /**
      * Removes a catalog with given catalog name or catalog id.
      *
-     * @param catalogDTO Given the catalog name or catalog id to remove catalog.
-     * @return A response indicating the success or failure of the operation.
+     * @param catalogDTO Given the catalog name or catalog id to remove catalog
+     * @return A response indicating the success or failure of the operation
      */
     @PostMapping("/remove")
     public R<Void> removeCatalog(@RequestBody CatalogDTO catalogDTO) {
