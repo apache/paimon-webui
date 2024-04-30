@@ -21,8 +21,6 @@ package org.apache.paimon.web.server.service.impl;
 import org.apache.paimon.web.api.catalog.PaimonService;
 import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
-import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.DatabaseVO;
 import org.apache.paimon.web.server.mapper.DatabaseMapper;
 import org.apache.paimon.web.server.service.CatalogService;
@@ -51,30 +49,29 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
     }
 
     @Override
-    public boolean checkCatalogNameUnique(DatabaseVO databaseVO) {
-        return false;
+    public boolean databaseExists(DatabaseDTO databaseDTO) {
+        CatalogInfo catalogInfo = getCatalogInfo(databaseDTO);
+        PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
+        return service.databaseExists(databaseDTO.getName());
     }
 
     @Override
-    public R<Void> createDatabase(DatabaseDTO databaseDTO) {
+    public boolean createDatabase(DatabaseDTO databaseDTO) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(databaseDTO);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
-            if (service.databaseExists(databaseDTO.getName())) {
-                return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseDTO.getName());
-            }
             service.createDatabase(
                     databaseDTO.getName(),
                     BooleanUtils.toBooleanDefaultIfNull(databaseDTO.isIgnoreIfExists(), false));
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with creating database.", e);
-            return R.failed(Status.DATABASE_CREATE_ERROR);
+            return false;
         }
     }
 
     @Override
-    public R<List<DatabaseVO>> listDatabases(Integer catalogId) {
+    public List<DatabaseVO> listDatabases(Integer catalogId) {
         List<DatabaseVO> resultList = new LinkedList<>();
         if (Objects.nonNull(catalogId)) {
             CatalogInfo catalog = catalogService.getById(catalogId);
@@ -89,7 +86,7 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
                         database.setDescription("");
                         resultList.add(database);
                     });
-            return R.succeed(resultList);
+            return resultList;
         } else {
             List<CatalogInfo> catalogInfoList = catalogService.list();
             if (!CollectionUtils.isEmpty(catalogInfoList)) {
@@ -110,12 +107,12 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
                                     });
                         });
             }
-            return R.succeed(resultList);
+            return resultList;
         }
     }
 
     @Override
-    public R<Void> dropDatabase(DatabaseDTO databaseDTO) {
+    public boolean dropDatabase(DatabaseDTO databaseDTO) {
         try {
             CatalogInfo catalogInfo = getCatalogInfo(databaseDTO);
             PaimonService service = PaimonServiceUtils.getPaimonService(catalogInfo);
@@ -123,10 +120,10 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, DatabaseVO>
                     databaseDTO.getName(),
                     BooleanUtils.toBooleanDefaultIfNull(databaseDTO.isIgnoreIfExists(), false),
                     BooleanUtils.toBooleanDefaultIfNull(databaseDTO.isCascade(), true));
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with dropping database.", e);
-            return R.failed(Status.DATABASE_DROP_ERROR);
+            return false;
         }
     }
 
