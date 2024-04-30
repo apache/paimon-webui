@@ -107,4 +107,12 @@ public interface UserService extends IService<User> {
      * @return the number of rows affected
      */
     int deleteUserByIds(Integer[] userIds);
+
+    /**
+     * Changes the user's password.
+     *
+     * @param user The user object containing the necessary password information.
+     * @return true if the password was successfully changed, false otherwise.
+     */
+    boolean changePassword(User user);
 }

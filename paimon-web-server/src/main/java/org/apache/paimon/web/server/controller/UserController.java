@@ -125,4 +125,19 @@ public class UserController {
     public R<Void> delete(@PathVariable Integer[] userIds) {
         return userService.deleteUserByIds(userIds) > 0 ? R.succeed() : R.failed();
     }
+
+    /**
+     * Changes a user's password.
+     *
+     * @param user the user object containing the new password
+     * @return a response entity indicating success or failure
+     */
+    @SaCheckPermission("system:user:change:password")
+    @PostMapping("/change/password")
+    public R<Void> changePassword(@Validated @RequestBody User user) {
+        if (userService.getUserById(user.getId()) == null) {
+            return R.failed(USER_NOT_EXIST);
+        }
+        return userService.changePassword(user) ? R.succeed() : R.failed();
+    }
 }

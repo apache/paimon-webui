@@ -22,6 +22,7 @@ import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.vo.UserVO;
+import org.apache.paimon.web.server.mapper.UserMapper;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -50,6 +52,8 @@ public class UserControllerTest extends ControllerTestBase {
 
     private static final int userId = 3;
     private static final String username = "test";
+
+    @Autowired private UserMapper userMapper;
 
     @Test
     @Order(1)
@@ -186,5 +190,23 @@ public class UserControllerTest extends ControllerTestBase {
 
         R<?> result = ObjectMapperUtils.fromJSON(delResponseString, R.class);
         assertEquals(200, result.getCode());
+    }
+
+    @Test
+    public void testChangePassword() throws Exception {
+        User user = new User();
+        user.setId(2);
+        user.setPassword("common");
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(userPath + "/change/password")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(user))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+
+        User newUser = userMapper.selectById(2);
+        assertEquals("9efab2399c7c560b34de477b9aa0a465", newUser.getPassword());
     }
 }
