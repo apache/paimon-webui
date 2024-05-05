@@ -22,8 +22,6 @@ import org.apache.paimon.web.api.catalog.PaimonServiceFactory;
 import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.enums.CatalogMode;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
-import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.mapper.CatalogMapper;
 import org.apache.paimon.web.server.service.CatalogService;
 
@@ -45,11 +43,7 @@ public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo>
     }
 
     @Override
-    public R<Void> createCatalog(CatalogDTO catalogDTO) {
-        if (checkCatalogNameUnique(catalogDTO)) {
-            return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogDTO.getName());
-        }
-
+    public boolean createCatalog(CatalogDTO catalogDTO) {
         if (catalogDTO.getType().equalsIgnoreCase(CatalogMode.FILESYSTEM.getMode())) {
             PaimonServiceFactory.createFileSystemCatalogService(
                     catalogDTO.getName(), catalogDTO.getWarehouse(), catalogDTO.getOptions());
@@ -78,6 +72,6 @@ public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, CatalogInfo>
                         .isDelete(false)
                         .build();
 
-        return this.save(catalog) ? R.succeed() : R.failed();
+        return this.save(catalog);
     }
 }

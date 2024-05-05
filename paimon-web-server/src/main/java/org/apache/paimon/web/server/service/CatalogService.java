@@ -20,7 +20,6 @@ package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
-import org.apache.paimon.web.server.data.result.R;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -36,10 +35,10 @@ public interface CatalogService extends IService<CatalogInfo> {
     boolean checkCatalogNameUnique(CatalogDTO catalog);
 
     /**
-     * Create a catalog.
+     * Creates a catalog.
      *
-     * @param catalogDTO catalog for the catalog.
-     * @return The created catalog.
+     * @param catalogDTO the data transfer object for catalog creation
+     * @return true if creation is successful, false otherwise
      */
-    R<Void> createCatalog(CatalogDTO catalogDTO);
+    boolean createCatalog(CatalogDTO catalogDTO);
 }
