@@ -20,6 +20,7 @@ package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.DatabaseVO;
 import org.apache.paimon.web.server.service.DatabaseService;
 
@@ -46,36 +47,42 @@ public class DatabaseController {
     }
 
     /**
-     * Creates a new database based on the provided DatabaseInfo.
+     * Creates a new database.
      *
-     * @param databaseDTO The DatabaseInfo object containing the details of the new database.
-     * @return R<Void/> indicating the result of the operation.
+     * @param databaseDTO The details of the database to create
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @PostMapping("/create")
     public R<Void> createDatabase(@RequestBody DatabaseDTO databaseDTO) {
-        return databaseService.createDatabase(databaseDTO);
+        if (databaseService.databaseExists(databaseDTO)) {
+            return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseDTO.getName());
+        }
+        return databaseService.createDatabase(databaseDTO)
+                ? R.succeed()
+                : R.failed(Status.DATABASE_CREATE_ERROR);
     }
 
     /**
      * Lists databases given catalog id.
      *
-     * @return The list of databases of given catalog id.
+     * @return The list of databases of given catalog id
      */
     @GetMapping("/list")
     public R<List<DatabaseVO>> listDatabases(
             @RequestParam(value = "catalogId", required = false) Integer catalogId) {
-        return databaseService.listDatabases(catalogId);
+        return R.succeed(databaseService.listDatabases(catalogId));
     }
 
     /**
-     * Removes a database by its name.
+     * Removes the specified database.
      *
-     * @param databaseDTO The drop database DTO.
-     * @return A response indicating the success or failure of the removal operation.
-     * @throws RuntimeException if the database is not found, or it is not empty.
+     * @param databaseDTO The database to be dropped
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @PostMapping("/drop")
     public R<Void> dropDatabase(@RequestBody DatabaseDTO databaseDTO) {
-        return databaseService.dropDatabase(databaseDTO);
+        return databaseService.dropDatabase(databaseDTO)
+                ? R.succeed()
+                : R.failed(Status.DATABASE_DROP_ERROR);
     }
 }
