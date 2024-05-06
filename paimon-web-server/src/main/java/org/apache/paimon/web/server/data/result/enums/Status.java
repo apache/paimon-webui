@@ -77,8 +77,13 @@ public enum Status {
     TABLE_DROP_ERROR(10510, "table.drop.error"),
     TABLE_RENAME_ERROR(10511, "table.rename.error"),
 
+    /** ------------cdc-----------------. */
     CDC_JOB_EXIST_ERROR(10601, "cdc.job.exist.error"),
-    CDC_JOB_NO_EXIST_ERROR(10602, "cdc.job.not.exist.error");
+    CDC_JOB_NO_EXIST_ERROR(10602, "cdc.job.not.exist.error"),
+
+    /** ------------cluster-----------------. */
+    CLUSTER_NOT_EXIST(10701, "cluster.not.exist"),
+    CLUSTER_NAME_ALREADY_EXISTS(10702, "cluster.name.exist");
 
     private final int code;
     private final String msg;
