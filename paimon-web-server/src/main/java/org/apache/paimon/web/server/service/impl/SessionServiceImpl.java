@@ -18,13 +18,14 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.paimon.web.engine.flink.sql.gateway.client.SqlGatewayClient;
 import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
 import org.apache.paimon.web.server.data.dto.SessionDTO;
 import org.apache.paimon.web.server.service.SessionService;
 import org.apache.paimon.web.server.service.UserService;
 import org.apache.paimon.web.server.service.UserSessionManager;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,8 @@ public class SessionServiceImpl implements SessionService {
                     sessionName = username + "_" + UUID.randomUUID();
                 }
                 SessionEntity sessionEntity = client.openSession(sessionName);
-                sessionManager.addSession(sessionDTO.getUid() + "_" + sessionDTO.getClusterId(), sessionEntity);
+                sessionManager.addSession(
+                        sessionDTO.getUid() + "_" + sessionDTO.getClusterId(), sessionEntity);
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to create session", e);
@@ -68,7 +70,9 @@ public class SessionServiceImpl implements SessionService {
             SqlGatewayClient client =
                     new SqlGatewayClient(sessionDTO.getHost(), sessionDTO.getPort());
             if (sessionDTO.getUid() != null) {
-                SessionEntity session = sessionManager.getSession(sessionDTO.getUid() + "_" + sessionDTO.getClusterId());
+                SessionEntity session =
+                        sessionManager.getSession(
+                                sessionDTO.getUid() + "_" + sessionDTO.getClusterId());
                 if (session != null) {
                     client.closeSession(session.getSessionId());
                 }
@@ -84,7 +88,9 @@ public class SessionServiceImpl implements SessionService {
             if (sessionDTO.getUid() != null) {
                 SqlGatewayClient client =
                         new SqlGatewayClient(sessionDTO.getHost(), sessionDTO.getPort());
-                SessionEntity session = sessionManager.getSession(sessionDTO.getUid() + "_" + sessionDTO.getClusterId());
+                SessionEntity session =
+                        sessionManager.getSession(
+                                sessionDTO.getUid() + "_" + sessionDTO.getClusterId());
                 client.triggerSessionHeartbeat(session.getSessionId());
             }
         } catch (Exception e) {

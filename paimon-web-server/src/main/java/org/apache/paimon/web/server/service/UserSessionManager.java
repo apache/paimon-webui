@@ -19,6 +19,7 @@
 package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
