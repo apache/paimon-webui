@@ -28,8 +28,6 @@ import org.apache.paimon.web.server.data.dto.AlterTableDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.TableColumn;
-import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.TableVO;
 import org.apache.paimon.web.server.service.CatalogService;
 import org.apache.paimon.web.server.service.TableService;
@@ -68,7 +66,14 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
-    public R<Void> createTable(TableDTO tableDTO) {
+    public boolean tableExists(TableDTO tableDTO) {
+        PaimonService service =
+                PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDTO.getCatalogName()));
+        return service.tableExists(tableDTO.getDatabaseName(), tableDTO.getName());
+    }
+
+    @Override
+    public boolean createTable(TableDTO tableDTO) {
         try {
             PaimonService service =
                     PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDTO.getCatalogName()));
@@ -99,19 +104,16 @@ public class TableServiceImpl implements TableService {
                             .options(tableOptions)
                             .comment(tableDTO.getDescription())
                             .build();
-            if (service.tableExists(tableDTO.getDatabaseName(), tableDTO.getName())) {
-                return R.failed(Status.TABLE_NAME_IS_EXIST, tableDTO.getName());
-            }
             service.createTable(tableDTO.getDatabaseName(), tableDTO.getName(), tableMetadata);
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with creating table.", e);
-            return R.failed(Status.TABLE_CREATE_ERROR);
+            return false;
         }
     }
 
     @Override
-    public R<Void> addColumn(TableDTO tableDTO) {
+    public boolean addColumn(TableDTO tableDTO) {
         try {
             PaimonService service =
                     PaimonServiceUtils.getPaimonService(getCatalogInfo(tableDTO.getCatalogName()));
@@ -151,15 +153,15 @@ public class TableServiceImpl implements TableService {
                 }
             }
             service.alterTable(tableDTO.getDatabaseName(), tableDTO.getName(), tableChanges);
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with adding column.", e);
-            return R.failed(Status.TABLE_ADD_COLUMN_ERROR);
+            return false;
         }
     }
 
     @Override
-    public R<Void> dropColumn(
+    public boolean dropColumn(
             String catalogName, String databaseName, String tableName, String columnName) {
         try {
             PaimonService service =
@@ -168,15 +170,15 @@ public class TableServiceImpl implements TableService {
             TableChange.DropColumn dropColumn = TableChange.dropColumn(columnName);
             tableChanges.add(dropColumn);
             service.alterTable(databaseName, tableName, tableChanges);
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with dropping column.", e);
-            return R.failed(Status.TABLE_DROP_COLUMN_ERROR);
+            return false;
         }
     }
 
     @Override
-    public R<Void> alterTable(AlterTableDTO alterTableDTO) {
+    public boolean alterTable(AlterTableDTO alterTableDTO) {
         try {
             String databaseName = alterTableDTO.getDatabaseName();
             String tableName = alterTableDTO.getTableName();
@@ -215,15 +217,15 @@ public class TableServiceImpl implements TableService {
             if (!tableChanges.isEmpty()) {
                 service.alterTable(databaseName, tableName, tableChanges);
             }
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with altering table.", e);
-            return R.failed(Status.TABLE_AlTER_COLUMN_ERROR);
+            return false;
         }
     }
 
     @Override
-    public R<Void> addOption(TableDTO tableDTO) {
+    public boolean addOption(TableDTO tableDTO) {
         List<TableChange> tableChanges = new ArrayList<>();
         try {
             PaimonService service =
@@ -234,15 +236,15 @@ public class TableServiceImpl implements TableService {
                 tableChanges.add(setOption);
             }
             service.alterTable(tableDTO.getDatabaseName(), tableDTO.getName(), tableChanges);
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with adding option.", e);
-            return R.failed(Status.TABLE_ADD_OPTION_ERROR);
+            return false;
         }
     }
 
     @Override
-    public R<Void> removeOption(
+    public boolean removeOption(
             String catalogName, String databaseName, String tableName, String key) {
         List<TableChange> tableChanges = new ArrayList<>();
         try {
@@ -251,37 +253,37 @@ public class TableServiceImpl implements TableService {
             TableChange.RemoveOption removeOption = TableChange.remove(key);
             tableChanges.add(removeOption);
             service.alterTable(databaseName, tableName, tableChanges);
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with removing option.", e);
-            return R.failed(Status.TABLE_REMOVE_OPTION_ERROR);
+            return false;
         }
     }
 
     @Override
-    public R<Void> dropTable(String catalogName, String databaseName, String tableName) {
+    public boolean dropTable(String catalogName, String databaseName, String tableName) {
         try {
             PaimonService service =
                     PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             service.dropTable(databaseName, tableName);
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with dropping table.", e);
-            return R.failed(Status.TABLE_DROP_ERROR);
+            return false;
         }
     }
 
     @Override
-    public R<Void> renameTable(
+    public boolean renameTable(
             String catalogName, String databaseName, String fromTableName, String toTableName) {
         try {
             PaimonService service =
                     PaimonServiceUtils.getPaimonService(getCatalogInfo(catalogName));
             service.renameTable(databaseName, fromTableName, toTableName);
-            return R.succeed();
+            return true;
         } catch (Exception e) {
             log.error("Exception with renaming table.", e);
-            return R.failed(Status.TABLE_RENAME_ERROR);
+            return false;
         }
     }
 

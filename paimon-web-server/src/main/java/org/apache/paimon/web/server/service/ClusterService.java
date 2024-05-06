@@ -18,27 +18,20 @@
 
 package org.apache.paimon.web.server.service;
 
-import org.apache.paimon.web.server.data.dto.CatalogDTO;
-import org.apache.paimon.web.server.data.model.CatalogInfo;
+import org.apache.paimon.web.server.data.model.ClusterInfo;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 
-/** Catalog Service. */
-public interface CatalogService extends IService<CatalogInfo> {
+import java.util.List;
 
-    /**
-     * Verify if the catalog name is unique.
-     *
-     * @param catalog catalog info
-     * @return result
-     */
-    boolean checkCatalogNameUnique(CatalogDTO catalog);
+/** Cluster Service. */
+public interface ClusterService extends IService<ClusterInfo> {
 
-    /**
-     * Creates a catalog.
-     *
-     * @param catalogDTO the data transfer object for catalog creation
-     * @return true if creation is successful, false otherwise
-     */
-    boolean createCatalog(CatalogDTO catalogDTO);
+    List<ClusterInfo> listUsers(IPage<ClusterInfo> page, @Param("cluster") ClusterInfo cluster);
+
+    boolean checkClusterNameUnique(ClusterInfo cluster);
+
+    int deleteClusterByIds(Integer[] clusterIds);
 }

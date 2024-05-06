@@ -18,11 +18,9 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.model.User;
+import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.vo.UserVO;
-import org.apache.paimon.web.server.mapper.UserMapper;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -30,7 +28,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -42,34 +39,32 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Test for {@link UserController}. */
+/** Test for {@link ClusterController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserControllerTest extends ControllerTestBase {
+public class ClusterControllerTest extends ControllerTestBase {
 
-    private static final String userPath = "/api/user";
+    private static final String clusterPath = "/api/cluster";
 
-    private static final int userId = 3;
-    private static final String username = "test";
-
-    @Autowired private UserMapper userMapper;
+    private static final int clusterId = 1;
+    private static final String clusterName = "flink_test_cluster";
 
     @Test
     @Order(1)
-    public void testAddUser() throws Exception {
-        User user = new User();
-        user.setId(userId);
-        user.setUsername(username);
-        user.setNickname(username);
-        user.setUserType(0);
-        user.setEnabled(true);
-        user.setIsDelete(false);
+    public void testAddCluster() throws Exception {
+        ClusterInfo cluster = new ClusterInfo();
+        cluster.setId(clusterId);
+        cluster.setClusterName(clusterName);
+        cluster.setHost("127.0.0.1");
+        cluster.setPort(8083);
+        cluster.setType("Flink");
+        cluster.setEnabled(true);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.post(userPath)
+                        MockMvcRequestBuilders.post(clusterPath)
                                 .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(user))
+                                .content(ObjectMapperUtils.toJSON(cluster))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -78,10 +73,10 @@ public class UserControllerTest extends ControllerTestBase {
 
     @Test
     @Order(2)
-    public void testGetUser() throws Exception {
+    public void testGetCluster() throws Exception {
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get(userPath + "/" + userId)
+                                MockMvcRequestBuilders.get(clusterPath + "/" + clusterId)
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -91,35 +86,71 @@ public class UserControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
+        R<ClusterInfo> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<ClusterInfo>>() {});
         assertEquals(200, r.getCode());
         assertNotNull(r.getData());
-        assertEquals(r.getData().getUsername(), username);
+        assertEquals(clusterName, r.getData().getClusterName());
+        assertEquals("127.0.0.1", r.getData().getHost());
+        assertEquals(8083, r.getData().getPort());
+        assertEquals("Flink", r.getData().getType());
+        assertTrue(r.getData().getEnabled());
     }
 
     @Test
     @Order(3)
-    public void testUpdateUser() throws Exception {
-        String newUserName = username + "-edit";
-        User user = new User();
-        user.setId(userId);
-        user.setUsername(newUserName);
-        user.setNickname(newUserName);
-        user.setUserType(0);
-        user.setEnabled(true);
-        user.setIsDelete(false);
+    public void testListClusters() throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(clusterPath + "/list")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        PageR<ClusterInfo> r =
+                ObjectMapperUtils.fromJSON(
+                        responseString, new TypeReference<PageR<ClusterInfo>>() {});
+        assertTrue(
+                r.getData() != null
+                        && ((r.getTotal() > 0 && r.getData().size() > 0)
+                                || (r.getTotal() == 0 && r.getData().size() == 0)));
+
+        ClusterInfo clusterInfo = r.getData().get(0);
+        assertEquals(clusterName, clusterInfo.getClusterName());
+        assertEquals("127.0.0.1", clusterInfo.getHost());
+        assertEquals(8083, clusterInfo.getPort());
+        assertEquals("Flink", clusterInfo.getType());
+        assertTrue(clusterInfo.getEnabled());
+    }
+
+    @Test
+    @Order(4)
+    public void testUpdateCluster() throws Exception {
+        String newClusterName = clusterName + "-edit";
+        ClusterInfo cluster = new ClusterInfo();
+        cluster.setId(clusterId);
+        cluster.setClusterName(newClusterName);
+        cluster.setHost("127.0.0.1");
+        cluster.setPort(8083);
+        cluster.setType("Flink");
+        cluster.setEnabled(true);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.put(userPath)
+                        MockMvcRequestBuilders.put(clusterPath)
                                 .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(user))
+                                .content(ObjectMapperUtils.toJSON(cluster))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get(userPath + "/" + userId)
+                                MockMvcRequestBuilders.get(clusterPath + "/" + clusterId)
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -129,56 +160,20 @@ public class UserControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
+        R<ClusterInfo> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<ClusterInfo>>() {});
         assertEquals(200, r.getCode());
         assertNotNull(r.getData());
-        assertEquals(r.getData().getUsername(), newUserName);
-    }
-
-    @Test
-    @Order(4)
-    public void testListUsers() throws Exception {
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.get(userPath + "/list")
-                                        .cookie(cookie)
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        PageR<UserVO> r =
-                ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<UserVO>>() {});
-        assertTrue(
-                r.getData() != null
-                        && ((r.getTotal() > 0 && r.getData().size() > 0)
-                                || (r.getTotal() == 0 && r.getData().size() == 0)));
-
-        UserVO firstUser = r.getData().get(0);
-        assertEquals("admin", firstUser.getUsername());
-        assertEquals("Admin", firstUser.getNickname());
-        assertEquals("admin@paimon.com", firstUser.getEmail());
-        assertEquals("LOCAL", firstUser.getUserType());
-        assertTrue(firstUser.getEnabled());
-
-        UserVO secondUser = r.getData().get(1);
-        assertEquals("common", secondUser.getUsername());
-        assertEquals("common", secondUser.getNickname());
-        assertEquals("common@paimon.com", secondUser.getEmail());
-        assertEquals("LOCAL", secondUser.getUserType());
-        assertTrue(secondUser.getEnabled());
+        assertEquals(r.getData().getClusterName(), newClusterName);
     }
 
     @Test
     @Order(5)
-    public void testDeleteUser() throws Exception {
+    public void testDeleteCluster() throws Exception {
         String delResponseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.delete(
-                                                userPath + "/" + userId + "," + userId)
+                                                clusterPath + "/" + clusterId + "," + clusterId)
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -190,23 +185,5 @@ public class UserControllerTest extends ControllerTestBase {
 
         R<?> result = ObjectMapperUtils.fromJSON(delResponseString, R.class);
         assertEquals(200, result.getCode());
-    }
-
-    @Test
-    public void testChangePassword() throws Exception {
-        User user = new User();
-        user.setId(2);
-        user.setPassword("common");
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post(userPath + "/change/password")
-                                .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(user))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
-
-        User newUser = userMapper.selectById(2);
-        assertEquals("9efab2399c7c560b34de477b9aa0a465", newUser.getPassword());
     }
 }

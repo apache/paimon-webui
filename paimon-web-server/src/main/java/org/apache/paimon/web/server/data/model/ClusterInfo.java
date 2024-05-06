@@ -16,29 +16,33 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.server.data.model;
 
-import org.apache.paimon.web.server.data.dto.CatalogDTO;
-import org.apache.paimon.web.server.data.model.CatalogInfo;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+/** Cluster table model. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@TableName("cluster")
+public class ClusterInfo extends BaseModel {
 
-/** Catalog Service. */
-public interface CatalogService extends IService<CatalogInfo> {
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * Verify if the catalog name is unique.
-     *
-     * @param catalog catalog info
-     * @return result
-     */
-    boolean checkCatalogNameUnique(CatalogDTO catalog);
+    private String clusterName;
 
-    /**
-     * Creates a catalog.
-     *
-     * @param catalogDTO the data transfer object for catalog creation
-     * @return true if creation is successful, false otherwise
-     */
-    boolean createCatalog(CatalogDTO catalogDTO);
+    private String host;
+
+    private Integer port;
+
+    private String type;
+
+    private Boolean enabled;
 }

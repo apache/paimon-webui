@@ -16,29 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.server.mapper;
 
-import org.apache.paimon.web.server.data.dto.CatalogDTO;
-import org.apache.paimon.web.server.data.model.CatalogInfo;
+import org.apache.paimon.web.server.data.model.ClusterInfo;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-/** Catalog Service. */
-public interface CatalogService extends IService<CatalogInfo> {
+import java.util.List;
 
-    /**
-     * Verify if the catalog name is unique.
-     *
-     * @param catalog catalog info
-     * @return result
-     */
-    boolean checkCatalogNameUnique(CatalogDTO catalog);
+/** Cluster mapper. */
+@Mapper
+public interface ClusterMapper extends BaseMapper<ClusterInfo> {
 
-    /**
-     * Creates a catalog.
-     *
-     * @param catalogDTO the data transfer object for catalog creation
-     * @return true if creation is successful, false otherwise
-     */
-    boolean createCatalog(CatalogDTO catalogDTO);
+    List<ClusterInfo> listClusters(IPage<ClusterInfo> page, @Param("cluster") ClusterInfo cluster);
 }
