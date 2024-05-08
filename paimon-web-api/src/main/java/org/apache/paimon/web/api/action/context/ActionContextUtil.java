@@ -19,8 +19,12 @@
 package org.apache.paimon.web.api.action.context;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.paimon.web.api.exception.ActionException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 /** ActionContext Util. */
 public class ActionContextUtil {
@@ -40,5 +44,23 @@ public class ActionContextUtil {
                 addConf(args, confName, String.valueOf(conf));
             }
         }
+    }
+
+    public static String getActionJarPath(){
+        String actionJarPath = System.getenv("ACTION_JAR_PATH");
+        if (StringUtils.isBlank(actionJarPath)) {
+            actionJarPath = System.getProperty("ACTION_JAR_PATH");
+        }
+        if (StringUtils.isBlank(actionJarPath)) {
+            throw new ActionException("ACTION_JAR_PATH is null");
+        }
+        return actionJarPath;
+    }
+
+    public static List<String> getConfListFromString(String value,String spiltCharacter){
+        if(StringUtils.isBlank(value)){
+            return new ArrayList<>();
+        }
+        return Arrays.asList(value.split(spiltCharacter));
     }
 }

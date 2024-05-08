@@ -18,7 +18,9 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.predicate.In;
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
+import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
@@ -35,7 +37,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/** CdcJobDefinition api controller. */
+/**
+ * CdcJobDefinition api controller.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/cdc-job-definition")
@@ -78,5 +82,10 @@ public class CdcJobDefinitionController {
     public R<Void> deleteById(@PathVariable Integer id) {
         cdcJobDefinitionService.removeById(id);
         return R.succeed();
+    }
+
+    @PostMapping("{id}/submit")
+    public R<Void> submit(@PathVariable Integer id, @RequestBody CdcJobSubmitDTO cdcJobSubmitDTO) {
+        return cdcJobDefinitionService.submit(id, cdcJobSubmitDTO);
     }
 }

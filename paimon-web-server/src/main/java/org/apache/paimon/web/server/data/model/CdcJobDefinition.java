@@ -25,6 +25,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.paimon.web.api.enums.FlinkCdcType;
 
 import java.io.Serializable;
 

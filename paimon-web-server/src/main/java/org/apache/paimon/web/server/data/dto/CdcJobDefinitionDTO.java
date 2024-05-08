@@ -19,6 +19,7 @@
 package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
+import org.apache.paimon.web.api.enums.FlinkCdcType;
 
 /** DTO of cdcJobDefinition . */
 @Data

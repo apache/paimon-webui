@@ -26,7 +26,7 @@ import java.util.List;
 
 /** Postgres sync table action context. */
 @SuperBuilder
-public class PostgresSyncTableCdcActionContext extends FlinkCdcTableSyncActionContext {
+public class PostgresSyncTableActionContext extends FlinkCdcTableSyncActionContext {
 
     @ActionConf(value = "postgres_conf")
     @Nullable

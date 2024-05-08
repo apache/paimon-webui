@@ -18,18 +18,32 @@
 
 package org.apache.paimon.web.server.service.impl;
 
+import cn.hutool.core.util.EnumUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.paimon.utils.JsonSerdeUtil;
+import org.apache.paimon.web.api.action.context.ActionContext;
+import org.apache.paimon.web.api.action.context.factory.ActionContextFactoryServiceLoadUtil;
+import org.apache.paimon.web.api.action.context.factory.FlinkCdcActionContextFactory;
+import org.apache.paimon.web.api.action.service.ActionService;
+import org.apache.paimon.web.api.action.service.FlinkCdcActionService;
+import org.apache.paimon.web.api.enums.FlinkCdcType;
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
+import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.data.vo.UserVO;
 import org.apache.paimon.web.server.mapper.CdcJobDefinitionMapper;
 import org.apache.paimon.web.server.service.CdcJobDefinitionService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /** CdcJobDefinitionServiceImpl. */
 @Service
@@ -100,6 +114,25 @@ public class CdcJobDefinitionServiceImpl
                         .build();
         cdcJobDefinition.setId(cdcJobDefinitionDTO.getId());
         baseMapper.updateById(cdcJobDefinition);
+        return R.succeed();
+    }
+
+    @Override
+    public R<Void> submit(Integer id, CdcJobSubmitDTO cdcJobSubmitDTO) {
+        CdcJobDefinition cdcJobDefinition = baseMapper.selectById(id);
+        String description = cdcJobDefinition.getDescription();
+
+        Map<String, Object> graphMap = ObjectMapperUtils.fromJSON(description, new TypeReference<Map<String, Object>>() {
+        });
+        Integer cdcType = cdcJobDefinition.getCdcType();
+        ActionService actionService = new FlinkCdcActionService();
+//        FlinkCdcActionContextFactory factory = ActionContextFactoryServiceLoadUtil.getFlinkCdcActionContextFactory();
+//        ActionContext actionContext = factory.getActionContext();
+//        try {
+//            actionService.execute(actionContext);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
         return R.succeed();
     }
 }
