@@ -31,6 +31,4 @@ public class SessionDTO {
     private String host;
 
     private Integer port;
-
-    private String name;
 }

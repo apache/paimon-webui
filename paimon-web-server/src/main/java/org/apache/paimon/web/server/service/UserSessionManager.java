@@ -40,6 +40,10 @@ public class UserSessionManager {
         sessions.put(id, session);
     }
 
+    public void removeSession(String id) {
+        sessions.remove(id);
+    }
+
     public List<SessionEntity> getAllSessions() {
         return new ArrayList<>(sessions.values());
     }

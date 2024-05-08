@@ -31,7 +31,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,11 +48,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Test for {@link SessionController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SessionControllerTest extends FlinkSQLGatewayTestBase {
 
     private static final String loginPath = "/api/login";
@@ -89,16 +94,6 @@ public class SessionControllerTest extends FlinkSQLGatewayTestBase {
         assertTrue(StringUtils.isNotBlank(r.getData().toString()));
 
         cookie = (MockCookie) response.getCookie(tokenName);
-        ClusterInfo cluster =
-                ClusterInfo.builder()
-                        .clusterName("test_cluster")
-                        .host(targetAddress)
-                        .port(port)
-                        .enabled(true)
-                        .type("Flink")
-                        .build();
-        boolean res = clusterService.save(cluster);
-        assertTrue(res);
     }
 
     @AfterEach
@@ -119,13 +114,25 @@ public class SessionControllerTest extends FlinkSQLGatewayTestBase {
     }
 
     @Test
-    public void testCheckAndRenewSession() throws Exception {
+    @Order(1)
+    public void testCreateSession() throws Exception {
+        ClusterInfo cluster =
+                ClusterInfo.builder()
+                        .clusterName("test_cluster")
+                        .host(targetAddress)
+                        .port(port)
+                        .enabled(true)
+                        .type("Flink")
+                        .build();
+        boolean res = clusterService.save(cluster);
+        assertTrue(res);
+
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
         ClusterInfo one = clusterService.getOne(queryWrapper);
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.post(sessionPath + "/check")
+                                MockMvcRequestBuilders.post(sessionPath + "/create")
                                         .cookie(cookie)
                                         .param("uid", "1")
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -140,5 +147,29 @@ public class SessionControllerTest extends FlinkSQLGatewayTestBase {
         SessionEntity session = sessionManager.getSession("1" + "_" + one.getId());
         assertEquals(session.getHost(), targetAddress);
         assertEquals(session.getPort(), port);
+    }
+
+    @Test
+    @Order(2)
+    public void testDropSession() throws Exception {
+        QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("cluster_name", "test_cluster");
+        ClusterInfo one = clusterService.getOne(queryWrapper);
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post(sessionPath + "/drop")
+                                        .cookie(cookie)
+                                        .param("uid", "1")
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, r.getCode());
+        SessionEntity session = sessionManager.getSession("1" + "_" + one.getId());
+        assertNull(session);
     }
 }

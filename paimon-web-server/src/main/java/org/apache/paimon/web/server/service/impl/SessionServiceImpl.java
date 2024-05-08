@@ -25,7 +25,6 @@ import org.apache.paimon.web.server.service.SessionService;
 import org.apache.paimon.web.server.service.UserService;
 import org.apache.paimon.web.server.service.UserSessionManager;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,16 +47,14 @@ public class SessionServiceImpl implements SessionService {
             SqlGatewayClient client =
                     new SqlGatewayClient(sessionDTO.getHost(), sessionDTO.getPort());
             if (sessionDTO.getUid() != null) {
-                String sessionName;
                 String username = userService.getUserById(sessionDTO.getUid()).getUsername();
-                if (StringUtils.isNotBlank(sessionDTO.getName())) {
-                    sessionName = sessionDTO.getName();
-                } else {
-                    sessionName = username + "_" + UUID.randomUUID();
+                String sessionName = username + "_" + UUID.randomUUID();
+                if (getSession(sessionDTO.getUid(), sessionDTO.getClusterId()) == null
+                        || triggerSessionHeartbeat(sessionDTO) < 1) {
+                    SessionEntity sessionEntity = client.openSession(sessionName);
+                    sessionManager.addSession(
+                            sessionDTO.getUid() + "_" + sessionDTO.getClusterId(), sessionEntity);
                 }
-                SessionEntity sessionEntity = client.openSession(sessionName);
-                sessionManager.addSession(
-                        sessionDTO.getUid() + "_" + sessionDTO.getClusterId(), sessionEntity);
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to create session", e);
@@ -75,6 +72,8 @@ public class SessionServiceImpl implements SessionService {
                                 sessionDTO.getUid() + "_" + sessionDTO.getClusterId());
                 if (session != null) {
                     client.closeSession(session.getSessionId());
+                    sessionManager.removeSession(
+                            sessionDTO.getUid() + "_" + sessionDTO.getClusterId());
                 }
             }
         } catch (Exception e) {

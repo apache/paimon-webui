@@ -43,8 +43,8 @@ public class SessionController {
 
     @Autowired private ClusterService clusterService;
 
-    @PostMapping("/check")
-    public R<Void> checkAndRenewSession(Integer uid) {
+    @PostMapping("/create")
+    public R<Void> createSession(Integer uid) {
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("type", "Flink");
         List<ClusterInfo> clusterInfos = clusterService.list(queryWrapper);
@@ -54,13 +54,23 @@ public class SessionController {
             sessionDTO.setPort(cluster.getPort());
             sessionDTO.setClusterId(cluster.getId());
             sessionDTO.setUid(uid);
-            if (sessionService.getSession(uid, cluster.getId()) == null) {
-                sessionService.createSession(sessionDTO);
-            } else {
-                if (sessionService.triggerSessionHeartbeat(sessionDTO) < 1) {
-                    sessionService.createSession(sessionDTO);
-                }
-            }
+            sessionService.createSession(sessionDTO);
+        }
+        return R.succeed();
+    }
+
+    @PostMapping("/drop")
+    public R<Void> dropSession(Integer uid) {
+        QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", "Flink");
+        List<ClusterInfo> clusterInfos = clusterService.list(queryWrapper);
+        for (ClusterInfo cluster : clusterInfos) {
+            SessionDTO sessionDTO = new SessionDTO();
+            sessionDTO.setHost(cluster.getHost());
+            sessionDTO.setPort(cluster.getPort());
+            sessionDTO.setClusterId(cluster.getId());
+            sessionDTO.setUid(uid);
+            sessionService.closeSession(sessionDTO);
         }
         return R.succeed();
     }
