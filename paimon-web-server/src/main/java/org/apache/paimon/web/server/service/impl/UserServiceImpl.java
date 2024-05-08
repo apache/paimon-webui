@@ -123,6 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }*/
 
         StpUtil.login(user.getId(), loginDTO.isRememberMe());
+        userInfoVo.setPermissions(StpUtil.getPermissionList());
 
         return userInfoVo;
     }
