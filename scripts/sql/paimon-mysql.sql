@@ -188,8 +188,8 @@ values (1, 'all', 0, 1, 'system', null, 1, 'M', 'system', 'admin', 'system root 
        (300, 'menu manager', 1, 1, 'menu', 'menu/index', 1, 'C', 'system:menu:list', 'menu', 'menu manager'),
        (3000, 'menu query', 300, 1, '', '', 1, 'F', 'system:menu:query', '#', ''),
        (3001, 'menu add', 300, 2, '', '', 1, 'F', 'system:menu:add', '#', ''),
-       (3002, 'menu edit', 300, 3, '', '', 1, 'F', 'system:menu:edit', '#', ''),
-       (3003, 'menu del', 300, 4, '', '', 1, 'F', 'system:menu:remove', '#', '');
+       (3002, 'menu update', 300, 3, '', '', 1, 'F', 'system:menu:update', '#', ''),
+       (3003, 'menu delete', 300, 4, '', '', 1, 'F', 'system:menu:delete', '#', '');
 
 insert into user_role (id, user_id, role_id)
 values (1, 1, 1), (2, 2, 2);
