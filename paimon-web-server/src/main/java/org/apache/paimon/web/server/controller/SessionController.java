@@ -27,6 +27,9 @@ import org.apache.paimon.web.server.service.SessionService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +47,10 @@ public class SessionController {
     @Autowired private ClusterService clusterService;
 
     @PostMapping("/create")
+    @Retryable(
+            value = {Exception.class},
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 3000))
     public R<Void> createSession(Integer uid) {
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("type", "Flink");
@@ -57,6 +64,12 @@ public class SessionController {
             sessionService.createSession(sessionDTO);
         }
         return R.succeed();
+    }
+
+    @Recover
+    public R<Void> recover(Exception e, Integer uid) {
+        log.error("After retries failed to create session for UID: {}", uid, e);
+        return R.failed();
     }
 
     @PostMapping("/drop")
