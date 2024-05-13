@@ -50,4 +50,90 @@ module.exports = (mockUtil) => ({
       }
     ]
   }),
+
+  '/menu/roleMenuTreeselect/:roleId': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": {
+      "checkedKeys": [],
+      "menus": [
+        {
+          "id": 1,
+          "label": "system",
+          "children": [
+            {
+              "id": 300,
+              "label": "menu_manager",
+              "children": [
+                {
+                  "id": 3000,
+                  "label": "menu_query"
+                },
+                {
+                  "id": 3001,
+                  "label": "menu_add"
+                },
+                {
+                  "id": 3002,
+                  "label": "menu_update"
+                },
+                {
+                  "id": 3003,
+                  "label": "menu_delete"
+                }
+              ]
+            },
+            {
+              "id": 100,
+              "label": "user_manager",
+              "children": [
+                {
+                  "id": 1000,
+                  "label": "user_query"
+                },
+                {
+                  "id": 1001,
+                  "label": "user_add"
+                },
+                {
+                  "id": 1002,
+                  "label": "user_update"
+                },
+                {
+                  "id": 1003,
+                  "label": "user_delete"
+                },
+                {
+                  "id": 1004,
+                  "label": "user_reset"
+                }
+              ]
+            },
+            {
+              "id": 200,
+              "label": "role_manager",
+              "children": [
+                {
+                  "id": 2000,
+                  "label": "role_query"
+                },
+                {
+                  "id": 2001,
+                  "label": "role_add"
+                },
+                {
+                  "id": 2002,
+                  "label": "role_update"
+                },
+                {
+                  "id": 2003,
+                  "label": "role_delete"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  })
 })
