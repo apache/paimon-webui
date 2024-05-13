@@ -44,7 +44,7 @@ public class JobInfo extends BaseModel {
 
     private String executeMode;
 
-    private String sessionId;
+    private String clusterId;
 
     private Integer uid;
 

@@ -35,5 +35,9 @@ public class ResultDataVO {
 
     private List<Map<String, Object>> resultData;
 
+    private Integer columns;
+
+    private Integer rows;
+
     private Long token;
 }

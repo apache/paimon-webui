@@ -162,7 +162,7 @@ CREATE TABLE if not exists `job`
     `job_name`     varchar(200) comment 'job name',
     `type`     varchar(100)  comment 'job type',
     `execute_mode`     varchar(50)  comment 'execute mode',
-    `session_id`     varchar(100)  comment 'session id',
+    `cluster_id`     varchar(100)  comment 'cluster id',
     `uid`          INT(11) COMMENT 'User ID',
     `config`     text   comment 'config',
     `statements`   text COMMENT 'statements',

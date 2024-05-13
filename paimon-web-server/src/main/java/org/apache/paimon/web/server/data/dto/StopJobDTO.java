@@ -24,7 +24,7 @@ import lombok.Data;
 @Data
 public class StopJobDTO {
 
-    private String sessionId;
+    private String clusterId;
 
     private String jobId;
 

@@ -26,6 +26,8 @@ public class ResultFetchDTO {
 
     private String submitId;
 
+    private String clusterId;
+
     private String sessionId;
 
     private String taskType;

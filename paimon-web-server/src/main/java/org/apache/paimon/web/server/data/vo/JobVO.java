@@ -44,6 +44,8 @@ public class JobVO {
 
     private String executeMode;
 
+    private String clusterId;
+
     private String sessionId;
 
     private Integer uid;

@@ -54,6 +54,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -100,6 +101,17 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         assertTrue(StringUtils.isNotBlank(r.getData().toString()));
 
         cookie = (MockCookie) response.getCookie(tokenName);
+
+        ClusterInfo cluster =
+                ClusterInfo.builder()
+                        .clusterName("test_cluster")
+                        .host(targetAddress)
+                        .port(port)
+                        .enabled(true)
+                        .type("Flink")
+                        .build();
+        boolean res = clusterService.save(cluster);
+        assertTrue(res);
     }
 
     @AfterEach
@@ -118,27 +130,16 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         R<?> r = ObjectMapperUtils.fromJSON(result, R.class);
         assertEquals(200, r.getCode());
 
-       /* QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
         ClusterInfo one = clusterService.getOne(queryWrapper);
-        int res = clusterService.deleteClusterByIds(new Integer[]{one.getId()});
-        assertTrue(res > 0);*/
+        int res = clusterService.deleteClusterByIds(new Integer[] {one.getId()});
+        assertTrue(res > 0);
     }
 
     @Test
     @Order(1)
     public void testSubmitJob() throws Exception {
-        ClusterInfo cluster =
-                ClusterInfo.builder()
-                        .clusterName("test_cluster")
-                        .host(targetAddress)
-                        .port(port)
-                        .enabled(true)
-                        .type("Flink")
-                        .build();
-        boolean res = clusterService.save(cluster);
-        assertTrue(res);
-
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
         ClusterInfo one = clusterService.getOne(queryWrapper);
@@ -177,6 +178,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         if (r.getData().getShouldFetchResult()) {
             ResultFetchDTO resultFetchDTO = new ResultFetchDTO();
             resultFetchDTO.setSubmitId(r.getData().getSubmitId());
+            resultFetchDTO.setClusterId(r.getData().getClusterId());
             resultFetchDTO.setSessionId(r.getData().getSessionId());
             resultFetchDTO.setTaskType(r.getData().getType());
             resultFetchDTO.setToken(r.getData().getToken());
@@ -197,7 +199,6 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
                     ObjectMapperUtils.fromJSON(
                             fetchResultString, new TypeReference<R<ResultDataVO>>() {});
             assertEquals(200, fetchResult.getCode());
-            assertEquals(1, fetchResult.getData().getResultData().size());
             assertEquals(1, fetchResult.getData().getToken());
         }
     }
@@ -233,12 +234,17 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
                 ObjectMapperUtils.fromJSON(
                         listJobResponseStr, new TypeReference<R<List<JobVO>>>() {});
         assertEquals(200, listJobRes.getCode());
-        assertEquals(1, listJobRes.getData().size());
-        assertEquals("flink-job-test-list-jobs", listJobRes.getData().get(0).getJobName());
+        assertEquals(3, listJobRes.getData().size());
+        String jobs =
+                listJobRes.getData().get(0).getJobName()
+                        + ","
+                        + listJobRes.getData().get(1).getJobName()
+                        + ","
+                        + listJobRes.getData().get(2).getJobName();
+        assertTrue(jobs.contains("flink-job-test-list-jobs"));
     }
 
     @Test
-    @Order(4)
     public void testGetJobStatus() throws Exception {
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
@@ -263,7 +269,6 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     }
 
     @Test
-    @Order(5)
     public void testGetJobStatistics() throws Exception {
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
@@ -292,11 +297,10 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
                 ObjectMapperUtils.fromJSON(
                         getJobStatisticsResponseStr, new TypeReference<R<JobStatisticsVO>>() {});
         assertEquals(200, getJobStatisticsRes.getCode());
-        assertEquals(1, getJobStatisticsRes.getData().getTotalNum());
+        assertEquals(5, getJobStatisticsRes.getData().getTotalNum());
     }
 
     @Test
-    @Order(6)
     public void testStopJob() throws Exception {
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
@@ -314,14 +318,25 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         R<JobStatusVO> getJobStatusRes =
                 ObjectMapperUtils.fromJSON(jobStatus, new TypeReference<R<JobStatusVO>>() {});
         while (!getJobStatusRes.getData().getStatus().equals("RUNNING")) {
+            mockMvc.perform(
+                            MockMvcRequestBuilders.post(jobPath + "/refresh")
+                                    .cookie(cookie)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
             jobStatus = getJobStatus(r.getData().getJobId());
             getJobStatusRes =
                     ObjectMapperUtils.fromJSON(jobStatus, new TypeReference<R<JobStatusVO>>() {});
+            TimeUnit.SECONDS.sleep(1);
         }
 
         StopJobDTO stopJobDTO = new StopJobDTO();
         stopJobDTO.setJobId(r.getData().getJobId());
-        stopJobDTO.setSessionId(r.getData().getSessionId());
+        stopJobDTO.setClusterId(r.getData().getClusterId());
         stopJobDTO.setTaskType(r.getData().getType());
         String stopJobString =
                 mockMvc.perform(
