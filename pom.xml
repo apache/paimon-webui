@@ -65,7 +65,7 @@ under the License.
     <properties>
         <project.version>0.1-SNAPSHOT</project.version>
         <java.version>8</java.version>
-        <paimon.shade.version>0.6-SNAPSHOT</paimon.shade.version>
+        <paimon.shade.version>0.8.0</paimon.shade.version>
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
