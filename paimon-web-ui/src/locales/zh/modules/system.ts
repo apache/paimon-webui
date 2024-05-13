@@ -28,4 +28,5 @@ const role = {
   role_key: '角色编码',
   enabled: '是否启用'
 }
+
 export default { user, role }
