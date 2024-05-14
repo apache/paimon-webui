@@ -30,6 +30,7 @@ import org.apache.paimon.web.server.data.vo.JobVO;
 import org.apache.paimon.web.server.data.vo.ResultDataVO;
 import org.apache.paimon.web.server.service.JobService;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +50,7 @@ public class JobController {
 
     @Autowired private JobService jobService;
 
+    @SaCheckPermission("playground:job:submit")
     @PostMapping("/submit")
     public R<JobVO> submit(@RequestBody JobSubmitDTO jobSubmitDTO) {
         try {
@@ -59,6 +61,7 @@ public class JobController {
         }
     }
 
+    @SaCheckPermission("playground:job:fetch")
     @PostMapping("/fetch")
     public R<ResultDataVO> fetchResult(@RequestBody ResultFetchDTO resultFetchDTO) {
         try {
@@ -69,16 +72,19 @@ public class JobController {
         }
     }
 
+    @SaCheckPermission("playground:job:list")
     @GetMapping("/list")
     public R<List<JobVO>> list() {
         return R.succeed(jobService.listJobs());
     }
 
+    @SaCheckPermission("playground:job:list")
     @GetMapping("/list/page")
     public R<List<JobVO>> listJobsByPage(int current, int size) {
         return R.succeed(jobService.listJobsByPage(current, size));
     }
 
+    @SaCheckPermission("playground:job:query")
     @GetMapping("/status/get/{jobId}")
     public R<JobStatusVO> getJobStatus(@PathVariable("jobId") String jobId) {
         JobInfo job = jobService.getJobByJobId(jobId);
@@ -87,11 +93,13 @@ public class JobController {
         return R.succeed(jobStatusVO);
     }
 
+    @SaCheckPermission("playground:job:query")
     @GetMapping("/statistics/get")
     public R<JobStatisticsVO> getJobStatistics() {
         return R.succeed(jobService.getJobStatistics());
     }
 
+    @SaCheckPermission("playground:job:stop")
     @PostMapping("/stop")
     public R<Void> stop(@RequestBody StopJobDTO stopJobDTO) {
         try {
@@ -103,6 +111,7 @@ public class JobController {
         }
     }
 
+    @SaCheckPermission("playground:job:refresh")
     @PostMapping("/refresh")
     public R<Void> refresh() {
         jobService.refreshFlinkJobStatus();
