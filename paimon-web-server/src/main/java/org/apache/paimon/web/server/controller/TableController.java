@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.apache.paimon.web.server.data.dto.AlterTableDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.result.R;
@@ -59,6 +60,7 @@ public class TableController {
      * @param tableDTO The TableDTO object containing information about the table
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:table:create")
     @PostMapping("/create")
     public R<Void> createTable(@RequestBody TableDTO tableDTO) {
         if (tableService.tableExists(tableDTO)) {
@@ -75,6 +77,7 @@ public class TableController {
      * @param tableDTO The TableDTO object containing information about the table
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:column:add")
     @PostMapping("/column/add")
     public R<Void> addColumn(@RequestBody TableDTO tableDTO) {
         return tableService.addColumn(tableDTO)
@@ -90,6 +93,7 @@ public class TableController {
      * @param tableName The name of the table
      * @return Response object containing {@link TableVO} representing the table
      */
+    @SaCheckPermission("metadata:column:list")
     @GetMapping("/column/list")
     public R<TableVO> listColumns(
             @RequestParam String catalogName,
@@ -107,6 +111,7 @@ public class TableController {
      * @param columnName The name of the column to be dropped
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:column:drop")
     @DeleteMapping("/column/drop/{catalogName}/{databaseName}/{tableName}/{columnName}")
     public R<Void> dropColumn(
             @PathVariable String catalogName,
@@ -124,6 +129,7 @@ public class TableController {
      * @param alterTableDTO the DTO containing alteration details
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:table:update")
     @PostMapping("/alter")
     public R<Void> alterTable(@RequestBody AlterTableDTO alterTableDTO) {
         return tableService.alterTable(alterTableDTO)
@@ -137,6 +143,7 @@ public class TableController {
      * @param tableDTO The TableDTO object containing information about the table
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:option:add")
     @PostMapping("/option/add")
     public R<Void> addOption(@RequestBody TableDTO tableDTO) {
         return tableService.addOption(tableDTO)
@@ -153,6 +160,7 @@ public class TableController {
      * @param key The key of the option to be removed
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:option:remove")
     @PostMapping("/option/remove")
     public R<Void> removeOption(
             @RequestParam String catalogName,
@@ -172,6 +180,7 @@ public class TableController {
      * @param tableName The name of the table to be dropped
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:table:drop")
     @DeleteMapping("/drop/{catalogName}/{databaseName}/{tableName}")
     public R<Void> dropTable(
             @PathVariable String catalogName,
@@ -191,6 +200,7 @@ public class TableController {
      * @param toTableName The new name for the table
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:table:update")
     @PostMapping("/rename")
     public R<Void> renameTable(
             @RequestParam String catalogName,
@@ -207,6 +217,7 @@ public class TableController {
      *
      * @return Response object containing a list of {@link TableVO} representing the tables
      */
+    @SaCheckPermission("metadata:table:list")
     @PostMapping("/list")
     public R<Object> listTables(@RequestBody TableDTO tableDTO) {
         List<TableVO> tables = tableService.listTables(tableDTO);

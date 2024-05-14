@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.apache.paimon.web.server.data.dto.CatalogDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.result.R;
@@ -53,6 +54,7 @@ public class CatalogController {
      * @param catalogDTO The catalogDTO for the catalog
      * @return A response indicating the success or failure of the operation
      */
+    @SaCheckPermission("metadata:catalog:create")
     @PostMapping("/create")
     public R<Void> createCatalog(@RequestBody CatalogDTO catalogDTO) {
         try {
@@ -71,6 +73,7 @@ public class CatalogController {
      *
      * @return The list of all catalogs
      */
+    @SaCheckPermission("metadata:catalog:list")
     @GetMapping("/list")
     public R<List<CatalogInfo>> getCatalog() {
         List<CatalogInfo> catalogs = catalogService.list();
@@ -83,6 +86,7 @@ public class CatalogController {
      * @param catalogDTO Given the catalog name or catalog id to remove catalog
      * @return A response indicating the success or failure of the operation
      */
+    @SaCheckPermission("metadata:catalog:remove")
     @PostMapping("/remove")
     public R<Void> removeCatalog(@RequestBody CatalogDTO catalogDTO) {
         boolean remove;
