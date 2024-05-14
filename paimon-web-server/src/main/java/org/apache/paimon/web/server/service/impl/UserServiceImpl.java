@@ -49,6 +49,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -257,6 +258,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean changePassword(User user) {
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         return this.updateById(user);
+    }
+
+    @Override
+    public boolean updateUserStatus(User user) {
+        Preconditions.checkArgument(user != null && user.getId() != null);
+        return this.lambdaUpdate()
+                .set(User::getEnabled, user.getEnabled())
+                .eq(User::getId, user.getId())
+                .update();
+    }
+
+    @Override
+    public int allocateRole(User user) {
+        return this.insertUserRole(user);
     }
 
     private int insertUserRole(User user) {
