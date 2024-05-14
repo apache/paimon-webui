@@ -40,10 +40,12 @@ public enum Status {
     REQUEST_PARAMS_NOT_VALID_ERROR(4001, "invalid.request.parameter"),
     REQUEST_PARAMS_ERROR(4002, "request.parameter.error"),
 
+    /** ------------user-----------------. */
     USER_NOT_EXIST(10001, "user.not.exist"),
     USER_PASSWORD_ERROR(10002, "user.password.error"),
     USER_DISABLED_ERROR(10003, "user.is.disabled"),
     USER_NOT_BING_TENANT(10004, "user.not.bing.tenant"),
+    USER_NAME_ALREADY_EXISTS(10005, "user.name.exist"),
     /** ------------role-----------------. */
     ROLE_IN_USED(10101, "role.in.used"),
     ROLE_NAME_IS_EXIST(10102, "role.name.exist"),
@@ -75,8 +77,13 @@ public enum Status {
     TABLE_DROP_ERROR(10510, "table.drop.error"),
     TABLE_RENAME_ERROR(10511, "table.rename.error"),
 
+    /** ------------cdc-----------------. */
     CDC_JOB_EXIST_ERROR(10601, "cdc.job.exist.error"),
-    CDC_JOB_NO_EXIST_ERROR(10602, "cdc.job.not.exist.error");
+    CDC_JOB_NO_EXIST_ERROR(10602, "cdc.job.not.exist.error"),
+
+    /** ------------cluster-----------------. */
+    CLUSTER_NOT_EXIST(10701, "cluster.not.exist"),
+    CLUSTER_NAME_ALREADY_EXISTS(10702, "cluster.name.exist");
 
     private final int code;
     private final String msg;

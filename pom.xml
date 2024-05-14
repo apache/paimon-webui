@@ -57,15 +57,15 @@ under the License.
     </licenses>
 
     <scm>
-        <url>https://github.com/apache/incubator-paimon-webui</url>
-        <connection>git@github.com:apache/incubator-paimon-webui.git</connection>
-        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/incubator-paimon-webui.git</developerConnection>
+        <url>https://github.com/apache/paimon-webui</url>
+        <connection>git@github.com:apache/paimon-webui.git</connection>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/paimon-webui.git</developerConnection>
     </scm>
 
     <properties>
         <project.version>0.1-SNAPSHOT</project.version>
         <java.version>8</java.version>
-        <paimon.shade.version>0.6-SNAPSHOT</paimon.shade.version>
+        <paimon.shade.version>0.8.0</paimon.shade.version>
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
@@ -114,8 +114,10 @@ under the License.
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <sa-token.version>1.35.0.RC</sa-token.version>
         <common-lang3.version>3.12.0</common-lang3.version>
+        <common-io.version>2.7</common-io.version>
         <hutool.version>5.8.11</hutool.version>
         <gson.version>2.10.1</gson.version>
+        <auto-service.version>1.0.1</auto-service.version>
     </properties>
 
     <dependencyManagement>
@@ -223,6 +225,19 @@ under the License.
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc-openapi-ui.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service</artifactId>
+                <version>${auto-service.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${common-io.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -435,7 +450,7 @@ under the License.
                                 <!-- The ApacheNoticeResourceTransformer collects and aggregates NOTICE files -->
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
-                                    <projectName>Apache Paimon (incubating)</projectName>
+                                    <projectName>Apache Paimon</projectName>
                                     <inceptionYear>${project.inceptionYear}</inceptionYear>
                                     <encoding>UTF-8</encoding>
                                 </transformer>
@@ -456,6 +471,9 @@ under the License.
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -600,24 +618,6 @@ under the License.
                         <execution>
                             <id>attach-descriptor</id>
                             <phase>none</phase>
-                        </execution>
-                    </executions>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-remote-resources-plugin</artifactId>
-                    <version>1.7.0</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>process</goal>
-                            </goals>
-                            <configuration>
-                                <resourceBundles>
-                                    <resourceBundle>org.apache.apache.resources:apache-incubator-disclaimer-resource-bundle:1.5</resourceBundle>
-                                </resourceBundles>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

@@ -20,8 +20,6 @@ package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.dto.AlterTableDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
-import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.TableVO;
 
 import java.util.List;
@@ -30,110 +28,104 @@ import java.util.List;
 public interface TableService {
 
     /**
+     * Checks if the specified table exists.
+     *
+     * @param tableDTO The TableDTO object containing information about the table
+     * @return true if the table exists, false otherwise
+     */
+    boolean tableExists(TableDTO tableDTO);
+
+    /**
      * Creates a table in the database given ${@link TableDTO}.
      *
-     * @param tableDTO The TableDTO object containing information about the table.
-     * @return R<Void/> indicating the success or failure of the operation.
+     * @param tableDTO The TableDTO object containing information about the table
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> createTable(TableDTO tableDTO);
+    boolean createTable(TableDTO tableDTO);
 
     /**
      * Adds a column to the table.
      *
-     * @param tableDTO The information of the table, including the catalog name, database name,
-     *     table name, and table columns.
-     * @return A response indicating the success or failure of the operation.
+     * @param tableDTO The TableDTO object containing information about the table
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> addColumn(TableDTO tableDTO);
+    boolean addColumn(TableDTO tableDTO);
 
     /**
      * Drops a column from a table.
      *
-     * @param catalogName The name of the catalog.
-     * @param databaseName The name of the database.
-     * @param tableName The name of the table.
-     * @param columnName The name of the column to be dropped.
-     * @return The result indicating the success or failure of the operation.
+     * @param catalogName The name of the catalog
+     * @param databaseName The name of the database
+     * @param tableName The name of the table
+     * @param columnName The name of the column to be dropped
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> dropColumn(
+    boolean dropColumn(
             String catalogName, String databaseName, String tableName, String columnName);
 
     /**
      * Alters a table.
      *
-     * @param alterTableDTO the DTO containing alteration details.
-     * @return A response indicating the success or failure of the operation.
+     * @param alterTableDTO the DTO containing alteration details
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> alterTable(AlterTableDTO alterTableDTO);
+    boolean alterTable(AlterTableDTO alterTableDTO);
 
     /**
      * Adds options to a table.
      *
-     * @param tableDTO An object containing table information.
-     * @return If the options are successfully added, returns a successful result object. If an
-     *     exception occurs, returns a result object with an error status.
+     * @param tableDTO The TableDTO object containing information about the table
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> addOption(TableDTO tableDTO);
+    boolean addOption(TableDTO tableDTO);
 
     /**
      * Removes an option from a table.
      *
-     * @param catalogName The name of the catalog.
-     * @param databaseName The name of the database.
-     * @param tableName The name of the table.
-     * @param key The key of the option to be removed.
-     * @return Returns a {@link R} object indicating the success or failure of the operation. If the
-     *     option is successfully removed, the result will be a successful response with no data. If
-     *     an error occurs during the operation, the result will be a failed response with an error
-     *     code. Possible error codes: {@link Status#TABLE_REMOVE_OPTION_ERROR}.
+     * @param catalogName The name of the catalog
+     * @param databaseName The name of the database
+     * @param tableName The name of the table
+     * @param key The key of the option to be removed
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> removeOption(String catalogName, String databaseName, String tableName, String key);
+    boolean removeOption(String catalogName, String databaseName, String tableName, String key);
 
     /**
      * Drops a table from the specified database in the given catalog.
      *
-     * @param catalogName The name of the catalog from which the table will be dropped.
-     * @param databaseName The name of the database from which the table will be dropped.
-     * @param tableName The name of the table to be dropped.
-     * @return A Response object indicating the success or failure of the operation. If the
-     *     operation is successful, the response will be R.succeed(). If the operation fails, the
-     *     response will be R.failed() with Status.TABLE_DROP_ERROR.
-     * @throws RuntimeException If there is an error during the operation, a RuntimeException is
-     *     thrown with the error message.
+     * @param catalogName The name of the catalog from which the table will be dropped
+     * @param databaseName The name of the database from which the table will be dropped
+     * @param tableName The name of the table to be dropped
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> dropTable(String catalogName, String databaseName, String tableName);
+    boolean dropTable(String catalogName, String databaseName, String tableName);
 
     /**
      * Renames a table in the specified database of the given catalog.
      *
-     * @param catalogName The name of the catalog where the table resides.
-     * @param databaseName The name of the database where the table resides.
-     * @param fromTableName The current name of the table to be renamed.
-     * @param toTableName The new name for the table.
-     * @return A Response object indicating the success or failure of the operation. If the
-     *     operation is successful, the response will be R.succeed(). If the operation fails, the
-     *     response will be R.failed() with Status.TABLE_RENAME_ERROR.
-     * @throws RuntimeException If there is an error during the operation, a RuntimeException is
-     *     thrown with the error message.
+     * @param catalogName The name of the catalog where the table resides
+     * @param databaseName The name of the database where the table resides
+     * @param fromTableName The current name of the table to be renamed
+     * @param toTableName The new name for the table
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> renameTable(
+    boolean renameTable(
             String catalogName, String databaseName, String fromTableName, String toTableName);
 
     /**
      * Lists tables given {@link TableDTO} condition.
      *
-     * @return Response object containing a list of {@link TableVO} representing the tables.
+     * @return Response object containing a list of {@link TableVO} representing the tables
      */
     List<TableVO> listTables(TableDTO tableDTO);
 
     /**
      * Retrieves the column details of a specific table within the specified catalog and database.
      *
-     * @param catalogName The name of the catalog where the table is located.
-     * @param databaseName The name of the database where the table is located.
-     * @param tableName The name of the table whose columns are to be retrieved.
-     * @return A {@link TableVO} object containing the details of the columns of the specified
-     *     table.
+     * @param catalogName The name of the catalog where the table is located
+     * @param databaseName The name of the database where the table is located
+     * @param tableName The name of the table whose columns are to be retrieved
+     * @return A {@link TableVO} object containing the details of the columns of the specified table
      */
     TableVO listColumns(String catalogName, String databaseName, String tableName);
 }

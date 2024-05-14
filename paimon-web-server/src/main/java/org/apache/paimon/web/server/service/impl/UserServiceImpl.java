@@ -19,6 +19,8 @@
 package org.apache.paimon.web.server.service.impl;
 
 import org.apache.paimon.web.server.data.dto.LoginDTO;
+import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
+import org.apache.paimon.web.server.data.dto.UserWithRolesDTO;
 import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.RoleMenu;
 import org.apache.paimon.web.server.data.model.SysMenu;
@@ -30,7 +32,9 @@ import org.apache.paimon.web.server.data.result.exception.user.UserDisabledExcep
 import org.apache.paimon.web.server.data.result.exception.user.UserNotExistsException;
 import org.apache.paimon.web.server.data.result.exception.user.UserPasswordNotMatchException;
 import org.apache.paimon.web.server.data.vo.UserInfoVO;
+import org.apache.paimon.web.server.data.vo.UserVO;
 import org.apache.paimon.web.server.mapper.UserMapper;
+import org.apache.paimon.web.server.mapper.UserRoleMapper;
 import org.apache.paimon.web.server.service.LdapService;
 import org.apache.paimon.web.server.service.RoleMenuService;
 import org.apache.paimon.web.server.service.SysMenuService;
@@ -38,17 +42,24 @@ import org.apache.paimon.web.server.service.SysRoleService;
 import org.apache.paimon.web.server.service.TenantService;
 import org.apache.paimon.web.server.service.UserRoleService;
 import org.apache.paimon.web.server.service.UserService;
+import org.apache.paimon.web.server.util.StringUtils;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /** UserServiceImpl. */
 @Service
@@ -61,6 +72,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired private RoleMenuService roleMenuService;
     @Autowired private SysMenuService sysMenuService;
     @Autowired private TenantService tenantService;
+    @Autowired private UserRoleMapper userRoleMapper;
+
+    @Override
+    public UserVO getUserById(Integer id) {
+        UserWithRolesDTO userWithRolesDTO = userMapper.selectUserWithRolesById(id);
+        if (Objects.nonNull(userWithRolesDTO)) {
+            return toVo(userWithRolesDTO);
+        }
+        return null;
+    }
+
+    @Override
+    public List<UserVO> listUsers(IPage<User> page, User user) {
+        return userMapper.listUsers(page, user).stream()
+                .map(this::toVo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean checkUserNameUnique(User user) {
+        int userId = user.getId() == null ? -1 : user.getId();
+        User info = this.lambdaQuery().eq(User::getUsername, user.getUsername()).one();
+        return info == null || info.getId() == userId;
+    }
 
     /**
      * login by username and password.
@@ -88,6 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }*/
 
         StpUtil.login(user.getId(), loginDTO.isRememberMe());
+        userInfoVo.setPermissions(StpUtil.getPermissionList());
 
         return userInfoVo;
     }
@@ -171,22 +207,96 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * Query the list of assigned user roles.
      *
-     * @param user query params
+     * @param page the pagination information
+     * @param roleWithUserDTO query params
      * @return user list
      */
     @Override
-    public List<User> selectAllocatedList(User user) {
-        return userMapper.selectAllocatedList(user);
+    public List<User> selectAllocatedList(
+            IPage<RoleWithUserDTO> page, RoleWithUserDTO roleWithUserDTO) {
+        return userMapper.selectAllocatedList(page, roleWithUserDTO);
     }
 
     /**
      * Query the list of unassigned user roles.
      *
-     * @param user query params
+     * @param page the pagination information
+     * @param roleWithUserDTO query params
      * @return user list
      */
     @Override
-    public List<User> selectUnallocatedList(User user) {
-        return userMapper.selectUnallocatedList(user);
+    public List<User> selectUnallocatedList(
+            IPage<RoleWithUserDTO> page, RoleWithUserDTO roleWithUserDTO) {
+        return userMapper.selectUnallocatedList(page, roleWithUserDTO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertUser(User user) {
+        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        this.save(user);
+        return insertUserRole(user);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateUser(User user) {
+        this.updateById(user);
+        userRoleMapper.deleteUserRoleByUserId(user.getId());
+        return insertUserRole(user);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteUserByIds(Integer[] userIds) {
+        userRoleMapper.deleteUserRole(userIds);
+        return userMapper.deleteBatchIds(Arrays.asList(userIds));
+    }
+
+    @Override
+    public boolean changePassword(User user) {
+        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        return this.updateById(user);
+    }
+
+    private int insertUserRole(User user) {
+        int rows = 1;
+        if (user.getRoleIds() != null && user.getRoleIds().length > 0) {
+            List<UserRole> list = new ArrayList<>();
+            for (Integer roleId : user.getRoleIds()) {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(user.getId());
+                userRole.setRoleId(roleId);
+                list.add(userRole);
+            }
+            if (!list.isEmpty()) {
+                rows = userRoleMapper.batchUserRole(list);
+            }
+        }
+        return rows;
+    }
+
+    private UserVO toVo(UserWithRolesDTO userWithRolesDTO) {
+        return UserVO.builder()
+                .id(userWithRolesDTO.getId())
+                .username(userWithRolesDTO.getUsername())
+                .nickname(
+                        StringUtils.isNotEmpty(userWithRolesDTO.getNickname())
+                                ? userWithRolesDTO.getNickname()
+                                : "")
+                .userType(userWithRolesDTO.getUserType() == 0 ? "LOCAL" : "LDAP")
+                .mobile(
+                        StringUtils.isNotEmpty(userWithRolesDTO.getMobile())
+                                ? userWithRolesDTO.getMobile()
+                                : "")
+                .email(
+                        StringUtils.isNotEmpty(userWithRolesDTO.getEmail())
+                                ? userWithRolesDTO.getEmail()
+                                : "")
+                .enabled(userWithRolesDTO.getEnabled())
+                .createTime(userWithRolesDTO.getCreateTime())
+                .updateTime(userWithRolesDTO.getUpdateTime())
+                .roles(userWithRolesDTO.getRoles())
+                .build();
     }
 }

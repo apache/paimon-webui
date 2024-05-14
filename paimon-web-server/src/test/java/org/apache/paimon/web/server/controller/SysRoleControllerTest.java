@@ -18,7 +18,9 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
 import org.apache.paimon.web.server.data.model.SysRole;
+import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
@@ -35,8 +37,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Test for {@link SysRoleController}. */
@@ -46,9 +52,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SysRoleControllerTest extends ControllerTestBase {
 
     private static final String rolePath = "/api/role";
-
     private static final int roleId = 3;
     private static final String roleName = "test";
+    private static final String commonUserName = "common";
 
     @Test
     @Order(1)
@@ -94,6 +100,25 @@ public class SysRoleControllerTest extends ControllerTestBase {
         assertEquals(r.getData().getRoleName(), roleName);
     }
 
+    private SysRole getRole(Integer roleId) throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(rolePath + "/" + roleId)
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<SysRole> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<SysRole>>() {});
+
+        return r.getData();
+    }
+
     @Test
     @Order(3)
     public void testEditRole() throws Exception {
@@ -135,7 +160,228 @@ public class SysRoleControllerTest extends ControllerTestBase {
     }
 
     @Test
+    @Order(4)
+    public void testGetRoleList() throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(rolePath + "/list")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        PageR<SysRole> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<SysRole>>() {});
+        assertNotNull(r);
+        assertTrue(
+                r.getData() != null
+                        && ((r.getTotal() > 0 && r.getData().size() > 0)
+                                || (r.getTotal() == 0 && r.getData().size() == 0)));
+
+        SysRole firstRole = r.getData().get(0);
+        assertEquals(1, firstRole.getId());
+        assertEquals("admin", firstRole.getRoleName());
+        assertEquals("admin", firstRole.getRoleKey());
+        assertEquals(1, firstRole.getSort());
+        assertTrue(firstRole.getEnabled());
+        assertFalse(firstRole.getIsDelete());
+
+        SysRole secondRole = r.getData().get(1);
+        assertEquals(2, secondRole.getId());
+        assertEquals("common", secondRole.getRoleName());
+        assertEquals("common", secondRole.getRoleKey());
+        assertEquals(2, secondRole.getSort());
+        assertTrue(secondRole.getEnabled());
+        assertFalse(secondRole.getIsDelete());
+
+        SysRole thirdRole = r.getData().get(2);
+        assertEquals(3, thirdRole.getId());
+        assertEquals("test-edit", thirdRole.getRoleName());
+        assertEquals("test-edit", thirdRole.getRoleKey());
+        assertEquals(3, thirdRole.getSort());
+        assertTrue(secondRole.getEnabled());
+        assertFalse(secondRole.getIsDelete());
+    }
+
+    @Test
     @Order(5)
+    public void testChangeRoleStatus() throws Exception {
+        SysRole sysRole = new SysRole();
+        sysRole.setId(2);
+        sysRole.setEnabled(false);
+
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.put(rolePath + "/changeStatus")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(sysRole))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, r.getCode());
+        SysRole changeRole = getRole(2);
+        assertEquals(changeRole.getEnabled(), false);
+    }
+
+    @Test
+    @Order(6)
+    public void testSelectAllAuthUser() throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.put(rolePath + "/authUser/selectAll")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                                        .param("roleId", "3")
+                                        .param("userIds", "1,2"))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, r.getCode());
+        List<User> expectResults = getAllLocatedUsers(roleId);
+        assertNotNull(expectResults);
+    }
+
+    @Test
+    @Order(7)
+    public void testAllocatedList() throws Exception {
+        RoleWithUserDTO roleWithUser = new RoleWithUserDTO();
+        roleWithUser.setRoleId(roleId);
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(rolePath + "/authUser/allocatedList")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(roleWithUser))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        PageR<User> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<User>>() {});
+        assertNotNull(r);
+
+        assertTrue(
+                r.getData() != null
+                        && ((r.getTotal() > 0 && r.getData().size() > 0)
+                                || (r.getTotal() == 0 && r.getData().size() == 0)));
+
+        User firstUser = r.getData().get(0);
+        assertEquals(1, firstUser.getId());
+        assertEquals("admin", firstUser.getUsername());
+        assertEquals("Admin", firstUser.getNickname());
+        assertEquals("admin@paimon.com", firstUser.getEmail());
+        assertTrue(firstUser.getEnabled());
+        assertTrue(firstUser.isAdmin());
+
+        User secondUser = r.getData().get(1);
+        assertEquals(2, secondUser.getId());
+        assertEquals("common", secondUser.getUsername());
+        assertEquals("common", secondUser.getNickname());
+        assertEquals("common@paimon.com", secondUser.getEmail());
+        assertTrue(secondUser.getEnabled());
+        assertFalse(secondUser.isAdmin());
+    }
+
+    private List<User> getAllLocatedUsers(Integer roleId) throws Exception {
+        RoleWithUserDTO roleWithUser = new RoleWithUserDTO();
+        roleWithUser.setRoleId(roleId);
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(rolePath + "/authUser/allocatedList")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(roleWithUser))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        PageR<?> r = ObjectMapperUtils.fromJSON(responseString, PageR.class);
+        return (List<User>) r.getData();
+    }
+
+    @Test
+    @Order(8)
+    public void testUnAllocatedList() throws Exception {
+        RoleWithUserDTO roleWithUser = new RoleWithUserDTO();
+        roleWithUser.setRoleId(1);
+        roleWithUser.setUsername(commonUserName);
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(rolePath + "/authUser/unallocatedList")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(roleWithUser))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        PageR<User> r =
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<User>>() {});
+        assertNotNull(r);
+
+        assertTrue(
+                r.getData() != null
+                        && ((r.getTotal() > 0 && r.getData().size() > 0)
+                                || (r.getTotal() == 0 && r.getData().size() == 0)));
+
+        User firstExpectUser = r.getData().get(0);
+        assertEquals(2, firstExpectUser.getId());
+        assertEquals("common", firstExpectUser.getUsername());
+        assertEquals("common", firstExpectUser.getNickname());
+        assertEquals("common@paimon.com", firstExpectUser.getEmail());
+        assertTrue(firstExpectUser.getEnabled());
+        assertFalse(firstExpectUser.isAdmin());
+    }
+
+    @Test
+    @Order(9)
+    public void testCancelAllAuthUser() throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.put(rolePath + "/authUser/cancelAll")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                                        .param("roleId", String.valueOf(roleId))
+                                        .param("userIds", "1,2"))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, r.getCode());
+        List<User> expectResults = getAllLocatedUsers(roleId);
+        assertEquals(0, expectResults.size());
+    }
+
+    @Test
+    @Order(10)
     public void testDeleteRole() throws Exception {
         String delResponseString =
                 mockMvc.perform(
@@ -151,28 +397,7 @@ public class SysRoleControllerTest extends ControllerTestBase {
 
         R<?> result = ObjectMapperUtils.fromJSON(delResponseString, R.class);
         assertEquals(200, result.getCode());
-    }
-
-    @Test
-    @Order(4)
-    public void testGetRoleList() throws Exception {
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.get(rolePath + "/list")
-                                        .cookie(cookie)
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        PageR<?> r = ObjectMapperUtils.fromJSON(responseString, PageR.class);
-        assertNotNull(r);
-        assertTrue(
-                r.getData() != null
-                        && ((r.getTotal() > 0 && r.getData().size() > 0)
-                                || (r.getTotal() == 0 && r.getData().size() == 0)));
+        SysRole deleteRole = getRole(roleId);
+        assertNull(deleteRole);
     }
 }

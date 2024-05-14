@@ -19,7 +19,6 @@
 package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.dto.DatabaseDTO;
-import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.vo.DatabaseVO;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -30,34 +29,34 @@ import java.util.List;
 public interface DatabaseService extends IService<DatabaseVO> {
 
     /**
-     * Verifies whether the database name is unique.
+     * Checks if the specified database exists.
      *
-     * @param databaseVO database info
-     * @return result
+     * @param databaseDTO The database to check
+     * @return true if the database exists, false otherwise
      */
-    boolean checkCatalogNameUnique(DatabaseVO databaseVO);
+    boolean databaseExists(DatabaseDTO databaseDTO);
 
     /**
      * Creates a new database given {@link DatabaseDTO}.
      *
      * @param databaseDTO The {@link DatabaseDTO} object that contains the detail of the created
-     *     database.
-     * @return void indicating the result of the operation.
+     *     database
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> createDatabase(DatabaseDTO databaseDTO);
+    boolean createDatabase(DatabaseDTO databaseDTO);
 
     /**
      * Lists databases given catalog id.
      *
-     * @return The list of databases of given catalog.
+     * @return The list of databases of given catalog
      */
-    R<List<DatabaseVO>> listDatabases(Integer catalogId);
+    List<DatabaseVO> listDatabases(Integer catalogId);
 
     /**
      * Drops database given database name.
      *
-     * @param databaseDTO The dropping database.
-     * @return A response indicating the success or failure of the removal operation.
+     * @param databaseDTO The dropping database
+     * @return true if the operation is successful, false otherwise
      */
-    R<Void> dropDatabase(DatabaseDTO databaseDTO);
+    boolean dropDatabase(DatabaseDTO databaseDTO);
 }

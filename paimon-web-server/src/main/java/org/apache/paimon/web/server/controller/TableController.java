@@ -56,33 +56,39 @@ public class TableController {
     /**
      * Creates a table in the database based on the provided TableInfo.
      *
-     * @param tableDTO The TableDTO object containing information about the table.
-     * @return R<Void/> indicating the success or failure of the operation.
+     * @param tableDTO The TableDTO object containing information about the table
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @PostMapping("/create")
     public R<Void> createTable(@RequestBody TableDTO tableDTO) {
-        return tableService.createTable(tableDTO);
+        if (tableService.tableExists(tableDTO)) {
+            return R.failed(Status.TABLE_NAME_IS_EXIST, tableDTO.getName());
+        }
+        return tableService.createTable(tableDTO)
+                ? R.succeed()
+                : R.failed(Status.TABLE_CREATE_ERROR);
     }
 
     /**
      * Adds a column to the table.
      *
-     * @param tableDTO The information of the table, including the catalog name, database name,
-     *     table name, and table columns.
-     * @return A response indicating the success or failure of the operation.
+     * @param tableDTO The TableDTO object containing information about the table
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @PostMapping("/column/add")
     public R<Void> addColumn(@RequestBody TableDTO tableDTO) {
-        return tableService.addColumn(tableDTO);
+        return tableService.addColumn(tableDTO)
+                ? R.succeed()
+                : R.failed(Status.TABLE_ADD_COLUMN_ERROR);
     }
 
     /**
      * Lists columns given a table.
      *
-     * @param catalogName The name of the catalog.
-     * @param databaseName The name of the database.
-     * @param tableName The name of the table.
-     * @return Response object containing {@link TableVO} representing the table.
+     * @param catalogName The name of the catalog
+     * @param databaseName The name of the database
+     * @param tableName The name of the table
+     * @return Response object containing {@link TableVO} representing the table
      */
     @GetMapping("/column/list")
     public R<TableVO> listColumns(
@@ -95,11 +101,11 @@ public class TableController {
     /**
      * Drops a column from a table.
      *
-     * @param catalogName The name of the catalog.
-     * @param databaseName The name of the database.
-     * @param tableName The name of the table.
-     * @param columnName The name of the column to be dropped.
-     * @return The result indicating the success or failure of the operation.
+     * @param catalogName The name of the catalog
+     * @param databaseName The name of the database
+     * @param tableName The name of the table
+     * @param columnName The name of the column to be dropped
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @DeleteMapping("/column/drop/{catalogName}/{databaseName}/{tableName}/{columnName}")
     public R<Void> dropColumn(
@@ -107,43 +113,45 @@ public class TableController {
             @PathVariable String databaseName,
             @PathVariable String tableName,
             @PathVariable String columnName) {
-        return tableService.dropColumn(catalogName, databaseName, tableName, columnName);
+        return tableService.dropColumn(catalogName, databaseName, tableName, columnName)
+                ? R.succeed()
+                : R.failed(Status.TABLE_DROP_COLUMN_ERROR);
     }
 
     /**
      * Modify a column in a table.
      *
-     * @param alterTableDTO the DTO containing alteration details.
-     * @return A response indicating the success or failure of the operation.
+     * @param alterTableDTO the DTO containing alteration details
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @PostMapping("/alter")
     public R<Void> alterTable(@RequestBody AlterTableDTO alterTableDTO) {
-        return tableService.alterTable(alterTableDTO);
+        return tableService.alterTable(alterTableDTO)
+                ? R.succeed()
+                : R.failed(Status.TABLE_AlTER_COLUMN_ERROR);
     }
 
     /**
      * Adds options to a table.
      *
-     * @param tableDTO An object containing table information.
-     * @return If the options are successfully added, returns a successful result object. If an
-     *     exception occurs, returns a result object with an error status.
+     * @param tableDTO The TableDTO object containing information about the table
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @PostMapping("/option/add")
     public R<Void> addOption(@RequestBody TableDTO tableDTO) {
-        return tableService.addOption(tableDTO);
+        return tableService.addOption(tableDTO)
+                ? R.succeed()
+                : R.failed(Status.TABLE_ADD_OPTION_ERROR);
     }
 
     /**
      * Removes an option from a table.
      *
-     * @param catalogName The name of the catalog.
-     * @param databaseName The name of the database.
-     * @param tableName The name of the table.
-     * @param key The key of the option to be removed.
-     * @return Returns a {@link R} object indicating the success or failure of the operation. If the
-     *     option is successfully removed, the result will be a successful response with no data. If
-     *     an error occurs during the operation, the result will be a failed response with an error
-     *     code. Possible error codes: {@link Status#TABLE_REMOVE_OPTION_ERROR}.
+     * @param catalogName The name of the catalog
+     * @param databaseName The name of the database
+     * @param tableName The name of the table
+     * @param key The key of the option to be removed
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @PostMapping("/option/remove")
     public R<Void> removeOption(
@@ -151,41 +159,37 @@ public class TableController {
             @RequestParam String databaseName,
             @RequestParam String tableName,
             @RequestParam String key) {
-        return tableService.removeOption(catalogName, databaseName, tableName, key);
+        return tableService.removeOption(catalogName, databaseName, tableName, key)
+                ? R.succeed()
+                : R.failed(Status.TABLE_REMOVE_OPTION_ERROR);
     }
 
     /**
      * Drops a table from the specified database in the given catalog.
      *
-     * @param catalogName The name of the catalog from which the table will be dropped.
-     * @param databaseName The name of the database from which the table will be dropped.
-     * @param tableName The name of the table to be dropped.
-     * @return A Response object indicating the success or failure of the operation. If the
-     *     operation is successful, the response will be R.succeed(). If the operation fails, the
-     *     response will be R.failed() with Status.TABLE_DROP_ERROR.
-     * @throws RuntimeException If there is an error during the operation, a RuntimeException is
-     *     thrown with the error message.
+     * @param catalogName The name of the catalog from which the table will be dropped
+     * @param databaseName The name of the database from which the table will be dropped
+     * @param tableName The name of the table to be dropped
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @DeleteMapping("/drop/{catalogName}/{databaseName}/{tableName}")
     public R<Void> dropTable(
             @PathVariable String catalogName,
             @PathVariable String databaseName,
             @PathVariable String tableName) {
-        return tableService.dropTable(catalogName, databaseName, tableName);
+        return tableService.dropTable(catalogName, databaseName, tableName)
+                ? R.succeed()
+                : R.failed(Status.TABLE_DROP_ERROR);
     }
 
     /**
      * Renames a table in the specified database of the given catalog.
      *
-     * @param catalogName The name of the catalog where the table resides.
-     * @param databaseName The name of the database where the table resides.
-     * @param fromTableName The current name of the table to be renamed.
-     * @param toTableName The new name for the table.
-     * @return A Response object indicating the success or failure of the operation. If the
-     *     operation is successful, the response will be R.succeed(). If the operation fails, the
-     *     response will be R.failed() with Status.TABLE_RENAME_ERROR.
-     * @throws RuntimeException If there is an error during the operation, a RuntimeException is
-     *     thrown with the error message.
+     * @param catalogName The name of the catalog where the table resides
+     * @param databaseName The name of the database where the table resides
+     * @param fromTableName The current name of the table to be renamed
+     * @param toTableName The new name for the table
+     * @return a {@code R<Void>} response indicating success or failure
      */
     @PostMapping("/rename")
     public R<Void> renameTable(
@@ -193,13 +197,15 @@ public class TableController {
             @RequestParam String databaseName,
             @RequestParam String fromTableName,
             @RequestParam String toTableName) {
-        return tableService.renameTable(catalogName, databaseName, fromTableName, toTableName);
+        return tableService.renameTable(catalogName, databaseName, fromTableName, toTableName)
+                ? R.succeed()
+                : R.failed(Status.TABLE_RENAME_ERROR);
     }
 
     /**
      * Lists tables given {@link TableDTO} condition.
      *
-     * @return Response object containing a list of {@link TableVO} representing the tables.
+     * @return Response object containing a list of {@link TableVO} representing the tables
      */
     @PostMapping("/list")
     public R<Object> listTables(@RequestBody TableDTO tableDTO) {

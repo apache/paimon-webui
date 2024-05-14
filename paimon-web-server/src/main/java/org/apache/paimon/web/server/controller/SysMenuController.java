@@ -95,9 +95,9 @@ public class SysMenuController {
     }
 
     /** update menu. */
-    @SaCheckPermission("system:menu:edit")
+    @SaCheckPermission("system:menu:update")
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysMenu menu) {
+    public R<Void> update(@Validated @RequestBody SysMenu menu) {
         if (!menuService.checkMenuNameUnique(menu)) {
             return R.failed(Status.MENU_NAME_IS_EXIST, menu.getMenuName());
         } else if (Constants.YES_FRAME == menu.getIsFrame()
@@ -108,9 +108,9 @@ public class SysMenuController {
     }
 
     /** delete menu. */
-    @SaCheckPermission("system:menu:remove")
+    @SaCheckPermission("system:menu:delete")
     @DeleteMapping("/{menuId}")
-    public R<Void> remove(@PathVariable("menuId") Integer menuId) {
+    public R<Void> delete(@PathVariable("menuId") Integer menuId) {
         if (menuService.hasChildByMenuId(menuId) || menuService.checkMenuExistRole(menuId)) {
             return R.failed(Status.MENU_IN_USED);
         }
