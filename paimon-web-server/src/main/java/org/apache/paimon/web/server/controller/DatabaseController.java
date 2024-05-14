@@ -18,13 +18,13 @@
 
 package org.apache.paimon.web.server.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.apache.paimon.web.server.data.dto.DatabaseDTO;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.DatabaseVO;
 import org.apache.paimon.web.server.service.DatabaseService;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

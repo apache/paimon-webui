@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.server.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.apache.paimon.web.server.data.dto.AlterTableDTO;
 import org.apache.paimon.web.server.data.dto.TableDTO;
 import org.apache.paimon.web.server.data.result.R;
@@ -26,6 +25,7 @@ import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.TableVO;
 import org.apache.paimon.web.server.service.TableService;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -18,13 +18,13 @@
 
 package org.apache.paimon.web.server.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.service.CdcJobDefinitionService;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
