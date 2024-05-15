@@ -176,10 +176,7 @@ export default defineComponent({
                     </n-button>
                   </n-space>
                   <ColumnFormContent
-                    onUpdateColumns={(value) => {
-                      this.formValue.tableColumns = value
-                    }}
-                    data={this.formValue.tableColumns}
+                    v-model:data={this.formValue.tableColumns}
                   />
                   <div class={styles.form_title}>{this.t('metadata.partition_columns')}</div>
                   <n-form-item showLabel={false} path="type">
