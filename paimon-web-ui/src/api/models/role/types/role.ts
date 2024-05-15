@@ -15,11 +15,40 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+export interface RoleDetail {
+  checkedKeys: number[];
+  menus: RoleMenu[];
+}
+
+export interface RoleMenu {
+  id: number;
+  label: string;
+  children: RoleMenuChild[];
+}
+
+export interface RoleMenuChild {
+  id: number;
+  label: string;
+  children: Omit<RoleMenuChild, 'children'>[];
+}
+
 export interface Role {
+  id: number;
+  createTime: string;
+  updateTime?: string;
   roleName: string;
-  roleKey?: string;
-  sort?: number;
+  roleKey: string;
+  sort: number;
   enabled: boolean;
-  remark?: string;
-  menuIds?: number[]
+  isDelete: boolean;
+  remark: null;
+  flag: boolean;
+  menuIds: null;
+  permissions: null;
+}
+
+export interface RoleParams {
+  roleName?: string,
+  currentPage: number,
+  pageSize: number
 }

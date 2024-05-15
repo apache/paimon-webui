@@ -15,6 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import type { Role } from '@/api/models/role/types/role';
 import styles from './index.module.scss';
 import { useConstants } from './use-constants';
 import { useTable } from './use-table';
@@ -23,10 +24,21 @@ export default defineComponent({
   name: 'RolePage',
   setup() {
     const { t } = useLocaleHooks()
-    const { tableVariables, getTableData, roleList,loading} = useTable()
+    const { tableVariables, getTableData, roleList, loading } = useTable()
     const { columns } = useConstants()
-    getTableData()
-    return { ...toRefs(tableVariables), getTableData, t, columns, roleList,loading }
+
+    onMounted(getTableData)
+
+    const rowKey = (rowData: Role) => rowData.id
+
+    return {
+      ...toRefs(tableVariables),
+      t,
+      columns: toRef([...columns]),
+      roleList,
+      loading,
+      rowKey,
+    }
   },
   render() {
     return (
@@ -43,10 +55,11 @@ export default defineComponent({
             </n-space>
             <n-data-table
               columns={this.columns}
-              data={this.roleList?.data || []}
-              remote
-              loading={this.loading}
+              data={this.roleList || []}
               pagination={this.pagination}
+              loading={this.loading}
+              remote
+              rowKey={this.rowKey}
             />
           </n-space>
         </n-card>

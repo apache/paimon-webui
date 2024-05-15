@@ -17,13 +17,31 @@ under the License. */
 
 import httpRequest from '../../request'
 import type { ResponseOptions } from '@/api/types'
-import type { Role } from './types/role'
+import type { Role, RoleDetail, RoleParams } from './types/role'
+
+/**
+ * # permission tree
+ */
+export const getPermissionTree = () => {
+  return httpRequest.createHooks!<ResponseOptions<Role[]>>({
+    url: '/menu/treeselect',
+    method: 'get',
+  })
+}
+
+
+/**
+ * # permission tree by role Id
+ */
+export const getPermissionByRoleId = (roleId: number) => {
+  return httpRequest.get!<string, ResponseOptions<RoleDetail>>(`/menu/roleMenuTreeselect/${roleId}`)
+}
 
 /**
  * # List roles
  */
 export const listRoles = () => {
-  return httpRequest.createHooks!<ResponseOptions<Role[]>, any[]>({
+  return httpRequest.createHooks!<ResponseOptions<Role[]>, RoleParams>({
     url: '/role/list',
     method: 'get',
   })
