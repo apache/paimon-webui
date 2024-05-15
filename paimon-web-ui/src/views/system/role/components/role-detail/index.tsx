@@ -32,6 +32,7 @@ export default defineComponent({
 
     const rolePermissionDetail = ref<RoleMenu[]>([])
     const loading = ref(false)
+
     onMounted(initDetail)
 
     async function initDetail() {
@@ -51,7 +52,7 @@ export default defineComponent({
     return <n-spin show={this.loading}>
       <n-list hoverable clickable>
         {
-          this.rolePermissionDetail?.map((item) => (
+          this.rolePermissionDetail?.map((item, i) => (
             <n-list-item key={item.id}>
               <n-thing title={this.t(`system.roleKey.${item.label}`)} content-style="margin-top: 10px;">
                 {
