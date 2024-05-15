@@ -29,4 +29,24 @@ const role = {
   enabled: '是否启用'
 }
 
-export default { user, role }
+const roleKey = {
+  system: '系统管理',
+  menu_manager: '菜单管理',
+  user_manager: '用户管理',
+  role_manager: '角色管理',
+  menu_query: '菜单查询',
+  menu_add: '菜单新增',
+  menu_update: '菜单修改',
+  menu_delete: '菜单删除',
+  user_query: '用户查询',
+  user_add: '用户新增',
+  user_update: '用户修改',
+  user_delete: '用户删除',
+  user_reset: '用户重置密码',
+  role_query: '角色查询',
+  role_add: '角色新增',
+  role_update: '角色修改',
+  role_delete: '角色删除'
+}
+
+export default { user, role, roleKey }

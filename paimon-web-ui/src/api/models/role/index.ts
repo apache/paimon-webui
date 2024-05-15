@@ -17,7 +17,7 @@ under the License. */
 
 import httpRequest from '../../request'
 import type { ResponseOptions } from '@/api/types'
-import type { Role, RoleParams } from './types/role'
+import type { Role, RoleDetail, RoleParams } from './types/role'
 
 /**
  * # permission tree
@@ -34,7 +34,7 @@ export const getPermissionTree = () => {
  * # permission tree by role Id
  */
 export const getPermissionByRoleId = (roleId: number) => {
-  return httpRequest.get!<string, ResponseOptions<Role>>(`/menu/roleMenuTreeselect/${roleId}`)
+  return httpRequest.get!<string, ResponseOptions<RoleDetail>>(`/menu/roleMenuTreeselect/${roleId}`)
 }
 
 /**

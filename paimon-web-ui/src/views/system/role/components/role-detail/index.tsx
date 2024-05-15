@@ -16,8 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import { getPermissionByRoleId } from "@/api/models/role"
-import type { Role } from "@/api/models/role/types/role"
-import { async } from "@antv/x6/lib/registry/marker/async"
+import type { Role, RoleMenu } from "@/api/models/role/types/role"
 
 export default defineComponent({
   name: 'RoleDetail',
@@ -29,33 +28,50 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const detail = ref()
+    const { t } = useLocaleHooks()
+
+    const rolePermissionDetail = ref<RoleMenu[]>([])
     const loading = ref(false)
     onMounted(initDetail)
 
     async function initDetail() {
       loading.value = true
       const res = await getPermissionByRoleId(props.roleRecord.id)
-      console.log('res', res);
-
+      rolePermissionDetail.value = res?.data?.menus
       loading.value = false
     }
 
-    return ({})
+    return {
+      loading,
+      rolePermissionDetail,
+      t,
+    }
   },
   render() {
-    return <div>
-      <n-descriptions label-placement="top" title="描述">
-        <n-descriptions-item>
-          {{
-            default: () => '苹果',
-            label: () => '水果'
-          }}
-        </n-descriptions-item>
-        <n-descriptions-item label="早午餐">
-          苹果
-        </n-descriptions-item>
-      </n-descriptions>
-    </div>
+    return <n-spin show={this.loading}>
+      <n-list hoverable clickable>
+        {
+          this.rolePermissionDetail?.map((item) => (
+            <n-list-item key={item.id}>
+              <n-thing title={this.t(`system.roleKey.${item.label}`)} content-style="margin-top: 10px;">
+                {
+                  item.children?.map((child) => (
+                    <n-thing description={this.t(`system.roleKey.${child.label}`)} style="margin-top: 20px;">
+                      <n-space>
+                        {
+                          item.children?.map((buttonPermission) => (
+                            <n-tag key={child.id} type="info">{this.t(`system.roleKey.${buttonPermission.label}`)}</n-tag>
+                          ))
+                        }
+                      </n-space>
+                    </n-thing>
+                  ))
+                }
+              </n-thing>
+            </n-list-item>
+          ))
+        }
+      </n-list>
+    </n-spin>
   }
 })

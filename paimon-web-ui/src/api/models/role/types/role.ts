@@ -15,6 +15,23 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+export interface RoleDetail {
+  checkedKeys: number[];
+  menus: RoleMenu[];
+}
+
+export interface RoleMenu {
+  id: number;
+  label: string;
+  children: RoleMenuChild[];
+}
+
+export interface RoleMenuChild {
+  id: number;
+  label: string;
+  children: Omit<RoleMenuChild, 'children'>[];
+}
+
 export interface Role {
   id: number;
   createTime: string;
