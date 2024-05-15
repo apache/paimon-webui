@@ -163,9 +163,9 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
     }
 
     @Override
-    public JobInfo getJobByJobId(String jobId) {
+    public JobInfo getJobById(String id) {
         QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("job_id", jobId);
+        queryWrapper.eq("job_id", id);
         return jobMapper.selectOne(queryWrapper);
     }
 
@@ -224,56 +224,59 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
     }
 
     @Override
-    public void refreshFlinkJobStatus() {
+    public void refreshJobStatus(String taskType) {
         if (!StpUtil.isLogin()) {
             throw new IllegalStateException("User must be logged in to access this resource");
         }
         int userId = StpUtil.getLoginIdAsInt();
 
-        QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("type", "Flink");
-        List<ClusterInfo> clusters = clusterService.list();
-        for (ClusterInfo cluster : clusters) {
-            try {
-                SessionEntity session = sessionManager.getSession(userId + "_" + cluster.getId());
-                if (session == null) {
-                    return;
-                }
-
-                Executor executor = jobExecutorService.getExecutor(session.getSessionId());
-                if (executor == null) {
-                    return;
-                }
-
-                ExecutionResult executionResult = executor.executeSql(SHOW_JOBS_STATEMENT);
-                List<Map<String, Object>> jobsData = executionResult.getData();
-                for (Map<String, Object> jobData : jobsData) {
-                    String jobId = (String) jobData.get("job id");
-                    String jobStatus = (String) jobData.get("status");
-                    String utcTimeString = (String) jobData.get("start time");
-                    LocalDateTime startTime =
-                            LocalDateTimeUtil.convertUtcStringToLocalDateTime(utcTimeString);
-                    JobInfo job = getJobByJobId(jobId);
-                    if (job != null && job.getUid().equals(userId)) {
-                        String currentStatus = job.getStatus();
-                        if (!jobStatus.equals(currentStatus)) {
-                            if (JobStatus.RUNNING.getValue().equals(jobStatus)) {
-                                updateJobStatusAndStartTime(jobId, jobStatus, startTime);
-                            } else if (JobStatus.FINISHED.getValue().equals(jobStatus)
-                                    || JobStatus.CANCELED.getValue().equals(jobStatus)) {
-                                LocalDateTime endTime =
-                                        job.getEndTime() == null
-                                                ? LocalDateTime.now()
-                                                : job.getEndTime();
-                                updateJobStatusAndEndTime(jobId, jobStatus, endTime);
-                            }
-                        }
-                    } else {
-                        log.warn("Job with ID {} not found in the database.", jobId);
+        if (taskType.equals("Flink")) {
+            QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("type", "Flink");
+            List<ClusterInfo> clusters = clusterService.list();
+            for (ClusterInfo cluster : clusters) {
+                try {
+                    SessionEntity session =
+                            sessionManager.getSession(userId + "_" + cluster.getId());
+                    if (session == null) {
+                        return;
                     }
+
+                    Executor executor = jobExecutorService.getExecutor(session.getSessionId());
+                    if (executor == null) {
+                        return;
+                    }
+
+                    ExecutionResult executionResult = executor.executeSql(SHOW_JOBS_STATEMENT);
+                    List<Map<String, Object>> jobsData = executionResult.getData();
+                    for (Map<String, Object> jobData : jobsData) {
+                        String jobId = (String) jobData.get("job id");
+                        String jobStatus = (String) jobData.get("status");
+                        String utcTimeString = (String) jobData.get("start time");
+                        LocalDateTime startTime =
+                                LocalDateTimeUtil.convertUtcStringToLocalDateTime(utcTimeString);
+                        JobInfo job = getJobById(jobId);
+                        if (job != null && job.getUid().equals(userId)) {
+                            String currentStatus = job.getStatus();
+                            if (!jobStatus.equals(currentStatus)) {
+                                if (JobStatus.RUNNING.getValue().equals(jobStatus)) {
+                                    updateJobStatusAndStartTime(jobId, jobStatus, startTime);
+                                } else if (JobStatus.FINISHED.getValue().equals(jobStatus)
+                                        || JobStatus.CANCELED.getValue().equals(jobStatus)) {
+                                    LocalDateTime endTime =
+                                            job.getEndTime() == null
+                                                    ? LocalDateTime.now()
+                                                    : job.getEndTime();
+                                    updateJobStatusAndEndTime(jobId, jobStatus, endTime);
+                                }
+                            }
+                        } else {
+                            log.warn("Job with ID {} not found in the database.", jobId);
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("Exception with refreshing job status.", e);
                 }
-            } catch (Exception e) {
-                log.error("Exception with refreshing job status.", e);
             }
         }
     }

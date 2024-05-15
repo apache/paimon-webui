@@ -20,7 +20,7 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
-/** DTO of resultFetch. */
+/** DTO of fetching result. */
 @Data
 public class ResultFetchDTO {
 

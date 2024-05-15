@@ -68,10 +68,10 @@ public interface JobService extends IService<JobInfo> {
     /**
      * Retrieves detailed information about a job identified by its job ID.
      *
-     * @param jobId the unique identifier of the job
+     * @param id the unique identifier of the job
      * @return job information object
      */
-    JobInfo getJobByJobId(String jobId);
+    JobInfo getJobById(String id);
 
     /**
      * Retrieves statistics about jobs.
@@ -87,6 +87,10 @@ public interface JobService extends IService<JobInfo> {
      */
     void stop(StopJobDTO stopJobDTO);
 
-    /** Refreshes the status of the current Flink job. */
-    void refreshFlinkJobStatus();
+    /**
+     * Refreshes the status of a job based on the specified task type.
+     *
+     * @param taskType the type of task for which the job status needs to be updated
+     */
+    void refreshJobStatus(String taskType);
 }

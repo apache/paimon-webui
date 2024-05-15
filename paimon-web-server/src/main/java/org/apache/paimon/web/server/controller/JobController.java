@@ -87,7 +87,7 @@ public class JobController {
     @SaCheckPermission("playground:job:query")
     @GetMapping("/status/get/{jobId}")
     public R<JobStatusVO> getJobStatus(@PathVariable("jobId") String jobId) {
-        JobInfo job = jobService.getJobByJobId(jobId);
+        JobInfo job = jobService.getJobById(jobId);
         JobStatusVO jobStatusVO =
                 JobStatusVO.builder().jobId(job.getJobId()).status(job.getStatus()).build();
         return R.succeed(jobStatusVO);
@@ -114,7 +114,7 @@ public class JobController {
     @SaCheckPermission("playground:job:refresh")
     @PostMapping("/refresh")
     public R<Void> refresh() {
-        jobService.refreshFlinkJobStatus();
+        jobService.refreshJobStatus("Flink");
         return R.succeed();
     }
 }

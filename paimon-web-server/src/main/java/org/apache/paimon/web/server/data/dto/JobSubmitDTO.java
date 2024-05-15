@@ -22,7 +22,7 @@ import lombok.Data;
 
 import java.util.Map;
 
-/** DTO of jobSubmit. */
+/** DTO of submitting job. */
 @Data
 public class JobSubmitDTO {
 

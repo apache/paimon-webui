@@ -20,7 +20,7 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
-/** DTO of stop job. */
+/** DTO of stopping job. */
 @Data
 public class StopJobDTO {
 
