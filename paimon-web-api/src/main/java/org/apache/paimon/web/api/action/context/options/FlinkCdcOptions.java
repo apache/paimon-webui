@@ -37,4 +37,8 @@ public class FlinkCdcOptions {
     public static final String PRIMARY_KEYS = "primary_keys";
 
     public static final String SESSION_URL = "sessionUrl";
+
+    public static final String CATALOG_CONF = "catalog_conf";
+
+
 }

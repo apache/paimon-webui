@@ -20,6 +20,8 @@
 
 package org.apache.paimon.web.api.action.context.factory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.auto.service.AutoService;
 import org.apache.paimon.web.api.action.context.ActionContext;
 import org.apache.paimon.web.api.action.context.ActionContextUtil;
@@ -27,9 +29,12 @@ import org.apache.paimon.web.api.action.context.MysqlSyncTableActionContext;
 import org.apache.paimon.web.api.action.context.options.FlinkCdcOptions;
 import org.apache.paimon.web.api.enums.FlinkCdcType;
 import org.apache.paimon.web.api.enums.FlinkJobType;
+import org.apache.paimon.web.common.util.JSONUtils;
+import org.apache.paimon.web.common.util.MapUtil;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 @AutoService(FlinkCdcActionContextFactory.class)
@@ -38,7 +43,7 @@ public class MysqlSyncTableActionContextFactory implements FlinkCdcActionContext
 
     @Override
     public String sourceType() {
-        return "Mysql";
+        return "MySQL";
     }
 
     @Override
@@ -47,23 +52,22 @@ public class MysqlSyncTableActionContextFactory implements FlinkCdcActionContext
     }
 
     @Override
-
     public FlinkCdcType cdcType() {
         return FlinkCdcType.SINGLE_TABLE_SYNC;
     }
 
     @Override
-    public ActionContext getActionContext(Properties flinkProperties, Properties sourceProperties, Properties targetProperties) {
+    public ActionContext getActionContext(ObjectNode actionConfigs) {
         return MysqlSyncTableActionContext.builder()
-                .sessionUrl(String.valueOf(flinkProperties.getOrDefault(FlinkCdcOptions.SESSION_URL,"http://127.0.0.1:8081")))
+                .sessionUrl(String.valueOf(actionConfigs.get(FlinkCdcOptions.SESSION_URL)))
                 .flinkJobType(FlinkJobType.SESSION)
-                .warehouse(targetProperties.getProperty(FlinkCdcOptions.WAREHOUSE))
-                .database(targetProperties.getProperty(FlinkCdcOptions.DATABASE))
-                .table(targetProperties.getProperty(FlinkCdcOptions.TABLE))
-                .primaryKeys(targetProperties.getProperty(FlinkCdcOptions.PRIMARY_KEYS))
+                .warehouse(JSONUtils.getString(actionConfigs,FlinkCdcOptions.WAREHOUSE))
+                .database(JSONUtils.getString(actionConfigs,FlinkCdcOptions.DATABASE))
+                .table(JSONUtils.getString(actionConfigs,FlinkCdcOptions.TABLE))
+                .primaryKeys(JSONUtils.getString(actionConfigs,FlinkCdcOptions.PRIMARY_KEYS))
                 .actionPath(ActionContextUtil.getActionJarPath())
-                .catalogConfList(ActionContextUtil.getConfListFromString(sourceProperties.getProperty("paimonCatalogConf"),";"))
-                .mysqlConfList(ActionContextUtil.getConfListFromString(targetProperties.getProperty(FlinkCdcOptions.MYSQL_CONF),";"))
+                .catalogConfList(JSONUtils.getList(actionConfigs,FlinkCdcOptions.CATALOG_CONF))
+                .mysqlConfList(JSONUtils.getList(actionConfigs,FlinkCdcOptions.MYSQL_CONF))
                 .build();
     }
 

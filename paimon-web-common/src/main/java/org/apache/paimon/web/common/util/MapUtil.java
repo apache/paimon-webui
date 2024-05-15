@@ -18,22 +18,24 @@
  *
  */
 
-package org.apache.paimon.web.api.action.context.factory;
+package org.apache.paimon.web.common.util;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.paimon.web.api.action.context.ActionContext;
-import org.apache.paimon.web.api.enums.FlinkCdcType;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Optional;
 
-public interface FlinkCdcActionContextFactory {
+/** Map util.*/
+public class MapUtil {
 
-    String sourceType();
+    private MapUtil(){
+    }
 
-    String targetType();
+    public static String getString(Map<String,?> map,String key){
+        return Optional.ofNullable(map).map(e->String.valueOf(e.get(key))).orElse("");
+    }
 
-    FlinkCdcType cdcType();
-
-    ActionContext getActionContext(ObjectNode actionConfigs);
+    public static <E> List<E> getList(Map<String,?> map, String key){
+        return Optional.ofNullable(map).map(e->(List<E>) map.get(key)).orElse(new ArrayList<>());
+    }
 }

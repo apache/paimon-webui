@@ -18,22 +18,15 @@
  *
  */
 
-package org.apache.paimon.web.api.action.context.factory;
+package org.apache.paimon.web.server.data.model.cdc;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.paimon.web.api.action.context.ActionContext;
-import org.apache.paimon.web.api.enums.FlinkCdcType;
+import lombok.Data;
 
-import java.util.Map;
-import java.util.Properties;
+@Data
+public class CdcNode {
 
-public interface FlinkCdcActionContextFactory {
+    private String type;
 
-    String sourceType();
-
-    String targetType();
-
-    FlinkCdcType cdcType();
-
-    ActionContext getActionContext(ObjectNode actionConfigs);
+    private ObjectNode data;
 }

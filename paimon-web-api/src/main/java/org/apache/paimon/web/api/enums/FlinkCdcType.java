@@ -21,20 +21,33 @@
 package org.apache.paimon.web.api.enums;
 
 import lombok.Getter;
-import org.apache.paimon.predicate.In;
-import org.apache.paimon.web.api.action.context.options.FlinkCdcOptions;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-/** FlinkCdcType */
+/** FlinkCdcType. */
 @Getter
 public enum FlinkCdcType {
     SINGLE_TABLE_SYNC(0),
     ALL_DATABASES_SYNC(1);
 
+    private final Integer value;
+
+    private static final Map<Integer,FlinkCdcType> enumsMap;
+
+    static {
+        enumsMap = Arrays.stream(FlinkCdcType.values()).collect(Collectors.toMap(FlinkCdcType::getValue,Function.identity()));
+    }
     FlinkCdcType(Integer value) {
         this.value = value;
+    }
+
+    public static FlinkCdcType valueOf(Integer value){
+        if(enumsMap.containsKey(value)){
+            return enumsMap.get(value);
+        }
+        throw new RuntimeException("Invalid cdc type.");
     }
 }

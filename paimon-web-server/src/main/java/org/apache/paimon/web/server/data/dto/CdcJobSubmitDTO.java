@@ -20,9 +20,11 @@
 
 package org.apache.paimon.web.server.data.dto;
 
-import java.util.Map;
+import lombok.Data;
+
 
 /** DTO of CdcJobSubmit. */
+@Data
 public class CdcJobSubmitDTO {
 
     private String flinkSessionUrl;

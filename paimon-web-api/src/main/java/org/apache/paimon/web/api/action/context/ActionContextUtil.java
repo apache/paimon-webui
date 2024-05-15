@@ -63,4 +63,5 @@ public class ActionContextUtil {
         }
         return Arrays.asList(value.split(spiltCharacter));
     }
+
 }
