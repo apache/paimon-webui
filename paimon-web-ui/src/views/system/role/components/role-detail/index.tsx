@@ -59,7 +59,7 @@ export default defineComponent({
                     <n-thing description={this.t(`system.roleKey.${child.label}`)} style="margin-top: 20px;">
                       <n-space>
                         {
-                          item.children?.map((buttonPermission) => (
+                          child.children?.map((buttonPermission) => (
                             <n-tag key={child.id} type="info">{this.t(`system.roleKey.${buttonPermission.label}`)}</n-tag>
                           ))
                         }
