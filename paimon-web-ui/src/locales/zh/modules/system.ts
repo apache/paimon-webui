@@ -25,11 +25,13 @@ const user = {
 
 const role = {
   create: '新增角色',
+  update: '更新角色',
   role_name: '角色名称',
   role_key: '角色编码',
   enabled: '是否启用',
   remark: '备注',
   permission_setting: '权限配置',
+  no_permission: '暂无权限'
 }
 
 const roleKey = {

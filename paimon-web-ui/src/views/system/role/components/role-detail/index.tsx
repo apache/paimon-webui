@@ -38,8 +38,19 @@ export default defineComponent({
     async function initDetail() {
       loading.value = true
       const res = await getPermissionByRoleId(props.roleRecord.id)
-      rolePermissionDetail.value = res?.data?.menus
+      rolePermissionDetail.value = transformMenu(res?.data?.menus || [], res?.data?.checkedKeys || [])
       loading.value = false
+    }
+
+    function transformMenu(menu: RoleMenu[], values: number[]) {
+      const result = menu.filter((item) => {
+        if (item.children?.length) {
+          item.children = transformMenu(item.children, values)
+        }
+        return values.includes(item.id)
+      })
+
+      return result
     }
 
     return {
@@ -71,6 +82,9 @@ export default defineComponent({
               </n-thing>
             </n-list-item>
           ))
+        }
+        {
+          this.rolePermissionDetail?.length === 0 && <n-empty description={this.t('system.role.no_permission')} />
         }
       </n-list>
     </n-spin>
