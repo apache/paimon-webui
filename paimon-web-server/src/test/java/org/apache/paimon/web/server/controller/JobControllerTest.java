@@ -358,6 +358,8 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         assertEquals(6, getJobStatisticsRes.getData().getTotalNum());
         assertEquals(5, getJobStatisticsRes.getData().getRunningNum());
         assertEquals(1, getJobStatisticsRes.getData().getCanceledNum());
+        assertEquals(0, getJobStatisticsRes.getData().getFinishedNum());
+        assertEquals(0, getJobStatisticsRes.getData().getFailedNum());
     }
 
     private String submit(JobSubmitDTO jobSubmitDTO) throws Exception {
