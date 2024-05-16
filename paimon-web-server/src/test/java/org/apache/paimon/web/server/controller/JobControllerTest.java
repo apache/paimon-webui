@@ -245,6 +245,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     }
 
     @Test
+    @Order(4)
     public void testGetJobStatus() throws Exception {
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
@@ -269,38 +270,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     }
 
     @Test
-    public void testGetJobStatistics() throws Exception {
-        QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("cluster_name", "test_cluster");
-        ClusterInfo one = clusterService.getOne(queryWrapper);
-        JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
-        jobSubmitDTO.setJobName("flink-job-test-get-job-statistics");
-        jobSubmitDTO.setTaskType("Flink");
-        jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
-        jobSubmitDTO.setStatements(StatementsConstant.selectStatement);
-        String responseString = submit(jobSubmitDTO);
-        R<JobVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<JobVO>>() {});
-        assertEquals(200, r.getCode());
-
-        String getJobStatisticsResponseStr =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.get(jobPath + "/statistics/get")
-                                        .cookie(cookie)
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-        R<JobStatisticsVO> getJobStatisticsRes =
-                ObjectMapperUtils.fromJSON(
-                        getJobStatisticsResponseStr, new TypeReference<R<JobStatisticsVO>>() {});
-        assertEquals(200, getJobStatisticsRes.getCode());
-        assertEquals(5, getJobStatisticsRes.getData().getTotalNum());
-    }
-
-    @Test
+    @Order(5)
     public void testStopJob() throws Exception {
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
@@ -318,16 +288,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         R<JobStatusVO> getJobStatusRes =
                 ObjectMapperUtils.fromJSON(jobStatus, new TypeReference<R<JobStatusVO>>() {});
         while (!getJobStatusRes.getData().getStatus().equals("RUNNING")) {
-            mockMvc.perform(
-                            MockMvcRequestBuilders.post(jobPath + "/refresh")
-                                    .cookie(cookie)
-                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                    .accept(MediaType.APPLICATION_JSON_VALUE))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andDo(MockMvcResultHandlers.print())
-                    .andReturn()
-                    .getResponse()
-                    .getContentAsString();
+            refreshJob();
             jobStatus = getJobStatus(r.getData().getJobId());
             getJobStatusRes =
                     ObjectMapperUtils.fromJSON(jobStatus, new TypeReference<R<JobStatusVO>>() {});
@@ -361,6 +322,44 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         assertEquals("CANCELED", getJobStatusRes.getData().getStatus());
     }
 
+    @Test
+    @Order(6)
+    public void testGetJobStatistics() throws Exception {
+        QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("cluster_name", "test_cluster");
+        ClusterInfo one = clusterService.getOne(queryWrapper);
+        JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
+        jobSubmitDTO.setJobName("flink-job-test-get-job-statistics");
+        jobSubmitDTO.setTaskType("Flink");
+        jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
+        jobSubmitDTO.setStatements(StatementsConstant.selectStatement);
+        String responseString = submit(jobSubmitDTO);
+        R<JobVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<JobVO>>() {});
+        assertEquals(200, r.getCode());
+        refreshJob();
+        TimeUnit.MICROSECONDS.sleep(100);
+        refreshJob();
+
+        String getJobStatisticsResponseStr =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(jobPath + "/statistics/get")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+        R<JobStatisticsVO> getJobStatisticsRes =
+                ObjectMapperUtils.fromJSON(
+                        getJobStatisticsResponseStr, new TypeReference<R<JobStatisticsVO>>() {});
+        assertEquals(200, getJobStatisticsRes.getCode());
+        assertEquals(6, getJobStatisticsRes.getData().getTotalNum());
+        assertEquals(5, getJobStatisticsRes.getData().getRunningNum());
+        assertEquals(1, getJobStatisticsRes.getData().getCanceledNum());
+    }
+
     private String submit(JobSubmitDTO jobSubmitDTO) throws Exception {
         return mockMvc.perform(
                         MockMvcRequestBuilders.post(jobPath + "/submit")
@@ -378,6 +377,19 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     private String getJobStatus(String jobId) throws Exception {
         return mockMvc.perform(
                         MockMvcRequestBuilders.get(jobPath + "/status/get/" + jobId)
+                                .cookie(cookie)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+    }
+
+    private void refreshJob() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(jobPath + "/refresh")
                                 .cookie(cookie)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
