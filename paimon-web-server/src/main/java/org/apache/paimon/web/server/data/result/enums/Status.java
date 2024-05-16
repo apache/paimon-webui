@@ -83,7 +83,13 @@ public enum Status {
 
     /** ------------cluster-----------------. */
     CLUSTER_NOT_EXIST(10701, "cluster.not.exist"),
-    CLUSTER_NAME_ALREADY_EXISTS(10702, "cluster.name.exist");
+    CLUSTER_NAME_ALREADY_EXISTS(10702, "cluster.name.exist"),
+
+    /** ------------job-----------------. */
+    JOB_SUBMIT_ERROR(10701, "job.submit.error"),
+    RESULT_FETCH_ERROR(10702, "result.fetch.error"),
+    JOB_STOP_ERROR(10703, "job.stop.error"),
+    JOB_UPDATE_STATUS_ERROR(10704, "job.update.status.error");
 
     private final int code;
     private final String msg;
