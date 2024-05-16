@@ -17,16 +17,43 @@ under the License. */
 
 import httpRequest from '../../request'
 import type { ResponseOptions } from '@/api/types'
-import type { Role, RoleDetail, RoleParams } from './types/role'
+import type { Role, RoleDTO, RoleDetail, RoleMenu, RoleParams } from './types/role'
+
+
+/**
+ * # create a role
+ */
+export const createRole = () => {
+  return httpRequest.createHooks!<unknown, RoleDTO>({
+    url: '/role',
+    method: 'post'
+  })
+}
+
+
+/**
+ * # update a role
+ */
+export const updateRole = () => {
+  return httpRequest.createHooks!<unknown, RoleDTO>({
+    url: '/role',
+    method: 'put'
+  })
+}
+
+/**
+ * # delete a role
+ */
+export const deleteRole = (roleId: number) => {
+  return httpRequest.delete!<unknown, RoleDTO>(`/role/${roleId}`)
+}
+
 
 /**
  * # permission tree
  */
 export const getPermissionTree = () => {
-  return httpRequest.createHooks!<ResponseOptions<Role[]>>({
-    url: '/menu/treeselect',
-    method: 'get',
-  })
+  return httpRequest.get!<string, ResponseOptions<RoleMenu[]>>(`/menu/treeselect`)
 }
 
 

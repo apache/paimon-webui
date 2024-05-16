@@ -24,9 +24,14 @@ const user = {
 }
 
 const role = {
+  create: 'Create Role',
+  update: ' Update Role',
   role_name: 'Role name',
   role_key: 'Role Key',
-  enabled: 'Enabled'
+  enabled: 'Enabled',
+  remark: 'Remark',
+  permission_setting: 'Permission Setting',
+  no_permission: 'No Permission',
 }
 
 const roleKey = {
