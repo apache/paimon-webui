@@ -26,5 +26,6 @@ export default {
     search:'Search',
     yes:'Yes',
     no:'No',
-    flink_session_url:'Flink Session Url'
+    action: 'Action',
+    flink_session_url: 'Flink Session Url'
 }

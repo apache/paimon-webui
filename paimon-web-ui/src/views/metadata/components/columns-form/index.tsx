@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Add, AddCircleOutline } from '@vicons/ionicons5'
+import { Add } from '@vicons/ionicons5'
 
 import { useCatalogStore } from '@/store/catalog'
 import { type ColumnDTO, createColumns } from '@/api/models/catalog'

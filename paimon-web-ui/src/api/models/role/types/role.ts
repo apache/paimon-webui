@@ -23,13 +23,7 @@ export interface RoleDetail {
 export interface RoleMenu {
   id: number;
   label: string;
-  children: RoleMenuChild[];
-}
-
-export interface RoleMenuChild {
-  id: number;
-  label: string;
-  children: Omit<RoleMenuChild, 'children'>[];
+  children: RoleMenu[];
 }
 
 export interface Role {
@@ -41,7 +35,8 @@ export interface Role {
   sort: number;
   enabled: boolean;
   isDelete: boolean;
-  remark: null;
+  admin?: boolean;
+  remark?: string;
   flag: boolean;
   menuIds: null;
   permissions: null;
@@ -52,3 +47,13 @@ export interface RoleParams {
   currentPage: number,
   pageSize: number
 }
+
+export interface RoleDTO {
+  id?: number
+  roleName: string;
+  roleKey: string;
+  enabled: boolean;
+  remark?: string;
+  menuIds: number[];
+}
+
