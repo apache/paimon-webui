@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.predicate.In;
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
 import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
@@ -37,9 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * CdcJobDefinition api controller.
- */
+/** CdcJobDefinition api controller. */
 @Slf4j
 @RestController
 @RequestMapping("/api/cdc-job-definition")

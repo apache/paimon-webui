@@ -18,8 +18,9 @@
 
 package org.apache.paimon.web.api.action.context;
 
-import lombok.experimental.SuperBuilder;
 import org.apache.paimon.web.api.action.context.options.FlinkCdcOptions;
+
+import lombok.experimental.SuperBuilder;
 
 import javax.annotation.Nullable;
 

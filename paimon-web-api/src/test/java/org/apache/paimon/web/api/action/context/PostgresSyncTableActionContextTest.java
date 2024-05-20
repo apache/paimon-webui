@@ -26,8 +26,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
 /**
- * The test class of postgres sync table action context in {@link
- * PostgresSyncTableActionContext}.
+ * The test class of postgres sync table action context in {@link PostgresSyncTableActionContext}.
  */
 public class PostgresSyncTableActionContextTest extends FlinkCdcActionContextTestBase {
 

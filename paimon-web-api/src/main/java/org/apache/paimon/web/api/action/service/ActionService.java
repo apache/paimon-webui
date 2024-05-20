@@ -20,7 +20,6 @@ package org.apache.paimon.web.api.action.service;
 
 import org.apache.paimon.web.api.action.context.ActionContext;
 import org.apache.paimon.web.api.action.context.ActionExecutionResult;
-import org.apache.paimon.web.api.exception.ActionException;
 
 /**
  * Action service definition. Convert the user-configured CDC job into an ActionContext {@link
