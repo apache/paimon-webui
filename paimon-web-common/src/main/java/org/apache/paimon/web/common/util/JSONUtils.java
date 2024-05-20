@@ -49,7 +49,7 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 import static com.fasterxml.jackson.databind.DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL;
 import static com.fasterxml.jackson.databind.MapperFeature.REQUIRE_SETTERS_FOR_GETTERS;
 
-/** json utils */
+/** Json utils. */
 @Slf4j
 public class JSONUtils {
 
@@ -148,7 +148,7 @@ public class JSONUtils {
     }
 
     /**
-     * object to json string
+     * object to json string.
      *
      * @param object object
      * @return json string
@@ -174,6 +174,7 @@ public class JSONUtils {
         return null;
     }
 
+    /** LocalDateTimeSerializer. */
     public static class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -186,6 +187,7 @@ public class JSONUtils {
         }
     }
 
+    /** LocalDateTimeDeserializer. */
     public static class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

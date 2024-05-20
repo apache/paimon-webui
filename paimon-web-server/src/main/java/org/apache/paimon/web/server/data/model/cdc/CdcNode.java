@@ -21,6 +21,7 @@ package org.apache.paimon.web.server.data.model.cdc;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 
+/** CdcNode. */
 @Data
 public class CdcNode {
 

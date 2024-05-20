@@ -29,6 +29,7 @@ import org.apache.paimon.web.common.util.JSONUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.auto.service.AutoService;
 
+/** MysqlSyncTableActionContextFactory. */
 @AutoService(FlinkCdcActionContextFactory.class)
 public class MysqlSyncTableActionContextFactory implements FlinkCdcActionContextFactory {
 

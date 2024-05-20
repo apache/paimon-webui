@@ -165,13 +165,12 @@ public class CdcJobDefinitionServiceImpl
     }
 
     private void handleMysqlNodeData(ObjectNode actionConfigs, ObjectNode mysqlData) {
-        String otherConfigs = JSONUtils.getString(mysqlData, "other_configs2");
+        String otherConfigs = JSONUtils.getString(mysqlData, "other_configs");
         List<String> mysqlConfList;
         if (StringUtils.isBlank(otherConfigs)) {
             mysqlConfList = new ArrayList<>();
         } else {
-            String[] split = otherConfigs.split(";");
-            mysqlConfList = Arrays.asList(split);
+            mysqlConfList = new ArrayList<>(Arrays.asList(otherConfigs.split(";")));
         }
         mysqlConfList.add(buildKeyValueString("hostname", JSONUtils.getString(mysqlData, "host")));
         mysqlConfList.add(
@@ -198,8 +197,8 @@ public class CdcJobDefinitionServiceImpl
         if (StringUtils.isBlank(otherConfigs)) {
             actionConfigs.putPOJO(FlinkCdcOptions.TABLE_CONF, new ArrayList<>());
         } else {
-            String[] split = otherConfigs.split(";");
-            actionConfigs.putPOJO(FlinkCdcOptions.TABLE_CONF, Arrays.asList(split));
+            actionConfigs.putPOJO(
+                    FlinkCdcOptions.TABLE_CONF, Arrays.asList(otherConfigs.split(";")));
         }
         List<String> catalogConfList = new ArrayList<>();
         Map<String, String> options = catalogInfo.getOptions();

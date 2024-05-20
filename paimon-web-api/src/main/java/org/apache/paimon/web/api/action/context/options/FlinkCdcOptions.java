@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.api.action.context.options;
 
+/** FlinkCdcOptions. */
 public class FlinkCdcOptions {
 
     private FlinkCdcOptions() {}

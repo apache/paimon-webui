@@ -24,6 +24,7 @@ import org.apache.paimon.web.api.exception.ActionException;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
+/** ActionContextFactoryServiceLoadUtil. */
 public class ActionContextFactoryServiceLoadUtil {
 
     private ActionContextFactoryServiceLoadUtil() {}
