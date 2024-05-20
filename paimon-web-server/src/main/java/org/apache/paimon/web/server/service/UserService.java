@@ -115,4 +115,20 @@ public interface UserService extends IService<User> {
      * @return true if the password was successfully changed, false otherwise.
      */
     boolean changePassword(User user);
+
+    /**
+     * Updates the status of the specified user.
+     *
+     * @param user the user whose status needs to be updated
+     * @return true if the update is successful, false otherwise
+     */
+    boolean updateUserStatus(User user);
+
+    /**
+     * Allocates roles to a user.
+     *
+     * @param user the user to whom the role should be allocated
+     * @return the number of rows affected
+     */
+    int allocateRole(User user);
 }
