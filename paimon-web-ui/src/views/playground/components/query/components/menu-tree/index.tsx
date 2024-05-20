@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import { CodeSlash, FileTrayFullOutline, Search, ServerOutline } from '@vicons/ionicons5';
+import { useCatalogStore } from '@/store/catalog'
 import styles from './index.module.scss'
 import { NIcon, type TreeOption } from 'naive-ui';
 
@@ -23,6 +24,9 @@ export default defineComponent({
   name: 'MenuTree',
   setup() {
     const { t } = useLocaleHooks()
+
+    const catalogStore = useCatalogStore()
+    const catalogStoreRef = storeToRefs(catalogStore)
 
     const treeVariables = reactive({
       treeData: [
