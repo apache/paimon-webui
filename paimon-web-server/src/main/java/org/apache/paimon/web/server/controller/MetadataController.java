@@ -27,6 +27,7 @@ import org.apache.paimon.web.server.data.vo.SchemaVO;
 import org.apache.paimon.web.server.data.vo.SnapshotVO;
 import org.apache.paimon.web.server.service.MetadataService;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,26 +48,31 @@ public class MetadataController {
         this.metadataService = metadataService;
     }
 
+    @SaCheckPermission("metadata:schema:list")
     @PostMapping("/schema")
     public R<List<SchemaVO>> getSchemaInfo(@RequestBody MetadataDTO dto) {
         return R.succeed(metadataService.getSchema(dto));
     }
 
+    @SaCheckPermission("metadata:snapshot:list")
     @PostMapping("/snapshot")
     public R<List<SnapshotVO>> getSnapshotInfo(@RequestBody MetadataDTO dto) {
         return R.succeed(metadataService.getSnapshot(dto));
     }
 
+    @SaCheckPermission("metadata:manifest:list")
     @PostMapping("/manifest")
     public R<List<ManifestsVO>> getManifestInfo(@RequestBody MetadataDTO dto) {
         return R.succeed(metadataService.getManifest(dto));
     }
 
+    @SaCheckPermission("metadata:datafile:list")
     @PostMapping("/dataFile")
     public R<List<DataFileVO>> getDataFileInfo(@RequestBody MetadataDTO dto) {
         return R.succeed(metadataService.getDataFile(dto));
     }
 
+    @SaCheckPermission("metadata:options:list")
     @PostMapping("/options")
     public R<List<OptionVO>> getOptionInfo(@RequestBody MetadataDTO dto) {
         return R.succeed(metadataService.getOption(dto));
