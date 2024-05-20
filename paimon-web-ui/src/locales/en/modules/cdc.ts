@@ -49,4 +49,5 @@ export default {
   synchronization_configuration: 'Synchronization Configuration',
   primary_key: 'Primary Key',
   partition_column: 'Partition Column',
+  submit_cdc_job:'Submit'
 }

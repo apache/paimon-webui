@@ -25,5 +25,6 @@ export default {
     update_time:'修改时间',
     search:'搜索',
     yes:'是',
-    no:'否'
+    no:'否',
+    flink_session_url:'Flink Session 集群地址'
 }

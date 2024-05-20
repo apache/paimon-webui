@@ -25,5 +25,6 @@ export default {
     update_time:'Update time',
     search:'Search',
     yes:'Yes',
-    no:'No'
+    no:'No',
+    flink_session_url:'Flink Session Url'
 }

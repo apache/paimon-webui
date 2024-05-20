@@ -21,20 +21,26 @@ import styles from './index.module.scss';
 import { Leaf } from '@vicons/ionicons5';
 import { useCDCStore } from '@/store/cdc';
 import type { Router } from 'vue-router';
+import { submitCdcJob, type CdcJobSubmit } from '@/api/models/cdc';
 
 export default defineComponent({
   name: 'CDCPage',
   setup() {
     const { t } = useLocaleHooks()
     const showModalRef = ref(false)
-
+    const showSubmitCdcJobModalRef = ref(false)
     const handleOpenModal = () => {
       showModalRef.value = true
+    }
+
+    const handleOpenSubmitCdcJobModal = () => {
+      showSubmitCdcJobModalRef.value = true
     }
 
     const CDCStore = useCDCStore()
     const router: Router = useRouter()
     const CDCModalRef = ref()
+    const submitCdcJobModalRef = ref()
     const handleConfirm = async(model: any) => {
       CDCStore.setModel(model)
       await CDCModalRef.value.formRef.validate()
@@ -42,12 +48,22 @@ export default defineComponent({
       router.push({ path: '/cdc_ingestion/dag' })
     }
 
+    const handleCdcSubmitConfirm = (form:CdcJobSubmit)=>{
+      const CDCStore = useCDCStore()
+      submitCdcJob(CDCStore.getModel.id,form)
+      showSubmitCdcJobModalRef.value = false
+    }
+
     return {
       t,
       showModalRef,
+      showSubmitCdcJobModalRef,
       handleOpenModal,
       handleConfirm,
-      CDCModalRef
+      CDCModalRef,
+      submitCdcJobModalRef,
+      handleOpenSubmitCdcJobModal,
+      handleCdcSubmitConfirm
     }
   },
   render() {
@@ -69,7 +85,7 @@ export default defineComponent({
                 </div>
               </div>
             </n-card>
-            <List></List>
+            <List onCdcJobSubmit={() => this.showSubmitCdcJobModalRef = true}></List>
             {
               this.showModalRef &&
               <Modal
@@ -79,6 +95,17 @@ export default defineComponent({
                 formType="CDCLIST"
                 onCancel={() => this.showModalRef = false}
                 onConfirm={this.handleConfirm}
+              />
+            }
+             {
+              this.showSubmitCdcJobModalRef &&
+              <Modal
+                ref='submitCdcJobModalRef'
+                showModal={this.showSubmitCdcJobModalRef}
+                title={this.t('cdc.submit_cdc_job')}
+                formType="CDCSUBMIT"
+                onCancel={() => this.showSubmitCdcJobModalRef = false}
+                onConfirm={this.handleCdcSubmitConfirm}
               />
             }
           </n-space>
