@@ -19,6 +19,7 @@ import { CodeSlash, FileTrayFullOutline, Search, ServerOutline } from '@vicons/i
 import { useCatalogStore } from '@/store/catalog'
 import styles from './index.module.scss'
 import { NIcon, type TreeOption } from 'naive-ui';
+import {DatabaseOutlined} from "@vicons/antd";
 
 export default defineComponent({
   name: 'MenuTree',
@@ -27,6 +28,42 @@ export default defineComponent({
 
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
+
+    const filterValue = ref('')
+
+    const renderPrefix = ({ option }: { option: TreeOption }) => {
+      let icon = ServerOutline
+      switch (option.type) {
+        case 'catalog':
+          icon = DatabaseOutlined
+          break
+        case 'database':
+          icon = ServerOutline
+          break
+        case 'table':
+          icon = FileTrayFullOutline
+      }
+
+      return h(NIcon, null, {
+        default: () => h(icon)
+      })
+    }
+
+    const onLoadMenu = async (node: TreeOption) => {
+      if (node.type === 'catalog') {
+        node.children = await catalogStore.getDatabasesById(node.key as number)
+      } else {
+        const [catalogId, catalogName, databaseName] = (node.key as string)?.split(' ') || []
+        const params = {
+          catalogId: Number(catalogId),
+          catalogName,
+          databaseName
+        }
+        node.children = (await catalogStore.getTablesByDataBaseId(params)) || []
+      }
+
+      return Promise.resolve()
+    }
 
     const treeVariables = reactive({
       treeData: [
@@ -111,6 +148,13 @@ export default defineComponent({
       }
     }
 
+    const dataNodeProps = ({ option }: { option: TreeOption }) => {
+      return {
+        onClick () {
+        },
+      }
+    }
+
     const handleTreeSelect = (value: never[], option: { children: any; }[]) => {
       if (option[0]?.children) return
       treeVariables.selectedKeys = value
@@ -166,14 +210,19 @@ export default defineComponent({
     ]) as any
 
     onMounted(() => {
-      mittBus.emit('initTreeData', treeVariables)
+      catalogStore.getAllCatalogs(true)
     })
 
     return {
       t,
       ...toRefs(treeVariables),
+      filterValue,
+      menuList: catalogStoreRef.catalogs,
+      onLoadMenu,
       nodeProps,
+      dataNodeProps,
       handleTreeSelect,
+      renderPrefix,
       savedQueryList,
       recordList
     }
@@ -197,9 +246,11 @@ export default defineComponent({
                   expand-on-click
                   selected-keys={this.selectedKeys}
                   on-update:selected-keys={this.handleTreeSelect}
-                  data={this.treeData}
+                  data={this.menuList}
                   pattern={this.filterValue}
-                  node-props={this.nodeProps}
+                  node-props={this.dataNodeProps}
+                  onLoad={this.onLoadMenu}
+                  render-prefix={this.renderPrefix}
                 />
               </n-space>
             </n-tab-pane>
