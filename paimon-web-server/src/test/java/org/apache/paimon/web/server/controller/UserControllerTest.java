@@ -62,6 +62,7 @@ public class UserControllerTest extends ControllerTestBase {
         user.setId(userId);
         user.setUsername(username);
         user.setNickname(username);
+        user.setPassword("test");
         user.setUserType(0);
         user.setEnabled(true);
         user.setIsDelete(false);
@@ -79,22 +80,9 @@ public class UserControllerTest extends ControllerTestBase {
     @Test
     @Order(2)
     public void testGetUser() throws Exception {
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.get(userPath + "/" + userId)
-                                        .cookie(cookie)
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
-        assertEquals(200, r.getCode());
-        assertNotNull(r.getData());
-        assertEquals(r.getData().getUsername(), username);
+        UserVO user = getUser(userId);
+        assertNotNull(user);
+        assertEquals(user.getUsername(), username);
     }
 
     @Test
@@ -137,6 +125,46 @@ public class UserControllerTest extends ControllerTestBase {
 
     @Test
     @Order(4)
+    public void testAllocateRole() throws Exception {
+        User user = new User();
+        user.setId(userId);
+        user.setUsername(username);
+        user.setNickname(username);
+        user.setUserType(0);
+        user.setEnabled(true);
+        user.setIsDelete(false);
+        user.setRoleIds(new Integer[] {2});
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(userPath + "/allocate")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(user))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(userPath + "/" + userId)
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
+        assertEquals(200, r.getCode());
+        assertNotNull(r.getData());
+        assertTrue(r.getData().getRoles().size() > 0);
+        assertEquals("common", r.getData().getRoles().get(0).getRoleName());
+    }
+
+    @Test
+    @Order(5)
     public void testListUsers() throws Exception {
         String responseString =
                 mockMvc.perform(
@@ -174,6 +202,32 @@ public class UserControllerTest extends ControllerTestBase {
 
     @Test
     @Order(5)
+    public void testChangeUserStatus() throws Exception {
+        User user = new User();
+        user.setId(2);
+        user.setEnabled(false);
+
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.put(userPath + "/changeStatus")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(user))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, r.getCode());
+        UserVO changeUser = getUser(2);
+        assertEquals(changeUser.getEnabled(), false);
+    }
+
+    @Test
+    @Order(7)
     public void testDeleteUser() throws Exception {
         String delResponseString =
                 mockMvc.perform(
@@ -208,5 +262,23 @@ public class UserControllerTest extends ControllerTestBase {
 
         User newUser = userMapper.selectById(2);
         assertEquals("9efab2399c7c560b34de477b9aa0a465", newUser.getPassword());
+    }
+
+    private UserVO getUser(Integer userId) throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(userPath + "/" + userId)
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
+        assertEquals(200, r.getCode());
+        return r.getData();
     }
 }
