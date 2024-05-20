@@ -140,4 +140,28 @@ public class UserController {
         }
         return userService.changePassword(user) ? R.succeed() : R.failed();
     }
+
+    /**
+     * Changes the status of a user via a PUT request.
+     *
+     * @param user the user object containing the new status information
+     * @return a response object indicating success or failure
+     */
+    @SaCheckPermission("system:user:update")
+    @PutMapping("/changeStatus")
+    public R<Void> changeStatus(@RequestBody User user) {
+        return userService.updateUserStatus(user) ? R.succeed() : R.failed();
+    }
+
+    /**
+     * Allocates a role to a user.
+     *
+     * @param user the user to whom the role is to be allocated
+     * @return a response object indicating success or failure
+     */
+    @SaCheckPermission("system:user:update")
+    @PostMapping("/allocate")
+    public R<Void> allocateRole(@RequestBody User user) {
+        return userService.allocateRole(user) > 0 ? R.succeed() : R.failed();
+    }
 }

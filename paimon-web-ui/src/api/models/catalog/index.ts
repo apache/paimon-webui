@@ -148,7 +148,7 @@ export const createColumns = () => {
  */
 export const deleteColumns = (query: ColumnParams) => {
   const { catalogName, databaseName, name, columnName } = query
-  
+
   return httpRequest.delete!<unknown, unknown>(`/table/column/drop/${catalogName}/${databaseName}/${name}/${columnName}`)
 }
 

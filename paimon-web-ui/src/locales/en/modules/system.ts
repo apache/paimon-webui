@@ -24,9 +24,34 @@ const user = {
 }
 
 const role = {
+  create: 'Create Role',
+  update: ' Update Role',
   role_name: 'Role name',
   role_key: 'Role Key',
-  enabled: 'Enabled'
+  enabled: 'Enabled',
+  remark: 'Remark',
+  permission_setting: 'Permission Setting',
+  no_permission: 'No Permission',
 }
 
-export default { user, role }
+const roleKey = {
+  system: 'System',
+  menu_manager: 'Menu Manager',
+  user_manager: 'User Manager',
+  role_manager: 'Role Manager',
+  menu_query: 'Menu Query',
+  menu_add: 'Menu Add',
+  menu_update: 'Menu Update',
+  menu_delete: 'Menu Delete',
+  user_query: 'User Query',
+  user_add: 'User Add',
+  user_update: 'User Update',
+  user_delete: 'User Delete',
+  user_reset: 'User Reset',
+  role_query: 'Role Query',
+  role_add: 'Role Add',
+  role_update: 'Role Update',
+  role_delete: 'Role Delete'
+}
+
+export default { user, role, roleKey }

@@ -15,27 +15,167 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import type { Role, RoleDTO } from '@/api/models/role/types/role';
 import styles from './index.module.scss';
-import { useConstants } from './use-constants';
 import { useTable } from './use-table';
+import RoleForm from './components/role-form';
+import { createRole, getPermissionByRoleId, updateRole } from '@/api/models/role';
+import dayjs from 'dayjs';
+import RoleDetail from './components/role-detail';
+import { EditOutlined } from '@vicons/antd';
+import { RemoveCircleOutline, Warning } from '@vicons/ionicons5';
+import RoleDelete from './components/role-delete';
 
 export default defineComponent({
   name: 'RolePage',
   setup() {
+    const columns = [
+      {
+        type: 'expand',
+        resizable: true,
+        renderExpand: (row: Role) => {
+          return (
+            <RoleDetail roleRecord={row} />
+          )
+        }
+      },
+      {
+        title: () => t('system.role.role_name'),
+        key: 'roleName',
+        resizable: true
+      },
+      {
+        title: () => t('system.role.role_key'),
+        key: 'roleKey',
+        resizable: true
+      },
+      {
+        title: () => t('system.role.enabled'),
+        key: 'enabled',
+        resizable: true,
+        render: (row: Role) => {
+          return row.enabled ? t('common.yes') : t('common.no')
+        }
+      },
+      {
+        title: () => t('common.create_time'),
+        key: 'createTime',
+        resizable: true,
+        render: (row: Role) => {
+          return row?.createTime ? dayjs(row?.createTime).format('YYYY-MM-DD HH:mm') : '-'
+        }
+      },
+      {
+        title: () => t('common.update_time'),
+        key: 'updateTime',
+        resizable: true,
+        render: (row: Role) => {
+          return row?.updateTime ? dayjs(row?.updateTime).format('YYYY-MM-DD HH:mm') : '-'
+        }
+      },
+      {
+        title: () => t('common.action'),
+        key: 'actions',
+        resizable: true,
+        render: (row: Role) => {
+          if (!row?.admin) {
+            return (
+              <n-space>
+                <n-button onClick={() => handleUpdateModal(row)} strong secondary circle>
+                  {{
+                    icon: () => <n-icon component={EditOutlined} />
+                  }}
+                </n-button>
+                <RoleDelete roleId={row?.id} onDelete={getTableData} />
+              </n-space>
+            )
+          }
+          
+          return null
+        }
+      }
+    ]
+
     const { t } = useLocaleHooks()
-    const { tableVariables, getTableData, roleList,loading} = useTable()
-    const { columns } = useConstants()
-    getTableData()
-    return { ...toRefs(tableVariables), getTableData, t, columns, roleList,loading }
+    const { tableVariables, getTableData, roleList, loading } = useTable()
+    const [, createFetch, { loading: createLoading }] = createRole()
+    const [, updateFetch, { loading: updateLoading }] = updateRole()
+    const message = useMessage()
+
+    const formType = ref<'create' | 'update'>('create')
+    const formVisible = ref(false)
+    const formValue = ref<RoleDTO>({
+      roleName: '',
+      roleKey: '',
+      enabled: true,
+      remark: '',
+      menuIds: []
+    })
+
+    async function getDetail(role: Role) {
+      const res = await getPermissionByRoleId(role.id)
+      formValue.value = {
+        id: role.id,
+        roleName: role.roleName,
+        roleKey: role.roleKey,
+        enabled: role.enabled,
+        remark: role.remark,
+        menuIds: res?.data?.checkedKeys
+      }
+    }
+
+    onMounted(getTableData)
+
+    const rowKey = (rowData: Role) => rowData.id
+
+    const handleCreateModal = () => {
+      formType.value = 'create'
+      formVisible.value = true
+    }
+
+    const handleUpdateModal = async (role: Role) => {
+      formType.value = 'update'
+      await getDetail(role)
+      formVisible.value = true
+    }
+
+    const onConfirm = async () => {
+      const fn = formType.value === 'create' ? createFetch : updateFetch
+
+      await fn({
+        params: toRaw(formValue.value)
+      })
+
+      message.success(t(`Successfully`))
+
+      formVisible.value = false
+      getTableData()
+    }
+
+    const modelLoading = computed(() => createLoading.value || updateLoading.value)
+
+    return {
+      ...toRefs(tableVariables),
+      t,
+      formVisible,
+      formValue,
+      columns: toRef([...columns]),
+      roleList,
+      loading,
+      modelLoading,
+      rowKey,
+      onConfirm,
+      handleCreateModal,
+    }
   },
   render() {
     return (
       <n-space class={styles.container} vertical justify="center">
-        <n-card >
+        <n-card>
           <n-space vertical>
             <n-space justify="space-between">
               <n-space>
-                <n-button type="primary">{this.t('system.user.add')}</n-button>
+                <n-button onClick={this.handleCreateModal} type="primary">{this.t('system.user.add')}</n-button>
               </n-space>
               <n-space>
                 <></>
@@ -43,13 +183,15 @@ export default defineComponent({
             </n-space>
             <n-data-table
               columns={this.columns}
-              data={this.roleList?.data || []}
-              remote
-              loading={this.loading}
+              data={this.roleList || []}
               pagination={this.pagination}
+              loading={this.loading}
+              remote
+              rowKey={this.rowKey}
             />
           </n-space>
         </n-card>
+        <RoleForm modelLoading={this.modelLoading} v-model:visible={this.formVisible} v-model:formValue={this.formValue} onConfirm={this.onConfirm} />
       </n-space>
     )
   }

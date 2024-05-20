@@ -49,4 +49,7 @@ public class UserInfoVO {
 
     /** current user's tenant. */
     private Tenant currentTenant;
+
+    /** current user's permissions list. */
+    private List<String> permissions;
 }
