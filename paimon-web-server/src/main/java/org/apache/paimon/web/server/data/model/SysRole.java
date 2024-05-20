@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.server.data.model;
 
+import org.apache.paimon.web.server.constant.Constants;
+
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
@@ -58,6 +60,14 @@ public class SysRole extends BaseModel {
     /** Role menu permissions. */
     @TableField(exist = false)
     private Set<String> permissions;
+
+    public boolean isAdmin() {
+        return isAdmin(this.getId());
+    }
+
+    public static boolean isAdmin(Integer roleId) {
+        return roleId != null && Constants.ADMIN_ID == roleId;
+    }
 
     private static final long serialVersionUID = 1L;
 }
