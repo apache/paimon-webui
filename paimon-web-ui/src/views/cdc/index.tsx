@@ -28,19 +28,14 @@ export default defineComponent({
   setup() {
     const { t } = useLocaleHooks()
     const showModalRef = ref(false)
-    const showSubmitCdcJobModalRef = ref(false)
+
     const handleOpenModal = () => {
       showModalRef.value = true
-    }
-
-    const handleOpenSubmitCdcJobModal = () => {
-      showSubmitCdcJobModalRef.value = true
     }
 
     const CDCStore = useCDCStore()
     const router: Router = useRouter()
     const CDCModalRef = ref()
-    const submitCdcJobModalRef = ref()
     const handleConfirm = async(model: any) => {
       CDCStore.setModel(model)
       await CDCModalRef.value.formRef.validate()
@@ -48,22 +43,12 @@ export default defineComponent({
       router.push({ path: '/cdc_ingestion/dag' })
     }
 
-    const handleCdcSubmitConfirm = (form:CdcJobSubmit)=>{
-      const CDCStore = useCDCStore()
-      submitCdcJob(CDCStore.getModel.id,form)
-      showSubmitCdcJobModalRef.value = false
-    }
-
     return {
       t,
       showModalRef,
-      showSubmitCdcJobModalRef,
       handleOpenModal,
       handleConfirm,
-      CDCModalRef,
-      submitCdcJobModalRef,
-      handleOpenSubmitCdcJobModal,
-      handleCdcSubmitConfirm
+      CDCModalRef
     }
   },
   render() {
@@ -95,17 +80,6 @@ export default defineComponent({
                 formType="CDCLIST"
                 onCancel={() => this.showModalRef = false}
                 onConfirm={this.handleConfirm}
-              />
-            }
-             {
-              this.showSubmitCdcJobModalRef &&
-              <Modal
-                ref='submitCdcJobModalRef'
-                showModal={this.showSubmitCdcJobModalRef}
-                title={this.t('cdc.submit_cdc_job')}
-                formType="CDCSUBMIT"
-                onCancel={() => this.showSubmitCdcJobModalRef = false}
-                onConfirm={this.handleCdcSubmitConfirm}
               />
             }
           </n-space>

@@ -27,5 +27,4 @@ export default {
     yes:'Yes',
     no:'No',
     action: 'Action',
-    flink_session_url: 'Flink Session Url'
 }

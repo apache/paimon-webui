@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 
-import type { CdcJobDefinition, CdcJobSubmit } from './interface'
+import type { CdcJobDefinition } from './interface'
 import httpRequest from '@/api/request'
 export * from './interface'
 
@@ -53,10 +53,4 @@ export const getCdcJobDefinition = (id: number) => {
  */
 export const deleteCdcJobDefinition = (id: number) => {
   return httpRequest.delete(`/cdc-job-definition/${id}`)
-}
-/**
- * # Submit cdc job
- */
-export const submitCdcJob = (id:number,form:CdcJobSubmit)=>{
-  return httpRequest.post(`/cdc-job-definition/${id}/submit`, form)
 }

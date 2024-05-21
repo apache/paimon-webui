@@ -25,7 +25,3 @@ export interface CdcJobDefinition {
     config?: string;
     createUser?: string;
 }
-
-export interface CdcJobSubmit{
-  flinkSessionUrl:string
-}

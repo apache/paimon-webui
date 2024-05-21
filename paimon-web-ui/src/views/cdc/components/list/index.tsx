@@ -20,11 +20,10 @@ import { useTable } from './use-table'
 
 export default defineComponent({
   name: 'ListPage',
-  emits:['cdcJobSubmit'],
-  setup(props,ctx) {
+  setup() {
     const { t } = useLocaleHooks()
 
-    const { tableVariables, getTableData } = useTable(ctx)
+    const { tableVariables, getTableData } = useTable()
     getTableData()
 
     return {
