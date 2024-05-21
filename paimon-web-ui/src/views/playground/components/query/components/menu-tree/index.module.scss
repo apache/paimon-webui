@@ -41,6 +41,14 @@ under the License. */
         position: relative;
         flex: 1;
       }
+
+      .detail-container {
+        height: 45%;
+        margin-left: -18px;
+        margin-right: -18px;
+        /*border-top: 1px solid;*/
+        background-color: #5F95FF;
+      }
     }
   }
 }

@@ -268,10 +268,17 @@ export default defineComponent({
                       render-prefix={this.renderPrefix}
                     />
                   </n-scrollbar>
-                  { this.currentTable && (
-                    <div>hello</div>
-                  )}
                 </div>
+                { this.currentTable && (
+                  <div class={styles['detail-container']}>
+
+                    <n-scrollbar>
+                      <n-list>
+
+                      </n-list>
+                    </n-scrollbar>
+                  </div>
+                )}
               </div>
             </n-tab-pane>
             <n-tab-pane name="saved_query" tab={this.t('playground.saved_query')}>
