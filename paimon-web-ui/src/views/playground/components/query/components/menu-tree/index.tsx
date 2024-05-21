@@ -223,6 +223,8 @@ export default defineComponent({
       catalogStore.getAllCatalogs(true)
     })
 
+    /*onUnmounted(catalogStore.resetCurrentTable)*/
+
     return {
       t,
       ...toRefs(treeVariables),
@@ -242,30 +244,35 @@ export default defineComponent({
     return (
       <div class={styles.container}>
         <n-card class={styles.card} content-style={'padding:7px 18px;'}>
-          <n-tabs default-value="data" justify-content="space-between" type="line">
-            <n-tab-pane name="data" tab={this.t('playground.data')}>
-              <n-space vertical>
-                <n-input placeholder={this.t('playground.search')} style="width: 100%;"
-                  v-model:value={this.filterValue}
-                  v-slots={{
-                    prefix: () => <n-icon component={Search} />
-                  }}
+          <n-tabs default-value="data" justify-content="space-between" type="line" style={'height: 100%'}>
+            <n-tab-pane name="data" tab={this.t('playground.data')} style={'height: 100%'}>
+              <div class={styles.vertical}>
+                <n-input placeholder={this.t('playground.search')}
+                         v-model:value={this.filterValue}
+                         v-slots={{
+                           prefix: () => <n-icon component={Search} />
+                         }}
                 >
                 </n-input>
-                <n-scrollbar>
-                  <n-tree
-                    block-line
-                    expand-on-click
-                    selected-keys={this.selectedKeys}
-                    on-update:selected-keys={this.handleTreeSelect}
-                    data={this.menuList}
-                    pattern={this.filterValue}
-                    node-props={this.dataNodeProps}
-                    onLoad={this.onLoadMenu}
-                    render-prefix={this.renderPrefix}
-                  />
-                </n-scrollbar>
-              </n-space>
+                <div class={styles.scroll}>
+                  <n-scrollbar style={'position: absolute'}>
+                    <n-tree
+                      block-line
+                      expand-on-click
+                      selected-keys={this.selectedKeys}
+                      on-update:selected-keys={this.handleTreeSelect}
+                      data={this.menuList}
+                      pattern={this.filterValue}
+                      node-props={this.dataNodeProps}
+                      onLoad={this.onLoadMenu}
+                      render-prefix={this.renderPrefix}
+                    />
+                  </n-scrollbar>
+                  { this.currentTable && (
+                    <div>hello</div>
+                  )}
+                </div>
+              </div>
             </n-tab-pane>
             <n-tab-pane name="saved_query" tab={this.t('playground.saved_query')}>
               <n-space vertical>
