@@ -45,7 +45,7 @@ public class CdcGraph {
             List<JsonNode> nodes = new ArrayList<>();
             ObjectMapper objectMapper = JSONUtils.getObjectMapper();
             JsonNode cdcGraphJson = objectMapper.readTree(json);
-            ArrayNode cellsJson = (ArrayNode) cdcGraphJson.findValue("cells");
+            ArrayNode cellsJson = (ArrayNode) cdcGraphJson.get("cells");
             cellsJson.forEach(
                     e -> {
                         String shape = e.get("shape").asText();
@@ -61,7 +61,7 @@ public class CdcGraph {
             JsonNode jsonNode = edges.get(0);
             JsonNode sourceTypeJson = jsonNode.get("source");
             String sourceType = sourceTypeJson.get("cell").asText();
-            JsonNode targetTypeJson = jsonNode.findValue("target");
+            JsonNode targetTypeJson = jsonNode.get("target");
             String targetType = targetTypeJson.get("cell").asText();
             CdcNode source = new CdcNode();
             CdcNode target = new CdcNode();
