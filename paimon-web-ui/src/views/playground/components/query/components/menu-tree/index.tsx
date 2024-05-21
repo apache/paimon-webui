@@ -15,11 +15,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { CodeSlash, FileTrayFullOutline, Search, ServerOutline } from '@vicons/ionicons5';
+import {CloseSharp, CodeSlash, FileTrayFullOutline, Search, ServerOutline} from '@vicons/ionicons5';
 import { useCatalogStore } from '@/store/catalog'
 import styles from './index.module.scss'
 import { NIcon, type TreeOption } from 'naive-ui';
 import {DatabaseOutlined} from "@vicons/antd";
+import {getColumns} from "@/api/models/catalog";
 
 export default defineComponent({
   name: 'MenuTree',
@@ -28,8 +29,10 @@ export default defineComponent({
 
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
+    const [tableColumns, useColumns, { loading }] = getColumns()
 
     const filterValue = ref('')
+    const selectedKeys = ref([])
 
     const renderPrefix = ({ option }: { option: TreeOption }) => {
       let icon = ServerOutline
@@ -65,70 +68,6 @@ export default defineComponent({
       return Promise.resolve()
     }
 
-    const treeVariables = reactive({
-      treeData: [
-        {
-          key: 'paimon',
-          label: 'paimon',
-          prefix: () =>
-            h(NIcon, null, {
-              default: () => h(ServerOutline)
-            }),
-          children: [
-            {
-              key: 'user',
-              label: 'user',
-              prefix: () =>
-                h(NIcon, null, {
-                  default: () => h(ServerOutline)
-                }),
-              children: [
-                {
-                  label: 'user_table',
-                  key: '1',
-                  content: 'select * from abc where abc.a="abc";select * from cba where cba.a="cba";',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                },
-                {
-                  label: 'people_table',
-                  key: '2',
-                  content: 'select * from abc where abc.a="abc";',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                }
-              ]
-            },
-            {
-              key: 'role',
-              label: 'role',
-              prefix: () =>
-                h(NIcon, null, {
-                  default: () => h(ServerOutline)
-                }),
-              children: [
-                {
-                  label: 'user_table',
-                  key: '3',
-                  content: 'select * from kkk;',
-                  prefix: () =>
-                    h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                },
-              ]
-            }
-          ]
-        }
-      ],
-      filterValue: '',
-      selectedKeys: []
-    })
-
     const nodeProps = ({ option }: { option: TreeOption }) => {
       return {
         onClick () {
@@ -153,6 +92,7 @@ export default defineComponent({
         onClick () {
           const { type } = option
           if (type === 'table') {
+            isDetailVisible.value = true
             const { catalogId, name, ...tableData } = JSON.parse(option.key?.toString() || '')
             catalogStore.setCurrentTable({
               catalogId: Number(catalogId),
@@ -165,9 +105,7 @@ export default defineComponent({
       }
     }
 
-    const handleTreeSelect = (value: never[], option: { children: any; }[]) => {
-      if (option[0]?.children) return
-      treeVariables.selectedKeys = value
+    const handleTreeSelect = ({ option }: { option: TreeOption }) => {
     }
 
     // mitt - handle tab choose
@@ -219,15 +157,31 @@ export default defineComponent({
       }
     ]) as any
 
+    const isDetailVisible = ref(true);
+    const handleClose = () => {
+      isDetailVisible.value = !isDetailVisible.value;
+    }
+
+    const onFetchData = async () => {
+      if (catalogStore.currentTable && Object.keys(catalogStore.currentTable).length > 0) {
+        useColumns({
+          params: catalogStore.currentTable
+        })
+      }
+    }
+
+    watch(() => catalogStore.currentTable, onFetchData)
+
     onMounted(() => {
       catalogStore.getAllCatalogs(true)
     })
 
-    /*onUnmounted(catalogStore.resetCurrentTable)*/
+    onMounted(onFetchData)
+
+    const columns = computed(() => tableColumns.value?.columns || []);
 
     return {
       t,
-      ...toRefs(treeVariables),
       filterValue,
       menuList: catalogStoreRef.catalogs,
       onLoadMenu,
@@ -235,9 +189,13 @@ export default defineComponent({
       dataNodeProps,
       handleTreeSelect,
       renderPrefix,
+      handleClose,
       savedQueryList,
       recordList,
-      currentTable: catalogStoreRef.currentTable
+      currentTable: catalogStoreRef.currentTable,
+      columns,
+      isDetailVisible,
+      selectedKeys
     }
   },
   render() {
@@ -269,14 +227,40 @@ export default defineComponent({
                     />
                   </n-scrollbar>
                 </div>
-                { this.currentTable && (
+                { this.isDetailVisible && this.currentTable && (
                   <div class={styles['detail-container']}>
-
-                    <n-scrollbar>
-                      <n-list>
-
-                      </n-list>
-                    </n-scrollbar>
+                    <n-card style={'border-radius: 0; height: 100%; border-width: 1.4px 0px 0px 0px;'}
+                            content-style={'padding:0;'} >
+                      <div class={styles['detail-vertical']}>
+                        <n-card style={'border: none;'} content-style={'padding:16px 14px;'}>
+                          <n-space justify="space-between">
+                            <span>{this.currentTable.tableName}</span>
+                            <n-button
+                              text
+                              onClick={this.handleClose}
+                              v-slots={{
+                                icon: () => <n-icon component={CloseSharp}></n-icon>
+                              }}
+                            >
+                            </n-button>
+                          </n-space>
+                        </n-card>
+                        <n-card style={'border: none; flex:1;'} content-style={'padding:0px 20px;'}>
+                          <div style={'height: 100%; position: relative;'}>
+                            <n-scrollbar style={'position: absolute;'}>
+                              <n-space vertical>
+                                {this.columns.map((column, index) => (
+                                  <n-space key={index} justify="space-between">
+                                    <span>{column.field}</span>
+                                    <span>{typeof column.dataType === 'object' ? column.dataType.type : column.dataType}</span>
+                                  </n-space>
+                                ))}
+                              </n-space>
+                            </n-scrollbar>
+                          </div>
+                        </n-card>
+                      </div>
+                    </n-card>
                   </div>
                 )}
               </div>

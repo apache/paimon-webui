@@ -46,8 +46,13 @@ under the License. */
         height: 45%;
         margin-left: -18px;
         margin-right: -18px;
-        /*border-top: 1px solid;*/
-        background-color: #5F95FF;
+
+        .detail-vertical {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          gap: 2px;
+        }
       }
     }
   }
