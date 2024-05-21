@@ -151,6 +151,16 @@ export default defineComponent({
     const dataNodeProps = ({ option }: { option: TreeOption }) => {
       return {
         onClick () {
+          const { type } = option
+          if (type === 'table') {
+            const { catalogId, name, ...tableData } = JSON.parse(option.key?.toString() || '')
+            catalogStore.setCurrentTable({
+              catalogId: Number(catalogId),
+              tableName: name,
+              name,
+              ...tableData
+            })
+          }
         },
       }
     }
@@ -224,7 +234,8 @@ export default defineComponent({
       handleTreeSelect,
       renderPrefix,
       savedQueryList,
-      recordList
+      recordList,
+      currentTable: catalogStoreRef.currentTable
     }
   },
   render() {
@@ -241,17 +252,19 @@ export default defineComponent({
                   }}
                 >
                 </n-input>
-                <n-tree
-                  block-line
-                  expand-on-click
-                  selected-keys={this.selectedKeys}
-                  on-update:selected-keys={this.handleTreeSelect}
-                  data={this.menuList}
-                  pattern={this.filterValue}
-                  node-props={this.dataNodeProps}
-                  onLoad={this.onLoadMenu}
-                  render-prefix={this.renderPrefix}
-                />
+                <n-scrollbar>
+                  <n-tree
+                    block-line
+                    expand-on-click
+                    selected-keys={this.selectedKeys}
+                    on-update:selected-keys={this.handleTreeSelect}
+                    data={this.menuList}
+                    pattern={this.filterValue}
+                    node-props={this.dataNodeProps}
+                    onLoad={this.onLoadMenu}
+                    render-prefix={this.renderPrefix}
+                  />
+                </n-scrollbar>
               </n-space>
             </n-tab-pane>
             <n-tab-pane name="saved_query" tab={this.t('playground.saved_query')}>
