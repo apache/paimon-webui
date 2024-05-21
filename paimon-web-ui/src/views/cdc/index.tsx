@@ -21,7 +21,6 @@ import styles from './index.module.scss';
 import { Leaf } from '@vicons/ionicons5';
 import { useCDCStore } from '@/store/cdc';
 import type { Router } from 'vue-router';
-import { submitCdcJob, type CdcJobSubmit } from '@/api/models/cdc';
 
 export default defineComponent({
   name: 'CDCPage',
@@ -70,7 +69,7 @@ export default defineComponent({
                 </div>
               </div>
             </n-card>
-            <List onCdcJobSubmit={() => this.showSubmitCdcJobModalRef = true}></List>
+            <List></List>
             {
               this.showModalRef &&
               <Modal

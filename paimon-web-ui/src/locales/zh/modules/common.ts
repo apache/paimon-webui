@@ -27,5 +27,4 @@ export default {
   yes: '是',
   no: '否',
   action: '操作',
-  flink_session_url: 'Flink Session 集群地址'
 }
