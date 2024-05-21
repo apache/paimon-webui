@@ -50,7 +50,6 @@ export function usePaimon(item: any) {
 					placeholder: '',
 				},
 				options: catalogOptions
-
 			},
 			{
 				type: 'input',
