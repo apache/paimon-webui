@@ -37,14 +37,8 @@ public class PaimonServiceFactory {
         if (catalogOptions == null) {
             catalogOptions = new HashMap<>();
         }
-        Options options = convertToPaimonOptions(catalogOptions);
-        CatalogContext context = CatalogContext.create(options);
-        options.set(CatalogProperties.WAREHOUSE, warehouse);
-        return new PaimonService(CatalogFactory.createCatalog(context), name);
-    }
-
-    public static Options convertToPaimonOptions(Map<String, String> catalogOptions) {
         Options options = new Options();
+        options.set(CatalogProperties.WAREHOUSE, warehouse);
         String fileSystemType = catalogOptions.get("fileSystemType");
         if ("s3".equalsIgnoreCase(fileSystemType)) {
             options.set(CatalogProperties.S3_ENDPOINT, catalogOptions.get("endpoint"));
@@ -55,7 +49,8 @@ public class PaimonServiceFactory {
             options.set(CatalogProperties.OSS_ACCESS_KEY_ID, catalogOptions.get("accessKey"));
             options.set(CatalogProperties.OSS_ACCESS_KEY_SECRET, catalogOptions.get("secretKey"));
         }
-        return options;
+        CatalogContext context = CatalogContext.create(options);
+        return new PaimonService(CatalogFactory.createCatalog(context), name);
     }
 
     public static PaimonService createHiveCatalogService(

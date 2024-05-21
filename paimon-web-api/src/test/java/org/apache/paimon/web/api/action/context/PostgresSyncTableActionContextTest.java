@@ -26,14 +26,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
 /**
- * The test class of postgres sync table action context in {@link PostgresSyncTableActionContext}.
+ * The test class of postgres sync table action context in {@link
+ * PostgresSyncTableCdcActionContext}.
  */
 public class PostgresSyncTableActionContextTest extends FlinkCdcActionContextTestBase {
 
     @Test
     public void testBuild() {
         List<String> args =
-                PostgresSyncTableActionContext.builder()
+                PostgresSyncTableCdcActionContext.builder()
                         .warehouse(WAREHOUSE)
                         .database(DATABASE)
                         .table(TABLE)
