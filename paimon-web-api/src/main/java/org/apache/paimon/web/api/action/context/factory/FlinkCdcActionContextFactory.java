@@ -18,18 +18,14 @@
 
 package org.apache.paimon.web.api.action.context.factory;
 
-import org.apache.paimon.web.api.action.context.ActionContext;
 import org.apache.paimon.web.api.enums.FlinkCdcType;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /** FlinkCdcActionContextFactory. */
-public interface FlinkCdcActionContextFactory extends ActionContextFactory{
+public interface FlinkCdcActionContextFactory extends ActionContextFactory {
 
     String sourceType();
 
     String targetType();
 
     FlinkCdcType cdcType();
-
 }
