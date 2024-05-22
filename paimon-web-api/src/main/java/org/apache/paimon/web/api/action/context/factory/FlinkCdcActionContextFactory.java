@@ -24,7 +24,7 @@ import org.apache.paimon.web.api.enums.FlinkCdcType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /** FlinkCdcActionContextFactory. */
-public interface FlinkCdcActionContextFactory {
+public interface FlinkCdcActionContextFactory extends ActionContextFactory{
 
     String sourceType();
 
@@ -32,5 +32,4 @@ public interface FlinkCdcActionContextFactory {
 
     FlinkCdcType cdcType();
 
-    ActionContext getActionContext(ObjectNode actionConfigs);
 }

@@ -40,6 +40,6 @@ public class ActionContextFactoryServiceLoadUtil {
                 return factory;
             }
         }
-        throw new ActionException("Could not find suitable ActionContextFactory.");
+        throw new ActionException(("Could not find suitable FlinkCdcActionContextFactory."));
     }
 }

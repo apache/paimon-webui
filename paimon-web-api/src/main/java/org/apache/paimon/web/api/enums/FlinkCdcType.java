@@ -49,6 +49,6 @@ public enum FlinkCdcType {
         if (enumsMap.containsKey(value)) {
             return enumsMap.get(value);
         }
-        throw new RuntimeException("Invalid cdc type.");
+        throw new RuntimeException("Invalid cdc sync type.");
     }
 }

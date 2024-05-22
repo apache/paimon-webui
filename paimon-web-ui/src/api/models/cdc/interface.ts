@@ -25,4 +25,3 @@ export interface CdcJobDefinition {
     config?: string;
     createUser?: string;
 }
-

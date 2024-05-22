@@ -84,7 +84,7 @@ public class FlinkCdcActionService implements ActionService {
                                 log.error(logLine);
                             }
                         } catch (Exception e) {
-                            log.info(e.getMessage(), e);
+                            log.error(e.getMessage(), e);
                         }
                     });
             result = ActionExecutionResult.success();
