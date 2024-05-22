@@ -25,7 +25,7 @@ import org.apache.paimon.web.api.action.context.options.FlinkCdcOptions;
 import org.apache.paimon.web.api.action.service.ActionService;
 import org.apache.paimon.web.api.action.service.FlinkCdcActionService;
 import org.apache.paimon.web.api.catalog.PaimonServiceFactory;
-import org.apache.paimon.web.api.enums.FlinkCdcType;
+import org.apache.paimon.web.api.enums.FlinkCdcSyncType;
 import org.apache.paimon.web.common.util.JSONUtils;
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
 import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
@@ -131,14 +131,14 @@ public class CdcJobDefinitionServiceImpl
     public R<Void> submit(Integer id, CdcJobSubmitDTO cdcJobSubmitDTO) {
         CdcJobDefinition cdcJobDefinition = baseMapper.selectById(id);
         String config = cdcJobDefinition.getConfig();
-        FlinkCdcType flinkCdcType = FlinkCdcType.valueOf(cdcJobDefinition.getCdcType());
+        FlinkCdcSyncType flinkCdcSyncType = FlinkCdcSyncType.valueOf(cdcJobDefinition.getCdcType());
         ActionService actionService = new FlinkCdcActionService();
         CdcGraph cdcGraph = CdcGraph.fromCdcGraphJsonString(config);
         FlinkCdcActionContextFactory factory =
                 ActionContextFactoryServiceLoadUtil.getFlinkCdcActionContextFactory(
                         cdcGraph.getSource().getType(),
                         cdcGraph.getTarget().getType(),
-                        flinkCdcType);
+                        flinkCdcSyncType);
         ObjectNode actionConfigs = JSONUtils.createObjectNode();
         actionConfigs.put(FlinkCdcOptions.SESSION_URL, cdcJobSubmitDTO.getFlinkSessionUrl());
         handleCdcGraphNodeData(actionConfigs, cdcGraph.getSource());

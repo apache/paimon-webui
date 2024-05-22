@@ -27,25 +27,25 @@ import java.util.stream.Collectors;
 
 /** FlinkCdcType. */
 @Getter
-public enum FlinkCdcType {
+public enum FlinkCdcSyncType {
     SINGLE_TABLE_SYNC(0),
     ALL_DATABASES_SYNC(1);
 
     private final Integer value;
 
-    private static final Map<Integer, FlinkCdcType> enumsMap;
+    private static final Map<Integer, FlinkCdcSyncType> enumsMap;
 
     static {
         enumsMap =
-                Arrays.stream(FlinkCdcType.values())
-                        .collect(Collectors.toMap(FlinkCdcType::getValue, Function.identity()));
+                Arrays.stream(FlinkCdcSyncType.values())
+                        .collect(Collectors.toMap(FlinkCdcSyncType::getValue, Function.identity()));
     }
 
-    FlinkCdcType(Integer value) {
+    FlinkCdcSyncType(Integer value) {
         this.value = value;
     }
 
-    public static FlinkCdcType valueOf(Integer value) {
+    public static FlinkCdcSyncType valueOf(Integer value) {
         if (enumsMap.containsKey(value)) {
             return enumsMap.get(value);
         }

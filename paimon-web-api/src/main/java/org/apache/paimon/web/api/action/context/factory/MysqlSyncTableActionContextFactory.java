@@ -23,7 +23,7 @@ import org.apache.paimon.web.api.action.context.ActionContextUtil;
 import org.apache.paimon.web.api.action.context.MysqlSyncTableActionContext;
 import org.apache.paimon.web.api.action.context.options.FlinkCdcOptions;
 import org.apache.paimon.web.api.enums.FlinkCdcDataSourceType;
-import org.apache.paimon.web.api.enums.FlinkCdcType;
+import org.apache.paimon.web.api.enums.FlinkCdcSyncType;
 import org.apache.paimon.web.api.enums.FlinkJobType;
 import org.apache.paimon.web.common.util.JSONUtils;
 
@@ -45,8 +45,8 @@ public class MysqlSyncTableActionContextFactory implements FlinkCdcActionContext
     }
 
     @Override
-    public FlinkCdcType cdcType() {
-        return FlinkCdcType.SINGLE_TABLE_SYNC;
+    public FlinkCdcSyncType cdcType() {
+        return FlinkCdcSyncType.SINGLE_TABLE_SYNC;
     }
 
     @Override

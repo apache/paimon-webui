@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.api.action.context.factory;
 
-import org.apache.paimon.web.api.enums.FlinkCdcType;
+import org.apache.paimon.web.api.enums.FlinkCdcSyncType;
 import org.apache.paimon.web.api.exception.ActionException;
 
 import java.util.Objects;
@@ -30,11 +30,11 @@ public class ActionContextFactoryServiceLoadUtil {
     private ActionContextFactoryServiceLoadUtil() {}
 
     public static FlinkCdcActionContextFactory getFlinkCdcActionContextFactory(
-            String sourceType, String targetType, FlinkCdcType flinkCdcType) {
+            String sourceType, String targetType, FlinkCdcSyncType flinkCdcSyncType) {
         ServiceLoader<FlinkCdcActionContextFactory> serviceLoader =
                 ServiceLoader.load(FlinkCdcActionContextFactory.class);
         for (FlinkCdcActionContextFactory factory : serviceLoader) {
-            if (factory.cdcType() == flinkCdcType
+            if (factory.cdcType() == flinkCdcSyncType
                     && Objects.equals(factory.sourceType(), sourceType)
                     && Objects.equals(factory.targetType(), targetType)) {
                 return factory;

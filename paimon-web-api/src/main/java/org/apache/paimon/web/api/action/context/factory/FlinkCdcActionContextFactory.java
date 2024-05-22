@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.api.action.context.factory;
 
-import org.apache.paimon.web.api.enums.FlinkCdcType;
+import org.apache.paimon.web.api.enums.FlinkCdcSyncType;
 
 /** FlinkCdcActionContextFactory. */
 public interface FlinkCdcActionContextFactory extends ActionContextFactory {
@@ -27,5 +27,5 @@ public interface FlinkCdcActionContextFactory extends ActionContextFactory {
 
     String targetType();
 
-    FlinkCdcType cdcType();
+    FlinkCdcSyncType cdcType();
 }
