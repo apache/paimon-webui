@@ -16,24 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.api.action.context.factory;
 
-import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
-import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
-import org.apache.paimon.web.server.data.model.CdcJobDefinition;
-import org.apache.paimon.web.server.data.result.PageR;
-import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.api.enums.FlinkCdcSyncType;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+/** FlinkCdcActionContextFactory. */
+public interface FlinkCdcActionContextFactory extends ActionContextFactory {
 
-/** Cdc Job Definition Service. */
-public interface CdcJobDefinitionService extends IService<CdcJobDefinition> {
+    String sourceType();
 
-    R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO);
+    String targetType();
 
-    PageR<CdcJobDefinition> listAll(boolean withConfig, long currentPage, long pageSize);
-
-    R<Void> update(CdcJobDefinitionDTO cdcJobDefinitionDTO);
-
-    R<Void> submit(Integer id, CdcJobSubmitDTO cdcJobSubmitDTO);
+    FlinkCdcSyncType cdcType();
 }

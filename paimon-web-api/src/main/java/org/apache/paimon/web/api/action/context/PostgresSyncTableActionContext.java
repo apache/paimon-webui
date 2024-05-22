@@ -16,24 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.api.action.context;
 
-import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
-import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
-import org.apache.paimon.web.server.data.model.CdcJobDefinition;
-import org.apache.paimon.web.server.data.result.PageR;
-import org.apache.paimon.web.server.data.result.R;
+import lombok.experimental.SuperBuilder;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import javax.annotation.Nullable;
 
-/** Cdc Job Definition Service. */
-public interface CdcJobDefinitionService extends IService<CdcJobDefinition> {
+import java.util.List;
 
-    R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO);
+/** Postgres sync table action context. */
+@SuperBuilder
+public class PostgresSyncTableActionContext extends FlinkCdcTableSyncActionContext {
 
-    PageR<CdcJobDefinition> listAll(boolean withConfig, long currentPage, long pageSize);
+    @ActionConf(value = "postgres_conf")
+    @Nullable
+    private final List<String> postgresConfList;
 
-    R<Void> update(CdcJobDefinitionDTO cdcJobDefinitionDTO);
-
-    R<Void> submit(Integer id, CdcJobSubmitDTO cdcJobSubmitDTO);
+    public String name() {
+        return "postgres_sync_table";
+    }
 }
