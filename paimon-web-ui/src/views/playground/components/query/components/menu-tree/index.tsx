@@ -20,6 +20,7 @@ import { useCatalogStore } from '@/store/catalog'
 import styles from './index.module.scss'
 import { NIcon, type TreeOption } from 'naive-ui';
 import {DatabaseOutlined} from "@vicons/antd";
+import type { DataTypeDTO } from "@/api/models/catalog";
 import {getColumns} from "@/api/models/catalog";
 
 export default defineComponent({
@@ -180,6 +181,16 @@ export default defineComponent({
 
     const columns = computed(() => tableColumns.value?.columns || []);
 
+    const getTypePrefix = (dataType: DataTypeDTO) => {
+      const numericTypes = ['INT', 'BIGINT', 'FLOAT', 'DOUBLE', 'DECIMAL', 'NUMERIC'];
+      const type = dataType.type || 'Unknown';
+      if (numericTypes.includes(type)) {
+        return { prefix: '123', color: '#33994A' };
+      } else {
+        return { prefix: 'Aa'};
+      }
+    }
+
     return {
       t,
       filterValue,
@@ -195,7 +206,8 @@ export default defineComponent({
       currentTable: catalogStoreRef.currentTable,
       columns,
       isDetailVisible,
-      selectedKeys
+      selectedKeys,
+      getTypePrefix
     }
   },
   render() {
@@ -232,7 +244,7 @@ export default defineComponent({
                     <n-card style={'border-radius: 0; height: 100%; border-width: 1.4px 0px 0px 0px;'}
                             content-style={'padding:0;'} >
                       <div class={styles['detail-vertical']}>
-                        <n-card style={'border: none;'} content-style={'padding:16px 14px;'}>
+                        <n-card style={'border: none;'} content-style={'padding:16px 16px;'}>
                           <n-space justify="space-between">
                             <span>{this.currentTable.tableName}</span>
                             <n-button
@@ -245,13 +257,19 @@ export default defineComponent({
                             </n-button>
                           </n-space>
                         </n-card>
-                        <n-card style={'border: none; flex:1;'} content-style={'padding:0px 20px;'}>
+                        <n-card style={'border: none; flex:1;'} content-style={'padding:0px 22px;'}>
                           <div style={'height: 100%; position: relative;'}>
                             <n-scrollbar style={'position: absolute;'}>
                               <n-space vertical>
                                 {this.columns.map((column, index) => (
                                   <n-space key={index} justify="space-between">
-                                    <span>{column.field}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                      <div style={{ width: '24.7px', textAlign: 'right', marginRight: '10px',
+                                        color: this.getTypePrefix(column.dataType || { type: 'Unknown' }).color }}>
+                                        {this.getTypePrefix(column.dataType || { type: 'Unknown' }).prefix}
+                                      </div>
+                                      <span>{column.field}</span>
+                                    </div>
                                     <span>{typeof column.dataType === 'object' ? column.dataType.type : column.dataType}</span>
                                   </n-space>
                                 ))}
