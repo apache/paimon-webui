@@ -16,6 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 .container {
+  $color-gray: #7D818E;
+
   display: flex;
   align-items: center;
   width: 100%;
@@ -33,25 +35,15 @@ under the License. */
     padding: 10px 20px 10px 0;
   }
 
-  .active-button-light {
-    color: #7D818E;
-    background-color: #DBDCDE;
-    border-radius: 6px;
-    padding: 4px;
-  }
-
-  .active-button-dark {
-    color: #7D818E;
-    background-color:  #4B4C4F;
-    border-radius: 6px;
-    padding: 4px;
+  .active-button {
+    color: #1a6efb;
   }
 
   .table-action-bar-button {
-    color: #7D818E;
+    color: $color-gray;
   }
 
   .table-action-bar-text {
-    color: #7D818E;
+    color: $color-gray;
   }
 }
