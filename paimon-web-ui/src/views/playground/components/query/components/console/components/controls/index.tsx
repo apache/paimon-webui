@@ -145,7 +145,7 @@ export default defineComponent({
                    </n-button>
                  )
                }}>
-              <span>{this.t('playground.copy')}</span>
+              <span>{this.t('playground.download')}</span>
             </n-popover>
             <n-popover trigger="hover" placement="bottom-start" show-arrow={false}
                v-slots={{
@@ -160,7 +160,7 @@ export default defineComponent({
                    </n-button>
                  )
                }}>
-              <span>{this.t('playground.download')}</span>
+              <span>{this.t('playground.copy')}</span>
             </n-popover>
           </n-space>
         </div>
