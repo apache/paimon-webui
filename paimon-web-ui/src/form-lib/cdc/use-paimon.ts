@@ -15,7 +15,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { getAllCatalogs } from '@/api/models/catalog'
 import type { IJsonItem } from '@/components/dynamic-form/types'
 import { useCatalogStore } from '@/store/catalog'
 
@@ -30,15 +29,7 @@ export function usePaimon(item: any) {
     })
   })
   const data = item.data
-  const model = reactive({
-    catalog: data.catalog || '',
-    other_configs: data.other_configs || '',
-    database: data.database || '',
-    table_name: data.table_name || '',
-    primary_key: data.primary_key || '',
-    partition_column: data.partition_column || '',
-    other_configs2: data.other_configs2 || ''
-  })
+  const model = reactive({ ...data })
 
   return {
     json: [

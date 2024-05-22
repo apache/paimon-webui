@@ -15,33 +15,36 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss';
-import { useTable } from './use-table'
+import type { CdcJobSubmit } from "@/api/models/cdc"
+import type { IJsonItem } from "@/components/dynamic-form/types"
 
-export default defineComponent({
-  name: 'ListPage',
-  emits:['cdcJobSubmit'],
-  setup(_,ctx) {
-    const { t } = useLocaleHooks()
+export function useSumbitCdcJob(item:any) {
+  const { t } = useLocaleHooks()
 
-    const { tableVariables, getTableData } = useTable(ctx)
-    getTableData()
+	const model = reactive<CdcJobSubmit>({
+		flinkSessionUrl: item.flinkSessionUrl,
+	})
 
-    return {
-      t,
-      ...toRefs(tableVariables)
-    }
-  },
-  render() {
-    return (
-      <div class={styles['list-page']}>
-        <n-data-table
-          columns={this.columns}
-          data={this.data}
-          remote
-          pagination={this.pagination}
-        />
-      </div>
-    )
-  }
-})
+	return {
+		json: [
+			{
+				type: 'input',
+				field: 'flinkSessionUrl',
+				name: t('common.flink_session_url'),
+				props: {
+					placeholder: ''
+				},
+				validate: {
+					trigger: ['input', 'blur'],
+					required: true,
+					message: 'error',
+					validator: (validator: any, value: string) => {
+						if (!value) {
+							return new Error('error')
+						}
+					}
+				}
+			}
+		] as IJsonItem[], model
+	}
+}

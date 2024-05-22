@@ -34,11 +34,8 @@ export const useTable = (ctx: any) => {
         key: 'cdcType',
         resizable: true,
         render: (row: any) => {
-          if (row.cdcType == 0) {
-            return t('cdc.single_table_synchronization')
-          } else if (row.cdcType == 1) {
-            return t('cdc.whole_database_synchronization')
-          }
+          const message = row.cdcType ? 'cdc.whole_database_synchronization' : 'cdc.single_table_synchronization'
+          return t(message)
         }
       },
       {
