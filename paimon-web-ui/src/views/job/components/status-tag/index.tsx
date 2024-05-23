@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { type JobStatusType, JobMapping, JobStatusProps } from '../../constant'
+import { JobMapping, JobStatusProps, type JobStatusType } from '../../constant'
 
 export default defineComponent({
   name: 'JobStatusTag',
@@ -30,24 +30,30 @@ export default defineComponent({
 
     return {
       t,
-      ...toRefs(props)
+      ...toRefs(props),
     }
   },
   render() {
     return (
-      <n-tag color={{
-        color: JobStatusProps[this.type].bgColor,
-        textColor: JobStatusProps[this.type].primaryColor
-      }} bordered={false} round>
+      <n-tag
+        color={{
+          color: JobStatusProps[this.type].bgColor,
+          textColor: JobStatusProps[this.type].primaryColor,
+        }}
+        bordered={false}
+        round
+      >
         {{
           default: () => this.t(`job.${JobMapping[this.type]}`),
-          icon: () => <n-icon color={JobStatusProps[this.type].primaryColor}>
-            {{
-              default: () => JobStatusProps[this.type].icon
-            }}
-          </n-icon>
+          icon: () => (
+            <n-icon color={JobStatusProps[this.type].primaryColor}>
+              {{
+                default: () => JobStatusProps[this.type].icon,
+              }}
+            </n-icon>
+          ),
         }}
       </n-tag>
     )
-  }
+  },
 })

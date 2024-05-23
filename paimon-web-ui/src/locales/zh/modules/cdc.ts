@@ -49,5 +49,5 @@ export default {
   synchronization_configuration: '同步配置',
   primary_key: '主键',
   partition_column: '分区列',
-  submit_cdc_job:'提交 CDC 作业'
+  submit_cdc_job: '提交 CDC 作业',
 }

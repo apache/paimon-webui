@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Play, ChevronDown, ReaderOutline, Save } from '@vicons/ionicons5';
+import { ChevronDown, Play, ReaderOutline, Save } from '@vicons/ionicons5'
 import styles from './index.module.scss'
 
 export default defineComponent({
@@ -28,35 +28,35 @@ export default defineComponent({
       operatingConditionOptions: [
         {
           label: 'Limit 100 items',
-          key: "100"
+          key: '100',
         },
         {
           label: 'Limit 1000 items',
-          key: "1000"
+          key: '1000',
         },
       ],
       conditionValue: 'Flink',
       bigDataOptions: [
         {
           label: 'Flink',
-          value: "Flink"
+          value: 'Flink',
         },
         {
           label: 'Spark',
-          value: "Spark"
+          value: 'Spark',
         },
       ],
       conditionValue2: 'test1',
       clusterOptions: [
         {
           label: 'test1',
-          value: "test1"
+          value: 'test1',
         },
         {
           label: 'test2',
-          value: "test2"
+          value: 'test2',
         },
-      ]
+      ],
     })
 
     const handleSelect = (key: string) => {
@@ -76,7 +76,7 @@ export default defineComponent({
       ...toRefs(debuggerVariables),
       handleSelect,
       handleFormat,
-      handleSave
+      handleSave,
     }
   },
   render() {
@@ -88,52 +88,61 @@ export default defineComponent({
             v-slots={{
               icon: () => <n-icon component={Play} />,
               default: () => {
-               return <div class={styles.run}>
-                  {this.t('playground.run')}
-                  <n-divider vertical />
-                  <n-dropdown trigger="hover" show-arrow options={this.operatingConditionOptions} on-select={this.handleSelect}>
-                    <n-icon component={ChevronDown} />
-                  </n-dropdown>
-               </div>
-              }
+                return (
+                  <div class={styles.run}>
+                    {this.t('playground.run')}
+                    <n-divider vertical />
+                    <n-dropdown trigger="hover" show-arrow options={this.operatingConditionOptions} on-select={this.handleSelect}>
+                      <n-icon component={ChevronDown} />
+                    </n-dropdown>
+                  </div>
+                )
+              },
             }}
-          ></n-button>
-          <n-select style={'width:160px;'} v-model:value={this.conditionValue} options={this.bigDataOptions} />
-          <n-select style={'width:160px;'} v-model:value={this.conditionValue2} options={this.clusterOptions} />
+          >
+          </n-button>
+          <n-select style="width:160px;" v-model:value={this.conditionValue} options={this.bigDataOptions} />
+          <n-select style="width:160px;" v-model:value={this.conditionValue2} options={this.clusterOptions} />
         </n-space>
         <div class={styles.operations}>
           <n-space>
-            <n-popover trigger="hover" placement="bottom"
+            <n-popover
+              trigger="hover"
+              placement="bottom"
               v-slots={{
                 trigger: () => (
                   <n-button
                     onClick={this.handleFormat}
                     v-slots={{
-                      icon: () => <n-icon component={ReaderOutline}></n-icon>
+                      icon: () => <n-icon component={ReaderOutline}></n-icon>,
                     }}
                   >
                   </n-button>
-                )
-              }}>
+                ),
+              }}
+            >
               <span>{this.t('playground.format')}</span>
             </n-popover>
-            <n-popover trigger="hover" placement="bottom"
+            <n-popover
+              trigger="hover"
+              placement="bottom"
               v-slots={{
                 trigger: () => (
                   <n-button
                     onClick={this.handleSave}
                     v-slots={{
-                      icon: () => <n-icon component={Save}></n-icon>
+                      icon: () => <n-icon component={Save}></n-icon>,
                     }}
                   >
                   </n-button>
-                )
-              }}>
+                ),
+              }}
+            >
               <span>{this.t('playground.save')}</span>
             </n-popover>
           </n-space>
         </div>
       </div>
-    );
-  }
-});
+    )
+  },
+})

@@ -15,5 +15,26 @@
  * limitations under the License.
  */
 
-mock
-license.node.js
+// eslint.config.js
+import antfu from '@antfu/eslint-config'
+
+export default antfu({
+  stylistic: {
+    indent: 2,
+    quotes: 'single',
+  },
+
+  typescript: true,
+  vue: true,
+
+  jsonc: false,
+  yaml: false,
+
+  ignores: [
+    '**/fixtures',
+    '**/node_modules',
+    '**/dist',
+    'mock',
+    'httpData'
+  ]
+})

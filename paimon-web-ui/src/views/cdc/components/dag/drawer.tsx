@@ -15,33 +15,33 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import Form from "@/components/dynamic-form"
-import { useTask } from "@/components/modal/use-task"
+import Form from '@/components/dynamic-form'
+import { useTask } from '@/components/modal/use-task'
 
 const props = {
   title: {
     type: String as PropType<string>,
-    default: ''
+    default: '',
   },
   row: {
     type: Object as PropType<any>,
-    default: () => {}
+    default: () => {},
   },
   showDrawer: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: false,
   },
   autoFocus: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: false,
   },
   closeable: {
     type: Boolean as PropType<boolean>,
-    default: true
+    default: true,
   },
   formType: {
     type: String as PropType<string>,
-    default: ''
+    default: '',
   },
 }
 
@@ -52,16 +52,16 @@ export default defineComponent({
   setup(props, { expose, emit }) {
     const { t } = useLocaleHooks()
     const formRef = ref()
-    expose({formRef})
+    expose({ formRef })
 
     const chooseTab = ref('connection_information')
 
     const { elementsRef, rulesRef, model } = useTask({
       data: {
         ...props.row,
-        tabType: chooseTab
+        tabType: chooseTab,
       },
-      formType: props.formType
+      formType: props.formType,
     })
 
     const handleConfirm = () => {
@@ -72,21 +72,19 @@ export default defineComponent({
       emit('cancel')
     }
 
-
     watch(
       () => props.row.type,
       (val) => {
-        if (val === 'INPUT') {
+        if (val === 'INPUT')
           chooseTab.value = 'connection_information'
-        } else if (val === 'OUTPUT') {
+        else if (val === 'OUTPUT')
           chooseTab.value = 'catalog_configuration'
-        }
       },
       {
-        immediate: true
-      }
+        immediate: true,
+      },
     )
-    
+
     return {
       t,
       handleConfirm,
@@ -95,10 +93,10 @@ export default defineComponent({
       elementsRef,
       rulesRef,
       model,
-      chooseTab
+      chooseTab,
     }
   },
-  render () {
+  render() {
     return (
       <n-drawer
         v-model:show={this.showDrawer}
@@ -112,36 +110,40 @@ export default defineComponent({
             default: () => (
               <n-tabs type="line" v-model:value={this.chooseTab}>
                 {
-                  this.row.type === 'INPUT' &&
-                  <n-tab-pane name="connection_information" tab={this.t('cdc.connection_information')}>
-                    <Form
-                      ref={this.formRef}
-                      meta={{
-                        model: this.model,
-                        rules: this.rulesRef,
-                        elements: this.elementsRef,
-                      }}
-                      gridProps={{
-                        xGap: 10
-                      }}
-                    />
-                  </n-tab-pane>
+                  this.row.type === 'INPUT'
+                  && (
+                    <n-tab-pane name="connection_information" tab={this.t('cdc.connection_information')}>
+                      <Form
+                        ref={this.formRef}
+                        meta={{
+                          model: this.model,
+                          rules: this.rulesRef,
+                          elements: this.elementsRef,
+                        }}
+                        gridProps={{
+                          xGap: 10,
+                        }}
+                      />
+                    </n-tab-pane>
+                  )
                 }
                 {
-                  this.row.type === 'OUTPUT' &&
-                  <n-tab-pane name="catalog_configuration" tab={this.t('cdc.catalog_configuration')}>
-                    <Form
-                      ref={this.formRef}
-                      meta={{
-                        model: this.model,
-                        rules: this.rulesRef,
-                        elements: this.elementsRef,
-                      }}
-                      gridProps={{
-                        xGap: 10
-                      }}
-                    />
-                  </n-tab-pane>
+                  this.row.type === 'OUTPUT'
+                  && (
+                    <n-tab-pane name="catalog_configuration" tab={this.t('cdc.catalog_configuration')}>
+                      <Form
+                        ref={this.formRef}
+                        meta={{
+                          model: this.model,
+                          rules: this.rulesRef,
+                          elements: this.elementsRef,
+                        }}
+                        gridProps={{
+                          xGap: 10,
+                        }}
+                      />
+                    </n-tab-pane>
+                  )
                 }
                 <n-tab-pane name="synchronization_configuration" tab={this.t('cdc.synchronization_configuration')}>
                   <Form
@@ -152,25 +154,25 @@ export default defineComponent({
                       elements: this.elementsRef,
                     }}
                     gridProps={{
-                      xGap: 10
+                      xGap: 10,
                     }}
                   />
                 </n-tab-pane>
               </n-tabs>
             ),
             footer: () => (
-              <n-space justify='end'>
+              <n-space justify="end">
                 <n-button onClick={this.handleCancel}>
                   {this.t('layout.cancel')}
                 </n-button>
-                <n-button type='primary' onClick={this.handleConfirm}>
+                <n-button type="primary" onClick={this.handleConfirm}>
                   {this.t('layout.confirm')}
                 </n-button>
               </n-space>
-            )
+            ),
           }}
         </n-drawer-content>
       </n-drawer>
     )
-  }
+  },
 })

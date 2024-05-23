@@ -36,26 +36,26 @@ export interface Options {
 export const editorProps = {
   modelValue: {
     type: String as PropType<string>,
-    default: null
+    default: null,
   },
   width: {
     type: [String, Number] as PropType<string | number>,
-    default: '100%'
+    default: '100%',
   },
   height: {
     type: [String, Number] as PropType<string | number>,
-    default: '100%'
+    default: '100%',
   },
   language: {
     type: String as PropType<string>,
-    default: 'javascript'
+    default: 'javascript',
   },
   theme: {
     type: String as PropType<Theme>,
     validator(value: string): boolean {
       return ['vs', 'vs-dark'].includes(value)
     },
-    default: 'vs'
+    default: 'vs',
   },
   options: {
     type: Object as PropType<Options>,
@@ -66,14 +66,14 @@ export const editorProps = {
         renderLineHighlight: 'line',
         selectOnLineNumbers: true,
         minimap: {
-          enabled: false
+          enabled: false,
         },
         readOnly: false,
         contextmenu: true,
         fontSize: 16,
         scrollBeyondLastLine: true,
-        overviewRulerBorder: false
+        overviewRulerBorder: false,
       }
-    }
-  }
+    },
+  },
 }

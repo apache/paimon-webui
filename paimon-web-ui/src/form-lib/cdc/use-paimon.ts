@@ -21,7 +21,7 @@ import { useCatalogStore } from '@/store/catalog'
 export function usePaimon(item: any) {
   const { t } = useLocaleHooks()
   const tabType = item.data.tabType
-  let catalogOptions: any = ref([{ value: 1 }])
+  const catalogOptions: any = ref([{ value: 1 }])
   const catalogStore = useCatalogStore()
   catalogStore.getAllCatalogs().then(() => {
     catalogOptions.value = catalogStore.catalogs?.map((e) => {
@@ -39,16 +39,16 @@ export function usePaimon(item: any) {
         name: 'catalog',
         span: computed(() => (tabType.value === 'catalog_configuration' ? 24 : 0)),
         props: {
-          placeholder: ''
+          placeholder: '',
         },
-        options: catalogOptions
+        options: catalogOptions,
       },
       {
         type: 'input',
         field: 'database',
         name: t('cdc.database'),
         props: {
-          placeholder: ''
+          placeholder: '',
         },
         span: computed(() => (tabType.value === 'synchronization_configuration' ? 24 : 0)),
         validate: {
@@ -56,18 +56,17 @@ export function usePaimon(item: any) {
           required: true,
           message: 'error',
           validator: (validator: any, value: string) => {
-            if (!value) {
+            if (!value)
               return new Error('error')
-            }
-          }
-        }
+          },
+        },
       },
       {
         type: 'input',
         field: 'table_name',
         name: t('cdc.table_name'),
         props: {
-          placeholder: ''
+          placeholder: '',
         },
         span: computed(() => (tabType.value === 'synchronization_configuration' ? 24 : 0)),
         validate: {
@@ -75,11 +74,10 @@ export function usePaimon(item: any) {
           required: true,
           message: 'error',
           validator: (validator: any, value: string) => {
-            if (!value) {
+            if (!value)
               return new Error('error')
-            }
-          }
-        }
+          },
+        },
       },
       {
         type: 'input',
@@ -87,8 +85,8 @@ export function usePaimon(item: any) {
         name: t('cdc.primary_key'),
         span: computed(() => (tabType.value === 'synchronization_configuration' ? 24 : 0)),
         props: {
-          placeholder: ''
-        }
+          placeholder: '',
+        },
       },
       {
         type: 'input',
@@ -96,8 +94,8 @@ export function usePaimon(item: any) {
         name: t('cdc.partition_column'),
         span: computed(() => (tabType.value === 'synchronization_configuration' ? 24 : 0)),
         props: {
-          placeholder: ''
-        }
+          placeholder: '',
+        },
       },
       {
         type: 'input',
@@ -106,10 +104,10 @@ export function usePaimon(item: any) {
         span: computed(() => (tabType.value === 'synchronization_configuration' ? 24 : 0)),
         props: {
           placeholder: '',
-          type: 'textarea'
-        }
-      }
+          type: 'textarea',
+        },
+      },
     ] as IJsonItem[],
-    model
+    model,
   }
 }

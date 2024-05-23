@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 
 export default defineComponent({
   name: 'UserPage',
@@ -26,5 +26,5 @@ export default defineComponent({
     return (
       <div class={styles.container}>UserPage</div>
     )
-  }
+  },
 })

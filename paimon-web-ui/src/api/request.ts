@@ -15,28 +15,28 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { createAxle, type AxleInstance } from '@varlet/axle'
+import { type AxleInstance, createAxle } from '@varlet/axle'
 import { createUseAxle } from '@varlet/axle/use'
 
 import type { FetchOptions, ResponseOptions } from './types'
-import discreteApi from './message';
+import discreteApi from './message'
 
 const axle: AxleInstance & { createHooks?: typeof createHooks } = createAxle({
-  baseURL: import.meta.env.MODE === 'mock' ? '/mock/api' : '/api'
+  baseURL: import.meta.env.MODE === 'mock' ? '/mock/api' : '/api',
 })
 
 axle.axios.interceptors.request.use(
   (config) => {
     // token here
     const headers = Object.assign({}, config.headers, {
-      'token': '',
-    });
-    return Object.assign({}, config, { headers });
+      token: '',
+    })
+    return Object.assign({}, config, { headers })
   },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
+  (error) => {
+    return Promise.reject(error)
+  },
+)
 
 axle.axios.interceptors.response.use(
   (response) => {
@@ -49,8 +49,8 @@ axle.axios.interceptors.response.use(
           content: 'Error',
           meta: response.data.msg,
           duration: 2500,
-          keepAliveOnHover: true
-        }
+          keepAliveOnHover: true,
+        },
       )
       return Promise.reject(response.data)
     }
@@ -63,12 +63,12 @@ axle.axios.interceptors.response.use(
         content: 'Error',
         meta: error,
         duration: 2500,
-        keepAliveOnHover: true
-      }
+        keepAliveOnHover: true,
+      },
     )
     // do something there
     return Promise.reject(error)
-  }
+  },
 )
 
 const useAxle = createUseAxle({

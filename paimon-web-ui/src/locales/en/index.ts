@@ -32,5 +32,5 @@ export default {
   cdc,
   job,
   system,
-  common
+  common,
 }

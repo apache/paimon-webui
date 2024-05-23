@@ -17,7 +17,7 @@ under the License. */
 
 import { Add } from '@vicons/ionicons5'
 
-import { createDatabase, type DatabaseFormDTO } from '@/api/models/catalog'
+import { type DatabaseFormDTO, createDatabase } from '@/api/models/catalog'
 import { useCatalogStore } from '@/store/catalog'
 import IModal from '@/components/modal'
 import type { IFormInst } from '@/components/dynamic-form/types'
@@ -25,8 +25,8 @@ import type { IFormInst } from '@/components/dynamic-form/types'
 const props = {
   catalogId: {
     type: Number as PropType<number>,
-    require: true
-  }
+    require: true,
+  },
 }
 
 export default defineComponent({
@@ -48,14 +48,14 @@ export default defineComponent({
         await createFetch({
           params: {
             ...values,
-            catalogId: props.catalogId
-          }
+            catalogId: props.catalogId,
+          },
         })
 
         handleCloseModal()
         message.success(t('Create Successfully'))
         values = reactive({
-          name: ''
+          name: '',
         })
         catalogStore.getAllCatalogs(true)
       }
@@ -69,7 +69,7 @@ export default defineComponent({
     const handleCloseModal = () => {
       showModal.value = false
       modalRef.value?.formRef?.resetValues({
-        name: ''
+        name: '',
       })
     }
 
@@ -80,7 +80,7 @@ export default defineComponent({
       t,
       handleOpenModal,
       handleCloseModal,
-      handleConfirm
+      handleConfirm,
     }
   },
   render() {
@@ -92,14 +92,14 @@ export default defineComponent({
           </n-icon>
         </n-button>
         <IModal
-          ref='modalRef'
+          ref="modalRef"
           showModal={this.showModal}
           title={this.t(`metadata.create_database`)}
-          formType={'DATABASE'}
+          formType="DATABASE"
           onCancel={this.handleCloseModal}
           onConfirm={this.handleConfirm}
         />
       </>
     )
-  }
+  },
 })

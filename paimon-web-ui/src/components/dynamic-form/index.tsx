@@ -15,21 +15,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormRules, GridProps, IFormInst, IMeta } from "./types"
-import { useFormHooks } from "./use-form"
+import type { FormRules, GridProps, IFormInst, IMeta } from './types'
+import { useFormHooks } from './use-form'
 
 const props = {
   loading: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: false,
   },
   gridProps: {
-    type: Object as PropType<GridProps>
+    type: Object as PropType<GridProps>,
   },
   meta: {
     type: Object as PropType<IMeta>,
     default: {},
-    required: true
+    required: true,
   },
 }
 
@@ -39,16 +39,16 @@ export default defineComponent({
   setup(_, { expose }) {
     const { state, ...rest } = useFormHooks()
     expose({
-      ...rest
-    }  as IFormInst)
+      ...rest,
+    } as IFormInst)
     return { ...toRefs(state) }
   },
-  render(props: { meta: IMeta; gridProps?: GridProps; loading?: boolean }) {
+  render(props: { meta: IMeta, gridProps?: GridProps, loading?: boolean }) {
     const { loading, gridProps, meta } = props
     const { elements = [], ...restFormProps } = meta
     return (
       <n-spin show={loading}>
-        <n-form {...restFormProps} rules={meta.rules as FormRules} ref='formRef'>
+        <n-form {...restFormProps} rules={meta.rules as FormRules} ref="formRef">
           <n-grid {...gridProps}>
             {elements.map((element) => {
               const { span = 24, path, widget, ...formItemProps } = element
@@ -67,5 +67,5 @@ export default defineComponent({
         </n-form>
       </n-spin>
     )
-  }
+  },
 })

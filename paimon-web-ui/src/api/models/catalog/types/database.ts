@@ -16,17 +16,17 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface Database {
-  name: string;
-  catalogId: number;
-  catalogName: string;
-  description?: string;
+  name: string
+  catalogId: number
+  catalogName: string
+  description?: string
 }
 
 export interface DatabaseFormDTO {
-  name: string;
-  description?: string;
+  name: string
+  description?: string
 }
 
 export interface DatabaseDTO extends DatabaseFormDTO {
-  catalogId: number;
+  catalogId: number
 }

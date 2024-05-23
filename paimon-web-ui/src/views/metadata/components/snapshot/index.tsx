@@ -15,10 +15,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { type DataTableColumns } from 'naive-ui'
+import type { DataTableColumns } from 'naive-ui'
 import dayjs from 'dayjs'
 
-import { getSnapshot, type Snapshot } from '@/api/models/catalog'
+import { type Snapshot, getSnapshot } from '@/api/models/catalog'
 import { useCatalogStore } from '@/store/catalog'
 
 export default defineComponent({
@@ -31,33 +31,33 @@ export default defineComponent({
     const columns: DataTableColumns<Snapshot> = [
       {
         title: 'Snapshot ID',
-        key: 'snapshotId'
+        key: 'snapshotId',
       },
       {
         title: 'Schema ID',
-        key: 'schemaId'
+        key: 'schemaId',
       },
       {
         title: 'Commit Identifier',
-        key: 'commitIdentifier'
+        key: 'commitIdentifier',
       },
 
       {
         title: 'Commit Kind',
-        key: 'commitKind'
+        key: 'commitKind',
       },
       {
         title: 'Commit Time',
         key: 'commitTime',
         render: (row) => {
           return dayjs(row.commitTime).format('YYYY-MM-DD HH:mm:ss')
-        }
-      }
+        },
+      },
     ]
 
     const onFetchData = async () => {
       useSnapshot({
-        params: catalogStore.currentTable
+        params: catalogStore.currentTable,
       })
     }
 
@@ -81,6 +81,6 @@ export default defineComponent({
           />
         </n-spin>
       </n-card>
-    );
+    )
   },
-});
+})

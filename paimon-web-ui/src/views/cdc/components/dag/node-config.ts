@@ -20,7 +20,7 @@ export enum NodeType {
   OUTPUT = 'OUTPUT', // 数据输出
 }
 
-export const getPortsByType = (type: NodeType, nodeId: string) => {
+export function getPortsByType(type: NodeType, nodeId: string) {
   let ports = []
   switch (type) {
     case NodeType.INPUT:
@@ -101,6 +101,6 @@ export const EDGE = {
     },
   },
   connector: {
-    name: 'smooth'
-  }
+    name: 'smooth',
+  },
 }

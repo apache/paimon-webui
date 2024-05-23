@@ -15,14 +15,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { type DataTableColumns } from 'naive-ui'
+import type { DataTableColumns } from 'naive-ui'
 import dayjs from 'dayjs'
-
-import { getSchema, type Schema } from '@/api/models/catalog'
-import { useCatalogStore } from '@/store/catalog'
 
 import { fieldsColumns, optionsColumns } from './columns'
 import styles from './index.module.scss'
+import { type Schema, getSchema } from '@/api/models/catalog'
+import { useCatalogStore } from '@/store/catalog'
 
 export default defineComponent({
   name: 'MetadataSchema',
@@ -48,19 +47,19 @@ export default defineComponent({
               <n-data-table columns={optionsColumns} data={option} bordered={false} />
             </div>
           )
-        }
+        },
       },
       {
         title: 'ID',
-        key: 'schemaId'
+        key: 'schemaId',
       },
       {
         title: 'Partition Keys',
-        key: 'partitionKeys'
+        key: 'partitionKeys',
       },
       {
         title: 'Primary Keys',
-        key: 'primaryKeys'
+        key: 'primaryKeys',
       },
       {
         title: 'Comment',
@@ -68,20 +67,20 @@ export default defineComponent({
         align: 'center',
         render: (row) => {
           return row.comment || '-'
-        }
+        },
       },
       {
         title: 'Update Time',
         key: 'updateTime',
         render: (row) => {
           return dayjs(row.updateTime).format('YYYY-MM-DD HH:mm:ss')
-        }
-      }
+        },
+      },
     ]
 
     const onFetchData = async () => {
       useSchemaInfo({
-        params: catalogStore.currentTable
+        params: catalogStore.currentTable,
       })
     }
 
@@ -93,7 +92,7 @@ export default defineComponent({
       columns,
       schemaData,
       loading,
-      t
+      t,
     }
   },
   render() {
@@ -109,5 +108,5 @@ export default defineComponent({
         </n-spin>
       </n-card>
     )
-  }
+  },
 })

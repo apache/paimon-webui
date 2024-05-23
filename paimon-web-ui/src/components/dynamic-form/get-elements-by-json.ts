@@ -15,14 +15,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { isFunction, omit } from 'lodash'
 import { useFormHooks } from './use-form'
 import getField from './fields/get-field'
-import { omit, isFunction } from 'lodash'
-import type { IFormItem, IJsonItem, IFormRules } from './types'
+import type { IFormItem, IFormRules, IJsonItem } from './types'
 
 export default function getElementByJson(
   json: IJsonItem[],
-  fields: { [field: string]: any }
+  fields: { [field: string]: any },
 ) {
   const rules: IFormRules = {}
   const initialValues: { [field: string]: any } = {}
@@ -34,14 +34,15 @@ export default function getElementByJson(
       fields[field] = value
       initialValues[field] = value
     }
-    if (validate) rules[field] = useFormHooks().formatValidate(validate)
+    if (validate)
+      rules[field] = useFormHooks().formatValidate(validate)
     const element: IFormItem = {
       showLabel: !!name,
       ...omit(rest, ['type', 'props', 'options']),
       label: name,
       path: !children ? field : '',
       widget: () => getField(item, fields, rules),
-      span: toRef(mergedItem, 'span') as Ref<number>
+      span: toRef(mergedItem, 'span') as Ref<number>,
     }
     elements.push(element)
   }

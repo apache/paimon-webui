@@ -37,7 +37,7 @@ const basePage: RouteRecordRaw = {
     cdc_ingestion_routes,
     system,
     job,
-  ]
+  ],
 }
 /**
  * Login page
@@ -46,10 +46,9 @@ const loginPage: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/login')
-  }
+    component: () => import('@/views/login'),
+  },
 ]
-
 
 const routes: RouteRecordRaw[] = [basePage, ...loginPage]
 

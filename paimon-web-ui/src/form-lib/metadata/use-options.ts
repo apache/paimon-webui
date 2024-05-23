@@ -19,47 +19,46 @@ import type { IJsonItem } from '@/components/dynamic-form/types'
 import type { TableOption } from '@/api/models/catalog'
 
 export function useOptions({ data }: { data?: TableOption }) {
-	const model = reactive(data ? data : { key: '', value: '' })
+  const model = reactive(data || { key: '', value: '' })
 
-	return {
-		json: [
-			{
-				type: 'input',
-				field: 'key',
-				name: 'Key',
-				props: {
-					placeholder: 'Key',
-					disabled: true,
-				},
-				validate: {
-					trigger: ['input', 'blur'],
-					required: true,
-					message: 'error',
-					validator: (validator: any, value: string) => {
-						if (!value) {
-							return new Error('Key is required')
-						}
-					}
-				}
-			},
-			{
-				type: 'input',
-				field: 'value',
-				name: 'Value',
-				props: {
-					placeholder: 'Value',
-				},
-				validate: {
-					trigger: ['input', 'blur'],
-					required: true,
-					message: 'error',
-					validator: (validator: any, value: string) => {
-						if (!value) {
-							return new Error('Value is required')
-						}
-					}
-				}
-			},
-		] as IJsonItem[], model
-	}
+  return {
+    json: [
+      {
+        type: 'input',
+        field: 'key',
+        name: 'Key',
+        props: {
+          placeholder: 'Key',
+          disabled: true,
+        },
+        validate: {
+          trigger: ['input', 'blur'],
+          required: true,
+          message: 'error',
+          validator: (validator: any, value: string) => {
+            if (!value)
+              return new Error('Key is required')
+          },
+        },
+      },
+      {
+        type: 'input',
+        field: 'value',
+        name: 'Value',
+        props: {
+          placeholder: 'Value',
+        },
+        validate: {
+          trigger: ['input', 'blur'],
+          required: true,
+          message: 'error',
+          validator: (validator: any, value: string) => {
+            if (!value)
+              return new Error('Value is required')
+          },
+        },
+      },
+    ] as IJsonItem[],
+    model,
+  }
 }

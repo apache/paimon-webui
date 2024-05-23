@@ -22,14 +22,14 @@ import type { TableOption } from '@/api/models/catalog'
 const props = {
   options: {
     type: Array as PropType<TableOption[]>,
-    default: () => []
+    default: () => [],
   },
-  onUpdateOptions: [Function, Array] as PropType<((value: TableOption[]) => void) | undefined>
+  onUpdateOptions: [Function, Array] as PropType<((value: TableOption[]) => void) | undefined>,
 }
 
 export const newOption: TableOption = {
   key: '',
-  value: ''
+  value: '',
 }
 
 export default defineComponent({
@@ -44,7 +44,7 @@ export default defineComponent({
 
     return {
       onDelete,
-      ...toRefs(props)
+      ...toRefs(props),
     }
   },
   render() {
@@ -59,7 +59,7 @@ export default defineComponent({
               rule={{
                 required: true,
                 message: 'Key is required',
-                trigger: ['input', 'blur']
+                trigger: ['input', 'blur'],
               }}
             >
               <n-input v-model:value={item.key} placeholder="Key" />
@@ -71,7 +71,7 @@ export default defineComponent({
               rule={{
                 required: true,
                 message: 'Value is required',
-                trigger: ['input', 'blur']
+                trigger: ['input', 'blur'],
               }}
             >
               <n-input v-model:value={item.value} placeholder="Value" />
@@ -79,7 +79,7 @@ export default defineComponent({
             <n-gi span={2}>
               <n-button block onClick={() => this.onDelete(index)} tertiary type="error">
                 {{
-                  icon: () => <n-icon component={RemoveCircleOutline} />
+                  icon: () => <n-icon component={RemoveCircleOutline} />,
                 }}
               </n-button>
             </n-gi>
@@ -87,5 +87,5 @@ export default defineComponent({
         ))}
       </n-grid>
     )
-  }
+  },
 })

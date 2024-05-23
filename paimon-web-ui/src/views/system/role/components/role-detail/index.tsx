@@ -15,8 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { getPermissionByRoleId } from "@/api/models/role"
-import type { Role, RoleMenu } from "@/api/models/role/types/role"
+import { getPermissionByRoleId } from '@/api/models/role'
+import type { Role, RoleMenu } from '@/api/models/role/types/role'
 
 export default defineComponent({
   name: 'RoleDetail',
@@ -24,8 +24,8 @@ export default defineComponent({
     roleRecord: {
       type: Object as PropType<Role>,
       default: () => ({}),
-      require: true
-    }
+      require: true,
+    },
   },
   setup(props) {
     const { t } = useLocaleHooks()
@@ -44,9 +44,9 @@ export default defineComponent({
 
     function transformMenu(menu: RoleMenu[], values: number[]) {
       const result = menu.filter((item) => {
-        if (item.children?.length) {
+        if (item.children?.length)
           item.children = transformMenu(item.children, values)
-        }
+
         return values.includes(item.id)
       })
 
@@ -60,18 +60,19 @@ export default defineComponent({
     }
   },
   render() {
-    return <n-spin show={this.loading}>
-      <n-list hoverable clickable>
-        {
-          this.rolePermissionDetail?.map((item, i) => (
+    return (
+      <n-spin show={this.loading}>
+        <n-list hoverable clickable>
+          {
+          this.rolePermissionDetail?.map(item => (
             <n-list-item key={item.id}>
               <n-thing title={this.t(`system.roleKey.${item.label}`)} content-style="margin-top: 10px;">
                 {
-                  item.children?.map((child) => (
+                  item.children?.map(child => (
                     <n-thing description={this.t(`system.roleKey.${child.label}`)} style="margin-top: 20px;">
                       <n-space>
                         {
-                          child.children?.map((buttonPermission) => (
+                          child.children?.map(buttonPermission => (
                             <n-tag key={child.id} type="info">{this.t(`system.roleKey.${buttonPermission.label}`)}</n-tag>
                           ))
                         }
@@ -83,10 +84,11 @@ export default defineComponent({
             </n-list-item>
           ))
         }
-        {
+          {
           this.rolePermissionDetail?.length === 0 && <n-empty description={this.t('system.role.no_permission')} />
         }
-      </n-list>
-    </n-spin>
-  }
+        </n-list>
+      </n-spin>
+    )
+  },
 })
