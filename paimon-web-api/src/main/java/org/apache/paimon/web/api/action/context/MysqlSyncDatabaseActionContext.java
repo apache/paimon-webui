@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.api.action.context;
 
+import org.apache.paimon.web.api.action.context.options.FlinkCdcOptions;
+
 import lombok.experimental.SuperBuilder;
 
 import javax.annotation.Nullable;
@@ -29,7 +31,7 @@ import java.util.List;
 public class MysqlSyncDatabaseActionContext extends FlinkCdcDatabasesSyncActionContext
         implements ActionContext {
 
-    @ActionConf(value = "mysql_conf")
+    @ActionConf(value = FlinkCdcOptions.MYSQL_CONF)
     @Nullable
     private final List<String> mysqlConfList;
 

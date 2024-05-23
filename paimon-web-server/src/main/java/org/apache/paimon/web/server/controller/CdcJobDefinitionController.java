@@ -19,6 +19,7 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
+import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
@@ -84,5 +85,10 @@ public class CdcJobDefinitionController {
     public R<Void> deleteById(@PathVariable Integer id) {
         cdcJobDefinitionService.removeById(id);
         return R.succeed();
+    }
+
+    @PostMapping("{id}/submit")
+    public R<Void> submit(@PathVariable Integer id, @RequestBody CdcJobSubmitDTO cdcJobSubmitDTO) {
+        return cdcJobDefinitionService.submit(id, cdcJobSubmitDTO);
     }
 }

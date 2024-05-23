@@ -16,23 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.action.context;
+package org.apache.paimon.web.api.action.context.options;
 
-import lombok.experimental.SuperBuilder;
+/** FlinkCdcOptions. */
+public class FlinkCdcOptions {
 
-import javax.annotation.Nullable;
+    private FlinkCdcOptions() {}
 
-import java.util.List;
+    public static final String MYSQL_CONF = "mysql_conf";
 
-/** Postgres sync table action context. */
-@SuperBuilder
-public class PostgresSyncTableCdcActionContext extends FlinkCdcTableSyncActionContext {
+    public static final String TABLE_CONF = "table_conf";
 
-    @ActionConf(value = "postgres_conf")
-    @Nullable
-    private final List<String> postgresConfList;
+    public static final String WAREHOUSE = "warehouse";
 
-    public String name() {
-        return "postgres_sync_table";
-    }
+    public static final String DATABASE = "database";
+
+    public static final String TABLE = "table";
+
+    public static final String PRIMARY_KEYS = "primary_keys";
+
+    public static final String SESSION_URL = "sessionUrl";
+
+    public static final String CATALOG_CONF = "catalog_conf";
 }

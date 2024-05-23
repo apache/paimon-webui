@@ -16,24 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.common.util;
 
-import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
-import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
-import org.apache.paimon.web.server.data.model.CdcJobDefinition;
-import org.apache.paimon.web.server.data.result.PageR;
-import org.apache.paimon.web.server.data.result.R;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+/** Map util. */
+public class MapUtil {
 
-/** Cdc Job Definition Service. */
-public interface CdcJobDefinitionService extends IService<CdcJobDefinition> {
+    private MapUtil() {}
 
-    R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO);
+    public static String getString(Map<String, ?> map, String key) {
+        return Optional.ofNullable(map).map(e -> String.valueOf(e.get(key))).orElse("");
+    }
 
-    PageR<CdcJobDefinition> listAll(boolean withConfig, long currentPage, long pageSize);
-
-    R<Void> update(CdcJobDefinitionDTO cdcJobDefinitionDTO);
-
-    R<Void> submit(Integer id, CdcJobSubmitDTO cdcJobSubmitDTO);
+    public static <E> List<E> getList(Map<String, ?> map, String key) {
+        return Optional.ofNullable(map).map(e -> (List<E>) map.get(key)).orElse(new ArrayList<>());
+    }
 }

@@ -15,17 +15,35 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  success: '成功',
-  add_success: '新增成功',
-  update_success: '更新成功',
-  delete_success: '删除成功',
-  create_user: '创建用户',
-  create_time: '创建时间',
-  update_time: '修改时间',
-  search: '搜索',
-  yes: '是',
-  no: '否',
-  action: '操作',
-  flink_session_url: 'Flink Session 集群地址'
+.container {
+  $color-gray: #7D818E;
+
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 42px;
+
+  .left {
+    display: flex;
+    padding: 10px 0 10px 20px;
+  }
+
+  .right {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    padding: 10px 20px 10px 0;
+  }
+
+  .active-button {
+    color: #1a6efb;
+  }
+
+  .table-action-bar-button {
+    color: $color-gray;
+  }
+
+  .table-action-bar-text {
+    color: $color-gray;
+  }
 }

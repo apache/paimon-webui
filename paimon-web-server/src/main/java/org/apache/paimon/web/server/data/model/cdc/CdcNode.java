@@ -16,24 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.server.data.model.cdc;
 
-import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
-import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
-import org.apache.paimon.web.server.data.model.CdcJobDefinition;
-import org.apache.paimon.web.server.data.result.PageR;
-import org.apache.paimon.web.server.data.result.R;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Data;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+/** CdcNode. */
+@Data
+public class CdcNode {
 
-/** Cdc Job Definition Service. */
-public interface CdcJobDefinitionService extends IService<CdcJobDefinition> {
+    private String type;
 
-    R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO);
-
-    PageR<CdcJobDefinition> listAll(boolean withConfig, long currentPage, long pageSize);
-
-    R<Void> update(CdcJobDefinitionDTO cdcJobDefinitionDTO);
-
-    R<Void> submit(Integer id, CdcJobSubmitDTO cdcJobSubmitDTO);
+    private ObjectNode data;
 }

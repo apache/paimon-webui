@@ -16,24 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.api.enums;
 
-import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
-import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
-import org.apache.paimon.web.server.data.model.CdcJobDefinition;
-import org.apache.paimon.web.server.data.result.PageR;
-import org.apache.paimon.web.server.data.result.R;
+import lombok.Getter;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+/** FlinkCdcDataSourceType. */
+@Getter
+public enum FlinkCdcDataSourceType {
+    MYSQL("MySQL"),
+    PAIMON("Paimon");
 
-/** Cdc Job Definition Service. */
-public interface CdcJobDefinitionService extends IService<CdcJobDefinition> {
+    private final String name;
 
-    R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO);
-
-    PageR<CdcJobDefinition> listAll(boolean withConfig, long currentPage, long pageSize);
-
-    R<Void> update(CdcJobDefinitionDTO cdcJobDefinitionDTO);
-
-    R<Void> submit(Integer id, CdcJobSubmitDTO cdcJobSubmitDTO);
+    FlinkCdcDataSourceType(String name) {
+        this.name = name;
+    }
 }
