@@ -82,7 +82,7 @@ public class CdcJobDefinitionServiceImpl
     }
 
     @Override
-    public PageR<CdcJobDefinition> listAll(boolean withConfig, long currentPage, long pageSize) {
+    public PageR<CdcJobDefinition> listAll(String name,boolean withConfig, long currentPage, long pageSize) {
         Page<CdcJobDefinition> page = new Page<>(currentPage, pageSize);
         QueryWrapper<CdcJobDefinition> queryWrapper = new QueryWrapper<>();
         queryWrapper.select(
@@ -103,6 +103,7 @@ public class CdcJobDefinitionServiceImpl
                     "update_time",
                     "create_time");
         }
+        queryWrapper.like(StringUtils.isNotBlank(name),"name",name);
         Page<CdcJobDefinition> resPage = baseMapper.selectPage(page, queryWrapper);
         return new PageR<>(resPage.getTotal(), true, resPage.getRecords());
     }

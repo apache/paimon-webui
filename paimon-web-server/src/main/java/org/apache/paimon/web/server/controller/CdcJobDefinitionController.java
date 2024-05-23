@@ -65,9 +65,10 @@ public class CdcJobDefinitionController {
     @GetMapping("list")
     public PageR<CdcJobDefinition> listAllCdcJob(
             @RequestParam(required = false) boolean withConfig,
+            @RequestParam(required = false) String jobName,
             @RequestParam long currentPage,
             @RequestParam long pageSize) {
-        return cdcJobDefinitionService.listAll(withConfig, currentPage, pageSize);
+        return cdcJobDefinitionService.listAll(jobName,withConfig, currentPage, pageSize);
     }
 
     @SaCheckPermission("cdc:job:query")
