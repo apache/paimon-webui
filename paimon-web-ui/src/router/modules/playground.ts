@@ -26,13 +26,13 @@ export default {
       path: '/playground/query',
       name: 'playground-query',
       meta: { title: 'Query' },
-      component: () => import('@/views/playground/components/query')
+      component: () => import('@/views/playground/components/query'),
     },
     {
       path: '/playground/workbench',
       name: 'playground-workbench',
       meta: { title: 'Workbench' },
-      component: () => import('@/views/playground/components/workbench')
+      component: () => import('@/views/playground/components/workbench'),
     },
-  ]
+  ],
 }

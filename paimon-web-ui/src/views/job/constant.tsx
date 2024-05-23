@@ -30,7 +30,7 @@ export enum JobMapping {
   TOTAL = 'total',
 }
 
-type StatusPrototype = {
+interface StatusPrototype {
   bgColor: string
   primaryColor: string
   icon: Component
@@ -61,5 +61,5 @@ export const JobStatusProps: Record<JobCardProps, StatusPrototype> = {
     primaryColor: '#f9827c',
     bgColor: '#ffdfdb',
     icon: <FlashOffOutline />,
-  }
+  },
 }

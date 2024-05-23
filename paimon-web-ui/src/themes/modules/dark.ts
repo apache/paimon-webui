@@ -31,11 +31,11 @@ const dark: GlobalThemeOverrides = {
     infoColor: '#A6A6A6',
     successColor: '#00B69B',
     warningColor: '#FCBE2D',
-    errorColor: '#EC4C4D'
+    errorColor: '#EC4C4D',
   },
   Card: {
     color: '#1B1C1D',
-    borderRadius: '8px'
+    borderRadius: '8px',
   },
   Button: {
     textColorPrimary: textColor,
@@ -66,8 +66,8 @@ const dark: GlobalThemeOverrides = {
     textColorHoverError: textColor,
     textColorPressedError: textColor,
     textColorFocusError: textColor,
-    textColorDisabledError: textColor
-  }
+    textColorDisabledError: textColor,
+  },
 }
 
 export default dark

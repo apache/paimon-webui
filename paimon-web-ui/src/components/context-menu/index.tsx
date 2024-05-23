@@ -23,20 +23,20 @@ export default defineComponent({
   props: {
     x: {
       type: Number as PropType<number>,
-      default: 0
+      default: 0,
     },
     y: {
       type: Number as PropType<number>,
-      default: 0
+      default: 0,
     },
     visible: {
       type: Boolean as PropType<boolean>,
-      default: false
+      default: false,
     },
     type: {
       type: Array as PropType<string[]>,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   emits: ['update:visible', 'select'],
   setup(props, { emit }) {
@@ -46,43 +46,43 @@ export default defineComponent({
       {
         label: t('playground.new_folder'),
         key: 'new_folder',
-        show: props.type.includes('folder')
+        show: props.type.includes('folder'),
       },
       {
         label: t('playground.new_file'),
         key: 'new_file',
-        show: props.type.includes('file')
+        show: props.type.includes('file'),
       },
       {
         label: t('playground.delete'),
         key: 'delete',
-        show: props.type.includes('delete')
+        show: props.type.includes('delete'),
       },
       {
         label: t('playground.rename'),
         key: 'rename',
-        show: props.type.includes('rename')
+        show: props.type.includes('rename'),
       },
       {
         label: t('playground.close_left'),
         key: 'close_left',
-        show: props.type.includes('close_left')
+        show: props.type.includes('close_left'),
       },
       {
         label: t('playground.close_right'),
         key: 'close_right',
-        show: props.type.includes('close_right')
+        show: props.type.includes('close_right'),
       },
       {
         label: t('playground.close_others'),
         key: 'close_others',
-        show: props.type.includes('close_others')
+        show: props.type.includes('close_others'),
       },
       {
         label: t('playground.close_all'),
         key: 'close_all',
-        show: props.type.includes('close_all')
-      }
+        show: props.type.includes('close_all'),
+      },
     ]))
 
     const handleSelect = (keys: Array<string | number>, option: Array<TreeOption | null>) => {
@@ -96,7 +96,7 @@ export default defineComponent({
     return {
       options,
       handleSelect,
-      handleClickOutside
+      handleClickOutside,
     }
   },
   render() {
@@ -114,5 +114,5 @@ export default defineComponent({
         />
       </div>
     )
-  }
+  },
 })

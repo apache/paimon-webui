@@ -22,17 +22,17 @@ export interface CDCState {
 export const useCDCStore = defineStore({
   id: 'cdc',
   state: (): CDCState => ({
-    model: {}
+    model: {},
   }),
   persist: true,
   getters: {
     getModel(): any {
       return this.model
-    }
+    },
   },
   actions: {
     setModel(model: object): void {
       this.model = model
-    }
-  }
+    },
+  },
 })

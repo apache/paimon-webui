@@ -19,5 +19,5 @@ export default {
   path: '/metadata',
   name: 'metadata',
   meta: { title: 'Metadata' },
-  component: () => import('@/views/metadata')
+  component: () => import('@/views/metadata'),
 }

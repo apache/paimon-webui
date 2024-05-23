@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Folder, FileTray } from '@vicons/ionicons5'
+import { FileTray, Folder } from '@vicons/ionicons5'
 
 import { useCatalogStore } from '@/store/catalog'
 
@@ -26,7 +26,7 @@ export default defineComponent({
     const catalogStoreRef = storeToRefs(catalogStore)
 
     return {
-      currentTable: catalogStoreRef.currentTable
+      currentTable: catalogStoreRef.currentTable,
     }
   },
   render() {
@@ -39,10 +39,12 @@ export default defineComponent({
                 return this.currentTable?.catalogName
               },
               icon: () => {
-                return <n-icon>
-                  <Folder />
-                </n-icon>
-              }
+                return (
+                  <n-icon>
+                    <Folder />
+                  </n-icon>
+                )
+              },
             }}
           </n-button>
         </n-breadcrumb-item>
@@ -53,10 +55,12 @@ export default defineComponent({
                 return this.currentTable?.databaseName
               },
               icon: () => {
-                return <n-icon>
-                  <Folder />
-                </n-icon>
-              }
+                return (
+                  <n-icon>
+                    <Folder />
+                  </n-icon>
+                )
+              },
             }}
           </n-button>
         </n-breadcrumb-item>
@@ -67,14 +71,16 @@ export default defineComponent({
                 return this.currentTable?.tableName
               },
               icon: () => {
-                return <n-icon>
-                  <FileTray />
-                </n-icon>
-              }
+                return (
+                  <n-icon>
+                    <FileTray />
+                  </n-icon>
+                )
+              },
             }}
           </n-button>
         </n-breadcrumb-item>
       </n-breadcrumb>
-    );
-  }
-});
+    )
+  },
+})

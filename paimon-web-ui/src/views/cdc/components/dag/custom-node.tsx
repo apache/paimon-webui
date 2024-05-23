@@ -24,7 +24,7 @@ export default defineComponent({
     const getNode = inject('getNode') as any
     const node = getNode()
     const data = node.data
-    
+
     const onMainMouseEnter = () => {
       const ports = node.getPorts() || []
       ports.forEach((port: { id: any }) => {
@@ -61,5 +61,5 @@ export default defineComponent({
         <NButton text>{this.data.name}</NButton>
       </div>
     )
-  }
+  },
 })

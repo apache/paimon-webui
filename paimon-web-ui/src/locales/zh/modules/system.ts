@@ -20,7 +20,7 @@ const user = {
   username: '用户名',
   nickname: '昵称',
   mobile: '手机号',
-  email: '邮箱'
+  email: '邮箱',
 }
 
 const role = {
@@ -31,7 +31,7 @@ const role = {
   enabled: '是否启用',
   remark: '备注',
   permission_setting: '权限配置',
-  no_permission: '暂无权限'
+  no_permission: '暂无权限',
 }
 
 const roleKey = {
@@ -51,7 +51,7 @@ const roleKey = {
   role_query: '角色查询',
   role_add: '角色新增',
   role_update: '角色修改',
-  role_delete: '角色删除'
+  role_delete: '角色删除',
 }
 
 export default { user, role, roleKey }

@@ -18,13 +18,13 @@ under the License. */
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import naive from 'naive-ui'
+import mitt from 'mitt'
+
 import App from './App'
 import router from './router'
-import naive from 'naive-ui'
 import i18n from './locales'
-import { Setting } from './config'
 import '@/assets/styles/main.scss'
-import mitt from 'mitt'
 
 const app = createApp(App)
 const pinia = createPinia()

@@ -15,13 +15,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { CreateOutline, PlayOutline, TrashOutline } from "@vicons/ionicons5"
+import { CreateOutline, PlayOutline, TrashOutline } from '@vicons/ionicons5'
 
 const props = {
   row: {
     type: Object as PropType<any>,
-    default: {}
-  }
+    default: {},
+  },
 }
 
 export default defineComponent({
@@ -47,64 +47,61 @@ export default defineComponent({
       t,
       handleEdit,
       handleRun,
-      handleDelete
+      handleDelete,
     }
   },
   render() {
     return (
       <n-space>
-        <n-tooltip trigger={'hover'}>
+        <n-tooltip trigger="hover">
           {{
             default: () => this.t('cdc.edit'),
             trigger: () => (
               <n-button
-                size='small'
-                type='primary'
+                size="small"
+                type="primary"
                 onClick={() =>
-                  this.handleEdit(this.row)
-                }
+                  this.handleEdit(this.row)}
                 circle
               >
                 <n-icon component={CreateOutline} />
               </n-button>
-            )
+            ),
           }}
         </n-tooltip>
-        <n-tooltip trigger={'hover'}>
+        <n-tooltip trigger="hover">
           {{
             default: () => this.t('cdc.run'),
             trigger: () => (
               <n-button
-                size='small'
-                type='primary'
+                size="small"
+                type="primary"
                 onClick={() =>
-                  this.handleRun(this.row)
-                }
+                  this.handleRun(this.row)}
                 circle
               >
                 <n-icon component={PlayOutline} />
               </n-button>
-            )
+            ),
           }}
         </n-tooltip>
-        <n-tooltip trigger={'hover'}>
+        <n-tooltip trigger="hover">
           {{
             default: () => this.t('cdc.delete'),
             trigger: () => (
               <n-button
-                size='small'
-                type='error'
+                size="small"
+                type="error"
                 onClick={() =>
-                  this.handleDelete(this.row)
-                }
+                  this.handleDelete(this.row)}
                 circle
               >
                 <n-icon component={TrashOutline} />
               </n-button>
-            )
+            ),
           }}
         </n-tooltip>
       </n-space>
     )
-  }
+  },
 })

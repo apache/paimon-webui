@@ -15,20 +15,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { Role, RoleDTO } from '@/api/models/role/types/role';
-import styles from './index.module.scss';
-import { useTable } from './use-table';
-import RoleForm from './components/role-form';
-import { createRole, getPermissionByRoleId, updateRole } from '@/api/models/role';
-import dayjs from 'dayjs';
-import RoleDetail from './components/role-detail';
-import { EditOutlined } from '@vicons/antd';
-import { RemoveCircleOutline, Warning } from '@vicons/ionicons5';
-import RoleDelete from './components/role-delete';
+import dayjs from 'dayjs'
+import { EditOutlined } from '@vicons/antd'
+import styles from './index.module.scss'
+import { useTable } from './use-table'
+import RoleForm from './components/role-form'
+import RoleDetail from './components/role-detail'
+import RoleDelete from './components/role-delete'
+import { createRole, getPermissionByRoleId, updateRole } from '@/api/models/role'
+import type { Role, RoleDTO } from '@/api/models/role/types/role'
 
 export default defineComponent({
   name: 'RolePage',
   setup() {
+    const { t } = useLocaleHooks()
+    const { tableVariables, getTableData, roleList, loading } = useTable()
+    const [, createFetch, { loading: createLoading }] = createRole()
+    const [, updateFetch, { loading: updateLoading }] = updateRole()
+    const message = useMessage()
+
     const columns = [
       {
         type: 'expand',
@@ -37,17 +42,17 @@ export default defineComponent({
           return (
             <RoleDetail roleRecord={row} />
           )
-        }
+        },
       },
       {
         title: () => t('system.role.role_name'),
         key: 'roleName',
-        resizable: true
+        resizable: true,
       },
       {
         title: () => t('system.role.role_key'),
         key: 'roleKey',
-        resizable: true
+        resizable: true,
       },
       {
         title: () => t('system.role.enabled'),
@@ -55,7 +60,7 @@ export default defineComponent({
         resizable: true,
         render: (row: Role) => {
           return row.enabled ? t('common.yes') : t('common.no')
-        }
+        },
       },
       {
         title: () => t('common.create_time'),
@@ -63,7 +68,7 @@ export default defineComponent({
         resizable: true,
         render: (row: Role) => {
           return row?.createTime ? dayjs(row?.createTime).format('YYYY-MM-DD HH:mm') : '-'
-        }
+        },
       },
       {
         title: () => t('common.update_time'),
@@ -71,7 +76,7 @@ export default defineComponent({
         resizable: true,
         render: (row: Role) => {
           return row?.updateTime ? dayjs(row?.updateTime).format('YYYY-MM-DD HH:mm') : '-'
-        }
+        },
       },
       {
         title: () => t('common.action'),
@@ -83,24 +88,18 @@ export default defineComponent({
               <n-space>
                 <n-button onClick={() => handleUpdateModal(row)} strong secondary circle>
                   {{
-                    icon: () => <n-icon component={EditOutlined} />
+                    icon: () => <n-icon component={EditOutlined} />,
                   }}
                 </n-button>
                 <RoleDelete roleId={row?.id} onDelete={getTableData} />
               </n-space>
             )
           }
-          
-          return null
-        }
-      }
-    ]
 
-    const { t } = useLocaleHooks()
-    const { tableVariables, getTableData, roleList, loading } = useTable()
-    const [, createFetch, { loading: createLoading }] = createRole()
-    const [, updateFetch, { loading: updateLoading }] = updateRole()
-    const message = useMessage()
+          return null
+        },
+      },
+    ]
 
     const formType = ref<'create' | 'update'>('create')
     const formVisible = ref(false)
@@ -109,7 +108,7 @@ export default defineComponent({
       roleKey: '',
       enabled: true,
       remark: '',
-      menuIds: []
+      menuIds: [],
     })
 
     async function getDetail(role: Role) {
@@ -120,7 +119,7 @@ export default defineComponent({
         roleKey: role.roleKey,
         enabled: role.enabled,
         remark: role.remark,
-        menuIds: res?.data?.checkedKeys
+        menuIds: res?.data?.checkedKeys,
       }
     }
 
@@ -133,7 +132,7 @@ export default defineComponent({
       formVisible.value = true
     }
 
-    const handleUpdateModal = async (role: Role) => {
+    async function handleUpdateModal(role: Role) {
       formType.value = 'update'
       await getDetail(role)
       formVisible.value = true
@@ -143,7 +142,7 @@ export default defineComponent({
       const fn = formType.value === 'create' ? createFetch : updateFetch
 
       await fn({
-        params: toRaw(formValue.value)
+        params: toRaw(formValue.value),
       })
 
       message.success(t(`Successfully`))
@@ -194,5 +193,5 @@ export default defineComponent({
         <RoleForm modelLoading={this.modelLoading} v-model:visible={this.formVisible} v-model:formValue={this.formValue} onConfirm={this.onConfirm} />
       </n-space>
     )
-  }
+  },
 })

@@ -16,23 +16,23 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface Schema {
-  schemaId: string;
-  fields: SchemaField[];
-  partitionKeys: string;
-  primaryKeys: string;
-  comment: string;
-  option: SchemaOption[];
-  updateTime: string;
+  schemaId: string
+  fields: SchemaField[]
+  partitionKeys: string
+  primaryKeys: string
+  comment: string
+  option: SchemaOption[]
+  updateTime: string
 }
 
 export interface SchemaField {
-  id: number;
-  name: string;
-  type: string;
-  comment?: string;
+  id: number
+  name: string
+  type: string
+  comment?: string
 }
 
 export interface SchemaOption {
-  key: string;
-  value: string;
+  key: string
+  value: string
 }

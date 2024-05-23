@@ -25,13 +25,13 @@ export default {
       path: '/cdc_ingestion/list',
       name: 'cdc-list',
       meta: { title: 'CDCList' },
-      component: () => import('@/views/cdc')
+      component: () => import('@/views/cdc'),
     },
     {
       path: '/cdc_ingestion/dag',
       name: 'cdc-dag',
       meta: { title: 'CDCDag' },
-      component: () => import('@/views/cdc/components/dag')
+      component: () => import('@/views/cdc/components/dag'),
     },
-  ]
+  ],
 }

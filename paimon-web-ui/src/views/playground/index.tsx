@@ -15,8 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss';
-import Slider from './components/slider';
+import styles from './index.module.scss'
+import Slider from './components/slider'
 
 export default defineComponent({
   name: 'PlaygroundPage',
@@ -29,6 +29,6 @@ export default defineComponent({
           <router-view />
         </div>
       </div>
-    );
+    )
   },
-});
+})

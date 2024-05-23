@@ -24,13 +24,13 @@ export default {
       path: '/system/user',
       name: 'system-user',
       meta: { title: 'user' },
-      component: () => import('@/views/system/user')
+      component: () => import('@/views/system/user'),
     },
     {
       path: '/system/role',
       name: 'system-role',
       meta: { title: 'role' },
-      component: () => import('@/views/system/role')
+      component: () => import('@/views/system/role'),
     },
-  ]
+  ],
 }

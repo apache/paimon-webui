@@ -15,19 +15,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { RouterLink } from 'vue-router'
+import { FileSyncOutlined, UserOutlined, UserSwitchOutlined } from '@vicons/antd'
+import { Catalog, Code } from '@vicons/carbon'
+import { NIcon } from 'naive-ui'
+import { SettingsOutline } from '@vicons/ionicons5'
 
-import { RouterLink } from "vue-router"
-import { UserOutlined,UserSwitchOutlined,FileSyncOutlined} from '@vicons/antd'
-import {Catalog,Code} from '@vicons/carbon'
-import { NIcon } from "naive-ui"
-import { SettingsOutline } from "@vicons/ionicons5"
-
-
-export const useData = () => {
+export function useData() {
   const { t } = useLocaleHooks()
   const state = reactive({
-    isShowSided : true,
-    sideMenuOptions:[]
+    isShowSided: true,
+    sideMenuOptions: [],
   })
   const renderIcon = (icon: any) => {
     return () => h(NIcon, null, { default: () => h(icon) })
@@ -36,45 +34,44 @@ export const useData = () => {
     return h(
       RouterLink,
       {
-        to: { name: link }
+        to: { name: link },
       },
-      { default: () => label }
+      { default: () => label },
     )
   }
   const menuOptions = computed(() => ([
     {
       label: () => renderLabel(t('layout.playground'), 'playground'),
       key: 'playground',
-      icon: renderIcon(Code)
+      icon: renderIcon(Code),
     },
     {
       label: () => renderLabel(t('layout.metadata'), 'metadata'),
       key: 'metadata',
-      icon: renderIcon(Catalog)
+      icon: renderIcon(Catalog),
     },
     {
       label: () => renderLabel(t('layout.cdc_ingestion'), 'cdc_ingestion'),
       key: 'cdc_ingestion',
-      icon: renderIcon(FileSyncOutlined)
+      icon: renderIcon(FileSyncOutlined),
     },
     {
       label: () => renderLabel(t('layout.system'), 'system'),
       key: 'system',
       icon: renderIcon(SettingsOutline),
-      sideMenuOptions:[{
-        label: ()=> renderLabel(t('layout.user'), 'system'),
+      sideMenuOptions: [{
+        label: () => renderLabel(t('layout.user'), 'system'),
         key: '/system/user',
-        icon: renderIcon(UserOutlined)
-      },{
-        label: ()=> renderLabel(t('layout.role'), 'system'),
+        icon: renderIcon(UserOutlined),
+      }, {
+        label: () => renderLabel(t('layout.role'), 'system'),
         key: '/system/role',
-        icon: renderIcon(UserSwitchOutlined)
-      }]
+        icon: renderIcon(UserSwitchOutlined),
+      }],
     },
   ]))
   return {
     menuOptions,
-    state
+    state,
   }
 }
-

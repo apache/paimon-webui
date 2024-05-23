@@ -16,44 +16,43 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface RoleDetail {
-  checkedKeys: number[];
-  menus: RoleMenu[];
+  checkedKeys: number[]
+  menus: RoleMenu[]
 }
 
 export interface RoleMenu {
-  id: number;
-  label: string;
-  children: RoleMenu[];
+  id: number
+  label: string
+  children: RoleMenu[]
 }
 
 export interface Role {
-  id: number;
-  createTime: string;
-  updateTime?: string;
-  roleName: string;
-  roleKey: string;
-  sort: number;
-  enabled: boolean;
-  isDelete: boolean;
-  admin?: boolean;
-  remark?: string;
-  flag: boolean;
-  menuIds: null;
-  permissions: null;
+  id: number
+  createTime: string
+  updateTime?: string
+  roleName: string
+  roleKey: string
+  sort: number
+  enabled: boolean
+  isDelete: boolean
+  admin?: boolean
+  remark?: string
+  flag: boolean
+  menuIds: null
+  permissions: null
 }
 
 export interface RoleParams {
-  roleName?: string,
-  currentPage: number,
+  roleName?: string
+  currentPage: number
   pageSize: number
 }
 
 export interface RoleDTO {
   id?: number
-  roleName: string;
-  roleKey: string;
-  enabled: boolean;
-  remark?: string;
-  menuIds: number[];
+  roleName: string
+  roleKey: string
+  enabled: boolean
+  remark?: string
+  menuIds: number[]
 }
-

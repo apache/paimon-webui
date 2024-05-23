@@ -34,7 +34,7 @@ export default defineComponent({
       row: {} as any,
       cell: {} as any,
       showDrawer: false,
-      showContextMenu: false
+      showContextMenu: false,
     })
 
     onMounted(() => {
@@ -61,7 +61,7 @@ export default defineComponent({
         if (nodeVariables.cell) {
           nodeVariables.cell.data = {
             ...nodeVariables.cell.data,
-            ...model
+            ...model,
           }
         }
       }
@@ -75,7 +75,7 @@ export default defineComponent({
 
     expose({
       graph,
-      dnd
+      dnd,
     })
 
     return {
@@ -84,7 +84,7 @@ export default defineComponent({
       dnd,
       handleNodeConfirm,
       handleDelete,
-      ...toRefs(nodeVariables)
+      ...toRefs(nodeVariables),
     }
   },
   render() {
@@ -99,24 +99,28 @@ export default defineComponent({
           dnd={this.dnd}
         />
         {
-          this.showDrawer &&
-          <Drawer
-            showDrawer={this.showDrawer}
-            formType={this.row.value || 'MYSQL'}
-            onConfirm={this.handleNodeConfirm}
-            onCancel={() => this.showDrawer = false}
-            row={this.row}
-          />
+          this.showDrawer
+          && (
+            <Drawer
+              showDrawer={this.showDrawer}
+              formType={this.row.value || 'MYSQL'}
+              onConfirm={this.handleNodeConfirm}
+              onCancel={() => this.showDrawer = false}
+              row={this.row}
+            />
+          )
         }
         {
-          this.showContextMenu &&
-          <ContextMenuTool
-            onDelete={this.handleDelete}
-            x={this.x}
-            y={this.y}
-          />
+          this.showContextMenu
+          && (
+            <ContextMenuTool
+              onDelete={this.handleDelete}
+              x={this.x}
+              y={this.y}
+            />
+          )
         }
       </div>
     )
-  }
+  },
 })

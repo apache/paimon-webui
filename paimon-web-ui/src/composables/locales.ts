@@ -15,15 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import {type UseI18nOptions } from 'vue-i18n'
+import type { UseI18nOptions } from 'vue-i18n'
 
-import i18n, { LANGUAGES } from '@/locales'
+import type { LANGUAGES } from '@/locales'
+import i18n from '@/locales'
 
 type LocaleType = Pick<typeof i18n.global, 't' | 'n' | 'd'> & {
-  setLanguage(locale: UseI18nOptions['locale']): void
+  setLanguage: (locale: LANGUAGES) => void
 }
 
-export const useLocaleHooks = (): LocaleType => {
+export function useLocaleHooks(): LocaleType {
   const { t, d, n, locale } = i18n.global
 
   const setLanguage = (newLanguage: LANGUAGES) => {
@@ -34,6 +35,6 @@ export const useLocaleHooks = (): LocaleType => {
     t,
     n,
     d,
-    setLanguage
+    setLanguage,
   }
 }

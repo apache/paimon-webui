@@ -15,40 +15,40 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss'
-import logoImage from '@/assets/logo.svg'
+import type { MentionOption } from 'naive-ui'
 import MenuBar from '../menubar'
 import ToolBar from '../toolbar'
-import type { MentionOption } from 'naive-ui'
+import styles from './index.module.scss'
+import logoImage from '@/assets/logo.svg'
 
 export default defineComponent({
-  props:{
+  props: {
     headerMenuOptions: {
       type: Array<MentionOption>,
-      default: []
+      default: [],
     },
   },
   name: 'TopBar',
   setup() {
   },
-  render () {
+  render() {
     return (
       <div class={styles.container}>
         <div class={styles['logo-bar']}>
-          <n-space align='center' justify='center'>
+          <n-space align="center" justify="center">
             <div class={styles.logo}>
-              <img src={logoImage} alt='logo-image'/>
+              <img src={logoImage} alt="logo-image" />
             </div>
             <div>Apache Paimon</div>
           </n-space>
         </div>
         <div class={styles['menu-bar']}>
-          <MenuBar menuOptions={this.headerMenuOptions}/>
+          <MenuBar menuOptions={this.headerMenuOptions} />
         </div>
         <div class={styles.toolbar}>
           <ToolBar />
         </div>
       </div>
     )
-  }
+  },
 })

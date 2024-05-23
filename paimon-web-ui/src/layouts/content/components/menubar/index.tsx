@@ -15,15 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { useConfigStore } from "@/store/config"
-import type { NavBar } from "@/store/config/type"
-import type { MenuOption } from "naive-ui/es/menu/src/interface"
+import type { MenuOption } from 'naive-ui/es/menu/src/interface'
+import { useConfigStore } from '@/store/config'
+import type { NavBar } from '@/store/config/type'
 
 export default defineComponent({
-  props:{
+  props: {
     menuOptions: {
       type: Array<MenuOption>,
-      default: []
+      default: [],
     },
   },
   name: 'MenuBar',
@@ -42,17 +42,17 @@ export default defineComponent({
 
     return {
       activeKey,
-      handleUpdateValue
+      handleUpdateValue,
     }
   },
-  render () {
+  render() {
     return (
-      <n-menu 
+      <n-menu
         v-model:value={this.activeKey}
         mode="horizontal"
         options={this.menuOptions}
         on-update:value={this.handleUpdateValue}
       />
     )
-  }
+  },
 })

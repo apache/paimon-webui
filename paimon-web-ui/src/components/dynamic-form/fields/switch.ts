@@ -21,7 +21,7 @@ import type { IJsonItem } from '../types'
 
 export function renderSwitch(
   item: IJsonItem,
-  fields: { [field: string]: any }
+  fields: { [field: string]: any },
 ) {
   const { props, field, slots = {} } = isFunction(item) ? item() : item
   return h(
@@ -29,8 +29,8 @@ export function renderSwitch(
     {
       ...props,
       value: fields[field],
-      onUpdateValue: (value: string) => void (fields[field] = value)
+      onUpdateValue: (value: string) => void (fields[field] = value),
     },
-    { ...slots }
+    { ...slots },
   )
 }
