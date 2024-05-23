@@ -113,7 +113,6 @@ export function useTable(ctx: any) {
   const getTableData = (jobName?:string) => {
     listAllCdcJob(false,jobName, tableVariables.pagination.page, tableVariables.pagination.pageSize).then(
       (res: any) => {
-        debugger
         tableVariables.data = res.data
         tableVariables.pagination.itemCount = res.total 
       },
