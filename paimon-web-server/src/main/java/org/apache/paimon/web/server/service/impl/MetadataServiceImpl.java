@@ -117,12 +117,12 @@ public class MetadataServiceImpl implements MetadataService {
                                         .baseManifestList(getSafeString(internalRow, 6))
                                         .deltaManifestList(getSafeString(internalRow, 7))
                                         .changelogManifestList(getSafeString(internalRow, 8))
-                                        .totalRecordCount(internalRow.getLong(9))
-                                        .deltaRecordCount(internalRow.getLong(10))
-                                        .changelogRecordCount(internalRow.getLong(11))
-                                        .addedFileCount(internalRow.getInt(12))
-                                        .deletedFileCount(internalRow.getInt(13))
-                                        .watermark(getSafeLong(internalRow, 14))
+//                                        .totalRecordCount(internalRow.getLong(9))
+//                                        .deltaRecordCount(internalRow.getLong(10))
+                                        .changelogRecordCount(internalRow.getLong(9))
+                                        .addedFileCount(internalRow.getLong(10))
+                                        .deletedFileCount(internalRow.getLong(11))
+                                        .watermark(getSafeLong(internalRow, 12))
                                         .build();
                         result.add(build);
                     });
@@ -258,7 +258,7 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     private Long getSafeLong(InternalRow internalRow, int index) {
-        return internalRow.isNullAt(index) ? null : internalRow.getLong(14);
+        return internalRow.isNullAt(index) ? null : internalRow.getLong(index);
     }
 
     private LocalDateTime getSafeLocalDateTime(InternalRow internalRow, int index) {

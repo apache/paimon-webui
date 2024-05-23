@@ -56,9 +56,9 @@ public class SnapshotVO {
 
     private Long changelogRecordCount;
 
-    private Integer addedFileCount;
+    private Long addedFileCount;
 
-    private Integer deletedFileCount;
+    private Long deletedFileCount;
 
     private Long watermark;
 }
