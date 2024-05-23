@@ -15,11 +15,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { listRoles } from '@/api/models/role';
-export const useTable = () => {
+import { listRoles } from '@/api/models/role'
+
+export function useTable() {
   const tableVariables = reactive({
     searchForm: {
-      roleName: ''
+      roleName: '',
     },
     pagination: {
       showQuickJumper: true,
@@ -31,7 +32,7 @@ export const useTable = () => {
         tableVariables.pagination.page = page
         getTableData()
       },
-    }
+    },
   })
 
   const [roleList, useRoleList, { loading }] = listRoles()
@@ -40,7 +41,7 @@ export const useTable = () => {
     const params = {
       roleName: tableVariables.searchForm.roleName,
       currentPage: tableVariables.pagination.page,
-      pageSize: tableVariables.pagination.pageSize
+      pageSize: tableVariables.pagination.pageSize,
     }
     useRoleList({ params })
   }

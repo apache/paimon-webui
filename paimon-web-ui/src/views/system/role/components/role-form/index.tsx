@@ -1,4 +1,3 @@
-
 /* Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -16,36 +15,36 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { RoleDTO } from "@/api/models/role/types/role";
-import { usePermissionStore } from "@/store/permission";
-import type { FormRules, TreeOption } from "naive-ui";
+import type { FormRules, TreeOption } from 'naive-ui'
+import type { RoleDTO } from '@/api/models/role/types/role'
+import { usePermissionStore } from '@/store/permission'
 
 const props = {
-  visible: {
+  'visible': {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: false,
   },
   'onUpdate:visible': [Function, Boolean] as PropType<((value: boolean) => void) | undefined>,
 
-  modelLoading: {
+  'modelLoading': {
     type: Boolean as PropType<boolean>,
   },
-  formType: {
-    type: String as PropType<'create' | 'update'>
+  'formType': {
+    type: String as PropType<'create' | 'update'>,
   },
 
-  formValue: {
+  'formValue': {
     type: Object as PropType<RoleDTO>,
     default: () => ({
       roleName: '',
       roleKey: '',
       enabled: true,
       remark: '',
-      menuIds: []
-    })
+      menuIds: [],
+    }),
   },
   'onUpdate:formValue': [Function, Object] as PropType<((value: RoleDTO) => void) | undefined>,
-  onConfirm: Function
+  'onConfirm': Function,
 }
 
 export default defineComponent({
@@ -56,26 +55,25 @@ export default defineComponent({
       roleName: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'role name required'
+        message: 'role name required',
       },
       roleKey: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'role key required'
+        message: 'role key required',
       },
       menuIds: {
         required: true,
         trigger: ['blur'],
         validator: (_: FormRules, value: string) => {
           return new Promise<void>((resolve, reject) => {
-            if (!value?.length) {
-              reject(Error('menu ids required'))
-            } else {
+            if (!value?.length)
+              reject(new Error('menu ids required'))
+            else
               resolve()
-            }
           })
-        }
-      }
+        },
+      },
     }
 
     const { t } = useLocaleHooks()
@@ -83,9 +81,9 @@ export default defineComponent({
     const { permissionList } = storeToRefs(permissionStore)
 
     const formRef = ref()
-    
+
     const handleCloseModal = () => {
-      props["onUpdate:visible"] && props["onUpdate:visible"](false)
+      props['onUpdate:visible'] && props['onUpdate:visible'](false)
       resetState()
     }
 
@@ -93,7 +91,7 @@ export default defineComponent({
       return t(`system.roleKey.${option.label}`)
     }
 
-    const onUpdateMenuIds = (checkIds:Array<number>) => {
+    const onUpdateMenuIds = (checkIds: Array<number>) => {
       props.formValue.menuIds = checkIds
     }
 
@@ -104,13 +102,13 @@ export default defineComponent({
       resetState()
     }
 
-    const resetState = () => {
-      props["onUpdate:formValue"] && props["onUpdate:formValue"]({
+    function resetState() {
+      props['onUpdate:formValue'] && props['onUpdate:formValue']({
         roleName: '',
         roleKey: '',
         enabled: true,
         remark: '',
-        menuIds: []
+        menuIds: [],
       })
     }
 
@@ -128,64 +126,64 @@ export default defineComponent({
   },
   render() {
     return (
-        <n-modal v-model:show={this.visible} mask-closable={false}>
-          <n-card bordered={false} title={this.t(this.formType === 'create'? 'system.role.create' : 'system.role.update')} style="width: 600px">
-            {{
-              default: () => (
-                  <n-form
-                    ref="formRef"
-                    label-placement="left"
-                    label-width="auto"
-                    label-align="left"
-                    rules={this.rules}
-                    model={this.formValue}
-                  >
-                    <n-form-item label={this.t('system.role.role_name')} path="roleName">
-                      <n-input v-model:value={this.formValue.roleName} />
-                    </n-form-item>
-                    <n-form-item label={this.t('system.role.role_key')} path="roleKey">
-                      <n-input v-model:value={this.formValue.roleKey} />
-                    </n-form-item>
-                    <n-form-item label={this.t('system.role.enabled')} path="enabled">
-                      <n-switch v-model:value={this.formValue.enabled} />
-                    </n-form-item>
-                    <n-form-item label={this.t('system.role.remark')} path="remark">
-                      <n-input 
-                        v-model:value={this.formValue.remark} 
-                        type="textarea"
-                        autosize={{
-                          minRows: 3,
-                          maxRows: 5
-                        }}
-                      />
-                    </n-form-item>
-                    <n-form-item label={this.t('system.role.permission_setting')} path="menuIds">
-                      <n-tree
-                        key-field='id'
-                        default-expand-all
-                        block-line
-                        cascade
-                        renderLabel={this.renderLabel}
-                        onUpdate:checkedKeys={this.onUpdateMenuIds}
-                        checkedKeys={this.formValue.menuIds}
-                        data={this.permissionTree}
-                        expand-on-click
-                        checkable
-                      />
-                    </n-form-item>
-                  </n-form>
-              ),
-              action: () => (
-                  <n-space justify="end">
-                    <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
-                    <n-button loading={this.modelLoading} type="primary" onClick={this.handleConfirm}>
-                      {this.t('layout.confirm')}
-                    </n-button>
-                  </n-space>
-              )
-            }}
-          </n-card>
-        </n-modal>
-    );
-  }
+      <n-modal v-model:show={this.visible} mask-closable={false}>
+        <n-card bordered={false} title={this.t(this.formType === 'create' ? 'system.role.create' : 'system.role.update')} style="width: 600px">
+          {{
+            default: () => (
+              <n-form
+                ref="formRef"
+                label-placement="left"
+                label-width="auto"
+                label-align="left"
+                rules={this.rules}
+                model={this.formValue}
+              >
+                <n-form-item label={this.t('system.role.role_name')} path="roleName">
+                  <n-input v-model:value={this.formValue.roleName} />
+                </n-form-item>
+                <n-form-item label={this.t('system.role.role_key')} path="roleKey">
+                  <n-input v-model:value={this.formValue.roleKey} />
+                </n-form-item>
+                <n-form-item label={this.t('system.role.enabled')} path="enabled">
+                  <n-switch v-model:value={this.formValue.enabled} />
+                </n-form-item>
+                <n-form-item label={this.t('system.role.remark')} path="remark">
+                  <n-input
+                    v-model:value={this.formValue.remark}
+                    type="textarea"
+                    autosize={{
+                      minRows: 3,
+                      maxRows: 5,
+                    }}
+                  />
+                </n-form-item>
+                <n-form-item label={this.t('system.role.permission_setting')} path="menuIds">
+                  <n-tree
+                    key-field="id"
+                    default-expand-all
+                    block-line
+                    cascade
+                    renderLabel={this.renderLabel}
+                    onUpdate:checkedKeys={this.onUpdateMenuIds}
+                    checkedKeys={this.formValue.menuIds}
+                    data={this.permissionTree}
+                    expand-on-click
+                    checkable
+                  />
+                </n-form-item>
+              </n-form>
+            ),
+            action: () => (
+              <n-space justify="end">
+                <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
+                <n-button loading={this.modelLoading} type="primary" onClick={this.handleConfirm}>
+                  {this.t('layout.confirm')}
+                </n-button>
+              </n-space>
+            ),
+          }}
+        </n-card>
+      </n-modal>
+    )
+  },
 })

@@ -20,7 +20,7 @@ import light from './modules/light'
 
 const themes = {
   dark,
-  light
+  light,
 }
 
 export default themes

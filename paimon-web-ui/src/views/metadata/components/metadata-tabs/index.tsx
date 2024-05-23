@@ -17,8 +17,6 @@ under the License. */
 
 import type { TabsInst } from 'naive-ui'
 
-import { useConfigStore } from '@/store/config'
-
 import Table from '../table'
 import Options from '../options'
 import Schema from '../schema'
@@ -27,7 +25,7 @@ import Manifest from '../manifest'
 import DataFile from '../datafile'
 
 import styles from './index.module.scss'
-
+import { useConfigStore } from '@/store/config'
 
 export default defineComponent({
   name: 'MetadataTabs',
@@ -48,27 +46,27 @@ export default defineComponent({
   render() {
     return (
       <div class={styles.tabs}>
-        <n-tabs ref="tabsInstRef" type='bar' animated default-value="table">
-          <n-tab-pane name='table' tab={this.t('metadata.table_info')}>
+        <n-tabs ref="tabsInstRef" type="bar" animated default-value="table">
+          <n-tab-pane name="table" tab={this.t('metadata.table_info')}>
             <Table />
           </n-tab-pane>
-          <n-tab-pane name='option' tab={this.t('metadata.option_info')}>
+          <n-tab-pane name="option" tab={this.t('metadata.option_info')}>
             <Options />
           </n-tab-pane>
-          <n-tab-pane name='schema' tab={this.t('metadata.schema_info')}>
+          <n-tab-pane name="schema" tab={this.t('metadata.schema_info')}>
             <Schema />
           </n-tab-pane>
-          <n-tab-pane name='snapshot' tab={this.t('metadata.snapshot_file')}>
+          <n-tab-pane name="snapshot" tab={this.t('metadata.snapshot_file')}>
             <SnapShot />
           </n-tab-pane>
-          <n-tab-pane name='manifest' tab={this.t('metadata.manifests_file')}>
+          <n-tab-pane name="manifest" tab={this.t('metadata.manifests_file')}>
             <Manifest />
           </n-tab-pane>
-          <n-tab-pane name='datafile' tab={this.t('metadata.data_file')}>
+          <n-tab-pane name="datafile" tab={this.t('metadata.data_file')}>
             <DataFile />
           </n-tab-pane>
         </n-tabs>
       </div>
-    );
+    )
   },
-});
+})

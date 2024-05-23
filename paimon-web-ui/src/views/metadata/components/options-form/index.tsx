@@ -17,18 +17,17 @@ under the License. */
 
 import { Add, AddCircleOutline } from '@vicons/ionicons5'
 
+import OptionContent, { newOption } from '../options-form-content'
 import { useCatalogStore } from '@/store/catalog'
-import { createOption, type TableOption } from '@/api/models/catalog'
+import { type TableOption, createOption } from '@/api/models/catalog'
 import { transformOption } from '@/views/metadata/constant'
 
-import OptionContent, { newOption } from '../options-form-content'
-
-type OptionsFormType = {
+interface OptionsFormType {
   options: TableOption[]
 }
 
 const props = {
-  onConfirm: [Function, Array] as PropType<() => Promise<void>>
+  onConfirm: [Function, Array] as PropType<() => Promise<void>>,
 }
 
 export default defineComponent({
@@ -43,7 +42,7 @@ export default defineComponent({
 
     const formRef = ref()
     const formValue = ref<OptionsFormType>({
-      options: [{ ...newOption }]
+      options: [{ ...newOption }],
     })
     const showModal = ref(false)
 
@@ -52,8 +51,8 @@ export default defineComponent({
       await createFetch({
         params: transformOption({
           ...toRaw(catalogStore.currentTable),
-          options: toRaw(formValue.value).options
-        })
+          options: toRaw(formValue.value).options,
+        }),
       })
 
       handleCloseModal()
@@ -74,7 +73,7 @@ export default defineComponent({
 
     const resetState = () => {
       formValue.value = {
-        options: [{ ...newOption }]
+        options: [{ ...newOption }],
       }
     }
 
@@ -92,7 +91,7 @@ export default defineComponent({
       handleOpenModal,
       handleCloseModal,
       handleConfirm,
-      handleAddOption
+      handleAddOption,
     }
   },
   render() {
@@ -100,11 +99,11 @@ export default defineComponent({
       <>
         <n-button strong secondary circle onClick={this.handleOpenModal}>
           {{
-            icon: () => <n-icon component={AddCircleOutline} />
+            icon: () => <n-icon component={AddCircleOutline} />,
           }}
         </n-button>
         <n-modal v-model:show={this.showModal} mask-closable={false}>
-          <n-card bordered={true} title={'Create Option'} style="width: 700px">
+          <n-card bordered={true} title="Create Option" style="width: 700px">
             {{
               'header-extra': () => (
                 <n-button quaternary circle size="tiny" onClick={this.handleAddOption}>
@@ -113,7 +112,7 @@ export default defineComponent({
                   </n-icon>
                 </n-button>
               ),
-              default: () => (
+              'default': () => (
                 <n-form
                   ref="formRef"
                   label-placement="top"
@@ -129,18 +128,18 @@ export default defineComponent({
                   />
                 </n-form>
               ),
-              action: () => (
+              'action': () => (
                 <n-space justify="end">
                   <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
                   <n-button type="primary" loading={this.loading} onClick={this.handleConfirm}>
                     {this.t('layout.confirm')}
                   </n-button>
                 </n-space>
-              )
+              ),
             }}
           </n-card>
         </n-modal>
       </>
     )
-  }
+  },
 })

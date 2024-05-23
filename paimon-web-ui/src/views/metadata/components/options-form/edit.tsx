@@ -18,7 +18,7 @@ under the License. */
 import { EditOutlined } from '@vicons/antd'
 import type { FormInst } from 'naive-ui'
 
-import { createOption, type TableOption } from '@/api/models/catalog'
+import { type TableOption, createOption } from '@/api/models/catalog'
 import { useCatalogStore } from '@/store/catalog'
 import { transformOption } from '@/views/metadata/constant'
 
@@ -27,22 +27,22 @@ export default defineComponent({
   props: {
     option: {
       type: Object as PropType<TableOption>,
-      required: true
+      required: true,
     },
-    onConfirm: [Function, Array] as PropType<() => Promise<void>>
+    onConfirm: [Function, Array] as PropType<() => Promise<void>>,
   },
   setup(props) {
     const rules = {
       key: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'Option key required'
+        message: 'Option key required',
       },
       value: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'Option value required'
-      }
+        message: 'Option value required',
+      },
     }
 
     const { t } = useLocaleHooks()
@@ -61,8 +61,8 @@ export default defineComponent({
       await createFetch({
         params: transformOption({
           ...toRaw(catalogStore.currentTable),
-          options: [toRaw(formValue.value)]
-        })
+          options: [toRaw(formValue.value)],
+        }),
       })
 
       handleCloseModal()
@@ -89,7 +89,7 @@ export default defineComponent({
       t,
       handleOpenModal,
       handleCloseModal,
-      handleConfirm
+      handleConfirm,
     }
   },
   render() {
@@ -97,11 +97,11 @@ export default defineComponent({
       <>
         <n-button onClick={this.handleOpenModal} strong secondary circle>
           {{
-            icon: () => <n-icon component={EditOutlined} />
+            icon: () => <n-icon component={EditOutlined} />,
           }}
         </n-button>
         <n-modal v-model:show={this.showModal} mask-closable={false}>
-          <n-card bordered={true} title={'Edit Option'} style="width: 700px">
+          <n-card bordered={true} title="Edit Option" style="width: 700px">
             {{
               default: () => (
                 <n-form
@@ -127,11 +127,11 @@ export default defineComponent({
                     {this.t('layout.confirm')}
                   </n-button>
                 </n-space>
-              )
+              ),
             }}
           </n-card>
         </n-modal>
       </>
     )
-  }
+  },
 })

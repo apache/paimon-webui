@@ -15,15 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { OptionsDTO, TableDTO } from "@/api/models/catalog"
+import type { OptionsDTO, TableDTO } from '@/api/models/catalog'
 
-export const transformOption = (value: TableDTO) => {
+export function transformOption(value: TableDTO) {
   const tableOptions: OptionsDTO = {}
   value.options?.forEach((item) => {
     tableOptions[item.key] = item.value
   })
   return {
     ...value,
-    tableOptions
+    tableOptions,
   }
 }

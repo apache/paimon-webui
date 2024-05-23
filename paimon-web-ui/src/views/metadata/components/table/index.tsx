@@ -15,13 +15,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { type DataTableColumns } from 'naive-ui'
+import type { DataTableColumns } from 'naive-ui'
 import { AddCircleOutline, RemoveCircleOutline, Warning } from '@vicons/ionicons5'
 import { EditOutlined } from '@vicons/antd'
 
-import { useCatalogStore } from '@/store/catalog'
-import { getColumns, type ColumnDTO, deleteColumns, type ColumnParams } from '@/api/models/catalog'
 import ColumnsForm from '../columns-form'
+import { useCatalogStore } from '@/store/catalog'
+import { type ColumnDTO, type ColumnParams, deleteColumns, getColumns } from '@/api/models/catalog'
 
 export default defineComponent({
   name: 'MetadataTable',
@@ -52,11 +52,11 @@ export default defineComponent({
     const columns: DataTableColumns<ColumnDTO> = [
       {
         title: 'Column Name',
-        key: 'field'
+        key: 'field',
       },
       {
         title: 'Data Type',
-        key: 'dataType.type'
+        key: 'dataType.type',
       },
       {
         title: 'Nullable',
@@ -64,7 +64,7 @@ export default defineComponent({
         align: 'center',
         render(rowData) {
           return <n-checkbox checked={rowData.dataType.nullable} />
-        }
+        },
       },
       {
         title: 'Primary Key',
@@ -72,7 +72,7 @@ export default defineComponent({
         align: 'center',
         render(rowData) {
           return <n-checkbox checked={rowData.pk} />
-        }
+        },
       },
       {
         title: 'Partition Key',
@@ -81,7 +81,7 @@ export default defineComponent({
         render(rowData) {
           const isChecked = (tableColumns.value?.partitionKey || [])?.includes(rowData.field)
           return <n-checkbox v-model:checked={isChecked} />
-        }
+        },
       },
       {
         title: 'Default Value',
@@ -89,7 +89,7 @@ export default defineComponent({
         align: 'center',
         render(rowData) {
           return rowData.defaultValue || '-'
-        }
+        },
       },
       {
         title: 'Comment',
@@ -97,7 +97,7 @@ export default defineComponent({
         align: 'center',
         render(rowData) {
           return rowData.comment || '-'
-        }
+        },
       },
       {
         title: 'Operation',
@@ -110,22 +110,22 @@ export default defineComponent({
                 trigger: () => (
                   <n-button strong secondary circle type="error">
                     {{
-                      icon: () => <n-icon component={RemoveCircleOutline} />
+                      icon: () => <n-icon component={RemoveCircleOutline} />,
                     }}
                   </n-button>
                 ),
-                icon: () => <n-icon color="#EC4C4D" component={Warning} />
+                icon: () => <n-icon color="#EC4C4D" component={Warning} />,
               }}
             </n-popconfirm>
           )
-        }
-      }
+        },
+      },
     ]
 
     const onDeleteColumn = async (columnName: string) => {
       await deleteColumns({
         ...toRaw(catalogStore.currentTable),
-        columnName
+        columnName,
       } as ColumnParams)
 
       await onFetchData()
@@ -133,7 +133,7 @@ export default defineComponent({
 
     const onFetchData = async () => {
       useColumns({
-        params: catalogStore.currentTable
+        params: catalogStore.currentTable,
       })
     }
 
@@ -146,7 +146,7 @@ export default defineComponent({
       columns,
       tableColumns,
       pagination: {
-        pageSize: 10
+        pageSize: 10,
       },
 
       isEdit,
@@ -156,7 +156,7 @@ export default defineComponent({
       handleCloseModal,
 
       onFetchData,
-      t
+      t,
     }
   },
   render() {
@@ -169,24 +169,24 @@ export default defineComponent({
                 <n-space>
                   <n-button strong secondary circle onClick={this.handleOpenModal}>
                     {{
-                      icon: () => <n-icon component={AddCircleOutline} />
+                      icon: () => <n-icon component={AddCircleOutline} />,
                     }}
                   </n-button>
                   <n-button strong secondary circle onClick={this.handleEditModal}>
                     {{
-                      icon: () => <n-icon component={EditOutlined} />
+                      icon: () => <n-icon component={EditOutlined} />,
                     }}
                   </n-button>
                 </n-space>
               )
             },
-            default: () => (
+            'default': () => (
               <n-data-table
                 columns={this.columns}
                 data={this.tableColumns?.columns || []}
                 pagination={this.pagination}
               />
-            )
+            ),
           }}
         </n-card>
         <ColumnsForm
@@ -197,5 +197,5 @@ export default defineComponent({
         />
       </n-spin>
     )
-  }
+  },
 })

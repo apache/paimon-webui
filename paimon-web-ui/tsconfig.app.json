@@ -7,6 +7,11 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "module": "ESNext",
+    "target": "ESNext",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "types": ["naive-ui/volar"],
     "jsx": "preserve",
     "jsxFactory": "h",

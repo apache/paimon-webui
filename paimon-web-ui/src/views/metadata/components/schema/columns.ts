@@ -22,15 +22,15 @@ import type { SchemaField, SchemaOption } from '@/api/models/catalog'
 export const fieldsColumns: DataTableColumns<SchemaField> = [
   {
     title: 'ID',
-    key: 'id'
+    key: 'id',
   },
   {
     title: 'Name',
-    key: 'name'
+    key: 'name',
   },
   {
     title: 'Type',
-    key: 'type'
+    key: 'type',
   },
   {
     title: 'Comment',
@@ -38,17 +38,17 @@ export const fieldsColumns: DataTableColumns<SchemaField> = [
     align: 'center',
     render: (row) => {
       return row.comment || '-'
-    }
+    },
   },
 ]
 
 export const optionsColumns: DataTableColumns<SchemaOption> = [
   {
     title: 'Key',
-    key: 'key'
+    key: 'key',
   },
   {
     title: 'Value',
-    key: 'value'
-  }
+    key: 'value',
+  },
 ]

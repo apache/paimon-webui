@@ -20,12 +20,11 @@ import { Catalog, ChangeCatalog, DataBase } from '@vicons/carbon'
 import { DatabaseFilled } from '@vicons/antd'
 import { NIcon, type TreeOption } from 'naive-ui'
 
-import { useCatalogStore } from '@/store/catalog'
-
 import CatalogFormButton from '../catalog-form'
 import DatabaseFormButton from '../database-form'
 import TableFormButton from '../table-form'
 import styles from './index.module.scss'
+import { useCatalogStore } from '@/store/catalog'
 
 export default defineComponent({
   name: 'MenuTree',
@@ -39,14 +38,13 @@ export default defineComponent({
     const isSearch = ref(false)
     const formType = ref('CATALOG')
 
-    const renderPrefix = ({ option, expanded }: { option: TreeOption; expanded: boolean }) => {
+    const renderPrefix = ({ option, expanded }: { option: TreeOption, expanded: boolean }) => {
       let icon = expanded ? Catalog : ChangeCatalog
-      if (option.type !== 'catalog') {
+      if (option.type !== 'catalog')
         icon = expanded ? DataBase : DatabaseFilled
-      }
 
       return h(NIcon, null, {
-        default: () => h(icon)
+        default: () => h(icon),
       })
     }
 
@@ -76,18 +74,19 @@ export default defineComponent({
           isSearch.value = false
           await catalogStore.getAllCatalogs(true)
         }
-      }
+      },
     )
 
     const onLoadMenu = async (node: TreeOption) => {
       if (node.type === 'catalog') {
         node.children = await catalogStore.getDatabasesById(node.key as number)
-      } else {
+      }
+      else {
         const [catalogId, catalogName, databaseName] = (node.key as string)?.split(' ') || []
         const params = {
           catalogId: Number(catalogId),
           catalogName,
-          databaseName
+          databaseName,
         }
         node.children = (await catalogStore.getTablesByDataBaseId(params)) || []
       }
@@ -105,10 +104,10 @@ export default defineComponent({
               catalogId: Number(catalogId),
               tableName: name,
               name,
-              ...tableData
+              ...tableData,
             })
           }
-        }
+        },
       }
     }
 
@@ -116,7 +115,7 @@ export default defineComponent({
       if (e.code === 'Enter') {
         isSearch.value = true
         await catalogStore.getTablesByDataBaseId({
-          name: filterValue.value
+          name: filterValue.value,
         })
       }
     }
@@ -132,13 +131,13 @@ export default defineComponent({
       onSearch,
       renderPrefix,
       renderSuffix,
-      nodeProps
+      nodeProps,
     }
   },
   render() {
     return (
       <div class={styles.container}>
-        <n-card class={styles.card} content-style={'padding:20px 18px;'}>
+        <n-card class={styles.card} content-style="padding:20px 18px;">
           <div class={styles.vertical}>
             <n-space justify="space-between" align="enter">
               <article>Catalog</article>
@@ -149,12 +148,13 @@ export default defineComponent({
               style="width: 100%;"
               v-model:value={this.filterValue}
               v-slots={{
-                prefix: () => <n-icon component={Search} />
+                prefix: () => <n-icon component={Search} />,
               }}
               onKeyup={this.onSearch}
-            ></n-input>
+            >
+            </n-input>
             <div class={styles.scroll}>
-              <n-scrollbar style={'position: absolute'}>
+              <n-scrollbar style="position: absolute">
                 <n-spin show={this.menuLoading}>
                   <n-tree
                     block-line
@@ -173,5 +173,5 @@ export default defineComponent({
         </n-card>
       </div>
     )
-  }
+  },
 })

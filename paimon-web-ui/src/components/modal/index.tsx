@@ -15,36 +15,35 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { useTask } from './use-task'
 import Form from '@/components/dynamic-form'
 import type { IFormInst } from '@/components/dynamic-form/types'
-
-import { useTask } from './use-task'
 
 const props = {
   title: {
     type: String as PropType<string>,
-    default: ''
+    default: '',
   },
   row: {
     type: Object as PropType<any>,
-    default: () => {}
+    default: () => {},
   },
   showModal: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: false,
   },
   autoFocus: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: false,
   },
   closeable: {
     type: Boolean as PropType<boolean>,
-    default: true
+    default: true,
   },
   formType: {
     type: String as PropType<string>,
-    default: ''
-  }
+    default: '',
+  },
 }
 
 export default defineComponent({
@@ -58,7 +57,7 @@ export default defineComponent({
 
     const { elementsRef, rulesRef, model } = useTask({
       data: props.row,
-      formType: props.formType
+      formType: props.formType,
     })
 
     const handleConfirm = () => {
@@ -76,7 +75,7 @@ export default defineComponent({
       formRef,
       elementsRef,
       rulesRef,
-      model
+      model,
     }
   },
   render() {
@@ -96,10 +95,10 @@ export default defineComponent({
                 meta={{
                   model: this.model,
                   rules: this.rulesRef,
-                  elements: this.elementsRef
+                  elements: this.elementsRef,
                 }}
                 gridProps={{
-                  xGap: 10
+                  xGap: 10,
                 }}
               />
             ),
@@ -110,10 +109,10 @@ export default defineComponent({
                   {this.t('layout.confirm')}
                 </n-button>
               </n-space>
-            )
+            ),
           }}
         </n-card>
       </n-modal>
     )
-  }
+  },
 })

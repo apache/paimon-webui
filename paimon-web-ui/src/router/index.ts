@@ -16,17 +16,16 @@ specific language governing permissions and limitations
 under the License. */
 
 import {
+  type NavigationGuardNext,
+  type RouteLocationNormalized,
   createRouter,
   createWebHistory,
-  type RouteLocationNormalized,
-  type NavigationGuardNext
 } from 'vue-router'
 import routes from './routes'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes
+  routes,
 })
 
 /**
@@ -36,10 +35,10 @@ router.beforeEach(
   async (
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
-    next: NavigationGuardNext
+    next: NavigationGuardNext,
   ) => {
     next()
-  }
+  },
 )
 
 export default router

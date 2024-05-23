@@ -25,7 +25,7 @@ export function renderRadio(item: IJsonItem, fields: { [field: string]: any }) {
     return h(NRadio, {
       ...props,
       value: fields[field],
-      onUpdateChecked: (checked: boolean) => void (fields[field] = checked)
+      onUpdateChecked: (checked: boolean) => void (fields[field] = checked),
     })
   }
   return h(
@@ -33,13 +33,12 @@ export function renderRadio(item: IJsonItem, fields: { [field: string]: any }) {
     {
       ...props,
       value: fields[field],
-      onUpdateValue: (value: any) => void (fields[field] = value)
+      onUpdateValue: (value: any) => void (fields[field] = value),
     },
     () =>
       h(NSpace, null, () =>
         unref(options).map((option: IOption) =>
-          h(NRadio, option, () => option.label)
-        )
-      )
+          h(NRadio, option, () => option.label),
+        )),
   )
 }

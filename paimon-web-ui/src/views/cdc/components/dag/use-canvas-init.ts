@@ -32,8 +32,8 @@ export function useCanvasInit() {
       height: 40,
       component: CustomNode,
       ports: {
-        ...PORT
-      }
+        ...PORT,
+      },
     })
 
     return new Graph({
@@ -70,7 +70,7 @@ export function useCanvasInit() {
         highlight: true,
         createEdge() {
           return graph.value?.createEdge({
-            shape: 'dag-edge'
+            shape: 'dag-edge',
           })
         },
         anchor: {
@@ -79,43 +79,43 @@ export function useCanvasInit() {
         validateConnection(data: any) {
           const { sourceCell, targetCell, sourceView, targetView } = data
           // Prevent loop edges
-          if (sourceView === targetView) {
+          if (sourceView === targetView)
             return false
-          }
+
           if (
-            sourceCell &&
-            targetCell &&
-            sourceCell.isNode() &&
-            targetCell.isNode()
+            sourceCell
+            && targetCell
+            && sourceCell.isNode()
+            && targetCell.isNode()
           ) {
             const sourceData = sourceCell.getData()
             // Prevent edges from being created from the output port
-            if (sourceData.type === 'OUTPUT') return false
+            if (sourceData.type === 'OUTPUT')
+              return false
             // Prevent edges from being created from the input port to the input port
-            if (targetCell.getData().type === 'INPUT') return false
+            if (targetCell.getData().type === 'INPUT')
+              return false
             // Prevent multiple edges from being created between the same start node and end node
             const edges = graph.value?.getConnectedEdges(targetCell)
-            if (edges!.length > 0) {
+            if (edges!.length > 0)
               return false
-            }
-            
           }
           return true
-        }
-      }
+        },
+      },
     })
   }
 
   const dndInit = () => {
     const actualGraph = graph.value // get the actual Graph object from the Ref
-    if (!actualGraph) {
+    if (!actualGraph)
       throw new Error('Graph object is undefined')
-    }
+
     return new Dnd({
       target: actualGraph,
       dndContainer: document.getElementById('dag-slider') || undefined,
-      getDragNode: (node) => node.clone({ keepId: true }),
-      getDropNode: (node) => node.clone({ keepId: true }),
+      getDragNode: node => node.clone({ keepId: true }),
+      getDropNode: node => node.clone({ keepId: true }),
     })
   }
 
@@ -134,6 +134,6 @@ export function useCanvasInit() {
 
   return {
     graph,
-    dnd
+    dnd,
   }
 }

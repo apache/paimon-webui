@@ -19,7 +19,6 @@ target/
 .tmp
 node/
 paimon-web-ui/.idea
-paimon-web-ui/.vscode
 paimon-web-ui/auto-imports.d.ts
 paimon-web-ui/components.d.ts
 paimon-web-ui/.eslintrc-auto-import.json
@@ -66,7 +65,6 @@ coverage
 /cypress/screenshots/
 
 # Editor directories and files
-*.vscode
 !.vscode/extensions.json
 .idea
 *.suo

@@ -29,12 +29,12 @@ const light: GlobalThemeOverrides = {
     infoColor: '#A6A6A6',
     successColor: '#00B69B',
     warningColor: '#FCBE2D',
-    errorColor: '#EC4C4D'
+    errorColor: '#EC4C4D',
   },
   Card: {
     color: '#FAFAFA',
-    borderRadius: '8px'
-  }
+    borderRadius: '8px',
+  },
 }
 
 export default light

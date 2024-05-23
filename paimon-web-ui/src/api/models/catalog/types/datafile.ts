@@ -16,24 +16,23 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface Datafile {
-  bucket: number;
-  filePath: string;
-  fileFormat: string;
-  schemaId: string;
-  level: number;
-  recordCount: string;
-  fileSizeInBytes: string;
+  bucket: number
+  filePath: string
+  fileFormat: string
+  schemaId: string
+  level: number
+  recordCount: string
+  fileSizeInBytes: string
 
   // TODO: JSON String
-  partition: string;
-  minKey: string;
-  maxKey: string;
-  nullValueCounts: string;
-  minValueStats: string;
-  maxValueStats: string;
-  
-  minSequenceNumber: string;
-  maxSequenceNumber: string;
-  creationTime: string;
-}
+  partition: string
+  minKey: string
+  maxKey: string
+  nullValueCounts: string
+  minValueStats: string
+  maxValueStats: string
 
+  minSequenceNumber: string
+  maxSequenceNumber: string
+  creationTime: string
+}

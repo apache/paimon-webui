@@ -15,15 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss'
-import MenuTree from './components/menu-tree';
-import EditorTabs from './components/tabs';
-import EditorDebugger from './components/debugger';
-import * as monaco from 'monaco-editor'
-import MonacoEditor from '@/components/monaco-editor';
-import EditorConsole from './components/console';
-import { format } from 'sql-formatter';
+import type * as monaco from 'monaco-editor'
+import { format } from 'sql-formatter'
 import { useMessage } from 'naive-ui'
+import styles from './index.module.scss'
+import MenuTree from './components/menu-tree'
+import EditorTabs from './components/tabs'
+import EditorDebugger from './components/debugger'
+import EditorConsole from './components/console'
+import MonacoEditor from '@/components/monaco-editor'
 
 export default defineComponent({
   name: 'QueryPage',
@@ -32,7 +32,7 @@ export default defineComponent({
 
     const editorVariables = reactive({
       editor: {} as any,
-      language: 'sql'
+      language: 'sql',
     })
 
     const editorMounted = (editor: monaco.editor.IStandaloneCodeEditor) => {
@@ -73,15 +73,14 @@ export default defineComponent({
     watch(
       () => consoleHeightType.value,
       () => {
-        if (tabData.value.panelsList?.length > 0) {
+        if (tabData.value.panelsList?.length > 0)
           editorVariables.editor?.layout()
-        }
-      }
+      },
     )
 
     // mitt - handle tab choose
     const tabData = ref({}) as any
-    const { mittBus }  = getCurrentInstance()!.appContext.config.globalProperties
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
@@ -97,7 +96,7 @@ export default defineComponent({
       handleConsoleDown,
       handleConsoleClose,
       showConsole,
-      consoleHeightType
+      consoleHeightType,
     }
   },
   render() {
@@ -107,7 +106,7 @@ export default defineComponent({
           <MenuTree />
         </div>
         <div class={styles['editor-area']}>
-          <n-card class={styles.card} content-style={'padding: 5px 18px;display: flex;flex-direction: column;'}>
+          <n-card class={styles.card} content-style="padding: 5px 18px;display: flex;flex-direction: column;">
             <div class={styles.tabs}>
               <EditorTabs />
             </div>
@@ -116,31 +115,35 @@ export default defineComponent({
             </div>
             <div class={styles.editor} style={`height: ${this.consoleHeightType === 'up' ? '20%' : '60%'}`}>
               {
-                this.tabData.panelsList?.length > 0 &&
-                <n-card content-style={'padding: 0;'}>
-                  <MonacoEditor
-                    v-model={this.tabData.panelsList.find((item: any) => item.key === this.tabData.chooseTab).content}
-                    language={this.language}
-                    onEditorMounted={this.editorMounted}
-                    onEditorSave={this.editorSave}
-                    onChange={this.handleContentChange}
-                  />
-                </n-card>
+                this.tabData.panelsList?.length > 0
+                && (
+                  <n-card content-style="padding: 0;">
+                    <MonacoEditor
+                      v-model={this.tabData.panelsList.find((item: any) => item.key === this.tabData.chooseTab).content}
+                      language={this.language}
+                      onEditorMounted={this.editorMounted}
+                      onEditorSave={this.editorSave}
+                      onChange={this.handleContentChange}
+                    />
+                  </n-card>
+                )
               }
             </div>
             { this.showConsole && (
               <div class={styles.console} style={`height: ${this.consoleHeightType === 'up' ? '80%' : '40%'}`}>
                 {
-                  this.tabData.panelsList?.length > 0 &&
-                    <n-card content-style={'padding: 0;'}>
-                        <EditorConsole onConsoleDown={this.handleConsoleDown} onConsoleUp={this.handleConsoleUp} onConsoleClose={this.handleConsoleClose}/>
+                  this.tabData.panelsList?.length > 0
+                  && (
+                    <n-card content-style="padding: 0;">
+                      <EditorConsole onConsoleDown={this.handleConsoleDown} onConsoleUp={this.handleConsoleUp} onConsoleClose={this.handleConsoleClose} />
                     </n-card>
+                  )
                 }
               </div>
             )}
           </n-card>
         </div>
       </div>
-    );
-  }
-});
+    )
+  },
+})

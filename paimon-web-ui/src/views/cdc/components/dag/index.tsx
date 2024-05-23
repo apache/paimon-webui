@@ -15,12 +15,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Leaf, Save } from "@vicons/ionicons5"
-import styles from './index.module.scss';
-import DagCanvas from "./dag-canvas";
-import { useCDCStore } from "@/store/cdc";
-import type { Router } from "vue-router";
-import { createCdcJob, updateCdcJob } from "@/api/models/cdc";
+import { Leaf, Save } from '@vicons/ionicons5'
+import type { Router } from 'vue-router'
+import styles from './index.module.scss'
+import DagCanvas from './dag-canvas'
+import { useCDCStore } from '@/store/cdc'
+import { createCdcJob, updateCdcJob } from '@/api/models/cdc'
 
 export default defineComponent({
   name: 'DagPage',
@@ -36,12 +36,13 @@ export default defineComponent({
     const handleSave = () => {
       const editMode = CDCStore.getModel.editMode
       if (editMode === 'edit') {
-        updateCdcJob({ id: CDCStore.getModel.id, name: name.value + "", description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
+        updateCdcJob({ id: CDCStore.getModel.id, name: `${name.value}`, description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
           .then(() => {
             router.push({ path: '/cdc_ingestion' })
           })
-      } else {
-        createCdcJob({ name: name.value + "", description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
+      }
+      else {
+        createCdcJob({ name: `${name.value}`, description: CDCStore.getModel.description, cdcType: CDCStore.getModel.synchronizationType, config: JSON.stringify(dagRef.value.graph.toJSON()) })
           .then(() => {
             router.push({ path: '/cdc_ingestion' })
           })
@@ -57,7 +58,7 @@ export default defineComponent({
     onMounted(() => {
       if (dagRef.value && dagRef.value.graph) {
         dagRef.value.graph.fromJSON({
-          cells: CDCStore.getModel.cells
+          cells: CDCStore.getModel.cells,
         })
       }
     })
@@ -67,7 +68,7 @@ export default defineComponent({
       name,
       handleSave,
       dagRef,
-      handleJump
+      handleJump,
     }
   },
   render() {
@@ -78,33 +79,40 @@ export default defineComponent({
             <div class={styles['title-bar']}>
               <n-space align="center">
                 <n-icon component={Leaf} color="#2F7BEA" size="18" />
-                <span class={styles.title} onClick={this.handleJump}>{this.t('cdc.cdc_job_definition')} {
+                <span class={styles.title} onClick={this.handleJump}>
+                  {this.t('cdc.cdc_job_definition')}
+                  {' '}
+                  {
                   this.name ? ` - ${this.name}` : ''
-                }</span>
+                }
+                </span>
               </n-space>
               <div class={styles.operation}>
                 <n-space>
-                  <n-popover trigger="hover" placement="bottom"
+                  <n-popover
+                    trigger="hover"
+                    placement="bottom"
                     v-slots={{
                       trigger: () => (
                         <n-button
                           onClick={this.handleSave}
                           v-slots={{
-                            icon: () => <n-icon component={Save}></n-icon>
+                            icon: () => <n-icon component={Save}></n-icon>,
                           }}
                         >
                         </n-button>
-                      )
-                    }}>
+                      ),
+                    }}
+                  >
                     <span>{this.t('cdc.save')}</span>
                   </n-popover>
                 </n-space>
               </div>
             </div>
           </n-card>
-          <DagCanvas ref='dagRef'></DagCanvas>
+          <DagCanvas ref="dagRef"></DagCanvas>
         </n-space>
       </n-card>
     )
-  }
+  },
 })

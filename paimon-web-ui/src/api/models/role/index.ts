@@ -16,58 +16,54 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type { ResponseOptions } from '@/api/types'
 import type { Role, RoleDTO, RoleDetail, RoleMenu, RoleParams } from './types/role'
-
+import type { ResponseOptions } from '@/api/types'
 
 /**
  * # create a role
  */
-export const createRole = () => {
+export function createRole() {
   return httpRequest.createHooks!<unknown, RoleDTO>({
     url: '/role',
-    method: 'post'
+    method: 'post',
   })
 }
-
 
 /**
  * # update a role
  */
-export const updateRole = () => {
+export function updateRole() {
   return httpRequest.createHooks!<unknown, RoleDTO>({
     url: '/role',
-    method: 'put'
+    method: 'put',
   })
 }
 
 /**
  * # delete a role
  */
-export const deleteRole = (roleId: number) => {
+export function deleteRole(roleId: number) {
   return httpRequest.delete!<unknown, RoleDTO>(`/role/${roleId}`)
 }
-
 
 /**
  * # permission tree
  */
-export const getPermissionTree = () => {
+export function getPermissionTree() {
   return httpRequest.get!<string, ResponseOptions<RoleMenu[]>>(`/menu/treeselect`)
 }
-
 
 /**
  * # permission tree by role Id
  */
-export const getPermissionByRoleId = (roleId: number) => {
+export function getPermissionByRoleId(roleId: number) {
   return httpRequest.get!<string, ResponseOptions<RoleDetail>>(`/menu/roleMenuTreeselect/${roleId}`)
 }
 
 /**
  * # List roles
  */
-export const listRoles = () => {
+export function listRoles() {
   return httpRequest.createHooks!<ResponseOptions<Role[]>, RoleParams>({
     url: '/role/list',
     method: 'get',

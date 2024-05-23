@@ -18,7 +18,7 @@ under the License. */
 import { Add } from '@vicons/ionicons5'
 
 import { useCatalogStore } from '@/store/catalog'
-import { createCatalog, type CatalogDTO } from '@/api/models/catalog'
+import { type CatalogDTO, createCatalog } from '@/api/models/catalog'
 
 export default defineComponent({
   name: 'CatalogForm',
@@ -27,39 +27,39 @@ export default defineComponent({
       name: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'catalog name required'
+        message: 'catalog name required',
       },
       type: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'catalog type required'
+        message: 'catalog type required',
       },
       warehouse: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'catalog warehouse required'
+        message: 'catalog warehouse required',
       },
       hiveUri: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'catalog hiveUri required'
+        message: 'catalog hiveUri required',
       },
       hiveConfDir: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'catalog hiveConfDir required'
-      }
+        message: 'catalog hiveConfDir required',
+      },
     }
 
     const catalogTypeOptions = [
       {
         label: 'FileSystem',
-        value: 'filesystem'
+        value: 'filesystem',
       },
       {
         label: 'Hive',
-        value: 'hive'
-      }
+        value: 'hive',
+      },
     ]
 
     const { t } = useLocaleHooks()
@@ -77,15 +77,15 @@ export default defineComponent({
         fileSystemType: 'local',
         endpoint: '',
         accessKey: '',
-        secretKey: ''
-      }
+        secretKey: '',
+      },
     })
     const showModal = ref(false)
 
     const handleConfirm = async () => {
       await formRef.value.validate()
       await createFetch({
-        params: toRaw(formValue.value)
+        params: toRaw(formValue.value),
       })
 
       handleCloseModal()
@@ -113,8 +113,8 @@ export default defineComponent({
           fileSystemType: 'local',
           endpoint: '',
           accessKey: '',
-          secretKey: ''
-        }
+          secretKey: '',
+        },
       }
     }
 
@@ -130,7 +130,7 @@ export default defineComponent({
       t,
       handleOpenModal,
       handleCloseModal,
-      handleConfirm
+      handleConfirm,
     }
   },
   render() {
@@ -189,8 +189,8 @@ export default defineComponent({
                           </n-space>
                         </n-radio-group>
                       </n-form-item>
-                      {(this.formValue.options.fileSystemType === 's3' ||
-                        this.formValue.options.fileSystemType === 'oss') && (
+                      {(this.formValue.options.fileSystemType === 's3'
+                      || this.formValue.options.fileSystemType === 'oss') && (
                         <>
                           <n-form-item label={this.t('metadata.catalog_endpoint')}>
                             <n-input v-model:value={this.formValue.options.endpoint} />
@@ -214,11 +214,11 @@ export default defineComponent({
                     {this.t('layout.confirm')}
                   </n-button>
                 </n-space>
-              )
+              ),
             }}
           </n-card>
         </n-modal>
       </>
     )
-  }
+  },
 })
