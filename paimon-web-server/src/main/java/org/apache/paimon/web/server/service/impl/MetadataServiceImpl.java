@@ -120,7 +120,7 @@ public class MetadataServiceImpl implements MetadataService {
                                         .totalRecordCount(internalRow.getLong(9))
                                         .deltaRecordCount(internalRow.getLong(10))
                                         .changelogRecordCount(internalRow.getLong(11))
-                                        .addedFileCount(internalRow.getInt(12))
+                                        .addedFileCount(internalRow.getLong(12))
                                         .deletedFileCount(internalRow.getInt(13))
                                         .watermark(getSafeLong(internalRow, 14))
                                         .build();
