@@ -75,7 +75,7 @@ export default defineComponent({
               <div class={styles.title}>
                 <n-space align="center">
                   <n-icon component={Leaf} color="#2F7BEA" size="18" />
-                  <span>{this.t('cdc.synchronization_job_definition')}</span>
+                  <span>{this.t('cdc.cdc_job_definition')}</span>
                 </n-space>
                 <div class={styles.operation}>
                   <n-space>

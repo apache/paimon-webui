@@ -78,7 +78,7 @@ export default defineComponent({
             <div class={styles['title-bar']}>
               <n-space align="center">
                 <n-icon component={Leaf} color="#2F7BEA" size="18" />
-                <span class={styles.title} onClick={this.handleJump}>{this.t('cdc.synchronization_job_definition')} {
+                <span class={styles.title} onClick={this.handleJump}>{this.t('cdc.cdc_job_definition')} {
                   this.name ? ` - ${this.name}` : ''
                 }</span>
               </n-space>
