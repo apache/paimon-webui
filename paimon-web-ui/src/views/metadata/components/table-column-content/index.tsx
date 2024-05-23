@@ -235,9 +235,9 @@ export default defineComponent({
   },
   render() {
     return (
-      <VueDraggable v-model:value={this.data} animation={150} handle=".drag-handle" target=".n-data-table-tbody">
+      <vue-draggable v-model:value={this.data} animation={150} handle=".drag-handle" target=".n-data-table-tbody">
         <n-data-table columns={this.columns} data={this.data} style={{ marginBottom: '24px' }} />
-      </VueDraggable>
+      </vue-draggable>
     )
   },
 })

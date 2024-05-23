@@ -25,7 +25,8 @@ import { format } from 'sql-formatter'
 import { editorProps } from './type'
 import { useConfigStore } from '@/store/config'
 
-// @ts-expect-error: worker
+/* eslint-disable new-cap */
+// eslint-disable-next-line no-restricted-globals
 self.MonacoEnvironment = {
   getWorker(_: string, label: string) {
     if (label === 'json')

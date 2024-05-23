@@ -21,7 +21,7 @@ import type { LANGUAGES } from '@/locales'
 import i18n from '@/locales'
 
 type LocaleType = Pick<typeof i18n.global, 't' | 'n' | 'd'> & {
-  setLanguage: (locale: UseI18nOptions['locale']) => void
+  setLanguage: (locale: LANGUAGES) => void
 }
 
 export function useLocaleHooks(): LocaleType {
