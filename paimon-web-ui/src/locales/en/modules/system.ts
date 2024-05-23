@@ -20,7 +20,7 @@ const user = {
   username: 'Username',
   nickname: 'Nickname',
   mobile: 'Mobile',
-  email: 'Email'
+  email: 'Email',
 }
 
 const role = {
@@ -51,7 +51,7 @@ const roleKey = {
   role_query: 'Role Query',
   role_add: 'Role Add',
   role_update: 'Role Update',
-  role_delete: 'Role Delete'
+  role_delete: 'Role Delete',
 }
 
 export default { user, role, roleKey }

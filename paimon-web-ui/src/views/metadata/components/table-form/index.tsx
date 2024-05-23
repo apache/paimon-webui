@@ -17,31 +17,29 @@ under the License. */
 
 import { Add } from '@vicons/ionicons5'
 
-import { useCatalogStore } from '@/store/catalog'
-import { createTable, type TableDTO } from '@/api/models/catalog'
-import { transformOption } from '@/views/metadata/constant'
-
 import OptionContent, { newOption } from '../options-form-content'
 import ColumnFormContent, { newField } from '../table-column-content'
-
 import styles from './index.module.scss'
+import { useCatalogStore } from '@/store/catalog'
+import { type TableDTO, createTable } from '@/api/models/catalog'
+import { transformOption } from '@/views/metadata/constant'
 
 const props = {
   catalogId: {
     type: Number as PropType<number>,
-    require: true
+    require: true,
   },
   catalogName: {
     type: String as PropType<string>,
-    require: true
+    require: true,
   },
   databaseName: {
     type: String as PropType<string>,
-    require: true
-  }
+    require: true,
+  },
 }
 
-const resetFormValue = () => {
+function resetFormValue() {
   return {
     name: '',
     tableColumns: [
@@ -49,14 +47,14 @@ const resetFormValue = () => {
         field: '',
         dataType: {
           nullable: true,
-          type: undefined
+          type: undefined,
         },
         comment: '',
         defaultValue: '',
-        pk: false
-      }
+        pk: false,
+      },
     ],
-    options: []
+    options: [],
   }
 }
 
@@ -78,11 +76,11 @@ export default defineComponent({
 
     const tableKeys = computed(() => {
       return formValue.value
-        .tableColumns!.filter((item) => Boolean(item.field))
+        .tableColumns!.filter(item => Boolean(item.field))
         .map((item) => {
           return {
             label: item.field,
-            value: item.field
+            value: item.field,
           }
         })
     })
@@ -93,8 +91,8 @@ export default defineComponent({
       await createFetch({
         params: {
           ...toRaw(props),
-          ...transformOption(toRaw(formValue.value))
-        }
+          ...transformOption(toRaw(formValue.value)),
+        },
       })
 
       handleCloseModal()
@@ -135,7 +133,7 @@ export default defineComponent({
       handleCloseModal,
       handleConfirm,
       handleAddOption,
-      handleAddColumn
+      handleAddColumn,
     }
   },
   render() {
@@ -156,7 +154,7 @@ export default defineComponent({
                     rule={{
                       required: true,
                       message: 'Name is required',
-                      trigger: ['input', 'blur']
+                      trigger: ['input', 'blur'],
                     }}
                     label={this.t('metadata.table_name')}
                     path="name"
@@ -210,11 +208,11 @@ export default defineComponent({
                     {this.t('layout.confirm')}
                   </n-button>
                 </n-space>
-              )
+              ),
             }}
           </n-card>
         </n-modal>
       </>
     )
-  }
+  },
 })

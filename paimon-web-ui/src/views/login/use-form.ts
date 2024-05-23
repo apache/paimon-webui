@@ -26,8 +26,8 @@ export function useForm() {
     loginForm: ref(),
     model: {
       username: '',
-      password: ''
-    }
+      password: '',
+    },
   })
 
   const handleLogin = () => {
@@ -37,7 +37,7 @@ export function useForm() {
           username: state.model.username,
           password: state.model.password,
           ldapLogin: false,
-          rememberMe: true
+          rememberMe: true,
         })
         router.push({ path: '/' })
       }
@@ -46,6 +46,6 @@ export function useForm() {
 
   return {
     state,
-    handleLogin
+    handleLogin,
   }
 }

@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormInst, FormItemRule, FormProps, FormRules, GridProps } from "naive-ui"
+import type { FormInst, FormItemRule, FormProps, FormRules, GridProps } from 'naive-ui'
 
 type ComponentType =
   | 'input'
@@ -23,7 +23,6 @@ type ComponentType =
   | 'switch'
   | 'select'
   | 'checkbox'
-
 
 interface IOption {
   [key: string]: any
@@ -61,8 +60,8 @@ interface IFormItem {
 
 type IFormRules =
   | {
-      [path: string]: IFormItemRule | IFormItemRule[]
-    }
+    [path: string]: IFormItemRule | IFormItemRule[]
+  }
   | FormRules
 
 interface IMeta extends Omit<FormProps, 'model' | 'rules'> {
@@ -92,5 +91,5 @@ export type {
   IMeta,
   GridProps,
   FormRules,
-  IFormInst
+  IFormInst,
 }

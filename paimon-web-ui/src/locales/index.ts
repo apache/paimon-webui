@@ -21,7 +21,7 @@ import zh from './zh'
 
 export enum LANGUAGES {
   EN = 'en',
-  ZH = 'zh'
+  ZH = 'zh',
 }
 
 const i18n = createI18n({
@@ -30,8 +30,8 @@ const i18n = createI18n({
   fallbackLocale: LANGUAGES.ZH,
   messages: {
     en,
-    zh
-  }
+    zh,
+  },
 })
 
 export default i18n

@@ -16,14 +16,14 @@ specific language governing permissions and limitations
 under the License. */
 
 import { isFunction } from 'lodash'
-import type { IJsonItem } from '../types'
 import { NInput } from 'naive-ui'
+import type { IJsonItem } from '../types'
 
 export function renderInput(item: IJsonItem, fields: { [field: string]: any }) {
   const { props, field } = isFunction(item) ? item() : item
   return h(NInput, {
     ...props,
     value: fields[field],
-    onUpdateValue: (value: string) => void (fields[field] = value)
+    onUpdateValue: (value: string) => void (fields[field] = value),
   })
 }

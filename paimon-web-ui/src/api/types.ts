@@ -15,8 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { RunnerMethod } from "@varlet/axle"
-import type { UseAxleOptions } from "@varlet/axle/use"
+import type { RunnerMethod } from '@varlet/axle'
+import type { UseAxleOptions } from '@varlet/axle/use'
 
 export interface ResponseOptions<P> {
   code: number

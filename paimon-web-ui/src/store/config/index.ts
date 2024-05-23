@@ -15,8 +15,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { LANGUAGES } from "@/locales"
-import type { Menu, NavBar, Theme } from "./type"
+import type { Menu, NavBar, Theme } from './type'
+import { LANGUAGES } from '@/locales'
 
 export const useConfigStore = defineStore({
   id: 'config',
@@ -39,7 +39,7 @@ export const useConfigStore = defineStore({
     },
     getCurrentMenuActive(): Menu {
       return this.menuActive
-    }
+    },
   },
   actions: {
     setCurrentLocale(locale: LANGUAGES): void {
@@ -48,11 +48,11 @@ export const useConfigStore = defineStore({
     setCurrentTheme(theme: Theme): void {
       this.theme = theme
     },
-    setCurrentNavActive(navActive: NavBar ): void {
+    setCurrentNavActive(navActive: NavBar): void {
       this.navActive = navActive
     },
     setCurrentMenuActive(menuActive: Menu): void {
       this.menuActive = menuActive
-    }
-  }
+    },
+  },
 })

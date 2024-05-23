@@ -24,33 +24,33 @@ export default defineComponent({
       {
         title: '#',
         key: 'key',
-        render: (_:any, index:number) => {
+        render: (_: any, index: number) => {
           return `${index + 1}`
-        }
+        },
       },
       {
         title: 'id',
         key: 'id',
-        resizable: true
+        resizable: true,
       },
       {
         title: 'name',
         key: 'name',
-        resizable: true
+        resizable: true,
       },
       {
         title: 'age',
         key: 'age',
-        resizable: true
+        resizable: true,
       },
       {
         title: 'address',
         key: 'address',
-        resizable: true
+        resizable: true,
       },
     ]
 
-    type User = {
+    interface User {
       id: number
       name: string
       age: number
@@ -61,7 +61,7 @@ export default defineComponent({
       { id: 1, name: 'jack', age: 36, address: 'beijing' },
       { id: 2, name: 'li hua', age: 38, address: 'shanghai' },
       { id: 3, name: 'zhao ming', age: 27, address: 'hangzhou' },
-      { id: 3, name: 'zhao ming', age: 27, address: 'hangzhou' }
+      { id: 3, name: 'zhao ming', age: 27, address: 'hangzhou' },
     ]
 
     return {
@@ -70,7 +70,7 @@ export default defineComponent({
     }
   },
   render() {
-    return(
+    return (
       <div>
         <n-data-table
           class={styles.table}
@@ -80,5 +80,5 @@ export default defineComponent({
         />
       </div>
     )
-  }
+  },
 })

@@ -29,5 +29,5 @@ export default {
   PAIMON: usePaimon,
   DATABASE: useDatabase,
   OPTIONS: useOptions,
-  CDCSUBMIT: useSumbitCdcJob
+  CDCSUBMIT: useSumbitCdcJob,
 }

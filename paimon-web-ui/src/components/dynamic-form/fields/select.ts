@@ -21,7 +21,7 @@ import type { IJsonItem } from '../types'
 
 export function renderSelect(
   item: IJsonItem,
-  fields: { [field: string]: any }
+  fields: { [field: string]: any },
 ) {
   const { props, field, options = [] } = isFunction(item) ? item() : item
   return h(NSelect, {
@@ -29,8 +29,9 @@ export function renderSelect(
     value: fields[field],
     onUpdateValue: (value: any) => {
       void (fields[field] = value)
-      if (props?.onUpdateValue) props.onUpdateValue(value)
+      if (props?.onUpdateValue)
+        props.onUpdateValue(value)
     },
-    options: options
+    options,
   })
 }

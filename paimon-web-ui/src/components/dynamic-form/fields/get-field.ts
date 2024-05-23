@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as Field from './index'
-import { camelCase, upperFirst, isFunction } from 'lodash'
+import { camelCase, isFunction, upperFirst } from 'lodash'
 import type { IFormRules, IJsonItem } from '../types'
+import * as Field from './index'
 
 const TYPES = [
   'input',
@@ -26,15 +26,12 @@ const TYPES = [
   'checkbox',
 ]
 
-const getField = (
-  item: IJsonItem,
-  fields: { [field: string]: any },
-  rules?: IFormRules
-) => {
+function getField(item: IJsonItem, fields: { [field: string]: any }, rules?: IFormRules) {
   const { type = 'input' } = isFunction(item) ? item() : item
-  if (!TYPES.includes(type)) return null
+  if (!TYPES.includes(type))
+    return null
   const renderTypeName = `render${upperFirst(camelCase(type))}`
-  // @ts-ignore
+  // @ts-expect-error
   return Field[renderTypeName](item, fields)
 }
 

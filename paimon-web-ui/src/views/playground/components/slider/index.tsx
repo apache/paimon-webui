@@ -15,10 +15,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { CodeSlashSharp, GitBranch, Layers, Settings, Terminal } from '@vicons/ionicons5'
+import { NIcon } from 'naive-ui'
 import styles from './index.module.scss'
-import { Layers, CodeSlashSharp, Settings, Terminal, GitBranch } from '@vicons/ionicons5';
 import { useConfigStore } from '@/store/config'
-import { NIcon } from 'naive-ui';
 
 export default defineComponent({
   name: 'SliderPage',
@@ -38,40 +38,40 @@ export default defineComponent({
           title: 'Query',
           description: computed(() => (t('playground.query'))),
           isClick: true,
-          path: '/playground/query'
+          path: '/playground/query',
         },
         {
           icon: renderIcon(CodeSlashSharp),
           title: 'Workbench',
           description: computed(() => (t('playground.workbench'))),
           isClick: false,
-          path: '/playground/workbench'
+          path: '/playground/workbench',
         },
       ],
       domainList: [
         {
           icon: renderIcon(Settings),
           title: 'Settings',
-          description: computed(() => (t('playground.settings')))
+          description: computed(() => (t('playground.settings'))),
         },
         {
           icon: renderIcon(Terminal),
           title: 'Terminal',
-          description: computed(() => (t('playground.terminal')))
+          description: computed(() => (t('playground.terminal'))),
         },
         {
           icon: renderIcon(GitBranch),
           title: 'GitBranch',
           description: computed(() => (t('playground.git_branch'))),
-        }
+        },
       ],
     })
 
     const handleClick = (index: number, type: string) => {
       if (type === 'workspace') {
-        for (const i in sliderVariables.workspaceList) {
+        for (const i in sliderVariables.workspaceList)
           sliderVariables.workspaceList[i].isClick = false
-        }
+
         sliderVariables.workspaceList[index].isClick = true
         configStore.setCurrentMenuActive(sliderVariables.workspaceList[index].title as any)
         router.push(sliderVariables.workspaceList[index].path)
@@ -81,16 +81,15 @@ export default defineComponent({
     onMounted(() => {
       for (const i in sliderVariables.workspaceList) {
         sliderVariables.workspaceList[i].isClick = false
-        if (sliderVariables.workspaceList[i].title === configStore.getCurrentMenuActive) {
+        if (sliderVariables.workspaceList[i].title === configStore.getCurrentMenuActive)
           sliderVariables.workspaceList[i].isClick = true
-        }
       }
     })
 
     return {
       configStore,
       handleClick,
-      ...toRefs(sliderVariables)
+      ...toRefs(sliderVariables),
     }
   },
   render() {
@@ -98,10 +97,12 @@ export default defineComponent({
       <div class={[this.configStore.getCurrentTheme === 'light' ? styles.light : styles.dark, styles.slider]}>
         <div class={styles.workspace}>
           <n-space vertical size={20}>
-            { 
+            {
               this.workspaceList.map((item: any, index: number) => {
                 return (
-                  <n-popover trigger="hover" placement="right"
+                  <n-popover
+                    trigger="hover"
+                    placement="right"
                     v-slots={{
                       trigger: () => (
                         <n-button
@@ -109,12 +110,13 @@ export default defineComponent({
                           text
                           onClick={() => this.handleClick(index, 'workspace')}
                           v-slots={{
-                            icon: () => item.icon()
+                            icon: () => item.icon(),
                           }}
                         >
                         </n-button>
-                      )
-                    }}>
+                      ),
+                    }}
+                  >
                     <span>{item.description}</span>
                   </n-popover>
                 )
@@ -124,22 +126,25 @@ export default defineComponent({
         </div>
         <div class={styles['functional-domain']}>
           <n-space vertical size={20}>
-            { 
+            {
               this.domainList.map((item: any, index: number) => {
                 return (
-                  <n-popover trigger="hover" placement="right"
+                  <n-popover
+                    trigger="hover"
+                    placement="right"
                     v-slots={{
                       trigger: () => (
                         <n-button
                           text
                           onClick={() => this.handleClick(index, 'domain')}
                           v-slots={{
-                            icon: () => item.icon()
+                            icon: () => item.icon(),
                           }}
                         >
                         </n-button>
-                      )
-                    }}>
+                      ),
+                    }}
+                  >
                     <span>{item.description}</span>
                   </n-popover>
                 )
@@ -148,6 +153,6 @@ export default defineComponent({
           </n-space>
         </div>
       </div>
-    );
+    )
   },
-});
+})

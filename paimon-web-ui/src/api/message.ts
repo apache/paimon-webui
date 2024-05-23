@@ -16,26 +16,25 @@ specific language governing permissions and limitations
 under the License. */
 
 import {
-  createDiscreteApi,
   type ConfigProviderProps,
+  createDiscreteApi,
   darkTheme,
-  lightTheme
+  lightTheme,
 } from 'naive-ui'
 
 import { useConfigStore } from '@/store/config'
 
-
 const configStore = useConfigStore()
 
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
-  theme: configStore.getCurrentTheme === 'light' ? lightTheme : darkTheme
+  theme: configStore.getCurrentTheme === 'light' ? lightTheme : darkTheme,
 }))
 
 const discreteApi = createDiscreteApi(
   ['message', 'dialog', 'notification', 'loadingBar'],
   {
-    configProviderProps: configProviderPropsRef
-  }
+    configProviderProps: configProviderPropsRef,
+  },
 )
 
 export default discreteApi

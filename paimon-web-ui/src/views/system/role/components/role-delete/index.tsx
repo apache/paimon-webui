@@ -1,4 +1,3 @@
-
 /* Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -16,15 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { deleteRole } from "@/api/models/role"
-import { RemoveCircleOutline, Warning } from "@vicons/ionicons5"
+import { RemoveCircleOutline, Warning } from '@vicons/ionicons5'
+import { deleteRole } from '@/api/models/role'
 
 export default defineComponent({
   props: {
     roleId: {
-      type: Number
+      type: Number,
     },
-    onDelete: Function
+    onDelete: Function,
   },
   setup(props) {
     const onDelete = async () => {
@@ -33,22 +32,24 @@ export default defineComponent({
     }
 
     return {
-      onDelete
+      onDelete,
     }
   },
   render() {
-    return <n-popconfirm onPositiveClick={this.onDelete}>
-      {{
-        default: () => 'Confirm to delete ? ',
-        trigger: () => (
-          <n-button strong secondary circle type="error">
-            {{
-              icon: () => <n-icon component={RemoveCircleOutline} />
-            }}
-          </n-button>
-        ),
-        icon: () => <n-icon color='#EC4C4D' component={Warning} />
-      }}
-    </n-popconfirm>
-  }
+    return (
+      <n-popconfirm onPositiveClick={this.onDelete}>
+        {{
+          default: () => 'Confirm to delete ? ',
+          trigger: () => (
+            <n-button strong secondary circle type="error">
+              {{
+                icon: () => <n-icon component={RemoveCircleOutline} />,
+              }}
+            </n-button>
+          ),
+          icon: () => <n-icon color="#EC4C4D" component={Warning} />,
+        }}
+      </n-popconfirm>
+    )
+  },
 })

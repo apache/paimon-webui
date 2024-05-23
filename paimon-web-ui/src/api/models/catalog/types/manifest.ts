@@ -16,9 +16,9 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface Manifest {
-  fileName: string;
-  fileSize: string;
-  numAddedFiles: string;
-  numDeletedFiles: string;
-  schemaId: string;
+  fileName: string
+  fileSize: string
+  numAddedFiles: string
+  numDeletedFiles: string
+  schemaId: string
 }

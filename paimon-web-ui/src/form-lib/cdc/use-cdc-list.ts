@@ -15,63 +15,63 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { IJsonItem } from "@/components/dynamic-form/types"
+import type { IJsonItem } from '@/components/dynamic-form/types'
 
-export function useCDCList(item:any) {
+export function useCDCList(item: any) {
   const { t } = useLocaleHooks()
 
-	const model = reactive({
-		name: item.name,
-		description: item.description,
-		synchronizationType: item.synchronizationType,
-	})
+  const model = reactive({
+    name: item.name,
+    description: item.description,
+    synchronizationType: item.synchronizationType,
+  })
 
-	const synchronizationTypeOptions = [
-		{
-			label: t('cdc.single_table_synchronization'),
-			value: 0
-		},
-		{
-			label: t('cdc.whole_database_synchronization'),
-			value: 1
-		},
-	]
+  const synchronizationTypeOptions = [
+    {
+      label: t('cdc.single_table_synchronization'),
+      value: 0,
+    },
+    {
+      label: t('cdc.whole_database_synchronization'),
+      value: 1,
+    },
+  ]
 
-	return {
-		json: [
-			{
-				type: 'input',
-				field: 'name',
-				name: t('cdc.synchronization_job_name'),
-				props: {
-					placeholder: ''
-				},
-				validate: {
-					trigger: ['input', 'blur'],
-					required: true,
-					message: 'error',
-					validator: (validator: any, value: string) => {
-						if (!value) {
-							return new Error('error')
-						}
-					}
-				}
-			},
-			{
-				type: 'input',
-				field: 'description',
-				name: t('cdc.task_description'),
-				props: {
-					placeholder: ''
-				}
-			},
-			{
-				type: 'radio',
-				field: 'synchronizationType',
-				name: t('cdc.synchronization_type'),
-				options: synchronizationTypeOptions,
-				value: 0,
-			},
-		] as IJsonItem[], model
-	}
+  return {
+    json: [
+      {
+        type: 'input',
+        field: 'name',
+        name: t('cdc.synchronization_job_name'),
+        props: {
+          placeholder: '',
+        },
+        validate: {
+          trigger: ['input', 'blur'],
+          required: true,
+          message: 'error',
+          validator: (validator: any, value: string) => {
+            if (!value)
+              return new Error('error')
+          },
+        },
+      },
+      {
+        type: 'input',
+        field: 'description',
+        name: t('cdc.task_description'),
+        props: {
+          placeholder: '',
+        },
+      },
+      {
+        type: 'radio',
+        field: 'synchronizationType',
+        name: t('cdc.synchronization_type'),
+        options: synchronizationTypeOptions,
+        value: 0,
+      },
+    ] as IJsonItem[],
+    model,
+  }
 }

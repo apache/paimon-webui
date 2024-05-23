@@ -18,39 +18,39 @@ under the License. */
 import type { IJsonItem } from '@/components/dynamic-form/types'
 
 export function useDatabase() {
-	const { t } = useLocaleHooks()
+  const { t } = useLocaleHooks()
 
-	const model = reactive({})
+  const model = reactive({})
 
-	return {
-		json: [
-			{
-				type: 'input',
-				field: 'name',
-				name: t('metadata.database_name'),
-				props: {
-					placeholder: ''
-				},
-				validate: {
-					trigger: ['input', 'blur'],
-					required: true,
-					message: 'error',
-					validator: (validator: any, value: string) => {
-						if (!value) {
-							return new Error('error')
-						}
-					}
-				}
-			},
-			{
-				type: 'input',
-				field: 'description',
-				name: t('metadata.database_des'),
-				props: {
-					placeholder: '',
-					type: 'textarea'
-				}
-			},
-		] as IJsonItem[], model
-	}
+  return {
+    json: [
+      {
+        type: 'input',
+        field: 'name',
+        name: t('metadata.database_name'),
+        props: {
+          placeholder: '',
+        },
+        validate: {
+          trigger: ['input', 'blur'],
+          required: true,
+          message: 'error',
+          validator: (validator: any, value: string) => {
+            if (!value)
+              return new Error('error')
+          },
+        },
+      },
+      {
+        type: 'input',
+        field: 'description',
+        name: t('metadata.database_des'),
+        props: {
+          placeholder: '',
+          type: 'textarea',
+        },
+      },
+    ] as IJsonItem[],
+    model,
+  }
 }

@@ -24,6 +24,6 @@ export default {
   dark: 'Dark',
   cancel: 'Cancel',
   confirm: 'Confirm',
-  user:'User',
-  role:'Role'
+  user: 'User',
+  role: 'Role',
 }

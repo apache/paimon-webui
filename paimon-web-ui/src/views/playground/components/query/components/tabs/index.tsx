@@ -16,38 +16,37 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss'
-import ContextMenu from '@/components/context-menu';
+import ContextMenu from '@/components/context-menu'
 
 export default defineComponent({
   name: 'EditorTabs',
   setup() {
-    const { mittBus }  = getCurrentInstance()!.appContext.config.globalProperties
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
 
     const tabVariables = reactive({
       chooseTab: '',
       panelsList: [] as any,
-      row: {} as any
+      row: {} as any,
     })
 
     const handleAdd = () => {
       tabVariables.panelsList.push({
-        tableName: 'test' + (tabVariables.panelsList.length + 1),
-        key: 'test' + (tabVariables.panelsList.length + 1),
+        tableName: `test${tabVariables.panelsList.length + 1}`,
+        key: `test${tabVariables.panelsList.length + 1}`,
         isSaved: false,
-        content: ''
+        content: '',
       })
-      tabVariables.chooseTab = 'test' + tabVariables.panelsList.length
+      tabVariables.chooseTab = `test${tabVariables.panelsList.length}`
     }
 
     const handleClose = (key: any) => {
       const index = tabVariables.panelsList.findIndex((item: any) => item.key === key)
       tabVariables.panelsList.splice(index, 1)
       if (key === tabVariables.chooseTab) {
-        if (tabVariables.panelsList[index - 1]) {
+        if (tabVariables.panelsList[index - 1])
           tabVariables.chooseTab = tabVariables.panelsList[index - 1].key
-        } else {
+        else
           tabVariables.chooseTab = tabVariables.panelsList[index]?.key || ''
-        }
       }
     }
 
@@ -64,7 +63,7 @@ export default defineComponent({
     const contextMenuVariables = reactive({
       x: 0,
       y: 0,
-      isShow: false
+      isShow: false,
     })
 
     const openContextMenu = (e: MouseEvent, item: any) => {
@@ -81,16 +80,16 @@ export default defineComponent({
       switch (keys) {
         case 'close_left':
           tabVariables.panelsList.splice(0, index)
-          break;
+          break
         case 'close_right':
           tabVariables.panelsList.splice(index + 1)
-          break;
+          break
         case 'close_others':
           tabVariables.panelsList = [tabVariables.row]
-          break;
+          break
         case 'close_all':
           tabVariables.panelsList = []
-          break;
+          break
       }
       contextMenuVariables.isShow = false
     }
@@ -106,7 +105,7 @@ export default defineComponent({
       changeTreeChoose,
       openContextMenu,
       ...toRefs(contextMenuVariables),
-      handleContextMenuSelect
+      handleContextMenuSelect,
     }
   },
   render() {
@@ -123,12 +122,13 @@ export default defineComponent({
           on-update:value={this.changeTreeChoose}
           v-slots={{
             prefix: () => '',
-            suffix: () => ''
+            suffix: () => '',
           }}
         >
           {
             this.panelsList.map((item: any) => (
-              <n-tab-pane name={item.key}
+              <n-tab-pane
+                name={item.key}
                 v-slots={{
                   tab: () => (
                     <div class={styles.tabs} onContextmenu={(e: MouseEvent) => this.openContextMenu(e, item)}>
@@ -136,9 +136,10 @@ export default defineComponent({
                       <div>{item.tableName}</div>
                       {!item.isSaved && <div class={styles.asterisk}>*</div>}
                     </div>
-                  )
+                  ),
                 }}
-              ></n-tab-pane>
+              >
+              </n-tab-pane>
             ))
           }
         </n-tabs>
@@ -151,6 +152,6 @@ export default defineComponent({
           onSelect={this.handleContextMenuSelect}
         />
       </div>
-    );
-  }
-});
+    )
+  },
+})

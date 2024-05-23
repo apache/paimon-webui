@@ -15,15 +15,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { FileTrayFullOutline, Search, FolderOpenOutline } from '@vicons/ionicons5';
+import { FileTrayFullOutline, FolderOpenOutline, Search } from '@vicons/ionicons5'
+import { NIcon, type TreeOption } from 'naive-ui'
 import styles from './index.module.scss'
-import { NIcon, type TreeOption } from 'naive-ui';
 
 export default defineComponent({
   name: 'MenuTree',
   setup() {
     const { t } = useLocaleHooks()
 
+    const tabData = ref({}) as any
     const treeVariables = reactive({
       treeData: [
         {
@@ -32,7 +33,7 @@ export default defineComponent({
           type: 'folder',
           prefix: () =>
             h(NIcon, null, {
-              default: () => h(FolderOpenOutline)
+              default: () => h(FolderOpenOutline),
             }),
           children: [
             {
@@ -41,7 +42,7 @@ export default defineComponent({
               type: 'folder',
               prefix: () =>
                 h(NIcon, null, {
-                  default: () => h(FolderOpenOutline)
+                  default: () => h(FolderOpenOutline),
                 }),
               children: [
                 {
@@ -51,8 +52,8 @@ export default defineComponent({
                   content: 'select * from abc where abc.a="abc";select * from cba where cba.a="cba";',
                   prefix: () =>
                     h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
+                      default: () => h(FileTrayFullOutline),
+                    }),
                 },
                 {
                   label: 'people_table',
@@ -61,16 +62,16 @@ export default defineComponent({
                   content: 'select * from abc where abc.a="abc";',
                   prefix: () =>
                     h(NIcon, null, {
-                      default: () => h(FileTrayFullOutline)
-                    })
-                }
-              ]
-            }
-          ]
-        }
+                      default: () => h(FileTrayFullOutline),
+                    }),
+                },
+              ],
+            },
+          ],
+        },
       ],
       filterValue: '',
-      selectedKeys: []
+      selectedKeys: [],
     })
 
     const contextMenuVariables = reactive({
@@ -86,13 +87,14 @@ export default defineComponent({
           label: t('playground.new_file'),
           key: 'new_file',
         },
-      ]
+      ],
     })
 
     const nodeProps = ({ option }: { option: TreeOption }) => {
       return {
-        onClick () {
-          if (option.children) return
+        onClick() {
+          if (option.children)
+            return
           if (tabData.value.panelsList?.some((item: any) => item.key === option.key)) {
             tabData.value.chooseTab = option.key
             return
@@ -101,36 +103,34 @@ export default defineComponent({
             tableName: option.label,
             key: option.key,
             isSaved: false,
-            content: option.content
+            content: option.content,
           })
           tabData.value.chooseTab = option.key
         },
-        onContextmenu (e: MouseEvent): void {
+        onContextmenu(e: MouseEvent): void {
           e.preventDefault()
           contextMenuVariables.x = e.clientX
           contextMenuVariables.y = e.clientY
           contextMenuVariables.isShow = true
-        }
+        },
       }
     }
 
-    const handleTreeSelect = (value: never[], option: { children: any; }[]) => {
-      if (option[0]?.children) return
+    const handleTreeSelect = (value: never[], option: { children: any }[]) => {
+      if (option[0]?.children)
+        return
       treeVariables.selectedKeys = value
     }
 
     // mitt - handle tab choose
-    const tabData = ref({}) as any
-    const { mittBus }  = getCurrentInstance()!.appContext.config.globalProperties
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
 
-
     const handleContextMenuSelect = () => {
       contextMenuVariables.isShow = false
     }
-
 
     onMounted(() => {
       mittBus.emit('initTreeData', treeVariables)
@@ -148,12 +148,14 @@ export default defineComponent({
   render() {
     return (
       <div class={styles.container}>
-        <n-card class={styles.card} content-style={'padding:20px 18px;'}>
+        <n-card class={styles.card} content-style="padding:20px 18px;">
           <n-space vertical>
-            <n-input placeholder={this.t('playground.search')} style="width: 100%;"
+            <n-input
+              placeholder={this.t('playground.search')}
+              style="width: 100%;"
               v-model:value={this.filterValue}
               v-slots={{
-                prefix: () => <n-icon component={Search} />
+                prefix: () => <n-icon component={Search} />,
               }}
             >
             </n-input>
@@ -179,6 +181,6 @@ export default defineComponent({
           </n-space>
         </n-card>
       </div>
-    );
-  }
-});
+    )
+  },
+})

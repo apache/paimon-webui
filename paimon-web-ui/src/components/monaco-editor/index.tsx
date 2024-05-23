@@ -21,27 +21,27 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import { format } from 'sql-formatter'
 import { editorProps } from './type'
 import { useConfigStore } from '@/store/config'
-import { format } from 'sql-formatter'
 
-// @ts-ignore: worker
+// @ts-expect-error: worker
 self.MonacoEnvironment = {
   getWorker(_: string, label: string) {
-    if (label === 'json') {
+    if (label === 'json')
       return new jsonWorker()
-    }
-    if (['css', 'scss', 'less'].includes(label)) {
+
+    if (['css', 'scss', 'less'].includes(label))
       return new cssWorker()
-    }
-    if (['html', 'handlebars', 'razor'].includes(label)) {
+
+    if (['html', 'handlebars', 'razor'].includes(label))
       return new htmlWorker()
-    }
-    if (['typescript', 'javascript'].includes(label)) {
+
+    if (['typescript', 'javascript'].includes(label))
       return new tsWorker()
-    }
+
     return new EditorWorker()
-  }
+  },
 }
 
 export default defineComponent({
@@ -56,51 +56,51 @@ export default defineComponent({
     const init = () => {
       monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
         noSemanticValidation: true,
-        noSyntaxValidation: false
+        noSyntaxValidation: false,
       })
       monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
         target: monaco.languages.typescript.ScriptTarget.ES2020,
-        allowNonTsExtensions: true
+        allowNonTsExtensions: true,
       })
       monaco.languages.registerCompletionItemProvider('sql', {
-        provideCompletionItems: function(model, position) {
-          const word = model.getWordUntilPosition(position);
+        provideCompletionItems(model, position) {
+          const word = model.getWordUntilPosition(position)
           const range = {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
             startColumn: word.startColumn,
-            endColumn: word.endColumn
-          };
-          const suggestions = [];
-          const sqlStr = ['select','from','where','and','or','limit','order by','group by'];
-            for(const i in sqlStr){
-              suggestions.push({
-                label: sqlStr[i],
-                kind: monaco.languages.CompletionItemKind['Function'],
-                insertText: sqlStr[i],
-                detail: '',
-                range:range
-              });
-            }
+            endColumn: word.endColumn,
+          }
+          const suggestions = []
+          const sqlStr = ['select', 'from', 'where', 'and', 'or', 'limit', 'order by', 'group by']
+          for (const i in sqlStr) {
+            suggestions.push({
+              label: sqlStr[i],
+              kind: monaco.languages.CompletionItemKind.Function,
+              insertText: sqlStr[i],
+              detail: '',
+              range,
+            })
+          }
           return {
-            suggestions: suggestions
-          };
+            suggestions,
+          }
         },
-      });
+      })
 
       editor = monaco.editor.create(codeEditBox.value, {
         value: props.modelValue,
         language: props.language,
         theme: monacoEditorThemeRef.value,
-        ...props.options
+        ...props.options,
       })
 
-      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
         emit('EditorSave')
       })
 
       editor.setValue(format(toRaw(editor).getValue()))
-      
+
       editor.onDidChangeModelContent(() => {
         const value = editor.getValue()
         emit('update:modelValue', value)
@@ -110,7 +110,7 @@ export default defineComponent({
     }
     watch(
       () => props.modelValue,
-      newValue => {
+      (newValue) => {
         if (editor) {
           const value = editor.getValue()
           if (newValue !== value) {
@@ -118,20 +118,20 @@ export default defineComponent({
             editor.setValue(format(toRaw(editor).getValue()))
           }
         }
-      }
+      },
     )
     watch(
       () => props.options,
-      newValue => {
+      (newValue) => {
         editor.updateOptions(newValue)
       },
-      { deep: true }
+      { deep: true },
     )
     watch(
       () => props.language,
-      newValue => {
+      (newValue) => {
         monaco.editor.setModelLanguage(editor.getModel()!, newValue)
-      }
+      },
     )
     watch(
       () => configStore.getCurrentTheme,
@@ -139,9 +139,9 @@ export default defineComponent({
         editor?.dispose()
         monacoEditorThemeRef.value = configStore.getCurrentTheme === 'dark' ? 'vs-dark' : 'vs'
         init()
-      }
+      },
     )
-    
+
     onBeforeUnmount(() => {
       editor.dispose()
     })
@@ -150,11 +150,14 @@ export default defineComponent({
     })
     return { codeEditBox }
   },
-  render () {
+  render() {
     return (
-      <div ref='codeEditBox' style={{
-        height: '100%',
-      }}/>
+      <div
+        ref="codeEditBox"
+        style={{
+          height: '100%',
+        }}
+      />
     )
-  }
+  },
 })

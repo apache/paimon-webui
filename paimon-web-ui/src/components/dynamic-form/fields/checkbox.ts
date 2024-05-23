@@ -21,25 +21,24 @@ import type { IJsonItem } from '../types'
 
 export function renderCheckbox(
   item: IJsonItem,
-  fields: { [field: string]: any }
+  fields: { [field: string]: any },
 ) {
   const { props, field, options } = isFunction(item) ? item() : item
   if (!options) {
     return h(NCheckbox, {
       ...props,
       value: fields[field],
-      onUpdateChecked: (checked: boolean) => void (fields[field] = checked)
+      onUpdateChecked: (checked: boolean) => void (fields[field] = checked),
     })
   }
   return h(
     NCheckboxGroup,
     {
       value: fields[field],
-      onUpdateValue: (value) => void (fields[field] = value)
+      onUpdateValue: value => void (fields[field] = value),
     },
     () =>
       h(NSpace, null, () =>
-        unref(options).map((option: object) => h(NCheckbox, { ...option }))
-      )
+        unref(options).map((option: object) => h(NCheckbox, { ...option }))),
   )
 }

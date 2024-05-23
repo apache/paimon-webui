@@ -35,7 +35,7 @@ export default defineComponent({
     return {
       t,
       handleUp,
-      handleDown
+      handleDown,
     }
   },
   render() {
@@ -57,53 +57,62 @@ export default defineComponent({
         </n-tabs>
         <div class={styles.operations}>
           <n-space>
-            <n-popover trigger="hover" placement="bottom"
+            <n-popover
+              trigger="hover"
+              placement="bottom"
               v-slots={{
                 trigger: () => (
                   <n-button
                     text
                     v-slots={{
-                      icon: () => <n-icon component={TrashOutline}></n-icon>
+                      icon: () => <n-icon component={TrashOutline}></n-icon>,
                     }}
                   >
                   </n-button>
-                )
-              }}>
+                ),
+              }}
+            >
               <span>{this.t('playground.clear')}</span>
             </n-popover>
-            <n-popover trigger="hover" placement="bottom"
+            <n-popover
+              trigger="hover"
+              placement="bottom"
               v-slots={{
                 trigger: () => (
                   <n-button
                     text
                     onClick={this.handleUp}
                     v-slots={{
-                      icon: () => <n-icon component={ChevronUp}></n-icon>
+                      icon: () => <n-icon component={ChevronUp}></n-icon>,
                     }}
                   >
                   </n-button>
-                )
-              }}>
+                ),
+              }}
+            >
               <span>{this.t('playground.unfold')}</span>
             </n-popover>
-            <n-popover trigger="hover" placement="bottom"
+            <n-popover
+              trigger="hover"
+              placement="bottom"
               v-slots={{
                 trigger: () => (
                   <n-button
                     text
                     onClick={this.handleDown}
                     v-slots={{
-                      icon: () => <n-icon component={ChevronDown}></n-icon>
+                      icon: () => <n-icon component={ChevronDown}></n-icon>,
                     }}
                   >
                   </n-button>
-                )
-              }}>
+                ),
+              }}
+            >
               <span>{this.t('playground.collapse')}</span>
             </n-popover>
           </n-space>
         </div>
-      </div>   
+      </div>
     )
-  }
+  },
 })

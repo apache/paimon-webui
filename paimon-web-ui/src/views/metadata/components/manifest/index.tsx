@@ -15,9 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { type DataTableColumns } from 'naive-ui'
+import type { DataTableColumns } from 'naive-ui'
 
-import { getManifest, type Manifest } from '@/api/models/catalog'
+import { type Manifest, getManifest } from '@/api/models/catalog'
 import { useCatalogStore } from '@/store/catalog'
 
 export default defineComponent({
@@ -31,21 +31,21 @@ export default defineComponent({
     const columns: DataTableColumns<Manifest> = [
       {
         title: 'File Name',
-        key: 'fileName'
+        key: 'fileName',
       },
       {
         title: 'File Size',
-        key: 'fileSize'
+        key: 'fileSize',
       },
       {
         title: 'Number of Add Files',
-        key: 'numAddedFiles'
+        key: 'numAddedFiles',
       },
     ]
 
     const onFetchData = async () => {
       useManifest({
-        params: catalogStore.currentTable
+        params: catalogStore.currentTable,
       })
     }
 
@@ -70,6 +70,6 @@ export default defineComponent({
           />
         </n-spin>
       </n-card>
-    );
+    )
   },
-});
+})
