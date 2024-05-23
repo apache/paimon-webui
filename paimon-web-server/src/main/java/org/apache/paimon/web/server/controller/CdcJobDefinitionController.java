@@ -68,7 +68,7 @@ public class CdcJobDefinitionController {
             @RequestParam(required = false) String jobName,
             @RequestParam long currentPage,
             @RequestParam long pageSize) {
-        return cdcJobDefinitionService.listAll(jobName,withConfig, currentPage, pageSize);
+        return cdcJobDefinitionService.listAll(jobName, withConfig, currentPage, pageSize);
     }
 
     @SaCheckPermission("cdc:job:query")
