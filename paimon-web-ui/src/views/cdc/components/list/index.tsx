@@ -30,6 +30,7 @@ export default defineComponent({
     return {
       t,
       ...toRefs(tableVariables),
+      getTableData
     }
   },
   render() {
