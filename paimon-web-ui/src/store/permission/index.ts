@@ -17,7 +17,7 @@ under the License. */
 
 import { getPermissionTree } from '@/api/models/role'
 
-import type { RoleMenu } from '@/api/models/role/types/role'
+import type { RoleMenu } from '@/api/models/role/types'
 
 export const usePermissionStore = defineStore('permission', () => {
   const permissionList = ref<RoleMenu[]>([])

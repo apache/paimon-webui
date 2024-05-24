@@ -23,7 +23,7 @@ import RoleForm from './components/role-form'
 import RoleDetail from './components/role-detail'
 import RoleDelete from './components/role-delete'
 import { createRole, getPermissionByRoleId, updateRole } from '@/api/models/role'
-import type { Role, RoleDTO } from '@/api/models/role/types/role'
+import type { Role, RoleDTO } from '@/api/models/role/types'
 
 export default defineComponent({
   name: 'RolePage',

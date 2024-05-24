@@ -16,7 +16,9 @@ specific language governing permissions and limitations
 under the License. */
 
 const metadata = require(`./metadata`)
+const system = require(`./system`)
 
 module.exports = {
-  metadata
+  metadata,
+  system
 }

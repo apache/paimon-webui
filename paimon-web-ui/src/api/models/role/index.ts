@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type { Role, RoleDTO, RoleDetail, RoleMenu, RoleParams } from './types/role'
+import type { Role, RoleDTO, RoleDetail, RoleMenu, RoleParams } from './types'
 import type { ResponseOptions } from '@/api/types'
 
 /**

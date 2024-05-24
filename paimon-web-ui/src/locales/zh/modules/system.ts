@@ -21,6 +21,13 @@ const user = {
   nickname: '昵称',
   mobile: '手机号',
   email: '邮箱',
+  password: '密码',
+
+  create: '新增用户',
+  update: '更新用户',
+
+  enabled: '是否启用',
+  roleIds: '角色',
 }
 
 const role = {
