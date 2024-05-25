@@ -173,6 +173,20 @@ CREATE TABLE if not exists `job`
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
     )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `select_history`;
+CREATE TABLE if not exists `select_history`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `name`     varchar(100)  not null comment 'name',
+    `task_type`     varchar(100)  not null comment 'task type',
+    `is_streaming`  tinyint(1)  comment 'is steaming',
+    `uid`     int(11)  comment 'user id',
+    `cluster_id`     int(11)  comment 'cluster id',
+    `statements`   text COMMENT 'statements',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `user` ( id, username, password, nickname, mobile
                    , email, enabled, is_delete)
 VALUES ( 1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', 0

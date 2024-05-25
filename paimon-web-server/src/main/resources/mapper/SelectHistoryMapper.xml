@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.paimon.web.server.mapper.SelectHistoryMapper">
+
+    <resultMap id="SelectHistoryResult" type="org.apache.paimon.web.server.data.model.SelectHistory">
+        <id     property="id"       column="id"      />
+        <result property="name"     column="name"    />
+        <result property="taskType"     column="task_type"    />
+        <result property="isStreaming"     column="is_streaming"    />
+        <result property="uid"        column="uid"        />
+        <result property="clusterId"     column="cluster_id"     />
+        <result property="statements"     column="statements"     />
+        <result property="createTime"   column="create_time"  />
+        <result property="updateTime"   column="update_time"  />
+    </resultMap>
+
+    <sql id="selectHistoryVo">
+        select id, name, task_type, is_streaming, uid, cluster_id, statements, create_time, update_time from select_history order by create_time desc
+    </sql>
+
+    <select id="listSelectHistories" parameterType="org.apache.paimon.web.server.data.model.SelectHistory" resultMap="SelectHistoryResult">
+        <include refid="selectHistoryVo"/>
+        <if test="history.name != null and history.name != ''">
+            AND name like concat('%', #{history.name}, '%')
+        </if>
+        <if test="history.statements != null and history.statements != ''">
+            AND statements like concat('%', #{history.statements}, '%')
+        </if>
+        <if test="history.params.beginTime != null and history.params.beginTime != ''"><!-- Start time search -->
+            AND date_format(create_time,'%y%m%d') &gt;= date_format(#{history.params.beginTime},'%y%m%d')
+        </if>
+        <if test="history.params.endTime != null and history.params.endTime != ''"><!-- End time search -->
+            AND date_format(create_time,'%y%m%d') &lt;= date_format(#{history.params.endTime},'%y%m%d')
+        </if>
+    </select>
+</mapper>
