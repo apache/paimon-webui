@@ -27,7 +27,6 @@ import org.apache.paimon.web.server.util.PageSupport;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +40,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /** Statement api controller. */
-@Slf4j
 @RestController
 @RequestMapping("/api/statement")
 public class StatementController {
