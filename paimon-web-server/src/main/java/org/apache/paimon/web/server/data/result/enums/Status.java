@@ -89,7 +89,11 @@ public enum Status {
     JOB_SUBMIT_ERROR(10701, "job.submit.error"),
     RESULT_FETCH_ERROR(10702, "result.fetch.error"),
     JOB_STOP_ERROR(10703, "job.stop.error"),
-    JOB_UPDATE_STATUS_ERROR(10704, "job.update.status.error");
+    JOB_UPDATE_STATUS_ERROR(10704, "job.update.status.error"),
+
+    /** ------------cluster-----------------. */
+    STATEMENT_NOT_EXIST(10801, "statement.not.exist"),
+    STATEMENT_NAME_ALREADY_EXISTS(10802, "statement.name.exist");
 
     private final int code;
     private final String msg;
