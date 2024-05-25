@@ -42,7 +42,7 @@ public class StatementInfo extends BaseModel {
 
     private Integer uid;
 
-    private String clusterId;
+    private Integer clusterId;
 
     private String statements;
 

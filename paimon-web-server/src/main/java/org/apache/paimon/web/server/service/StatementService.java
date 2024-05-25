@@ -40,8 +40,8 @@ public interface StatementService extends IService<StatementInfo> {
     /**
      * Saves a statement information entity.
      *
-     * @param statementInfo The statement information to save.
-     * @return true if the statement was saved successfully, false otherwise.
+     * @param statementInfo The statement information to save
+     * @return true if the statement was saved successfully, false otherwise
      */
     boolean saveStatement(StatementInfo statementInfo);
 
