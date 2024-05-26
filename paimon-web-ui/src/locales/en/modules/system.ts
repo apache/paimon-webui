@@ -21,6 +21,13 @@ const user = {
   nickname: 'Nickname',
   mobile: 'Mobile',
   email: 'Email',
+  password: 'Password',
+
+  create: 'Create User',
+  update: 'Update User',
+
+  enabled: 'Enabled',
+  roleIds: 'Role',
 }
 
 const role = {

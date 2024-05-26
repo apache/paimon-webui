@@ -37,7 +37,7 @@ export function useTable() {
 
   const [roleList, useRoleList, { loading }] = listRoles()
 
-  const getTableData = () => {
+  function getTableData() {
     const params = {
       roleName: tableVariables.searchForm.roleName,
       currentPage: tableVariables.pagination.page,
