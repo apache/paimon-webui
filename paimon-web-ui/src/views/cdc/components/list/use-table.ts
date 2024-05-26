@@ -98,7 +98,7 @@ export function useTable(ctx: any) {
       showSizePicker: true,
       pageSize: 10,
       page: 1,
-      count: 100,
+      itemCount: 0,
       onUpdatePage: (page: number) => {
         tableVariables.pagination.page = page
         getTableData()
@@ -110,11 +110,11 @@ export function useTable(ctx: any) {
       },
     },
   })
-  const getTableData = () => {
-    listAllCdcJob(false, tableVariables.pagination.page, tableVariables.pagination.pageSize).then(
+  const getTableData = (jobName?:string) => {
+    listAllCdcJob(false,jobName, tableVariables.pagination.page, tableVariables.pagination.pageSize).then(
       (res: any) => {
         tableVariables.data = res.data
-        tableVariables.pagination.count = res.total
+        tableVariables.pagination.itemCount = res.total 
       },
     )
   }

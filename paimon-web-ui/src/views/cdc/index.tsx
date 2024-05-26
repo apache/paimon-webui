@@ -15,13 +15,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Leaf } from '@vicons/ionicons5'
+import { Leaf, Search } from '@vicons/ionicons5'
 import type { Router } from 'vue-router'
 import List from './components/list'
 import styles from './index.module.scss'
 import Modal from '@/components/modal'
 import { useCDCStore } from '@/store/cdc'
 import { type CdcJobSubmit, submitCdcJob } from '@/api/models/cdc'
+import job from '../job'
 
 export default defineComponent({
   name: 'CDCPage',
@@ -48,11 +49,19 @@ export default defineComponent({
       router.push({ path: '/cdc_ingestion/dag' })
     }
 
+    const cdcJobTableRef = ref()
+
     const handleCdcSubmitConfirm = (form: CdcJobSubmit) => {
       const CDCStore = useCDCStore()
       submitCdcJob(CDCStore.getModel.id, form)
       showSubmitCdcJobModalRef.value = false
     }
+
+    const handleSeachCdcJobTable = ()=>{
+      cdcJobTableRef.value.getTableData(filterValue.value)
+    }
+
+    const filterValue = ref()
 
     return {
       t,
@@ -64,6 +73,9 @@ export default defineComponent({
       submitCdcJobModalRef,
       handleOpenSubmitCdcJobModal,
       handleCdcSubmitConfirm,
+      cdcJobTableRef,
+      handleSeachCdcJobTable,
+      filterValue
     }
   },
   render() {
@@ -79,42 +91,45 @@ export default defineComponent({
                 </n-space>
                 <div class={styles.operation}>
                   <n-space>
-                    <n-input placeholder={this.t('cdc.job_name')}></n-input>
-                    <n-button type="primary" onClick={this.handleOpenModal}>{this.t('cdc.create_synchronization_job')}</n-button>
+                    <n-input
+                      placeholder={this.t('playground.search')}
+                      v-model:value={this.filterValue}
+                      v-slots={{
+                        prefix: () => <n-icon component={Search} />
+                      }}
+                      onBlur={this.handleSeachCdcJobTable}
+                    />
+                    <n-button type="primary" onClick={this.handleOpenModal}>
+                      {this.t('cdc.create_synchronization_job')}
+                    </n-button>
                   </n-space>
                 </div>
               </div>
             </n-card>
-            <List onCdcJobSubmit={() => this.showSubmitCdcJobModalRef = true}></List>
-            {
-              this.showModalRef
-              && (
-                <Modal
-                  ref="CDCModalRef"
-                  showModal={this.showModalRef}
-                  title={this.t('cdc.create_synchronization_job')}
-                  formType="CDCLIST"
-                  onCancel={() => this.showModalRef = false}
-                  onConfirm={this.handleConfirm}
-                />
-              )
-            }
-            {
-              this.showSubmitCdcJobModalRef
-              && (
-                <Modal
-                  ref="submitCdcJobModalRef"
-                  showModal={this.showSubmitCdcJobModalRef}
-                  title={this.t('cdc.submit_cdc_job')}
-                  formType="CDCSUBMIT"
-                  onCancel={() => this.showSubmitCdcJobModalRef = false}
-                  onConfirm={this.handleCdcSubmitConfirm}
-                />
-              )
-            }
+            <List ref="cdcJobTableRef" onCdcJobSubmit={() => (this.showSubmitCdcJobModalRef = true)}></List>
+            {this.showModalRef && (
+              <Modal
+                ref="CDCModalRef"
+                showModal={this.showModalRef}
+                title={this.t('cdc.create_synchronization_job')}
+                formType="CDCLIST"
+                onCancel={() => (this.showModalRef = false)}
+                onConfirm={this.handleConfirm}
+              />
+            )}
+            {this.showSubmitCdcJobModalRef && (
+              <Modal
+                ref="submitCdcJobModalRef"
+                showModal={this.showSubmitCdcJobModalRef}
+                title={this.t('cdc.submit_cdc_job')}
+                formType="CDCSUBMIT"
+                onCancel={() => (this.showSubmitCdcJobModalRef = false)}
+                onConfirm={this.handleCdcSubmitConfirm}
+              />
+            )}
           </n-space>
         </n-card>
       </div>
     )
-  },
+  }
 })
