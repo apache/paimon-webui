@@ -31,6 +31,5 @@ import java.util.List;
 @Mapper
 public interface HistoryMapper extends BaseMapper<History> {
 
-    List<History> listHistories(
-            IPage<History> page, @Param("history") History history);
+    List<History> listHistories(IPage<History> page, @Param("history") History history);
 }

@@ -42,8 +42,7 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History>
     }
 
     @Override
-    public List<History> listHistories(
-            IPage<History> page, History history) {
+    public List<History> listHistories(IPage<History> page, History history) {
         return historyMapper.listHistories(page, history);
     }
 }

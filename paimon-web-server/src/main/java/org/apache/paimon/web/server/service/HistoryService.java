@@ -44,6 +44,5 @@ public interface HistoryService extends IService<History> {
      * @param history the filter criteria
      * @return A list of History entities for the specified page
      */
-    List<History> listHistories(
-            IPage<History> page, @Param("history") History history);
+    List<History> listHistories(IPage<History> page, @Param("history") History history);
 }

@@ -51,8 +51,7 @@ public class HistoryController {
     @GetMapping("/list")
     public PageR<History> listSelectHistories(History selectHistory) {
         IPage<History> page = PageSupport.startPage();
-        List<History> selectHistories =
-                historyService.listHistories(page, selectHistory);
+        List<History> selectHistories = historyService.listHistories(page, selectHistory);
         return PageR.<History>builder()
                 .success(true)
                 .total(page.getTotal())

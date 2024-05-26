@@ -74,8 +74,7 @@ public class HistoryControllerTest extends ControllerTestBase {
     public void testSelectHistory() throws Exception {
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get(
-                                                historyPath + "/" + historyId)
+                                MockMvcRequestBuilders.get(historyPath + "/" + historyId)
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -86,8 +85,7 @@ public class HistoryControllerTest extends ControllerTestBase {
                         .getContentAsString();
 
         R<History> r =
-                ObjectMapperUtils.fromJSON(
-                        responseString, new TypeReference<R<History>>() {});
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<History>>() {});
         assertEquals(200, r.getCode());
         assertNotNull(r.getData());
         assertEquals(historyName, r.getData().getName());
@@ -113,8 +111,7 @@ public class HistoryControllerTest extends ControllerTestBase {
                         .getContentAsString();
 
         PageR<History> r =
-                ObjectMapperUtils.fromJSON(
-                        responseString, new TypeReference<PageR<History>>() {});
+                ObjectMapperUtils.fromJSON(responseString, new TypeReference<PageR<History>>() {});
         assertTrue(
                 r.getData() != null
                         && ((r.getTotal() > 0 && r.getData().size() > 0)
