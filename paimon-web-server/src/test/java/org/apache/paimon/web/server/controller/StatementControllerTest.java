@@ -75,6 +75,12 @@ public class StatementControllerTest extends ControllerTestBase {
 
         R<?> result = ObjectMapperUtils.fromJSON(responseString, R.class);
         assertEquals(200, result.getCode());
+
+        StatementInfo statement = getStatementInfo();
+        assertEquals(statementName, statement.getStatementName());
+        assertEquals(false, statement.getIsStreaming());
+        assertEquals("Flink", statement.getTaskType());
+        assertEquals("select * from table", statement.getStatements());
     }
 
     @Test

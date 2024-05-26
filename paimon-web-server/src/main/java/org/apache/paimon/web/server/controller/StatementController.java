@@ -49,11 +49,11 @@ public class StatementController {
     @SaCheckPermission("playground:statement:query")
     @GetMapping("/{id}")
     public R<StatementInfo> getStatement(@PathVariable("id") Integer id) {
-        StatementInfo StatementInfo = statementService.getById(id);
-        if (StatementInfo == null) {
+        StatementInfo statementInfo = statementService.getById(id);
+        if (statementInfo == null) {
             return R.failed(Status.STATEMENT_NOT_EXIST);
         }
-        return R.succeed(StatementInfo);
+        return R.succeed(statementInfo);
     }
 
     @SaCheckPermission("playground:statement:list")
