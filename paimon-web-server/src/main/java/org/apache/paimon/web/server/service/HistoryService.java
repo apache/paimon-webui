@@ -18,7 +18,7 @@
 
 package org.apache.paimon.web.server.service;
 
-import org.apache.paimon.web.server.data.model.SelectHistory;
+import org.apache.paimon.web.server.data.model.History;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -26,24 +26,24 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/** SelectHistory Service. */
-public interface SelectHistoryService extends IService<SelectHistory> {
+/** History Service. */
+public interface HistoryService extends IService<History> {
 
     /**
-     * Saves a selection history record.
+     * Saves a history record.
      *
-     * @param selectHistory The selection history record to save
+     * @param history The selection history record to save
      * @return true if the record was saved successfully, false otherwise
      */
-    boolean saveSelectHistory(SelectHistory selectHistory);
+    boolean saveHistory(History history);
 
     /**
-     * Retrieves a paginated list of selection history records.
+     * Retrieves a paginated list of history records.
      *
      * @param page the pagination information
      * @param history the filter criteria
-     * @return A list of SelectHistory entities for the specified page
+     * @return A list of History entities for the specified page
      */
-    List<SelectHistory> listSelectHistories(
-            IPage<SelectHistory> page, @Param("history") SelectHistory history);
+    List<History> listHistories(
+            IPage<History> page, @Param("history") History history);
 }

@@ -18,10 +18,10 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.model.SelectHistory;
+import org.apache.paimon.web.server.data.model.History;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.service.SelectHistoryService;
+import org.apache.paimon.web.server.service.HistoryService;
 import org.apache.paimon.web.server.util.PageSupport;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
@@ -34,26 +34,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/** Select history api controller. */
+/** History api controller. */
 @RestController
 @RequestMapping("/api/select/history")
-public class SelectHistoryController {
+public class HistoryController {
 
-    @Autowired private SelectHistoryService selectHistoryService;
+    @Autowired private HistoryService historyService;
 
     @SaCheckPermission("playground:history:query")
     @GetMapping("/{id}")
-    public R<SelectHistory> getStatement(@PathVariable("id") Integer id) {
-        return R.succeed(selectHistoryService.getById(id));
+    public R<History> getStatement(@PathVariable("id") Integer id) {
+        return R.succeed(historyService.getById(id));
     }
 
     @SaCheckPermission("playground:history:list")
     @GetMapping("/list")
-    public PageR<SelectHistory> listSelectHistories(SelectHistory selectHistory) {
-        IPage<SelectHistory> page = PageSupport.startPage();
-        List<SelectHistory> selectHistories =
-                selectHistoryService.listSelectHistories(page, selectHistory);
-        return PageR.<SelectHistory>builder()
+    public PageR<History> listSelectHistories(History selectHistory) {
+        IPage<History> page = PageSupport.startPage();
+        List<History> selectHistories =
+                historyService.listHistories(page, selectHistory);
+        return PageR.<History>builder()
                 .success(true)
                 .total(page.getTotal())
                 .data(selectHistories)
@@ -62,7 +62,7 @@ public class SelectHistoryController {
 
     @SaCheckPermission("playground:history:query")
     @GetMapping("/all")
-    public R<List<SelectHistory>> all() {
-        return R.succeed(selectHistoryService.list());
+    public R<List<History>> all() {
+        return R.succeed(historyService.list());
     }
 }

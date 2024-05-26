@@ -16,21 +16,35 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.mapper;
+package org.apache.paimon.web.server.data.model;
 
-import org.apache.paimon.web.server.data.model.SelectHistory;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+/** History table model. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@TableName("history")
+public class History extends BaseModel {
 
-import java.util.List;
+    private String name;
 
-/** SelectHistory mapper. */
-@Mapper
-public interface SelectHistoryMapper extends BaseMapper<SelectHistory> {
+    private String taskType;
 
-    List<SelectHistory> listSelectHistories(
-            IPage<SelectHistory> page, @Param("history") SelectHistory history);
+    private Boolean isStreaming;
+
+    private Integer uid;
+
+    private Integer clusterId;
+
+    private String statements;
+
+    private static final long serialVersionUID = 1L;
 }

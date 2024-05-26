@@ -33,7 +33,7 @@ import org.apache.paimon.web.server.data.dto.SessionDTO;
 import org.apache.paimon.web.server.data.dto.StopJobDTO;
 import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.data.model.JobInfo;
-import org.apache.paimon.web.server.data.model.SelectHistory;
+import org.apache.paimon.web.server.data.model.History;
 import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
 import org.apache.paimon.web.server.data.vo.JobVO;
 import org.apache.paimon.web.server.data.vo.ResultDataVO;
@@ -41,7 +41,7 @@ import org.apache.paimon.web.server.mapper.JobMapper;
 import org.apache.paimon.web.server.service.ClusterService;
 import org.apache.paimon.web.server.service.JobExecutorService;
 import org.apache.paimon.web.server.service.JobService;
-import org.apache.paimon.web.server.service.SelectHistoryService;
+import org.apache.paimon.web.server.service.HistoryService;
 import org.apache.paimon.web.server.service.SessionService;
 import org.apache.paimon.web.server.service.UserSessionManager;
 import org.apache.paimon.web.server.util.LocalDateTimeUtil;
@@ -87,7 +87,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     @Autowired private JobExecutorService jobExecutorService;
 
-    @Autowired private SelectHistoryService historyService;
+    @Autowired private HistoryService historyService;
 
     @Override
     public JobVO submitJob(JobSubmitDTO jobSubmitDTO) {
@@ -112,8 +112,8 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                 JobInfo jobInfo = buildJobInfo(executionResult, jobSubmitDTO);
                 this.save(jobInfo);
             }
-            historyService.saveSelectHistory(
-                    SelectHistory.builder()
+            historyService.saveHistory(
+                    History.builder()
                             .name(LocalDateTimeUtil.getFormattedDateTime(LocalDateTime.now()))
                             .taskType(jobSubmitDTO.getTaskType())
                             .isStreaming(jobSubmitDTO.isStreaming())

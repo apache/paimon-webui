@@ -18,9 +18,9 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import org.apache.paimon.web.server.data.model.SelectHistory;
-import org.apache.paimon.web.server.mapper.SelectHistoryMapper;
-import org.apache.paimon.web.server.service.SelectHistoryService;
+import org.apache.paimon.web.server.data.model.History;
+import org.apache.paimon.web.server.mapper.HistoryMapper;
+import org.apache.paimon.web.server.service.HistoryService;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,21 +29,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/** The implementation of {@link SelectHistoryService}. */
+/** The implementation of {@link HistoryService}. */
 @Service
-public class SelectHistoryServiceImpl extends ServiceImpl<SelectHistoryMapper, SelectHistory>
-        implements SelectHistoryService {
+public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History>
+        implements HistoryService {
 
-    @Autowired private SelectHistoryMapper selectHistoryMapper;
+    @Autowired private HistoryMapper historyMapper;
 
     @Override
-    public boolean saveSelectHistory(SelectHistory selectHistory) {
+    public boolean saveHistory(History selectHistory) {
         return this.save(selectHistory);
     }
 
     @Override
-    public List<SelectHistory> listSelectHistories(
-            IPage<SelectHistory> page, SelectHistory history) {
-        return selectHistoryMapper.listSelectHistories(page, history);
+    public List<History> listHistories(
+            IPage<History> page, History history) {
+        return historyMapper.listHistories(page, history);
     }
 }

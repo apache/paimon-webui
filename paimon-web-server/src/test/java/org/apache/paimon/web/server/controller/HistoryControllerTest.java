@@ -18,10 +18,10 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.server.data.model.SelectHistory;
+import org.apache.paimon.web.server.data.model.History;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
-import org.apache.paimon.web.server.service.SelectHistoryService;
+import org.apache.paimon.web.server.service.HistoryService;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -40,34 +40,34 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Test for {@link SelectHistoryController}. */
+/** Test for {@link HistoryController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class SelectHistoryControllerTest extends ControllerTestBase {
+public class HistoryControllerTest extends ControllerTestBase {
 
-    private static final String selectHistoryPath = "/api/select/history";
+    private static final String historyPath = "/api/select/history";
 
-    private static final int selectHistoryId = 1;
-    private static final String selectHistoryName = "test";
+    private static final int historyId = 1;
+    private static final String historyName = "test";
 
-    @Autowired private SelectHistoryService historyService;
+    @Autowired private HistoryService historyService;
 
     @BeforeEach
     public void setup() {
-        SelectHistory selectHistory = new SelectHistory();
-        selectHistory.setId(selectHistoryId);
-        selectHistory.setName(selectHistoryName);
+        History selectHistory = new History();
+        selectHistory.setId(historyId);
+        selectHistory.setName(historyName);
         selectHistory.setTaskType("Flink");
         selectHistory.setIsStreaming(false);
         selectHistory.setUid(1);
         selectHistory.setClusterId(1);
         selectHistory.setStatements("select * from table");
-        historyService.saveSelectHistory(selectHistory);
+        historyService.saveHistory(selectHistory);
     }
 
     @AfterEach
     public void after() {
-        historyService.removeById(selectHistoryId);
+        historyService.removeById(historyId);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class SelectHistoryControllerTest extends ControllerTestBase {
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(
-                                                selectHistoryPath + "/" + selectHistoryId)
+                                                historyPath + "/" + historyId)
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -85,12 +85,12 @@ public class SelectHistoryControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        R<SelectHistory> r =
+        R<History> r =
                 ObjectMapperUtils.fromJSON(
-                        responseString, new TypeReference<R<SelectHistory>>() {});
+                        responseString, new TypeReference<R<History>>() {});
         assertEquals(200, r.getCode());
         assertNotNull(r.getData());
-        assertEquals(selectHistoryName, r.getData().getName());
+        assertEquals(historyName, r.getData().getName());
         assertEquals(1, r.getData().getUid());
         assertEquals(1, r.getData().getClusterId());
         assertEquals("Flink", r.getData().getTaskType());
@@ -102,7 +102,7 @@ public class SelectHistoryControllerTest extends ControllerTestBase {
     public void testListClusters() throws Exception {
         String responseString =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get(selectHistoryPath + "/list")
+                                MockMvcRequestBuilders.get(historyPath + "/list")
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -112,16 +112,16 @@ public class SelectHistoryControllerTest extends ControllerTestBase {
                         .getResponse()
                         .getContentAsString();
 
-        PageR<SelectHistory> r =
+        PageR<History> r =
                 ObjectMapperUtils.fromJSON(
-                        responseString, new TypeReference<PageR<SelectHistory>>() {});
+                        responseString, new TypeReference<PageR<History>>() {});
         assertTrue(
                 r.getData() != null
                         && ((r.getTotal() > 0 && r.getData().size() > 0)
                                 || (r.getTotal() == 0 && r.getData().size() == 0)));
 
-        SelectHistory selectHistory = r.getData().get(0);
-        assertEquals(selectHistoryName, selectHistory.getName());
+        History selectHistory = r.getData().get(0);
+        assertEquals(historyName, selectHistory.getName());
         assertEquals(1, selectHistory.getUid());
         assertEquals(1, selectHistory.getClusterId());
         assertEquals("Flink", selectHistory.getTaskType());

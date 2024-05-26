@@ -173,8 +173,8 @@ CREATE TABLE if not exists `job`
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
     )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `select_history`;
-CREATE TABLE if not exists `select_history`
+DROP TABLE IF EXISTS `history`;
+CREATE TABLE if not exists `history`
 (
     `id`          int(11)     not null auto_increment primary key comment 'id',
     `name`     varchar(100)  not null comment 'name',
