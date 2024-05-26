@@ -60,14 +60,21 @@ public class StatementControllerTest extends ControllerTestBase {
         statementInfo.setIsStreaming(false);
         statementInfo.setStatements("select * from table");
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post(statementPath)
-                                .cookie(cookie)
-                                .content(ObjectMapperUtils.toJSON(statementInfo))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post(statementPath)
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(statementInfo))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<?> result = ObjectMapperUtils.fromJSON(responseString, R.class);
+        assertEquals(200, result.getCode());
     }
 
     @Test
@@ -131,7 +138,7 @@ public class StatementControllerTest extends ControllerTestBase {
 
     @Test
     @Order(5)
-    public void testDeleteCluster() throws Exception {
+    public void testDeleteStatement() throws Exception {
         String delResponseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.delete(statementPath + "/" + statementId)
