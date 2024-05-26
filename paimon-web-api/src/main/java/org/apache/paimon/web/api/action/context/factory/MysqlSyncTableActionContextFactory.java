@@ -36,12 +36,12 @@ public class MysqlSyncTableActionContextFactory implements FlinkCdcActionContext
 
     @Override
     public String sourceType() {
-        return FlinkCdcDataSourceType.MYSQL.name();
+        return FlinkCdcDataSourceType.MYSQL.getType();
     }
 
     @Override
     public String targetType() {
-        return FlinkCdcDataSourceType.PAIMON.name();
+        return FlinkCdcDataSourceType.PAIMON.getType();
     }
 
     @Override
