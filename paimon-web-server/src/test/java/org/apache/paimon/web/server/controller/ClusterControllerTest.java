@@ -100,10 +100,13 @@ public class ClusterControllerTest extends ControllerTestBase {
     @Test
     @Order(3)
     public void testListClusters() throws Exception {
+        ClusterInfo cluster = new ClusterInfo();
+        cluster.setType("Flink");
         String responseString =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get(clusterPath + "/list")
                                         .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(cluster))
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
