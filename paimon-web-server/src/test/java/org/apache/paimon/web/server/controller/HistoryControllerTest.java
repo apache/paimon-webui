@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @AutoConfigureMockMvc
 public class HistoryControllerTest extends ControllerTestBase {
 
-    private static final String historyPath = "/api/select/history";
+    private static final String historyPath = "/api/history";
 
     private static final int historyId = 1;
     private static final String historyName = "test";

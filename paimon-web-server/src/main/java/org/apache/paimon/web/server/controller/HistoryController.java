@@ -36,7 +36,7 @@ import java.util.List;
 
 /** History api controller. */
 @RestController
-@RequestMapping("/api/select/history")
+@RequestMapping("/api/history")
 public class HistoryController {
 
     @Autowired private HistoryService historyService;
