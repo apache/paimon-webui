@@ -15,34 +15,41 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss'
-import { useTable } from './use-table'
+import { RemoveCircleOutline, Warning } from '@vicons/ionicons5'
+import { deleteCluster } from '@/api/models/cluster'
 
 export default defineComponent({
-  name: 'ListPage',
-  emits: ['cdcJobSubmit'],
-  setup(_, ctx) {
-    const { t } = useLocaleHooks()
-
-    const { tableVariables, getTableData } = useTable(ctx)
-    getTableData()
+  props: {
+    clusterId: {
+      type: Number,
+    },
+    onDelete: Function,
+  },
+  setup(props) {
+    const onDelete = async () => {
+      (props.clusterId || props.clusterId === 0) && await deleteCluster(props.clusterId)
+      props.onDelete && props.onDelete()
+    }
 
     return {
-      t,
-      ...toRefs(tableVariables),
-      getTableData
+      onDelete,
     }
   },
   render() {
     return (
-      <div class={styles['list-page']}>
-        <n-data-table
-          columns={this.columns}
-          data={this.data}
-          remote
-          pagination={this.pagination}
-        />
-      </div>
+      <n-popconfirm onPositiveClick={this.onDelete}>
+        {{
+          default: () => 'Confirm to delete ? ',
+          trigger: () => (
+            <n-button strong secondary circle type="error">
+              {{
+                icon: () => <n-icon component={RemoveCircleOutline} />,
+              }}
+            </n-button>
+          ),
+          icon: () => <n-icon color="#EC4C4D" component={Warning} />,
+        }}
+      </n-popconfirm>
     )
   },
 })

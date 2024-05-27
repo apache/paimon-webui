@@ -15,9 +15,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormRules, TreeOption } from 'naive-ui'
-import type { RoleDTO } from '@/api/models/role/types'
-import { usePermissionStore } from '@/store/permission'
+import type { FormItemRule } from 'naive-ui'
+
+import type { ClusterDTO } from '@/api/models/cluster/types'
+import { listRoles } from '@/api/models/role'
 
 const props = {
   'visible': {
@@ -34,51 +35,53 @@ const props = {
   },
 
   'formValue': {
-    type: Object as PropType<RoleDTO>,
+    type: Object as PropType<ClusterDTO>,
     default: () => ({
-      roleName: '',
-      roleKey: '',
+      clusterName: '',
+      host: '',
+      port: 0,
       enabled: true,
-      remark: '',
-      menuIds: [],
+      type: '',
     }),
   },
-  'onUpdate:formValue': [Function, Object] as PropType<((value: RoleDTO) => void) | undefined>,
+  'onUpdate:formValue': [Function, Object] as PropType<((value: ClusterDTO) => void) | undefined>,
   'onConfirm': Function,
 }
 
 export default defineComponent({
-  name: 'RoleForm',
+  name: 'UserForm',
   props,
   setup(props) {
+    const typeOptions = [
+      { label: 'Flink', value: 'Flink' },
+      { label: 'Spark', value: 'Spark' },
+    ]
+
     const rules = {
-      roleName: {
+      clusterName: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'role name required',
+        message: 'clusterName required',
       },
-      roleKey: {
+      host: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'role key required',
+        message: 'host required',
       },
-      menuIds: {
+      port: {
         required: true,
-        trigger: ['blur'],
-        validator: (_: FormRules, value: string) => {
-          return new Promise<void>((resolve, reject) => {
-            if (!value?.length)
-              reject(new Error('menu ids required'))
-            else
-              resolve()
-          })
-        },
+        type: 'number',
+        trigger: ['blur', 'change'],
+        message: 'port required',
+      },
+      type: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'type required',
       },
     }
 
     const { t } = useLocaleHooks()
-    const permissionStore = usePermissionStore()
-    const { permissionList } = storeToRefs(permissionStore)
 
     const formRef = ref()
 
@@ -87,15 +90,7 @@ export default defineComponent({
       resetState()
     }
 
-    const renderLabel = ({ option }: { option: TreeOption }) => {
-      return t(`system.roleKey.${option.label}`)
-    }
-
-    const onUpdateMenuIds = (checkIds: Array<number>) => {
-      props.formValue.menuIds = checkIds
-    }
-
-    const handleConfirm = async () => {
+    async function handleConfirm() {
       await formRef.value.validate()
       props && props.onConfirm && props.onConfirm()
       handleCloseModal()
@@ -104,22 +99,20 @@ export default defineComponent({
 
     function resetState() {
       props['onUpdate:formValue'] && props['onUpdate:formValue']({
-        roleName: '',
-        roleKey: '',
+        clusterName: '',
+        host: '',
+        port: 0,
         enabled: true,
-        remark: '',
-        menuIds: [],
+        type: '',
       })
     }
 
     return {
       ...toRefs(props),
+      typeOptions,
       formRef,
       rules,
-      permissionTree: permissionList,
       handleCloseModal,
-      renderLabel,
-      onUpdateMenuIds,
       handleConfirm,
       t,
     }
@@ -138,37 +131,22 @@ export default defineComponent({
                 rules={this.rules}
                 model={this.formValue}
               >
-                <n-form-item label={this.t('system.role.role_name')} path="roleName">
-                  <n-input v-model:value={this.formValue.roleName} />
+                <n-form-item label={this.t('system.cluster.cluster_name')} path="clusterName">
+                  <n-input v-model:value={this.formValue.clusterName} />
                 </n-form-item>
-                <n-form-item label={this.t('system.role.role_key')} path="roleKey">
-                  <n-input v-model:value={this.formValue.roleKey} />
+                <n-form-item label={this.t('system.cluster.cluster_host')} path="host">
+                  <n-input v-model:value={this.formValue.host} />
                 </n-form-item>
-                <n-form-item label={this.t('system.role.enabled')} path="enabled">
+                <n-form-item label={this.t('system.cluster.cluster_port')} path="port">
+                  <n-input-number min={0} showButton={false} style="width: 100%" v-model:value={this.formValue.port} />
+                </n-form-item>
+                <n-form-item label={this.t('system.user.enabled')} path="enabled">
                   <n-switch v-model:value={this.formValue.enabled} />
                 </n-form-item>
-                <n-form-item label={this.t('system.role.remark')} path="remark">
-                  <n-input
-                    v-model:value={this.formValue.remark}
-                    type="textarea"
-                    autosize={{
-                      minRows: 3,
-                      maxRows: 5,
-                    }}
-                  />
-                </n-form-item>
-                <n-form-item label={this.t('system.role.permission_setting')} path="menuIds">
-                  <n-tree
-                    key-field="id"
-                    default-expand-all
-                    block-line
-                    cascade
-                    renderLabel={this.renderLabel}
-                    onUpdate:checkedKeys={this.onUpdateMenuIds}
-                    checkedKeys={this.formValue.menuIds}
-                    data={this.permissionTree}
-                    expand-on-click
-                    checkable
+                <n-form-item label={this.t('system.cluster.cluster_type')} path="type">
+                  <n-select
+                    v-model:value={this.formValue.type}
+                    options={this.typeOptions}
                   />
                 </n-form-item>
               </n-form>

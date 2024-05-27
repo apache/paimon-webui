@@ -33,4 +33,9 @@ public class LocalDateTimeUtil {
         ZonedDateTime beijingTime = utcTime.atZoneSameInstant(ZoneId.of("Asia/Shanghai"));
         return beijingTime.toLocalDateTime();
     }
+
+    public static String getFormattedDateTime(LocalDateTime time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return time.format(formatter);
+    }
 }

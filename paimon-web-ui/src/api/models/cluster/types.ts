@@ -15,8 +15,30 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  display: flex;
-  width: calc(100% - 60px);
-  padding: 30px;
+export interface Cluster {
+  id: number
+  createTime?: string
+  updateTime?: string
+  clusterName: string
+  host: string
+  port: number
+  type: string
+  enabled: boolean
+}
+
+export interface ClusterNameParams {
+  clusterName?: string
+  pageNum: number
+  pageSize: number
+}
+
+export interface ClusterDTO {
+  id?: number
+  clusterName: string
+  host: string
+  port: number
+  type: string
+  enabled: boolean
+  createTime?: string
+  updateTime?: string
 }

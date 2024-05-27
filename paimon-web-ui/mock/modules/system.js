@@ -51,6 +51,89 @@ module.exports = (mockUtil) => ({
     ]
   }),
 
+  '/menu/treeselect': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": [
+      {
+        "id": 1,
+        "label": "system",
+        "children": [
+          {
+            "id": 300,
+            "label": "menu_manager",
+            "children": [
+              {
+                "id": 3000,
+                "label": "menu_query"
+              },
+              {
+                "id": 3001,
+                "label": "menu_add"
+              },
+              {
+                "id": 3002,
+                "label": "menu_update"
+              },
+              {
+                "id": 3003,
+                "label": "menu_delete"
+              }
+            ]
+          },
+          {
+            "id": 100,
+            "label": "user_manager",
+            "children": [
+              {
+                "id": 1000,
+                "label": "user_query"
+              },
+              {
+                "id": 1001,
+                "label": "user_add"
+              },
+              {
+                "id": 1002,
+                "label": "user_update"
+              },
+              {
+                "id": 1003,
+                "label": "user_delete"
+              },
+              {
+                "id": 1004,
+                "label": "user_reset"
+              }
+            ]
+          },
+          {
+            "id": 200,
+            "label": "role_manager",
+            "children": [
+              {
+                "id": 2000,
+                "label": "role_query"
+              },
+              {
+                "id": 2001,
+                "label": "role_add"
+              },
+              {
+                "id": 2002,
+                "label": "role_update"
+              },
+              {
+                "id": 2003,
+                "label": "role_delete"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }),
+
   '/menu/roleMenuTreeselect/:roleId': mockUtil({
     "code": 200,
     "msg": "Successfully",
@@ -135,5 +218,72 @@ module.exports = (mockUtil) => ({
         }
       ]
     }
-  })
+  }),
+
+  '/user/list': mockUtil({
+    "total": "2",
+    "success": true,
+    "data": [
+      {
+        "id": 1,
+        "username": "admin",
+        "nickname": "admin",
+        "userType": "0",
+        "mobile": "13400263598",
+        "email": "admin@paimon.com",
+        "enabled": true,
+        "createTime": "2024-05-11T13:49:27",
+        "updateTime": null,
+        "roles": null
+      },
+      {
+        "id": 2,
+        "username": "common",
+        "nickname": "common",
+        "userType": "0",
+        "mobile": "13400263598",
+        "email": "common@paimon.com",
+        "enabled": true,
+        "createTime": "2024-05-11T13:49:27",
+        "updateTime": null,
+        "roles": null
+      }
+    ]
+  }),
+
+  'post /user': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
+
+  'put /user': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
+
+  'delete /user/:userid': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
+
+  'post /user/change/password': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
+
+  'put /user/changeStatus': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
+
+  'post /user/allocate': mockUtil({
+    "code": 200,
+    "msg": "Successfully",
+    "data": null
+  }),
 })

@@ -16,19 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.enums;
+package org.apache.paimon.web.server.mapper;
 
-import lombok.Getter;
+import org.apache.paimon.web.server.data.model.History;
 
-/** FlinkCdcDataSourceType. */
-@Getter
-public enum FlinkCdcDataSourceType {
-    MYSQL("MySQL"),
-    PAIMON("Paimon");
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-    private final String type;
+import java.util.List;
 
-    FlinkCdcDataSourceType(String type) {
-        this.type = type;
-    }
+/** History mapper. */
+@Mapper
+public interface HistoryMapper extends BaseMapper<History> {
+
+    List<History> listHistories(IPage<History> page, @Param("history") History history);
 }

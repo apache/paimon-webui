@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import { RouterLink } from 'vue-router'
-import { FileSyncOutlined, UserOutlined, UserSwitchOutlined } from '@vicons/antd'
+import { ClusterOutlined, FileSyncOutlined, UserOutlined, UserSwitchOutlined } from '@vicons/antd'
 import { Catalog, Code } from '@vicons/carbon'
 import { NIcon } from 'naive-ui'
 import { SettingsOutline } from '@vicons/ionicons5'
@@ -67,6 +67,10 @@ export function useData() {
         label: () => renderLabel(t('layout.role'), 'system'),
         key: '/system/role',
         icon: renderIcon(UserSwitchOutlined),
+      }, {
+        label: () => renderLabel(t('layout.cluster'), 'system'),
+        key: '/system/cluster',
+        icon: renderIcon(ClusterOutlined),
       }],
     },
   ]))

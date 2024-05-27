@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { fileURLToPath, URL } from 'node:url'
+import { URL, fileURLToPath } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -23,6 +23,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import autoprefixer from 'autoprefixer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -35,8 +36,8 @@ export default defineConfig({
       '/api': {
         target: 'http://127.0.0.1:10088',
         changeOrigin: true,
-      }
-    }
+      },
+    },
   },
   plugins: [
     vue(),
@@ -51,32 +52,32 @@ export default defineConfig({
             'useDialog',
             'useMessage',
             'useNotification',
-            'useLoadingBar'
-          ]
-        }
+            'useLoadingBar',
+          ],
+        },
       ],
       dts: './auto-imports.d.ts',
       dirs: [
         './src/composables',
       ],
       eslintrc: {
-        enabled: false
-      }
+        enabled: false,
+      },
     }),
     Components({
-      resolvers: [NaiveUiResolver()]
-    })
+      resolvers: [NaiveUiResolver()],
+    }),
   ],
   css: {
     postcss: {
       plugins: [
-        require("autoprefixer")
-      ]
-    }
+        autoprefixer(),
+      ],
+    },
   },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 })

@@ -1,3 +1,4 @@
+
 /* Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -15,8 +16,35 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  display: flex;
-  width: calc(100% - 60px);
-  padding: 30px;
+export interface User {
+  id: number
+  username: string
+  nickname: string
+  userType: string
+  mobile?: string
+  email?: string
+  enabled: boolean
+  createTime: string
+  updateTime: string
+  roles?: []
+}
+
+export interface UserParams {
+  username?: string
+  pageNum: number
+  pageSize: number
+}
+
+export interface UserDTO {
+  id?: number
+  username: string
+  password: string
+  nickname?: string
+  mobile?: string
+  email?: string
+  enabled: true
+  roleIds?: string[]
+  createTime?: string
+  updateTime?: string
+  roles?: []
 }

@@ -16,19 +16,35 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.enums;
+package org.apache.paimon.web.server.data.model;
 
-import lombok.Getter;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-/** FlinkCdcDataSourceType. */
-@Getter
-public enum FlinkCdcDataSourceType {
-    MYSQL("MySQL"),
-    PAIMON("Paimon");
+/** History table model. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@TableName("history")
+public class History extends BaseModel {
 
-    private final String type;
+    private String name;
 
-    FlinkCdcDataSourceType(String type) {
-        this.type = type;
-    }
+    private String taskType;
+
+    private Boolean isStreaming;
+
+    private Integer uid;
+
+    private Integer clusterId;
+
+    private String statements;
+
+    private static final long serialVersionUID = 1L;
 }

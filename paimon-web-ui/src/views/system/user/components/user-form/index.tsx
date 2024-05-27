@@ -15,9 +15,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormRules, TreeOption } from 'naive-ui'
-import type { RoleDTO } from '@/api/models/role/types'
-import { usePermissionStore } from '@/store/permission'
+import type { FormItemRule } from 'naive-ui'
+
+import type { UserDTO } from '@/api/models/user/types'
+import { listRoles } from '@/api/models/role'
 
 const props = {
   'visible': {
@@ -34,68 +35,70 @@ const props = {
   },
 
   'formValue': {
-    type: Object as PropType<RoleDTO>,
+    type: Object as PropType<UserDTO>,
     default: () => ({
-      roleName: '',
-      roleKey: '',
+      username: '',
+      nickname: '',
+      password: '',
       enabled: true,
-      remark: '',
-      menuIds: [],
+      mobile: '',
+      email: '',
+      roleIds: undefined,
     }),
   },
-  'onUpdate:formValue': [Function, Object] as PropType<((value: RoleDTO) => void) | undefined>,
+  'onUpdate:formValue': [Function, Object] as PropType<((value: UserDTO) => void) | undefined>,
   'onConfirm': Function,
 }
 
 export default defineComponent({
-  name: 'RoleForm',
+  name: 'UserForm',
   props,
   setup(props) {
     const rules = {
-      roleName: {
+      username: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'role name required',
+        message: 'username required',
       },
-      roleKey: {
+      password: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'role key required',
+        message: 'password required',
       },
-      menuIds: {
+      roleIds: {
         required: true,
-        trigger: ['blur'],
-        validator: (_: FormRules, value: string) => {
-          return new Promise<void>((resolve, reject) => {
-            if (!value?.length)
-              reject(new Error('menu ids required'))
-            else
-              resolve()
-          })
+        type: 'number',
+        trigger: ['blur', 'change'],
+        message: 'roleIds required',
+      },
+      mobile: {
+        required: true,
+        trigger: ['input'],
+        validator: (rule: FormItemRule, value: string) => {
+          return /^1+[3,8]+\d{9}$/.test(value)
         },
       },
     }
 
     const { t } = useLocaleHooks()
-    const permissionStore = usePermissionStore()
-    const { permissionList } = storeToRefs(permissionStore)
+    const [roleList, useRoleList] = listRoles()
 
     const formRef = ref()
+
+    watch(
+      () => props.visible,
+      (visible) => {
+        if (visible)
+          useRoleList()
+      },
+    )
 
     const handleCloseModal = () => {
       props['onUpdate:visible'] && props['onUpdate:visible'](false)
       resetState()
     }
 
-    const renderLabel = ({ option }: { option: TreeOption }) => {
-      return t(`system.roleKey.${option.label}`)
-    }
-
-    const onUpdateMenuIds = (checkIds: Array<number>) => {
-      props.formValue.menuIds = checkIds
-    }
-
-    const handleConfirm = async () => {
+    async function handleConfirm() {
       await formRef.value.validate()
       props && props.onConfirm && props.onConfirm()
       handleCloseModal()
@@ -104,11 +107,13 @@ export default defineComponent({
 
     function resetState() {
       props['onUpdate:formValue'] && props['onUpdate:formValue']({
-        roleName: '',
-        roleKey: '',
+        username: '',
+        nickname: '',
+        password: '',
         enabled: true,
-        remark: '',
-        menuIds: [],
+        mobile: '',
+        email: '',
+        roleIds: undefined,
       })
     }
 
@@ -116,10 +121,8 @@ export default defineComponent({
       ...toRefs(props),
       formRef,
       rules,
-      permissionTree: permissionList,
+      roleList,
       handleCloseModal,
-      renderLabel,
-      onUpdateMenuIds,
       handleConfirm,
       t,
     }
@@ -138,37 +141,34 @@ export default defineComponent({
                 rules={this.rules}
                 model={this.formValue}
               >
-                <n-form-item label={this.t('system.role.role_name')} path="roleName">
-                  <n-input v-model:value={this.formValue.roleName} />
+                <n-form-item label={this.t('system.user.username')} path="username">
+                  <n-input v-model:value={this.formValue.username} />
                 </n-form-item>
-                <n-form-item label={this.t('system.role.role_key')} path="roleKey">
-                  <n-input v-model:value={this.formValue.roleKey} />
+                <n-form-item label={this.t('system.user.nickname')} path="nickname">
+                  <n-input v-model:value={this.formValue.nickname} />
                 </n-form-item>
-                <n-form-item label={this.t('system.role.enabled')} path="enabled">
+                {
+                  this.formType === 'create' && (
+                    <n-form-item label={this.t('system.user.password')} path="password">
+                      <n-input type="password" show-password-on="click" v-model:value={this.formValue.password} />
+                    </n-form-item>
+                  )
+                }
+                <n-form-item label={this.t('system.user.mobile')} path="mobile">
+                  <n-input v-model:value={this.formValue.mobile} />
+                </n-form-item>
+                <n-form-item label={this.t('system.user.email')} path="email">
+                  <n-input v-model:value={this.formValue.email} />
+                </n-form-item>
+                <n-form-item label={this.t('system.user.enabled')} path="enabled">
                   <n-switch v-model:value={this.formValue.enabled} />
                 </n-form-item>
-                <n-form-item label={this.t('system.role.remark')} path="remark">
-                  <n-input
-                    v-model:value={this.formValue.remark}
-                    type="textarea"
-                    autosize={{
-                      minRows: 3,
-                      maxRows: 5,
-                    }}
-                  />
-                </n-form-item>
-                <n-form-item label={this.t('system.role.permission_setting')} path="menuIds">
-                  <n-tree
-                    key-field="id"
-                    default-expand-all
-                    block-line
-                    cascade
-                    renderLabel={this.renderLabel}
-                    onUpdate:checkedKeys={this.onUpdateMenuIds}
-                    checkedKeys={this.formValue.menuIds}
-                    data={this.permissionTree}
-                    expand-on-click
-                    checkable
+                <n-form-item label={this.t('system.user.roleIds')} path="roleIds">
+                  <n-select
+                    v-model:value={this.formValue.roleIds}
+                    options={this.roleList || []}
+                    value-field="id"
+                    label-field="roleName"
                   />
                 </n-form-item>
               </n-form>

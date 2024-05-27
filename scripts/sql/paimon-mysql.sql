@@ -173,11 +173,19 @@ CREATE TABLE if not exists `job`
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
     )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
+<<<<<<< save_query_interface
 DROP TABLE IF EXISTS `statement`;
 CREATE TABLE if not exists `statement`
 (
     `id`          int(11)     not null auto_increment primary key comment 'id',
     `statement_name`     varchar(200)  not null comment 'task type',
+=======
+DROP TABLE IF EXISTS `history`;
+CREATE TABLE if not exists `history`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `name`     varchar(100)  not null comment 'name',
+>>>>>>> main
     `task_type`     varchar(100)  not null comment 'task type',
     `is_streaming`  tinyint(1)  comment 'is steaming',
     `uid`     int(11)  comment 'user id',
