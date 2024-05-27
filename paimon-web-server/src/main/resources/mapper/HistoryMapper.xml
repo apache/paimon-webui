@@ -40,17 +40,19 @@ under the License.
 
     <select id="listHistories" parameterType="org.apache.paimon.web.server.data.model.History" resultMap="HistoryResult">
         <include refid="historyVo"/>
-        <if test="history.name != null and history.name != ''">
-            AND name like concat('%', #{history.name}, '%')
-        </if>
-        <if test="history.statements != null and history.statements != ''">
-            AND statements like concat('%', #{history.statements}, '%')
-        </if>
-        <if test="history.params.beginTime != null and history.params.beginTime != ''"><!-- Start time search -->
-            AND date_format(create_time,'%y%m%d') &gt;= date_format(#{history.params.beginTime},'%y%m%d')
-        </if>
-        <if test="history.params.endTime != null and history.params.endTime != ''"><!-- End time search -->
-            AND date_format(create_time,'%y%m%d') &lt;= date_format(#{history.params.endTime},'%y%m%d')
-        </if>
+        <where>
+            <if test="history.name != null and history.name != ''">
+                AND name like concat('%', #{history.name}, '%')
+            </if>
+            <if test="history.statements != null and history.statements != ''">
+                AND statements like concat('%', #{history.statements}, '%')
+            </if>
+            <if test="history.params.beginTime != null and history.params.beginTime != ''"><!-- Start time search -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{history.params.beginTime},'%y%m%d')
+            </if>
+            <if test="history.params.endTime != null and history.params.endTime != ''"><!-- End time search -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{history.params.endTime},'%y%m%d')
+            </if>
+        </where>
     </select>
 </mapper>
