@@ -39,29 +39,31 @@ under the License.
 
     <select id="listClusters" parameterType="org.apache.paimon.web.server.data.model.ClusterInfo" resultMap="SysClusterResult">
         <include refid="selectClusterVo"/>
-        <if test="cluster.id != null and cluster.id != 0">
-            AND id = #{cluster.id}
-        </if>
-        <if test="cluster.clusterName != null and cluster.clusterName != ''">
-            AND cluser_name like concat('%', #{cluster.clusterName}, '%')
-        </if>
-        <if test="cluster.host != null and cluster.host != ''">
-            AND host = #{cluster.host}
-        </if>
-        <if test="cluster.port != null">
-            AND port = #{cluster.port}
-        </if>
-        <if test="cluster.type != null and cluster.type != ''">
-            AND `type` = #{cluster.type}
-        </if>
-        <if test="cluster.enabled != null">
-            AND enabled = #{cluster.enabled}
-        </if>
-        <if test="cluster.params.beginTime != null and cluster.params.beginTime != ''"><!-- Start time search -->
-            AND date_format(create_time,'%y%m%d') &gt;= date_format(#{cluster.params.beginTime},'%y%m%d')
-        </if>
-        <if test="cluster.params.endTime != null and cluster.params.endTime != ''"><!-- End time search -->
-            AND date_format(create_time,'%y%m%d') &lt;= date_format(#{cluster.params.endTime},'%y%m%d')
-        </if>
+        <where>
+            <if test="cluster.id != null and cluster.id != 0">
+                AND id = #{cluster.id}
+            </if>
+            <if test="cluster.clusterName != null and cluster.clusterName != ''">
+                AND cluser_name like concat('%', #{cluster.clusterName}, '%')
+            </if>
+            <if test="cluster.host != null and cluster.host != ''">
+                AND host = #{cluster.host}
+            </if>
+            <if test="cluster.port != null">
+                AND port = #{cluster.port}
+            </if>
+            <if test="cluster.type != null and cluster.type != ''">
+                AND `type` = #{cluster.type}
+            </if>
+            <if test="cluster.enabled != null">
+                AND enabled = #{cluster.enabled}
+            </if>
+            <if test="cluster.params.beginTime != null and cluster.params.beginTime != ''"><!-- Start time search -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{cluster.params.beginTime},'%y%m%d')
+            </if>
+            <if test="cluster.params.endTime != null and cluster.params.endTime != ''"><!-- End time search -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{cluster.params.endTime},'%y%m%d')
+            </if>
+        </where>
     </select>
 </mapper>
