@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type { Cluster, ClusterDTO, ClusterNameParams } from './types'
+import type {Cluster, ClusterDTO, ClusterNameParams, ClusterTypeParams} from './types'
 import type { ResponseOptions } from '@/api/types'
 
 /**
@@ -24,6 +24,13 @@ import type { ResponseOptions } from '@/api/types'
  */
 export function getClusterList() {
   return httpRequest.createHooks!<ResponseOptions<Cluster[]>, ClusterNameParams>({
+    url: '/cluster/list',
+    method: 'get',
+  })
+}
+
+export function getClusterListByType() {
+  return httpRequest.createHooks!<ResponseOptions<Cluster[]>, ClusterTypeParams>({
     url: '/cluster/list',
     method: 'get',
   })

@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import { ChevronDown, Play, ReaderOutline, Save } from '@vicons/ionicons5'
+import { getClusterListByType } from '@/api/models/cluster'
 import styles from './index.module.scss'
 
 export default defineComponent({
@@ -24,38 +25,32 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
 
-    const debuggerVariables = reactive({
+    const [clusterList, useClusterList, { loading }] = getClusterListByType();
+
+    const debuggerVariables = reactive<{
+      operatingConditionOptions: { label: string; key: string }[]
+      conditionValue: string
+      bigDataOptions: { label: string; value: string }[]
+      conditionValue2: string
+      clusterOptions: { label: string; value: string }[]
+      conditionValue3: string
+      executionModeOptions: { label: string; value: string }[]
+    }>({
       operatingConditionOptions: [
-        {
-          label: 'Limit 100 items',
-          key: '100',
-        },
-        {
-          label: 'Limit 1000 items',
-          key: '1000',
-        },
+        { label: 'Limit 100 items', key: '100' },
+        { label: 'Limit 1000 items', key: '1000' },
       ],
-      conditionValue: 'Flink',
+      conditionValue: '',
       bigDataOptions: [
-        {
-          label: 'Flink',
-          value: 'Flink',
-        },
-        {
-          label: 'Spark',
-          value: 'Spark',
-        },
+        { label: 'Flink', value: 'Flink' },
+        { label: 'Spark', value: 'Spark' },
       ],
-      conditionValue2: 'test1',
-      clusterOptions: [
-        {
-          label: 'test1',
-          value: 'test1',
-        },
-        {
-          label: 'test2',
-          value: 'test2',
-        },
+      conditionValue2: '',
+      clusterOptions: [],
+      conditionValue3: '',
+      executionModeOptions: [
+        { label: 'Streaming', value: 'Streaming' },
+        { label: 'Batch', value: 'Batch' },
       ],
     })
 
@@ -70,6 +65,38 @@ export default defineComponent({
     const handleSave = () => {
       emit('handleSave')
     }
+
+    function getClusterData() {
+      const params = {
+        type: debuggerVariables.conditionValue,
+        pageNum: 1,
+        pageSize: Number.MAX_SAFE_INTEGER
+      }
+      useClusterList({ params })
+    }
+
+    watch(() => debuggerVariables.conditionValue, (newValue) => {
+      getClusterData()
+    });
+
+    watch(() => clusterList.value?.data, (newList) => {
+      console.log(clusterList.value)
+      if (newList) {
+        debuggerVariables.clusterOptions = newList.map(cluster => ({
+          label: cluster.clusterName,
+          value: cluster.id != null ? cluster.id.toString() : ''
+        }))
+      }
+    }, { immediate: true })
+
+    onMounted(() => {
+      debuggerVariables.conditionValue = debuggerVariables.bigDataOptions[0].value
+      if (debuggerVariables.clusterOptions.length > 0) {
+        debuggerVariables.conditionValue2 = debuggerVariables.clusterOptions[0].value;
+      }
+      debuggerVariables.conditionValue3 = debuggerVariables.executionModeOptions[0].value
+      getClusterData()
+    })
 
     return {
       t,
@@ -103,6 +130,7 @@ export default defineComponent({
           </n-button>
           <n-select style="width:160px;" v-model:value={this.conditionValue} options={this.bigDataOptions} />
           <n-select style="width:160px;" v-model:value={this.conditionValue2} options={this.clusterOptions} />
+          <n-select style="width:160px;" v-model:value={this.conditionValue3} options={this.executionModeOptions} />
         </n-space>
         <div class={styles.operations}>
           <n-space>

@@ -32,6 +32,12 @@ export interface ClusterNameParams {
   pageSize: number
 }
 
+export interface ClusterTypeParams {
+  type?: string
+  pageNum: number
+  pageSize: number
+}
+
 export interface ClusterDTO {
   id?: number
   clusterName: string
