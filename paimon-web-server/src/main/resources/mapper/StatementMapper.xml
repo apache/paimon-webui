@@ -40,8 +40,10 @@ under the License.
 
     <select id="listStatements" parameterType="org.apache.paimon.web.server.data.model.StatementInfo" resultMap="StatementResult">
         <include refid="selectStatementVo"/>
-        <if test="statement.statementName != null and statement.statementName != ''">
-            AND statement_name like concat('%', #{statement.statementName}, '%')
-        </if>
+        <where>
+            <if test="statement.statementName != null and statement.statementName != ''">
+                AND statement_name like concat('%', #{statement.statementName}, '%')
+            </if>
+        </where>
     </select>
 </mapper>
