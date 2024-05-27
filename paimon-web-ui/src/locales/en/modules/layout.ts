@@ -26,4 +26,5 @@ export default {
   confirm: 'Confirm',
   user: 'User',
   role: 'Role',
+  cluster: 'Cluster',
 }

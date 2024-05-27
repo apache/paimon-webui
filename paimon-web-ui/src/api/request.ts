@@ -20,6 +20,7 @@ import { createUseAxle } from '@varlet/axle/use'
 
 import type { FetchOptions, ResponseOptions } from './types'
 import discreteApi from './message'
+import router from '@/router'
 
 const axle: AxleInstance & { createHooks?: typeof createHooks } = createAxle({
   baseURL: import.meta.env.MODE === 'mock' ? '/mock/api' : '/api',
@@ -41,7 +42,6 @@ axle.axios.interceptors.request.use(
 axle.axios.interceptors.response.use(
   (response) => {
     const { code, msg } = response.data
-
     if (code !== 200 && msg) {
       // do something there
       discreteApi.notification.error(
@@ -58,10 +58,15 @@ axle.axios.interceptors.response.use(
     return response.data
   },
   (error) => {
+    const { data } = error.response
+
+    if (data.code === 401)
+      router.replace('/login')
+
     discreteApi.notification.error(
       {
         content: 'Error',
-        meta: error,
+        meta: data.msg,
         duration: 2500,
         keepAliveOnHover: true,
       },

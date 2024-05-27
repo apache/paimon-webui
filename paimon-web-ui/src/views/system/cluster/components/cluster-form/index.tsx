@@ -17,7 +17,7 @@ under the License. */
 
 import type { FormItemRule } from 'naive-ui'
 
-import type { UserDTO } from '@/api/models/user/types'
+import type { ClusterDTO } from '@/api/models/cluster/types'
 import { listRoles } from '@/api/models/role'
 
 const props = {
@@ -35,18 +35,16 @@ const props = {
   },
 
   'formValue': {
-    type: Object as PropType<UserDTO>,
+    type: Object as PropType<ClusterDTO>,
     default: () => ({
-      username: '',
-      nickname: '',
-      password: '',
+      clusterName: '',
+      host: '',
+      port: 0,
       enabled: true,
-      mobile: '',
-      email: '',
-      roleIds: undefined,
+      type: '',
     }),
   },
-  'onUpdate:formValue': [Function, Object] as PropType<((value: UserDTO) => void) | undefined>,
+  'onUpdate:formValue': [Function, Object] as PropType<((value: ClusterDTO) => void) | undefined>,
   'onConfirm': Function,
 }
 
@@ -54,44 +52,38 @@ export default defineComponent({
   name: 'UserForm',
   props,
   setup(props) {
+    const typeOptions = [
+      { label: 'Flink', value: 'Flink' },
+      { label: 'Spark', value: 'Spark' },
+    ]
+
     const rules = {
-      username: {
+      clusterName: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'username required',
+        message: 'clusterName required',
       },
-      password: {
+      host: {
         required: true,
         trigger: ['blur', 'input'],
-        message: 'password required',
+        message: 'host required',
       },
-      roleIds: {
+      port: {
         required: true,
         type: 'number',
         trigger: ['blur', 'change'],
-        message: 'roleIds required',
+        message: 'port required',
       },
-      mobile: {
+      type: {
         required: true,
-        trigger: ['input'],
-        validator: (rule: FormItemRule, value: string) => {
-          return /^1+[3,8]+\d{9}$/.test(value)
-        },
+        trigger: ['blur', 'input'],
+        message: 'type required',
       },
     }
 
     const { t } = useLocaleHooks()
-    const [roleList, useRoleList] = listRoles()
 
     const formRef = ref()
-
-    watch(
-      () => props.visible,
-      (visible) => {
-        if (visible)
-          useRoleList()
-      },
-    )
 
     const handleCloseModal = () => {
       props['onUpdate:visible'] && props['onUpdate:visible'](false)
@@ -107,21 +99,19 @@ export default defineComponent({
 
     function resetState() {
       props['onUpdate:formValue'] && props['onUpdate:formValue']({
-        username: '',
-        nickname: '',
-        password: '',
+        clusterName: '',
+        host: '',
+        port: 0,
         enabled: true,
-        mobile: '',
-        email: '',
-        roleIds: undefined,
+        type: '',
       })
     }
 
     return {
       ...toRefs(props),
+      typeOptions,
       formRef,
       rules,
-      roleList,
       handleCloseModal,
       handleConfirm,
       t,
@@ -141,34 +131,22 @@ export default defineComponent({
                 rules={this.rules}
                 model={this.formValue}
               >
-                <n-form-item label={this.t('system.user.username')} path="username">
-                  <n-input v-model:value={this.formValue.username} />
+                <n-form-item label={this.t('system.cluster.cluster_name')} path="clusterName">
+                  <n-input v-model:value={this.formValue.clusterName} />
                 </n-form-item>
-                <n-form-item label={this.t('system.user.nickname')} path="nickname">
-                  <n-input v-model:value={this.formValue.nickname} />
+                <n-form-item label={this.t('system.cluster.cluster_host')} path="host">
+                  <n-input v-model:value={this.formValue.host} />
                 </n-form-item>
-                {
-                  this.formType === 'create' && (
-                    <n-form-item label={this.t('system.user.password')} path="password">
-                      <n-input type="password" show-password-on="click" v-model:value={this.formValue.password} />
-                    </n-form-item>
-                  )
-                }
-                <n-form-item label={this.t('system.user.mobile')} path="mobile">
-                  <n-input v-model:value={this.formValue.mobile} />
-                </n-form-item>
-                <n-form-item label={this.t('system.user.email')} path="email">
-                  <n-input v-model:value={this.formValue.email} />
+                <n-form-item label={this.t('system.cluster.cluster_port')} path="port">
+                  <n-input-number min={0} showButton={false} style="width: 100%" v-model:value={this.formValue.port} />
                 </n-form-item>
                 <n-form-item label={this.t('system.user.enabled')} path="enabled">
                   <n-switch v-model:value={this.formValue.enabled} />
                 </n-form-item>
-                <n-form-item label={this.t('system.user.roleIds')} path="roleIds">
+                <n-form-item label={this.t('system.cluster.cluster_type')} path="type">
                   <n-select
-                    v-model:value={this.formValue.roleIds}
-                    options={this.roleList || []}
-                    value-field="id"
-                    label-field="roleName"
+                    v-model:value={this.formValue.type}
+                    options={this.typeOptions}
                   />
                 </n-form-item>
               </n-form>

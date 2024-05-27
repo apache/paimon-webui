@@ -32,5 +32,11 @@ export default {
       meta: { title: 'role' },
       component: () => import('@/views/system/role'),
     },
+    {
+      path: '/system/cluster',
+      name: 'system-cluster',
+      meta: { title: 'cluster' },
+      component: () => import('@/views/system/cluster'),
+    },
   ],
 }

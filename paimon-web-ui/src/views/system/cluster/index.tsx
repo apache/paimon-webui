@@ -19,53 +19,57 @@ import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import dayjs from 'dayjs'
 import { EditOutlined } from '@vicons/antd'
 
-import UserForm from './components/user-form'
-import UserDelete from './components/user-delete'
+import ClusterForm from './components/cluster-form'
+import ClusterDelete from './components/cluster-delete'
 
 import styles from './index.module.scss'
 
-import { createUser, getUserList, updateUser } from '@/api/models/user'
+import { createCluster, getClusterList, updateCluster } from '@/api/models/cluster'
 
-import type { UserDTO } from '@/api/models/user/types'
+import type { ClusterDTO } from '@/api/models/cluster/types'
 
 export default defineComponent({
-  name: 'UserPage',
+  name: 'ClusterPage',
   setup() {
     const { t } = useLocaleHooks()
     const rowKey = (rowData: any) => rowData.id
     const message = useMessage()
 
-    const columns: TableColumns<UserDTO> = [
+    const columns: TableColumns<ClusterDTO> = [
       {
-        title: () => t('system.user.username'),
-        key: 'username',
+        title: () => t('system.cluster.cluster_name'),
+        key: 'clusterName',
       },
       {
-        title: () => t('system.user.nickname'),
-        key: 'nickname',
+        title: () => t('system.cluster.cluster_host'),
+        key: 'host',
       },
       {
-        title: () => t('system.user.mobile'),
-        key: 'mobile',
+        title: () => t('system.cluster.cluster_port'),
+        key: 'port',
       },
       {
-        title: () => t('system.user.enabled'),
+        title: () => t('system.cluster.cluster_type'),
+        key: 'type',
+      },
+      {
+        title: () => t('system.cluster.enabled'),
         key: 'enabled',
-        render: (row: UserDTO) => {
+        render: (row: ClusterDTO) => {
           return row.enabled ? t('common.yes') : t('common.no')
         },
       },
       {
         title: () => t('common.create_time'),
         key: 'createTime',
-        render: (row: UserDTO) => {
+        render: (row: ClusterDTO) => {
           return row?.createTime ? dayjs(row?.createTime).format('YYYY-MM-DD HH:mm') : '-'
         },
       },
       {
         title: () => t('common.update_time'),
         key: 'updateTime',
-        render: (row: UserDTO) => {
+        render: (row: ClusterDTO) => {
           return row?.updateTime ? dayjs(row?.updateTime).format('YYYY-MM-DD HH:mm') : '-'
         },
       },
@@ -73,7 +77,7 @@ export default defineComponent({
         title: () => t('common.action'),
         key: 'actions',
         resizable: true,
-        render: (row: UserDTO) => {
+        render: (row: ClusterDTO) => {
           return (
             <n-space>
               <n-button onClick={() => handleUpdateModal(row)} strong secondary circle>
@@ -81,28 +85,26 @@ export default defineComponent({
                   icon: () => <n-icon component={EditOutlined} />,
                 }}
               </n-button>
-              <UserDelete userId={row?.id} onDelete={getTableData} />
+              <ClusterDelete clusterId={row?.id} onDelete={getTableData} />
             </n-space>
           )
         },
       },
     ]
 
-    const [userList, useAccountList, { loading }] = getUserList()
-    const [, createFetch, { loading: createLoading }] = createUser()
-    const [, updateFetch, { loading: updateLoading }] = updateUser()
+    const [clusterList, useClusterList, { loading }] = getClusterList()
+    const [, createFetch, { loading: createLoading }] = createCluster()
+    const [, updateFetch, { loading: updateLoading }] = updateCluster()
 
     const formType = ref<'create' | 'update'>('create')
     const formVisible = ref(false)
 
-    const formValue = ref<UserDTO>({
-      username: '',
-      password: '',
-      nickname: '',
+    const formValue = ref<ClusterDTO>({
+      clusterName: '',
+      host: '',
+      port: 0,
+      type: '',
       enabled: true,
-      mobile: '',
-      email: '',
-      roleIds: [],
     })
 
     onMounted(getTableData)
@@ -112,20 +114,19 @@ export default defineComponent({
       formVisible.value = true
     }
 
-    async function handleUpdateModal(user: UserDTO) {
+    async function handleUpdateModal(cluster: ClusterDTO) {
       formType.value = 'update'
 
-      delete user.createTime
-      delete user.updateTime
-      delete user.roles
+      delete cluster.createTime
+      delete cluster.updateTime
 
-      formValue.value = { ...user }
+      formValue.value = { ...cluster }
       formVisible.value = true
     }
 
     const tableVariables = reactive({
       searchForm: {
-        username: '',
+        clusterName: '',
       },
       pagination: {
         showQuickJumper: true,
@@ -142,11 +143,10 @@ export default defineComponent({
 
     function getTableData() {
       const params = {
-        username: tableVariables.searchForm.username,
         pageNum: tableVariables.pagination.page,
         pageSize: tableVariables.pagination.pageSize,
       }
-      useAccountList({ params })
+      useClusterList({ params })
     }
 
     const modelLoading = computed(() => createLoading.value || updateLoading.value)
@@ -155,9 +155,6 @@ export default defineComponent({
       const fn = formType.value === 'create' ? createFetch : updateFetch
 
       const params = { ...toRaw(formValue.value) }
-
-      if (!Array.isArray(params.roleIds))
-        params.roleIds = [params.roleIds || '']
 
       await fn({
         params,
@@ -175,7 +172,7 @@ export default defineComponent({
       modelLoading,
       columns,
       loading,
-      userList,
+      clusterList,
       ...toRefs(tableVariables),
 
       formType,
@@ -191,16 +188,11 @@ export default defineComponent({
         <n-card>
           <n-space vertical>
             <n-space justify="space-between">
-              <n-space>
-                <n-button onClick={this.handleCreateModal} type="primary">{this.t('system.user.add')}</n-button>
-              </n-space>
-              <n-space>
-                <></>
-              </n-space>
+              <n-button onClick={this.handleCreateModal} type="primary">{this.t('system.user.add')}</n-button>
             </n-space>
             <n-data-table
               columns={this.columns}
-              data={this.userList || []}
+              data={this.clusterList || []}
               pagination={this.pagination}
               loading={this.loading}
               remote
@@ -208,7 +200,7 @@ export default defineComponent({
             />
           </n-space>
         </n-card>
-        <UserForm modelLoading={this.modelLoading} formType={this.formType} v-model:visible={this.formVisible} v-model:formValue={this.formValue} onConfirm={this.onConfirm} />
+        <ClusterForm modelLoading={this.modelLoading} formType={this.formType} v-model:visible={this.formVisible} v-model:formValue={this.formValue} onConfirm={this.onConfirm} />
       </n-space>
     )
   },

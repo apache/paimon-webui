@@ -61,4 +61,14 @@ const roleKey = {
   role_delete: '角色删除',
 }
 
-export default { user, role, roleKey }
+const cluster = {
+  cluster_name: '集群名称',
+  cluster_type: '集群类型',
+  cluster_host: '集群地址',
+  cluster_port: '集群端口',
+  enabled: '是否启用',
+  create: '新增集群',
+  update: '更新集群',
+}
+
+export default { user, role, roleKey, cluster }
