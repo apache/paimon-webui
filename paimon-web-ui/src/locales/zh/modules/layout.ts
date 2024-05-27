@@ -26,4 +26,5 @@ export default {
   confirm: '确认',
   user: '用户管理',
   role: '角色管理',
+  cluster: '集群管理',
 }
