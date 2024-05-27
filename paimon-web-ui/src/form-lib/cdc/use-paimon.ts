@@ -36,7 +36,7 @@ export function usePaimon(item: any) {
       {
         type: 'select',
         field: 'catalog',
-        name: 'catalog',
+        name: 'Catalog',
         span: computed(() => (tabType.value === 'catalog_configuration' ? 24 : 0)),
         props: {
           placeholder: '',

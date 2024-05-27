@@ -47,6 +47,7 @@ export default defineComponent({
             router.push({ path: '/cdc_ingestion' })
           })
       }
+
     }
 
     const router: Router = useRouter()
@@ -79,7 +80,7 @@ export default defineComponent({
               <n-space align="center">
                 <n-icon component={Leaf} color="#2F7BEA" size="18" />
                 <span class={styles.title} onClick={this.handleJump}>
-                  {this.t('cdc.synchronization_job_definition')}
+                  {this.t('cdc.cdc_job_definition')}
                   {' '}
                   {
                   this.name ? ` - ${this.name}` : ''

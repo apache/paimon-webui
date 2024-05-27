@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  synchronization_job_definition: 'Synchronization Job Definition',
+  cdc_job_definition: 'Cdc Job Definition',
   create_synchronization_job: 'Create Synchronization Job',
   job_name: 'Job Name',
   synchronization_type: 'Synchronization type',
