@@ -18,14 +18,13 @@ under the License. */
 import { ChevronDown, Play, ReaderOutline, Save } from '@vicons/ionicons5'
 import { getClusterListByType } from '@/api/models/cluster'
 import styles from './index.module.scss'
+import type { Cluster } from "@/api/models/cluster/types";
 
 export default defineComponent({
   name: 'EditorDebugger',
   emits: ['handleFormat', 'handleSave'],
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
-
-    const [clusterList, useClusterList, { loading }] = getClusterListByType();
 
     const debuggerVariables = reactive<{
       operatingConditionOptions: { label: string; key: string }[]
@@ -40,14 +39,14 @@ export default defineComponent({
         { label: 'Limit 100 items', key: '100' },
         { label: 'Limit 1000 items', key: '1000' },
       ],
-      conditionValue: '',
+      conditionValue: 'Flink',
       bigDataOptions: [
         { label: 'Flink', value: 'Flink' },
         { label: 'Spark', value: 'Spark' },
       ],
       conditionValue2: '',
       clusterOptions: [],
-      conditionValue3: '',
+      conditionValue3: 'Streaming',
       executionModeOptions: [
         { label: 'Streaming', value: 'Streaming' },
         { label: 'Batch', value: 'Batch' },
@@ -67,36 +66,27 @@ export default defineComponent({
     }
 
     function getClusterData() {
-      const params = {
-        type: debuggerVariables.conditionValue,
-        pageNum: 1,
-        pageSize: Number.MAX_SAFE_INTEGER
-      }
-      useClusterList({ params })
+      getClusterListByType(debuggerVariables.conditionValue, 1, Number.MAX_SAFE_INTEGER).then(response => {
+        if (response && response.data) {
+          const clusterList = response.data as Cluster[];
+          debuggerVariables.clusterOptions = clusterList.map(cluster => ({
+            label: cluster.clusterName,
+            value: cluster.id.toString()
+          }))
+          if (debuggerVariables.clusterOptions.length > 0) {
+            debuggerVariables.conditionValue2 = debuggerVariables.clusterOptions[0].value;
+          }
+        }
+      }).catch(error => {
+        console.error('Failed to fetch clusters:', error);
+      })
     }
 
     watch(() => debuggerVariables.conditionValue, (newValue) => {
-      getClusterData()
-    });
-
-    watch(() => clusterList.value?.data, (newList) => {
-      console.log(clusterList.value)
-      if (newList) {
-        debuggerVariables.clusterOptions = newList.map(cluster => ({
-          label: cluster.clusterName,
-          value: cluster.id != null ? cluster.id.toString() : ''
-        }))
-      }
-    }, { immediate: true })
-
-    onMounted(() => {
-      debuggerVariables.conditionValue = debuggerVariables.bigDataOptions[0].value
-      if (debuggerVariables.clusterOptions.length > 0) {
-        debuggerVariables.conditionValue2 = debuggerVariables.clusterOptions[0].value;
-      }
-      debuggerVariables.conditionValue3 = debuggerVariables.executionModeOptions[0].value
-      getClusterData()
+      getClusterData();
     })
+
+    onMounted(() => {getClusterData()})
 
     return {
       t,
