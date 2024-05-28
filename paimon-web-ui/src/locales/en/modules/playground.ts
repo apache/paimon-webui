@@ -49,4 +49,6 @@ export default {
   schedule_refresh: 'Schedule Refresh',
   download: 'Export Data',
   copy: 'Copy Data',
+  job_submission_successfully: 'Job Submitted Successfully',
+  job_submission_failed: 'Job Submitted Failed',
 }

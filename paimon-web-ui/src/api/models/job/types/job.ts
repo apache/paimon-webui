@@ -26,6 +26,7 @@ export interface Job {
   status?: string
   shouldFetchResult: boolean
   resultData?: Array<{ [key: string]: any }>
+  token: number
   startTime: string
   endTime: string
 }
@@ -37,6 +38,21 @@ export interface JobSubmitDTO {
   config?: {
     [key: string]: string
   }
-  Statements: string
+  statements: string
   streaming: boolean
+}
+
+export interface JobResultData {
+  resultData?: Array<{ [key: string]: any }>
+  columns: number
+  rows: number
+  token: number
+}
+
+export interface ResultFetchDTO {
+  submitId: string
+  clusterId: string
+  sessionId: string
+  taskType: string
+  token: number
 }

@@ -16,39 +16,59 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss'
+import type {Job} from "@/api/models/job/types/job";
 
 export default defineComponent({
   name: 'TableResult',
   setup() {
-    const columns = [
-      {
+    interface TableColumn {
+      title: string
+      key: string
+      fixed?: string
+      width?: number
+      render?: (row: any, index: number) => string | number | JSX.Element
+    }
+
+    const data = ref([])
+    const columns = ref<TableColumn[]>([])
+
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
+
+    const handleResult = (result: any) => {
+      if (result && result.resultData) {
+        data.value = result.resultData
+        if (data.value.length > 0) {
+          generateColumns(data.value[0]);
+        }
+      }
+    }
+
+    const generateColumns = (sampleObject: any) => {
+      const indexColumn: TableColumn = {
         title: '#',
-        key: 'key',
-        render: (_: any, index: number) => {
-          return `${index + 1}`
-        },
-      },
-      {
-        title: 'id',
-        key: 'id',
+        key: 'index',
+        fixed: 'left',
+        width: 50,
+        render: (row, index) => `${index + 1}`
+      }
+
+      const dynamicColumns = Object.keys(sampleObject).map(key => ({
+        title: key,
+        key: key,
         resizable: true,
-      },
-      {
-        title: 'name',
-        key: 'name',
-        resizable: true,
-      },
-      {
-        title: 'age',
-        key: 'age',
-        resizable: true,
-      },
-      {
-        title: 'address',
-        key: 'address',
-        resizable: true,
-      },
-    ]
+        sortable: true
+      }))
+
+      columns.value = [indexColumn, ...dynamicColumns]
+    }
+
+    mittBus?.on('jobResult', handleResult);
+    mittBus?.on('refreshedResult', handleResult);
+
+    onUnmounted(() => {
+      mittBus.off('jobResult', handleResult);
+      mittBus.off('refreshedResult', handleResult);
+    });
 
     interface User {
       id: number
@@ -56,13 +76,6 @@ export default defineComponent({
       age: number
       address: string
     }
-
-    const data: User[] = [
-      { id: 1, name: 'jack', age: 36, address: 'beijing' },
-      { id: 2, name: 'li hua', age: 38, address: 'shanghai' },
-      { id: 3, name: 'zhao ming', age: 27, address: 'hangzhou' },
-      { id: 3, name: 'zhao ming', age: 27, address: 'hangzhou' },
-    ]
 
     return {
       columns,
@@ -76,7 +89,7 @@ export default defineComponent({
           class={styles.table}
           columns={this.columns}
           data={this.data}
-          max-height={138}
+          max-height={90}
         />
       </div>
     )

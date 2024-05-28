@@ -19,12 +19,18 @@ import { ChevronDown, Play, ReaderOutline, Save } from '@vicons/ionicons5'
 import { getClusterListByType } from '@/api/models/cluster'
 import styles from './index.module.scss'
 import type { Cluster } from "@/api/models/cluster/types";
+import type {JobSubmitDTO} from "@/api/models/job/types/job";
+import {submitJob} from "@/api/models/job";
+import {useMessage} from "naive-ui";
 
 export default defineComponent({
   name: 'EditorDebugger',
   emits: ['handleFormat', 'handleSave'],
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
+    const message = useMessage()
+
+    const tabData = ref({}) as any;
 
     const debuggerVariables = reactive<{
       operatingConditionOptions: { label: string; key: string }[]
@@ -88,12 +94,52 @@ export default defineComponent({
 
     onMounted(() => {getClusterData()})
 
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
+    mittBus.on('initTabData', (data: any) => {
+      tabData.value = data
+    });
+
+    const handleSubmit = async () => {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+
+      if (!currentTab) {
+        return
+      }
+
+      const currentSQL = currentTab.content
+      if (!currentSQL) {
+        return
+      }
+
+      const jobDataDTO: JobSubmitDTO = {
+        jobName: currentTab.tableName,
+        taskType: debuggerVariables.conditionValue,
+        clusterId: debuggerVariables.conditionValue2,
+        statements: currentSQL,
+        streaming: debuggerVariables.conditionValue3 === 'Streaming'
+      };
+
+      try {
+        const response = await submitJob(jobDataDTO);
+        console.log(response)
+        if (response.data) {
+          message.success(t('playground.job_submission_successfully'))
+          mittBus.emit('jobResult', response.data);
+        } else {
+          message.error(`${t('playground.job_submission_failed')}`)
+        }
+      } catch (error) {
+        console.error('Failed to submit job:', error)
+      }
+    }
+
     return {
       t,
       ...toRefs(debuggerVariables),
       handleSelect,
       handleFormat,
       handleSave,
+      handleSubmit
     }
   },
   render() {
@@ -102,6 +148,7 @@ export default defineComponent({
         <n-space>
           <n-button
             type="primary"
+            onClick={this.handleSubmit}
             v-slots={{
               icon: () => <n-icon component={Play} />,
               default: () => {

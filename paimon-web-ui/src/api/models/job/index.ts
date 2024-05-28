@@ -16,15 +16,19 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type {JobSubmitDTO, Job} from "@/api/models/job/types/job";
+import type {JobSubmitDTO, Job, ResultFetchDTO, JobResultData} from "@/api/models/job/types/job";
 import type {ResponseOptions} from "@/api/types";
 
 /**
- * # Submit a Job
+ * # Submit a job
  */
-export function Submit() {
-  return httpRequest.createHooks!<ResponseOptions<Job>, JobSubmitDTO>({
-    url: '/job/submit',
-    method: 'post',
-  })
+export function submitJob(jobData: JobSubmitDTO) {
+  return httpRequest.post<ResponseOptions<Job>>('/job/submit', jobData);
+}
+
+/**
+ * # Fetch the result of a submitted job
+ */
+export function fetchResult(resultFetchDTO: ResultFetchDTO) {
+  return httpRequest.post<ResponseOptions<JobResultData>>('/job/fetch', resultFetchDTO);
 }

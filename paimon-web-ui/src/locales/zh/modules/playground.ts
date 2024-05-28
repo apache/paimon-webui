@@ -49,4 +49,6 @@ export default {
   schedule_refresh: '定时刷新',
   download: '导出数据',
   copy: '复制数据',
+  job_submission_successfully: 'SQL 任务提交成功！',
+  job_submission_failed: '任务提交失败!',
 }
