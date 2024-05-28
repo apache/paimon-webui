@@ -29,6 +29,9 @@ export function getClusterList() {
   })
 }
 
+/**
+ * # List Cluster by ClusterType
+ */
 export function getClusterListByType(type: string, pageNum: number, pageSize: number) {
   return httpRequest.get('/cluster/list', {
     type,
@@ -48,7 +51,7 @@ export function createCluster() {
 }
 
 /**
- * # Update user
+ * # Update Cluster
  */
 export function updateCluster() {
   return httpRequest.createHooks!<unknown, ClusterDTO>({
@@ -58,7 +61,7 @@ export function updateCluster() {
 }
 
 /**
- * # delete a Cluster
+ * # Delete a Cluster
  */
 export function deleteCluster(userId: number) {
   return httpRequest.delete!<unknown, ClusterDTO>(`/cluster/${userId}`)

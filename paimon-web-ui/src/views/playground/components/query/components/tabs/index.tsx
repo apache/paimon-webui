@@ -31,12 +31,12 @@ export default defineComponent({
 
     const handleAdd = () => {
       tabVariables.panelsList.push({
-        tableName: `test${tabVariables.panelsList.length + 1}`,
-        key: `test${tabVariables.panelsList.length + 1}`,
+        tableName: `Q${tabVariables.panelsList.length + 1}`,
+        key: `Q${tabVariables.panelsList.length + 1}`,
         isSaved: false,
         content: '',
       })
-      tabVariables.chooseTab = `test${tabVariables.panelsList.length}`
+      tabVariables.chooseTab = `Q${tabVariables.panelsList.length}`
     }
 
     const handleClose = (key: any) => {
