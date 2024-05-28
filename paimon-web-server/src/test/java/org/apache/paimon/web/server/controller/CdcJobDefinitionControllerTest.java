@@ -56,21 +56,19 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
         return cdcJobDefinitionDTO;
     }
 
+    private CdcJobDefinitionDTO cdcJobDefinitionDtoForSearch() {
+        CdcJobDefinitionDTO cdcJobDefinitionDTO = new CdcJobDefinitionDTO();
+        cdcJobDefinitionDTO.setName("21");
+        cdcJobDefinitionDTO.setCdcType(1);
+        cdcJobDefinitionDTO.setConfig("d");
+        cdcJobDefinitionDTO.setDescription("d");
+        return cdcJobDefinitionDTO;
+    }
+
     @Test
     @Order(1)
     public void testCreateCdcJob() throws Exception {
-        MockHttpServletResponse response =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post(cdcJobDefinitionPath + "/create")
-                                        .cookie(cookie)
-                                        .content(ObjectMapperUtils.toJSON(cdcJobDefinitionDto()))
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse();
-        checkMvcResult(response, 200);
+        testCreateCdcJob(cdcJobDefinitionDto());
     }
 
     @Test
@@ -120,5 +118,67 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
         assertEquals(realRdcJobDefinition.getName(), cdcJobDefinition.getName());
         assertEquals(realRdcJobDefinition.getDescription(), cdcJobDefinition.getDescription());
         assertEquals(realRdcJobDefinition.getConfig(), cdcJobDefinition.getConfig());
+    }
+
+    @Order(3)
+    @Test
+    public void testSearchCdcJobDefinition() throws Exception {
+        testCreateCdcJob(cdcJobDefinitionDto());
+        testCreateCdcJob(cdcJobDefinitionDtoForSearch());
+        MockHttpServletResponse listAllResponse =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(cdcJobDefinitionPath + "/list")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                                        .param("currentPage", "1")
+                                        .param("pageSize", "10")
+                                        .param("withConfig", "true"))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse();
+        PageR<CdcJobDefinition> result =
+                getPageR(listAllResponse, new TypeReference<PageR<CdcJobDefinition>>() {});
+        assertEquals(2, result.getTotal());
+        long searchNum1 = getSearchNum("1");
+        assertEquals(2, searchNum1);
+        long searchNum2 = getSearchNum("21");
+        assertEquals(1, searchNum2);
+    }
+
+    private void testCreateCdcJob(CdcJobDefinitionDTO obj) throws Exception {
+        MockHttpServletResponse response =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post(cdcJobDefinitionPath + "/create")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(obj))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse();
+        checkMvcResult(response, 200);
+    }
+
+    private long getSearchNum(String searchJobName) throws Exception {
+        MockHttpServletResponse searchResponse =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(cdcJobDefinitionPath + "/list")
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                                        .param("jobName", searchJobName)
+                                        .param("currentPage", "1")
+                                        .param("pageSize", "10")
+                                        .param("withConfig", "true"))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse();
+        PageR<CdcJobDefinition> searchResult =
+                getPageR(searchResponse, new TypeReference<PageR<CdcJobDefinition>>() {});
+        return searchResult.getTotal();
     }
 }
