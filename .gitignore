@@ -43,7 +43,7 @@ target
 dependency-reduced-pom.xml
 *.dependency-reduced-pom.xml
 !.idea/paimon.svg
-
+**/dist/**
 # Logs
 logs
 *.log

@@ -17,49 +17,39 @@ specific language governing permissions and limitations
 under the License.
 -->
 <assembly>
-    <id>dist</id>
+    <id>server</id>
     <formats>
         <format>dir</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
-<!--        <fileSet>-->
-<!--            <directory>${basedir}/src/main/bin</directory>-->
-<!--            <lineEnding>unix</lineEnding>-->
-<!--            <outputDirectory>service</outputDirectory>-->
-<!--            <includes>-->
-<!--                <include>*.service</include>-->
-<!--            </includes>-->
-<!--        </fileSet>-->
         <fileSet>
             <directory>${basedir}/src/main/bin</directory>
             <lineEnding>unix</lineEnding>
-            <outputDirectory/>
+            <outputDirectory>bin</outputDirectory>
             <fileMode>755</fileMode>
             <includes>
                 <include>*.sh</include>
             </includes>
         </fileSet>
-        <fileSet>
-            <directory>${basedir}/src/main/bin</directory>
-            <lineEnding>windows</lineEnding>
-            <outputDirectory/>
-            <includes>
-                <include>*.bat</include>
-            </includes>
-        </fileSet>
+
         <fileSet>
             <directory>target/classes</directory>
             <outputDirectory>config</outputDirectory>
             <includes>
                 <include>**/*.yml</include>
-                <include>**/log4j2.xml</include>
+                <include>**/log4j2-spring.xml</include>
+                <include>**/*.properties</include>
             </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../paimon-web-ui/dist</directory>
+            <outputDirectory>./ui</outputDirectory>
         </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>lib</outputDirectory>
+            <outputDirectory>libs</outputDirectory>
             <unpack>false</unpack>
         </dependencySet>
     </dependencySets>
