@@ -35,6 +35,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -100,32 +102,26 @@ public class ClusterControllerTest extends ControllerTestBase {
     @Test
     @Order(3)
     public void testListClusters() throws Exception {
-        String responseString =
-                mockMvc.perform(
-                                MockMvcRequestBuilders.get(clusterPath + "/list")
-                                        .cookie(cookie)
-                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        PageR<ClusterInfo> r =
-                ObjectMapperUtils.fromJSON(
-                        responseString, new TypeReference<PageR<ClusterInfo>>() {});
-        assertTrue(
-                r.getData() != null
-                        && ((r.getTotal() > 0 && r.getData().size() > 0)
-                                || (r.getTotal() == 0 && r.getData().size() == 0)));
-
-        ClusterInfo clusterInfo = r.getData().get(0);
+        List<ClusterInfo> clustersWithoutConditions = listClusters("");
+        assertTrue(clustersWithoutConditions.size() > 0);
+        ClusterInfo clusterInfo = clustersWithoutConditions.get(0);
         assertEquals(clusterName, clusterInfo.getClusterName());
         assertEquals("127.0.0.1", clusterInfo.getHost());
         assertEquals(8083, clusterInfo.getPort());
         assertEquals("Flink", clusterInfo.getType());
         assertTrue(clusterInfo.getEnabled());
+
+        List<ClusterInfo> clustersWithConditionsFlink = listClusters("Flink");
+        assertTrue(clustersWithConditionsFlink.size() > 0);
+        ClusterInfo clusterInfo1 = clustersWithConditionsFlink.get(0);
+        assertEquals(clusterName, clusterInfo1.getClusterName());
+        assertEquals("127.0.0.1", clusterInfo1.getHost());
+        assertEquals(8083, clusterInfo1.getPort());
+        assertEquals("Flink", clusterInfo1.getType());
+        assertTrue(clusterInfo1.getEnabled());
+
+        List<ClusterInfo> clustersWithConditionsSpark = listClusters("Spark");
+        assertEquals(0, clustersWithConditionsSpark.size());
     }
 
     @Test
@@ -185,5 +181,30 @@ public class ClusterControllerTest extends ControllerTestBase {
 
         R<?> result = ObjectMapperUtils.fromJSON(delResponseString, R.class);
         assertEquals(200, result.getCode());
+    }
+
+    private List<ClusterInfo> listClusters(String params) throws Exception {
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(clusterPath + "/list")
+                                        .cookie(cookie)
+                                        .param("type", params)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        PageR<ClusterInfo> r =
+                ObjectMapperUtils.fromJSON(
+                        responseString, new TypeReference<PageR<ClusterInfo>>() {});
+
+        assertTrue(
+                r.getData() != null
+                        && ((r.getTotal() > 0 && r.getData().size() > 0)
+                                || (r.getTotal() == 0 && r.getData().size() == 0)));
+        return r.getData();
     }
 }
