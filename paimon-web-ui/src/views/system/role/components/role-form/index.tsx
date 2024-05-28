@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import type { FormRules, TreeOption } from 'naive-ui'
-import type { RoleDTO } from '@/api/models/role/types/role'
+import type { RoleDTO } from '@/api/models/role/types'
 import { usePermissionStore } from '@/store/permission'
 
 const props = {

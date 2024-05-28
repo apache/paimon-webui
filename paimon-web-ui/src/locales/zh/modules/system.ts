@@ -21,6 +21,13 @@ const user = {
   nickname: '昵称',
   mobile: '手机号',
   email: '邮箱',
+  password: '密码',
+
+  create: '新增用户',
+  update: '更新用户',
+
+  enabled: '是否启用',
+  roleIds: '角色',
 }
 
 const role = {
@@ -54,4 +61,14 @@ const roleKey = {
   role_delete: '角色删除',
 }
 
-export default { user, role, roleKey }
+const cluster = {
+  cluster_name: '集群名称',
+  cluster_type: '集群类型',
+  cluster_host: '集群地址',
+  cluster_port: '集群端口',
+  enabled: '是否启用',
+  create: '新增集群',
+  update: '更新集群',
+}
+
+export default { user, role, roleKey, cluster }

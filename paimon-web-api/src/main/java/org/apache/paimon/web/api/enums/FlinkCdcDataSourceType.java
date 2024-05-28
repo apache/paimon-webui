@@ -26,9 +26,9 @@ public enum FlinkCdcDataSourceType {
     MYSQL("MySQL"),
     PAIMON("Paimon");
 
-    private final String name;
+    private final String type;
 
-    FlinkCdcDataSourceType(String name) {
-        this.name = name;
+    FlinkCdcDataSourceType(String type) {
+        this.type = type;
     }
 }

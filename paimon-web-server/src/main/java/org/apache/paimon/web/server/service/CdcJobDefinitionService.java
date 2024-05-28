@@ -31,7 +31,8 @@ public interface CdcJobDefinitionService extends IService<CdcJobDefinition> {
 
     R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO);
 
-    PageR<CdcJobDefinition> listAll(boolean withConfig, long currentPage, long pageSize);
+    PageR<CdcJobDefinition> listAll(
+            String name, boolean withConfig, long currentPage, long pageSize);
 
     R<Void> update(CdcJobDefinitionDTO cdcJobDefinitionDTO);
 

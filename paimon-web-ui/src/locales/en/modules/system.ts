@@ -21,6 +21,13 @@ const user = {
   nickname: 'Nickname',
   mobile: 'Mobile',
   email: 'Email',
+  password: 'Password',
+
+  create: 'Create User',
+  update: 'Update User',
+
+  enabled: 'Enabled',
+  roleIds: 'Role',
 }
 
 const role = {
@@ -54,4 +61,14 @@ const roleKey = {
   role_delete: 'Role Delete',
 }
 
-export default { user, role, roleKey }
+const cluster = {
+  cluster_name: 'Cluster Name',
+  cluster_type: 'Cluster Type',
+  cluster_host: 'Cluster Host',
+  cluster_port: 'Cluster Port',
+  enabled: 'Enabled',
+  create: 'Create Cluster',
+  update: 'Update Cluster',
+}
+
+export default { user, role, roleKey, cluster }

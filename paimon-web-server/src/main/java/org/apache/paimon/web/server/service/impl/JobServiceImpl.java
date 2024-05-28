@@ -32,12 +32,14 @@ import org.apache.paimon.web.server.data.dto.ResultFetchDTO;
 import org.apache.paimon.web.server.data.dto.SessionDTO;
 import org.apache.paimon.web.server.data.dto.StopJobDTO;
 import org.apache.paimon.web.server.data.model.ClusterInfo;
+import org.apache.paimon.web.server.data.model.History;
 import org.apache.paimon.web.server.data.model.JobInfo;
 import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
 import org.apache.paimon.web.server.data.vo.JobVO;
 import org.apache.paimon.web.server.data.vo.ResultDataVO;
 import org.apache.paimon.web.server.mapper.JobMapper;
 import org.apache.paimon.web.server.service.ClusterService;
+import org.apache.paimon.web.server.service.HistoryService;
 import org.apache.paimon.web.server.service.JobExecutorService;
 import org.apache.paimon.web.server.service.JobService;
 import org.apache.paimon.web.server.service.SessionService;
@@ -85,6 +87,8 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     @Autowired private JobExecutorService jobExecutorService;
 
+    @Autowired private HistoryService historyService;
+
     @Override
     public JobVO submitJob(JobSubmitDTO jobSubmitDTO) {
         String pipelineName = getPipelineName(jobSubmitDTO.getStatements());
@@ -108,6 +112,15 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                 JobInfo jobInfo = buildJobInfo(executionResult, jobSubmitDTO);
                 this.save(jobInfo);
             }
+            historyService.saveHistory(
+                    History.builder()
+                            .name(LocalDateTimeUtil.getFormattedDateTime(LocalDateTime.now()))
+                            .taskType(jobSubmitDTO.getTaskType())
+                            .isStreaming(jobSubmitDTO.isStreaming())
+                            .uid(getCurrentUserId())
+                            .clusterId(Integer.valueOf(jobSubmitDTO.getClusterId()))
+                            .statements(jobSubmitDTO.getStatements())
+                            .build());
             return buildJobVO(executionResult, jobSubmitDTO);
         } catch (Exception e) {
             throw new RuntimeException("Error executing job: " + e.getMessage(), e);
@@ -474,5 +487,12 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
             log.error("Failed to create executor: {}", e.getMessage(), e);
         }
         return null;
+    }
+
+    private int getCurrentUserId() {
+        if (!StpUtil.isLogin()) {
+            throw new IllegalStateException("User must be logged in to access this resource.");
+        }
+        return StpUtil.getLoginIdAsInt();
     }
 }
