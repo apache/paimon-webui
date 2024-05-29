@@ -51,4 +51,8 @@ export default {
   copy: '复制数据',
   job_submission_successfully: 'SQL 任务提交成功！',
   job_submission_failed: '任务提交失败!',
+  no_data: '暂无数据，请重新执行SQL!',
+  job_stopping_successfully: '停止任务成功！',
+  job_stopping_failed: '停止任务失败！',
+  data_copied_successfully: '数据已复制到剪贴板！',
 }

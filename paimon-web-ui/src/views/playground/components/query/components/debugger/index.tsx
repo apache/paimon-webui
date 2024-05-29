@@ -74,17 +74,17 @@ export default defineComponent({
     function getClusterData() {
       getClusterListByType(debuggerVariables.conditionValue, 1, Number.MAX_SAFE_INTEGER).then(response => {
         if (response && response.data) {
-          const clusterList = response.data as Cluster[];
+          const clusterList = response.data as Cluster[]
           debuggerVariables.clusterOptions = clusterList.map(cluster => ({
             label: cluster.clusterName,
             value: cluster.id.toString()
           }))
           if (debuggerVariables.clusterOptions.length > 0) {
-            debuggerVariables.conditionValue2 = debuggerVariables.clusterOptions[0].value;
+            debuggerVariables.conditionValue2 = debuggerVariables.clusterOptions[0].value
           }
         }
       }).catch(error => {
-        console.error('Failed to fetch clusters:', error);
+        console.error('Failed to fetch clusters:', error)
       })
     }
 

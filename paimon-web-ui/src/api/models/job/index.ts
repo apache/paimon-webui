@@ -51,5 +51,5 @@ export function getJobStatus(jobId: string) {
  * # Stop a job
  */
 export function stopJob(stopJobDTO: StopJobDTO) {
-  return httpRequest.post<ResponseOptions<void>>('/job/fetch', stopJobDTO);
+  return httpRequest.post<ResponseOptions<void>>('/job/stop', stopJobDTO);
 }

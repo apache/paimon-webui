@@ -20,17 +20,21 @@ import { StopOutline, Stop } from '@vicons/ionicons5'
 import { ClockCircleOutlined, DownloadOutlined, LineChartOutlined } from '@vicons/antd'
 import styles from './index.module.scss'
 import { useConfigStore } from '@/store/config'
-import type {Job, JobResultData} from "@/api/models/job/types/job";
-import {fetchResult, getJobStatus} from "@/api/models/job";
+import type {Job, JobResultData} from "@/api/models/job/types/job"
+import {fetchResult, getJobStatus, stopJob} from "@/api/models/job"
+import {useMessage} from "naive-ui"
 
 export default defineComponent({
   name: 'TableActionBar',
   setup: function () {
     const {t} = useLocaleHooks()
+    const message = useMessage()
 
     const currentJob = ref<Job | null>(null)
     const tableData = ref<JobResultData | null>(null)
     const jobStatus = ref<string>('')
+    const selectedInterval = ref('Disabled')
+    const intervalId = ref<number | null>(null);
 
     const configStore = useConfigStore()
     const isDarkMode = computed(() => configStore.theme === 'dark')
@@ -45,7 +49,7 @@ export default defineComponent({
       currentJob.value = jobData;
     })
 
-    const refreshData = async () => {
+    const handleRefreshData = async () => {
       if (currentJob.value) {
         if (currentJob.value.shouldFetchResult) {
           try {
@@ -66,17 +70,38 @@ export default defineComponent({
             console.error('Error fetching result:', error)
           }
         } else {
-          console.log('No fetching needed or job data is not available.')
+          message.warning(t('playground.no_data'))
         }
       } else {
-        console.log('No fetching needed or job data is not available.')
+        message.warning(t('playground.no_data'))
+      }
+    }
+
+    const handleStopJob = async () => {
+      if (currentJob.value) {
+        const stopJobDTO = {
+          clusterId: currentJob.value.clusterId,
+          jobId: currentJob.value.jobId,
+          taskType: currentJob.value.type,
+          withSavepoint: false
+        }
+        try {
+          const response: any = await stopJob(stopJobDTO);
+          if (response.code === 200) {
+            message.success(t('playground.job_stopping_successfully'))
+          } else {
+            message.warning(t('playground.job_stopping_failed'))
+          }
+        } catch (error) {
+          message.warning(t('playground.job_stopping_failed'))
+        }
       }
     }
 
     onMounted(() => {
       setInterval(async () => {
         if (currentJob.value && currentJob.value.jobId) {
-          const response: any = await getJobStatus(currentJob.value.jobId);
+          const response: any = await getJobStatus(currentJob.value.jobId)
           if (response.data) {
             jobStatus.value = response.data.status
           }
@@ -90,16 +115,88 @@ export default defineComponent({
       return jobStatus.value !== 'RUNNING'
     })
 
+    const jobStatusColor = computed(() => {
+      switch (jobStatus.value.toUpperCase()) {
+        case 'RUNNING':
+          return '#33994A'
+        case 'CANCELED':
+          return '#f6b658'
+        case 'FINISHED':
+          return '#f5c1bd'
+        case 'FAILED':
+          return '#f9827c'
+        default:
+          return '#7ce998';
+      }
+    })
+
+    const formattedJobStatus = computed(() => {
+      return jobStatus.value.charAt(0).toUpperCase() + jobStatus.value.slice(1).toLowerCase()
+    })
+
+    const dropdownOptions = [
+      { label: 'Disabled', key: 'Disabled' },
+      { label: '5s', key: '5s' },
+      { label: '10s', key: '10s' },
+      { label: '30s', key: '30s' },
+      { label: '1m', key: '1m' },
+      { label: '5m', key: '5m' }
+    ];
+
+    const clearRefreshInterval = () => {
+      if (intervalId.value) {
+        clearInterval(intervalId.value);
+        intervalId.value = null;
+      }
+    }
+
+    const setRefreshInterval = (milliseconds: number) => {
+      clearRefreshInterval();
+      intervalId.value = setInterval(handleRefreshData, milliseconds);
+    }
+
+    const handleSelect = (key: any) => {
+      selectedInterval.value = key
+      switch (key) {
+        case '5s':
+          setRefreshInterval(5000);
+          break;
+        case '10s':
+          setRefreshInterval(10000);
+          break;
+        case '30s':
+          setRefreshInterval(30000);
+          break;
+        case '1m':
+          setRefreshInterval(60000);
+          break;
+        case '5m':
+          setRefreshInterval(300000);
+          break;
+        case 'Disabled':
+        default:
+          clearRefreshInterval();
+          break;
+      }
+    }
+
     return {
       t,
+      mittBus,
       activeButton,
       setActiveButton,
       isDarkMode,
-      refreshData,
+      handleRefreshData,
       tableData,
       jobStatus,
       currentStopIcon,
-      isButtonDisabled
+      isButtonDisabled,
+      handleStopJob,
+      formattedJobStatus,
+      jobStatusColor,
+      dropdownOptions,
+      selectedInterval,
+      handleSelect
     }
   },
   render() {
@@ -156,7 +253,7 @@ export default defineComponent({
               trigger: () => (
                 <n-button
                   text
-                  onClick={this.refreshData}
+                  onClick={this.handleRefreshData}
                   class={styles['table-action-bar-button']}
                   v-slots={{
                     icon: () => <n-icon component={Renew} size="20"></n-icon>,
@@ -176,6 +273,7 @@ export default defineComponent({
               trigger: () => (
                 <n-button
                   text
+                  onClick={this.handleStopJob}
                   disabled={this.isButtonDisabled}
                   class={this.jobStatus === 'RUNNING' ? styles['stop-button-running'] : styles['table-action-bar-button']}
                   v-slots={{
@@ -188,25 +286,26 @@ export default defineComponent({
           >
             <span>{this.t('playground.stop_job')}</span>
           </n-popover>
-          <n-popover
-            trigger="hover"
+          <n-dropdown
+            trigger="click"
+            size="small"
             placement="bottom-start"
-            show-arrow={false}
+            options={this.dropdownOptions}
+            v-model:value={this.selectedInterval}
+            on-select={this.handleSelect}
             v-slots={{
               trigger: () => (
-                <n-button
-                  text
-                  class={styles['table-action-bar-button']}
-                  v-slots={{
-                    icon: () => <n-icon component={ClockCircleOutlined} size="18.5"></n-icon>,
-                  }}
-                >
+                <n-button text class={styles['table-action-bar-button']}>
                 </n-button>
               ),
+              default: () => (
+                <n-icon
+                  size="20"
+                  class={styles['table-action-bar-button']}
+                  component={ClockCircleOutlined}/>
+              )
             }}
-          >
-            <span>{this.t('playground.schedule_refresh')}</span>
-          </n-popover>
+          />
           <n-divider vertical style="height: 20px; margin-left: 0px; margin-right: 0px;" />
           <span class={styles['table-action-bar-text']}>{this.tableData?.columns} Columns</span>
         </n-space>
@@ -214,7 +313,7 @@ export default defineComponent({
           <n-space item-style="display: flex; align-items: center;">
             <div class={styles['table-action-bar-text']}>
               Job:
-              <span style="color: #33994A"> {this.jobStatus}</span>
+              <span style={{color: this.jobStatusColor}}> {this.formattedJobStatus}</span>
             </div>
             <span class={styles['table-action-bar-text']}>Rows: {this.tableData?.rows}</span>
             <span class={styles['table-action-bar-text']}>1m:06s</span>
@@ -226,6 +325,7 @@ export default defineComponent({
                 trigger: () => (
                   <n-button
                     text
+                    onClick={() => this.mittBus.emit('triggerDownloadCsv')}
                     class={styles['table-action-bar-button']}
                     v-slots={{
                       icon: () => <n-icon component={DownloadOutlined} size="20"></n-icon>,
@@ -245,6 +345,7 @@ export default defineComponent({
                 trigger: () => (
                   <n-button
                     text
+                    onClick={() => this.mittBus.emit('triggerCopyData')}
                     class={styles['table-action-bar-button']}
                     v-slots={{
                       icon: () => <n-icon component={Copy} size="20"></n-icon>,

@@ -16,11 +16,17 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss'
-import type {Job} from "@/api/models/job/types/job";
+import type { DataTableInst } from 'naive-ui'
+import {useMessage} from "naive-ui";
 
 export default defineComponent({
   name: 'TableResult',
-  setup() {
+  setup(props, { emit }) {
+    const {t} = useLocaleHooks()
+    const message = useMessage()
+
+    const tableRef = ref<DataTableInst | null>(null);
+
     interface TableColumn {
       title: string
       key: string
@@ -38,7 +44,7 @@ export default defineComponent({
       if (result && result.resultData) {
         data.value = result.resultData
         if (data.value.length > 0) {
-          generateColumns(data.value[0]);
+          generateColumns(data.value[0])
         }
       }
     }
@@ -62,34 +68,49 @@ export default defineComponent({
       columns.value = [indexColumn, ...dynamicColumns]
     }
 
-    mittBus?.on('jobResult', handleResult);
-    mittBus?.on('refreshedResult', handleResult);
+    mittBus?.on('jobResult', handleResult)
+    mittBus?.on('refreshedResult', handleResult)
+
+    mittBus.on('triggerDownloadCsv', () => {
+      if (tableRef.value) {
+        tableRef.value.downloadCsv({ fileName: 'data-table' })
+      }
+    })
+
+    mittBus.on('triggerCopyData', () => {
+      if (data.value && data.value.length > 0) {
+        const jsonData = JSON.stringify(data.value, null, 2)
+        navigator.clipboard.writeText(jsonData)
+          .then(() => message.success(t('playground.data_copied_successfully')))
+          .catch(err => console.error('Failed to copy data: ', err))
+      }
+    })
 
     onUnmounted(() => {
-      mittBus.off('jobResult', handleResult);
-      mittBus.off('refreshedResult', handleResult);
+      mittBus.off('jobResult', handleResult)
+      mittBus.off('refreshedResult', handleResult)
+      mittBus.off('triggerDownloadCsv')
+      mittBus.off('triggerCopyData')
     });
-
-    interface User {
-      id: number
-      name: string
-      age: number
-      address: string
-    }
 
     return {
       columns,
       data,
+      tableRef,
     }
   },
   render() {
     return (
       <div>
         <n-data-table
+          ref={(el: any) => { this.tableRef = el }}
           class={styles.table}
           columns={this.columns}
           data={this.data}
           max-height={90}
+          v-slots={{
+            empty: () => '',
+          }}
         />
       </div>
     )
