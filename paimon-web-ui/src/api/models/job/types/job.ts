@@ -17,6 +17,7 @@ under the License. */
 
 export interface Job {
   submitId: string
+  jobId: string
   jobName: string
   type: string
   executeMode: string
@@ -55,4 +56,16 @@ export interface ResultFetchDTO {
   sessionId: string
   taskType: string
   token: number
+}
+
+export interface JobStatus {
+  jobId: string
+  status: string
+}
+
+export interface StopJobDTO {
+  clusterId: string
+  jobId: string
+  taskType: string
+  withSavepoint: boolean
 }

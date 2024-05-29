@@ -16,21 +16,21 @@ specific language governing permissions and limitations
 under the License. */
 
 import { Copy, DataTable, Renew } from '@vicons/carbon'
-import { StopOutline } from '@vicons/ionicons5'
+import { StopOutline, Stop } from '@vicons/ionicons5'
 import { ClockCircleOutlined, DownloadOutlined, LineChartOutlined } from '@vicons/antd'
 import styles from './index.module.scss'
 import { useConfigStore } from '@/store/config'
 import type {Job, JobResultData} from "@/api/models/job/types/job";
-import {fetchResult} from "@/api/models/job";
+import {fetchResult, getJobStatus} from "@/api/models/job";
 
 export default defineComponent({
   name: 'TableActionBar',
   setup: function () {
     const {t} = useLocaleHooks()
 
-    const currentJob = ref<Job | null>(null);
-    const tableData = ref<JobResultData | null>(null);
-
+    const currentJob = ref<Job | null>(null)
+    const tableData = ref<JobResultData | null>(null)
+    const jobStatus = ref<string>('')
 
     const configStore = useConfigStore()
     const isDarkMode = computed(() => configStore.theme === 'dark')
@@ -73,6 +73,22 @@ export default defineComponent({
       }
     }
 
+    onMounted(() => {
+      setInterval(async () => {
+        if (currentJob.value && currentJob.value.jobId) {
+          const response: any = await getJobStatus(currentJob.value.jobId);
+          if (response.data) {
+            jobStatus.value = response.data.status
+          }
+        }
+      }, 1000);
+    });
+
+    const currentStopIcon = computed(() => jobStatus.value === 'RUNNING' ? StopOutline : Stop);
+
+    const isButtonDisabled = computed(() => {
+      return jobStatus.value !== 'RUNNING'
+    })
 
     return {
       t,
@@ -80,7 +96,10 @@ export default defineComponent({
       setActiveButton,
       isDarkMode,
       refreshData,
-      tableData
+      tableData,
+      jobStatus,
+      currentStopIcon,
+      isButtonDisabled
     }
   },
   render() {
@@ -157,10 +176,10 @@ export default defineComponent({
               trigger: () => (
                 <n-button
                   text
-                  class={styles['table-action-bar-button']}
-                  style="color:  #D94F4F"
+                  disabled={this.isButtonDisabled}
+                  class={this.jobStatus === 'RUNNING' ? styles['stop-button-running'] : styles['table-action-bar-button']}
                   v-slots={{
-                    icon: () => <n-icon component={StopOutline} size="20"></n-icon>,
+                    icon: () => <n-icon component={this.currentStopIcon} size="20"></n-icon>,
                   }}
                 >
                 </n-button>
@@ -195,7 +214,7 @@ export default defineComponent({
           <n-space item-style="display: flex; align-items: center;">
             <div class={styles['table-action-bar-text']}>
               Job:
-              <span style="color: #33994A"> Running</span>
+              <span style="color: #33994A"> {this.jobStatus}</span>
             </div>
             <span class={styles['table-action-bar-text']}>Rows: {this.tableData?.rows}</span>
             <span class={styles['table-action-bar-text']}>1m:06s</span>
