@@ -30,14 +30,14 @@ export function submitJob(jobData: JobSubmitDTO) {
  * # Fetch the result of a submitted job
  */
 export function fetchResult(resultFetchDTO: ResultFetchDTO) {
-  return httpRequest.post<ResponseOptions<JobResultData>>('/job/fetch', resultFetchDTO)
+  return httpRequest.post('/job/fetch', resultFetchDTO)
 }
 
 /**
  * # Refresh the status of jobs
  */
 export function refreshJobStatus() {
-  return httpRequest.post<ResponseOptions<void>>('/job/refresh')
+  return httpRequest.post('/job/refresh')
 }
 
 /**
@@ -51,5 +51,5 @@ export function getJobStatus(jobId: string) {
  * # Stop a job
  */
 export function stopJob(stopJobDTO: StopJobDTO) {
-  return httpRequest.post<ResponseOptions<void>>('/job/stop', stopJobDTO)
+  return httpRequest.post('/job/stop', stopJobDTO)
 }

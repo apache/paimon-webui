@@ -52,16 +52,16 @@ export default defineComponent({
       if (currentJob.value) {
         if (currentJob.value.shouldFetchResult) {
           try {
+            const job = toRaw(currentJob.value);
+            const { submitId, clusterId, sessionId, type: taskType, token } = job
             const resultFetchDTO = {
-              submitId: currentJob.value.submitId,
-              clusterId: currentJob.value.clusterId,
-              sessionId: currentJob.value.sessionId,
-              taskType: currentJob.value.type,
-              token: currentJob.value.token
+              submitId,
+              clusterId,
+              sessionId,
+              taskType,
+              token
             }
-
-            const response: any = await fetchResult(resultFetchDTO);
-            console.log(response.data)
+            const response  = await fetchResult(resultFetchDTO)
             tableData.value = response.data;
             mittBus.emit('refreshedResult', response.data)
           } catch (error) {
@@ -78,14 +78,16 @@ export default defineComponent({
 
     const handleStopJob = async () => {
       if (currentJob.value) {
+        const job = toRaw(currentJob.value);
+        const { clusterId, jobId, type: taskType} = job
         const stopJobDTO = {
-          clusterId: currentJob.value.clusterId,
-          jobId: currentJob.value.jobId,
-          taskType: currentJob.value.type,
+          clusterId,
+          jobId,
+          taskType,
           withSavepoint: false
         }
         try {
-          const response: any = await stopJob(stopJobDTO);
+          const response = await stopJob(stopJobDTO);
           if (response.code === 200) {
             message.success(t('playground.job_stopping_successfully'))
           } else {
