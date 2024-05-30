@@ -19,7 +19,6 @@ import { Copy, DataTable, Renew } from '@vicons/carbon'
 import { StopOutline, Stop } from '@vicons/ionicons5'
 import { ClockCircleOutlined, DownloadOutlined, LineChartOutlined } from '@vicons/antd'
 import styles from './index.module.scss'
-import { useConfigStore } from '@/store/config'
 import type {Job, JobResultData} from "@/api/models/job/types/job"
 import {fetchResult, getJobStatus, stopJob} from "@/api/models/job"
 import {useMessage} from "naive-ui"
@@ -30,23 +29,23 @@ export default defineComponent({
     const {t} = useLocaleHooks()
     const message = useMessage()
 
+    const {mittBus} = getCurrentInstance()!.appContext.config.globalProperties
+
     const currentJob = ref<Job | null>(null)
     const tableData = ref<JobResultData | null>(null)
     const jobStatus = ref<string>('')
     const selectedInterval = ref('Disabled')
-    const intervalId = ref<number | null>(null);
-
-    const configStore = useConfigStore()
-    const isDarkMode = computed(() => configStore.theme === 'dark')
-
+    const refreshIntervalId = ref<number | null>(null);
     const activeButton = ref('table')
+    const startTime = ref(0);
+    const elapsedTime = ref(0);
+
     const setActiveButton = (button: any) => {
       activeButton.value = button
     }
 
-    const {mittBus} = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('jobResult', (jobData: any) => {
-      currentJob.value = jobData;
+      currentJob.value = jobData
     })
 
     const handleRefreshData = async () => {
@@ -98,16 +97,17 @@ export default defineComponent({
       }
     }
 
+    let getJobStatusIntervalId: number
     onMounted(() => {
-      setInterval(async () => {
+      getJobStatusIntervalId = setInterval(async () => {
         if (currentJob.value && currentJob.value.jobId) {
           const response: any = await getJobStatus(currentJob.value.jobId)
           if (response.data) {
             jobStatus.value = response.data.status
           }
         }
-      }, 1000);
-    });
+      }, 1000)
+    })
 
     const currentStopIcon = computed(() => jobStatus.value === 'RUNNING' ? StopOutline : Stop);
 
@@ -144,48 +144,87 @@ export default defineComponent({
     ];
 
     const clearRefreshInterval = () => {
-      if (intervalId.value) {
-        clearInterval(intervalId.value);
-        intervalId.value = null;
+      if (refreshIntervalId.value) {
+        clearInterval(refreshIntervalId.value)
+        refreshIntervalId.value = null
       }
     }
 
     const setRefreshInterval = (milliseconds: number) => {
       clearRefreshInterval();
-      intervalId.value = setInterval(handleRefreshData, milliseconds);
+      refreshIntervalId.value = setInterval(handleRefreshData, milliseconds)
     }
 
     const handleSelect = (key: any) => {
       selectedInterval.value = key
       switch (key) {
         case '5s':
-          setRefreshInterval(5000);
-          break;
+          setRefreshInterval(5000)
+          break
         case '10s':
-          setRefreshInterval(10000);
-          break;
+          setRefreshInterval(10000)
+          break
         case '30s':
-          setRefreshInterval(30000);
-          break;
+          setRefreshInterval(30000)
+          break
         case '1m':
-          setRefreshInterval(60000);
-          break;
+          setRefreshInterval(60000)
+          break
         case '5m':
-          setRefreshInterval(300000);
-          break;
+          setRefreshInterval(300000)
+          break
         case 'Disabled':
         default:
-          clearRefreshInterval();
-          break;
+          clearRefreshInterval()
+          break
       }
     }
+
+    const formatTime =  (seconds: number)  => {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}m:${secs}s`;
+    }
+
+    let computeExecutionTimeIntervalId: number
+    const startTimer = () => {
+      if (computeExecutionTimeIntervalId) {
+        clearInterval(computeExecutionTimeIntervalId);
+      }
+      elapsedTime.value = 0;
+      startTime.value = Date.now();
+      computeExecutionTimeIntervalId = setInterval(() => {
+        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000);
+      }, 3000);
+    }
+
+    const stopTimer = ()=> {
+      if (computeExecutionTimeIntervalId) {
+        clearInterval(computeExecutionTimeIntervalId);
+      }
+    }
+
+    watch(jobStatus, (newStatus, oldStatus) => {
+      if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING') {
+        startTimer();
+      } else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
+        stopTimer();
+        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000);
+      }
+    });
+
+    const formattedTime = computed(() => formatTime(elapsedTime.value));
+
+    onUnmounted(() => {
+      clearInterval(getJobStatusIntervalId)
+      stopTimer();
+    })
 
     return {
       t,
       mittBus,
       activeButton,
       setActiveButton,
-      isDarkMode,
       handleRefreshData,
       tableData,
       jobStatus,
@@ -196,7 +235,8 @@ export default defineComponent({
       jobStatusColor,
       dropdownOptions,
       selectedInterval,
-      handleSelect
+      handleSelect,
+      formattedTime
     }
   },
   render() {
@@ -316,7 +356,7 @@ export default defineComponent({
               <span style={{color: this.jobStatusColor}}> {this.formattedJobStatus}</span>
             </div>
             <span class={styles['table-action-bar-text']}>Rows: {this.tableData?.rows}</span>
-            <span class={styles['table-action-bar-text']}>1m:06s</span>
+            <span class={styles['table-action-bar-text']}>{ this.formattedTime }</span>
             <n-popover
               trigger="hover"
               placement="bottom-start"

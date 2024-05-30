@@ -23,7 +23,6 @@ import {
   zhCN,
 } from 'naive-ui'
 import { useConfigStore } from '@/store/config'
-import {refreshJobStatus} from "@/api/models/job";
 import themes from '@/themes'
 
 export default defineComponent({
@@ -33,22 +32,6 @@ export default defineComponent({
     const theme = computed(() => configStore.getCurrentTheme === 'dark' ? darkTheme : undefined)
     const themeOverrides = computed(() => themes[theme.value ? 'dark' : 'light'])
     const locale = computed(() => configStore.getCurrentLocale)
-
-    const isRefreshStatusActive = ref(false)
-
-    let refreshStatusIntervalId: number
-    onMounted(() => {
-      refreshStatusIntervalId = setInterval(async () => {
-        if (isRefreshStatusActive.value) {
-          //await refreshJobStatus();
-        }
-      }, 3000);
-    })
-
-    onUnmounted(() => {
-      isRefreshStatusActive.value = false;
-      clearInterval(refreshStatusIntervalId);
-    })
 
     return {
       theme,

@@ -16,40 +16,40 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type {JobSubmitDTO, Job, ResultFetchDTO, JobResultData, JobStatus, StopJobDTO} from "@/api/models/job/types/job";
-import type {ResponseOptions} from "@/api/types";
+import type {JobSubmitDTO, Job, ResultFetchDTO, JobResultData, JobStatus, StopJobDTO} from "@/api/models/job/types/job"
+import type {ResponseOptions} from "@/api/types"
 
 /**
  * # Submit a job
  */
 export function submitJob(jobData: JobSubmitDTO) {
-  return httpRequest.post<ResponseOptions<Job>>('/job/submit', jobData);
+  return httpRequest.post<ResponseOptions<Job>>('/job/submit', jobData)
 }
 
 /**
  * # Fetch the result of a submitted job
  */
 export function fetchResult(resultFetchDTO: ResultFetchDTO) {
-  return httpRequest.post<ResponseOptions<JobResultData>>('/job/fetch', resultFetchDTO);
+  return httpRequest.post<ResponseOptions<JobResultData>>('/job/fetch', resultFetchDTO)
 }
 
 /**
  * # Refresh the status of jobs
  */
 export function refreshJobStatus() {
-  return httpRequest.post<ResponseOptions<void>>('/job/refresh');
+  return httpRequest.post<ResponseOptions<void>>('/job/refresh')
 }
 
 /**
  * # Fetch the status of a specific job by its ID
  */
 export function getJobStatus(jobId: string) {
-  return httpRequest.get<ResponseOptions<JobStatus>>(`/job/status/get/${jobId}`);
+  return httpRequest.get<ResponseOptions<JobStatus>>(`/job/status/get/${jobId}`)
 }
 
 /**
  * # Stop a job
  */
 export function stopJob(stopJobDTO: StopJobDTO) {
-  return httpRequest.post<ResponseOptions<void>>('/job/stop', stopJobDTO);
+  return httpRequest.post<ResponseOptions<void>>('/job/stop', stopJobDTO)
 }

@@ -17,7 +17,7 @@ under the License. */
 
 import styles from './index.module.scss'
 import type { DataTableInst } from 'naive-ui'
-import {useMessage} from "naive-ui";
+import {useMessage} from "naive-ui"
 
 export default defineComponent({
   name: 'TableResult',
@@ -25,7 +25,7 @@ export default defineComponent({
     const {t} = useLocaleHooks()
     const message = useMessage()
 
-    const tableRef = ref<DataTableInst | null>(null);
+    const tableRef = ref<DataTableInst | null>(null)
 
     interface TableColumn {
       title: string

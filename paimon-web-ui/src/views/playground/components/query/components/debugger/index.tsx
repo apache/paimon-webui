@@ -30,7 +30,7 @@ export default defineComponent({
     const { t } = useLocaleHooks()
     const message = useMessage()
 
-    const tabData = ref({}) as any;
+    const tabData = ref({}) as any
 
     const debuggerVariables = reactive<{
       operatingConditionOptions: { label: string; key: string }[]
@@ -89,7 +89,7 @@ export default defineComponent({
     }
 
     watch(() => debuggerVariables.conditionValue, (newValue) => {
-      getClusterData();
+      getClusterData()
     })
 
     onMounted(() => {getClusterData()})
