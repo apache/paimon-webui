@@ -18,10 +18,12 @@ under the License. */
 import { ChevronDown, Play, ReaderOutline, Save } from '@vicons/ionicons5'
 import { getClusterListByType } from '@/api/models/cluster'
 import styles from './index.module.scss'
-import type { Cluster } from "@/api/models/cluster/types";
-import type {JobSubmitDTO} from "@/api/models/job/types/job";
-import {submitJob} from "@/api/models/job";
-import {useMessage} from "naive-ui";
+import type { Cluster } from "@/api/models/cluster/types"
+import type {JobSubmitDTO} from "@/api/models/job/types/job"
+import { submitJob } from "@/api/models/job"
+import { useMessage } from "naive-ui"
+import { useJobStore } from '@/store/job'
+import type {ExecutionMode} from "@/store/job/type";
 
 export default defineComponent({
   name: 'EditorDebugger',
@@ -29,6 +31,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
     const message = useMessage()
+    const jobStore = useJobStore()
 
     const tabData = ref({}) as any
 
@@ -105,6 +108,8 @@ export default defineComponent({
       if (!currentTab) {
         return
       }
+
+      jobStore.setExecutionMode(debuggerVariables.conditionValue3 as ExecutionMode)
 
       const currentSQL = currentTab.content
       if (!currentSQL) {

@@ -24,12 +24,14 @@ import {fetchResult, getJobStatus, stopJob} from "@/api/models/job"
 import {useMessage} from "naive-ui"
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
+import { useJobStore } from '@/store/job'
 
 export default defineComponent({
   name: 'TableActionBar',
   setup: function () {
     const {t} = useLocaleHooks()
     const message = useMessage()
+    const jobStore = useJobStore()
 
     const {mittBus} = getCurrentInstance()!.appContext.config.globalProperties
 
@@ -37,10 +39,10 @@ export default defineComponent({
     const tableData = ref<JobResultData | null>(null)
     const jobStatus = ref<string>('')
     const selectedInterval = ref('Disabled')
-    const refreshIntervalId = ref<number | null>(null);
+    const refreshIntervalId = ref<number | null>(null)
     const activeButton = ref('table')
-    const startTime = ref(0);
-    const elapsedTime = ref(0);
+    const startTime = ref(0)
+    const elapsedTime = ref(0)
 
     const setActiveButton = (button: any) => {
       activeButton.value = button
@@ -54,7 +56,7 @@ export default defineComponent({
       if (currentJob.value) {
         if (currentJob.value.shouldFetchResult) {
           try {
-            const job = toRaw(currentJob.value);
+            const job = toRaw(currentJob.value)
             const { submitId, clusterId, sessionId, type: taskType, token } = job
             const resultFetchDTO = {
               submitId,
@@ -64,7 +66,8 @@ export default defineComponent({
               token
             }
             const response  = await fetchResult(resultFetchDTO)
-            tableData.value = response.data;
+            tableData.value = response.data
+            console.log(response.data)
             mittBus.emit('refreshedResult', response.data)
           } catch (error) {
             tableData.value = null;
@@ -119,6 +122,10 @@ export default defineComponent({
       return jobStatus.value !== 'RUNNING'
     })
 
+    const isScheduleButtonDisabled = computed(() => {
+      return jobStore.getExecutionMode === 'Batch'
+    })
+
     const jobStatusColor = computed(() => {
       switch (jobStatus.value.toUpperCase()) {
         case 'RUNNING':
@@ -155,10 +162,19 @@ export default defineComponent({
     }
 
     const setRefreshInterval = (milliseconds: number) => {
-      clearRefreshInterval();
+      clearRefreshInterval()
       refreshIntervalId.value = setInterval(handleRefreshData, milliseconds)
     }
 
+    watch(jobStatus, () => {
+      if (jobStatus.value !== 'RUNNING') {
+        if (refreshIntervalId.value) {
+          clearRefreshInterval()
+        }
+      }
+    })
+
+    dayjs.extend(duration);
     const handleSelect = (key: any) => {
       selectedInterval.value = key
       switch (key) {
@@ -185,9 +201,11 @@ export default defineComponent({
     }
 
     const formatTime =  (seconds: number)  => {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${mins}m:${secs}s`;
+      const days = Math.floor(seconds / 86400)
+      const hours = Math.floor((seconds % 86400) / 3600)
+      const mins = Math.floor((seconds % 3600) / 60)
+      const secs = seconds % 60
+      return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
     }
 
     let computeExecutionTimeIntervalId: number
@@ -234,6 +252,7 @@ export default defineComponent({
       jobStatus,
       currentStopIcon,
       isButtonDisabled,
+      isScheduleButtonDisabled,
       handleStopJob,
       formattedJobStatus,
       jobStatusColor,
@@ -335,11 +354,15 @@ export default defineComponent({
             size="small"
             placement="bottom-start"
             options={this.dropdownOptions}
+            disabled={this.isScheduleButtonDisabled}
             v-model:value={this.selectedInterval}
             on-select={this.handleSelect}
             v-slots={{
               trigger: () => (
-                <n-button text class={styles['table-action-bar-button']}>
+                <n-button
+                  text
+                  disabled={this.isScheduleButtonDisabled}
+                  class={styles['table-action-bar-button']}>
                 </n-button>
               ),
               default: () => (
