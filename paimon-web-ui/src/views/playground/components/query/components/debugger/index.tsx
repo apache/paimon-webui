@@ -121,8 +121,7 @@ export default defineComponent({
 
       try {
         const response = await submitJob(jobDataDTO);
-        console.log(response)
-        if (response.data) {
+        if (response.code === 200) {
           message.success(t('playground.job_submission_successfully'))
           mittBus.emit('jobResult', response.data);
         } else {

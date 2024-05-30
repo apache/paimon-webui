@@ -22,6 +22,8 @@ import styles from './index.module.scss'
 import type {Job, JobResultData} from "@/api/models/job/types/job"
 import {fetchResult, getJobStatus, stopJob} from "@/api/models/job"
 import {useMessage} from "naive-ui"
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
 
 export default defineComponent({
   name: 'TableActionBar',
@@ -103,7 +105,7 @@ export default defineComponent({
     onMounted(() => {
       getJobStatusIntervalId = setInterval(async () => {
         if (currentJob.value && currentJob.value.jobId) {
-          const response: any = await getJobStatus(currentJob.value.jobId)
+          const response = await getJobStatus(currentJob.value.jobId)
           if (response.data) {
             jobStatus.value = response.data.status
           }
@@ -161,19 +163,19 @@ export default defineComponent({
       selectedInterval.value = key
       switch (key) {
         case '5s':
-          setRefreshInterval(5000)
+          setRefreshInterval(dayjs.duration(5, 'seconds').asMilliseconds())
           break
         case '10s':
-          setRefreshInterval(10000)
+          setRefreshInterval(dayjs.duration(10, 'seconds').asMilliseconds())
           break
         case '30s':
-          setRefreshInterval(30000)
+          setRefreshInterval(dayjs.duration(30, 'seconds').asMilliseconds())
           break
         case '1m':
-          setRefreshInterval(60000)
+          setRefreshInterval(dayjs.duration(1, 'minute').asMilliseconds())
           break
         case '5m':
-          setRefreshInterval(300000)
+          setRefreshInterval(dayjs.duration(5, 'minutes').asMilliseconds())
           break
         case 'Disabled':
         default:

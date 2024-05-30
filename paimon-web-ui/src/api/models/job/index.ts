@@ -22,15 +22,15 @@ import type {ResponseOptions} from "@/api/types"
 /**
  * # Submit a job
  */
-export function submitJob(jobData: JobSubmitDTO) {
-  return httpRequest.post<ResponseOptions<Job>>('/job/submit', jobData)
+export function submitJob(jobSubmitDTO: JobSubmitDTO) {
+  return httpRequest.post<JobSubmitDTO, ResponseOptions<Job>>('/job/submit', jobSubmitDTO)
 }
 
 /**
  * # Fetch the result of a submitted job
  */
 export function fetchResult(resultFetchDTO: ResultFetchDTO) {
-  return httpRequest.post('/job/fetch', resultFetchDTO)
+  return httpRequest.post<ResultFetchDTO, ResponseOptions<JobResultData>>('/job/fetch', resultFetchDTO)
 }
 
 /**
@@ -44,12 +44,12 @@ export function refreshJobStatus() {
  * # Fetch the status of a specific job by its ID
  */
 export function getJobStatus(jobId: string) {
-  return httpRequest.get<ResponseOptions<JobStatus>>(`/job/status/get/${jobId}`)
+  return httpRequest.get<string, ResponseOptions<JobStatus>>(`/job/status/get/${jobId}`)
 }
 
 /**
  * # Stop a job
  */
 export function stopJob(stopJobDTO: StopJobDTO) {
-  return httpRequest.post('/job/stop', stopJobDTO)
+  return httpRequest.post<StopJobDTO, ResponseOptions<void>>('/job/stop', stopJobDTO)
 }
