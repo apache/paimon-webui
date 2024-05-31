@@ -30,8 +30,10 @@ export default defineComponent({
 
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
-    const [tableColumns, useColumns, { loading }] = getColumns()
+    const [tableColumns, useColumns] = getColumns()
 
+    const tabData = ref({}) as any
+    const isDetailVisible = ref(true)
     const filterValue = ref('')
     const selectedKeys = ref([])
 
@@ -108,11 +110,10 @@ export default defineComponent({
       }
     }
 
-    const handleTreeSelect = ({ option }: { option: TreeOption }) => {
+    const handleTreeSelect = () => {
     }
 
     // mitt - handle tab choose
-    const tabData = ref({}) as any
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
@@ -160,7 +161,6 @@ export default defineComponent({
       },
     ]) as any
 
-    const isDetailVisible = ref(true)
     const handleClose = () => {
       isDetailVisible.value = !isDetailVisible.value
     }

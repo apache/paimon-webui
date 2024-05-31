@@ -15,10 +15,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs')
+const path = require('node:path')
 
-const filePath = path.resolve(__dirname, './src');
+const filePath = path.resolve(__dirname, './src')
 
 const xmlLicenses = `
 <!--
@@ -61,58 +61,56 @@ under the License. */
 `
 
 function fileDisplay(filePath) {
-  fs.readdir(filePath, function (err, files) {
+  fs.readdir(filePath, (err, files) => {
     if (err) {
-      console.warn('get file list error: ' + err);
-    } else {
+      console.warn(`get file list error: ${err}`)
+    }
+    else {
       for (let index = 0; index < files.length; index++) {
-        const filename = files[index];
-        const filedir = path.join(filePath, filename);
-        fs.stat(filedir, function (eror, stats) {
+        const filename = files[index]
+        const filedir = path.join(filePath, filename)
+        fs.stat(filedir, (eror, stats) => {
           if (eror) {
-            console.warn('get file stat error: ' + eror);
-          } else {
-            const isFile = stats.isFile();
-            const isDir = stats.isDirectory();
+            console.warn(`get file stat error: ${eror}`)
+          }
+          else {
+            const isFile = stats.isFile()
+            const isDir = stats.isDirectory()
             if (isFile) {
-              const res = read(filedir);
-              const fileName = path.basename(filedir);
-              res && console.log('success file: ' + fileName);
+              const res = read(filedir)
+              const fileName = path.basename(filedir)
+              res && console.log(`success file: ${fileName}`)
             }
-            if (isDir) {
+            if (isDir)
               fileDisplay(filedir)
-            }
           }
         })
       }
     }
-  });
+  })
 }
 
 function read(fPath) {
-  var data = fs.readFileSync(fPath, "utf-8");
+  const data = fs.readFileSync(fPath, 'utf-8')
   return write(data, fPath)
 }
 
 function write(data, fPath) {
-  if (data.includes('Apache') && data.includes('License')) {
+  if (data.includes('Apache') && data.includes('License'))
     return true
-  }
 
-  const fileName = path.basename(fPath);
-  let license;
-  if (fileName.endsWith('.tsx') || fileName.endsWith('.ts') || fileName.endsWith('.js') || fileName.endsWith('.css') || fileName.endsWith('.scss')) {
+  const fileName = path.basename(fPath)
+  let license
+  if (fileName.endsWith('.tsx') || fileName.endsWith('.ts') || fileName.endsWith('.js') || fileName.endsWith('.css') || fileName.endsWith('.scss'))
     license = tsLicenses
-  }
-  if (fileName.endsWith('.vue') || fileName.endsWith('.html')) {
+
+  if (fileName.endsWith('.vue') || fileName.endsWith('.html'))
     license = xmlLicenses
-  }
-  
 
   if (license) {
     const newFile = `${license}\n${data}`
 
-    fs.writeFileSync(`${fPath}`, newFile, { encoding: 'utf-8' });
+    fs.writeFileSync(`${fPath}`, newFile, { encoding: 'utf-8' })
     return true
   }
 
@@ -122,4 +120,4 @@ function write(data, fPath) {
   }
 }
 
-fileDisplay(filePath);
+fileDisplay(filePath)

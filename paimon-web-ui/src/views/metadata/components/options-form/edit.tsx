@@ -56,7 +56,7 @@ export default defineComponent({
 
     const formValue = ref({ ...toRaw(props.option) })
 
-    const handleConfirm = async () => {
+    async function handleConfirm() {
       await formRef.value?.validate()
       await createFetch({
         params: transformOption({
@@ -69,13 +69,13 @@ export default defineComponent({
       message.success(t('Edit Successfully'))
     }
 
-    const handleOpenModal = (e: Event) => {
+    function handleOpenModal(e: Event) {
       e.stopPropagation()
       formValue.value = { ...toRaw(props.option) }
       showModal.value = true
     }
 
-    const handleCloseModal = () => {
+    function handleCloseModal() {
       showModal.value = false
       props.onConfirm!()
     }

@@ -23,7 +23,7 @@ import type { ResponseOptions } from '@/api/types'
 
 /**
  * # Login
- * @param {LoginOptions} options
+ * @params {LoginOptions} options
  */
 export function onLogin(params: LoginOptions) {
   return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login', params)

@@ -15,15 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss'
 import type { DataTableInst } from 'naive-ui'
-import { useMessage } from "naive-ui"
+import { useMessage } from 'naive-ui'
+import styles from './index.module.scss'
 import { useJobStore } from '@/store/job'
 
 export default defineComponent({
   name: 'TableResult',
-  setup: function (props, {emit}) {
-    const {t} = useLocaleHooks()
+  setup() {
+    const { t } = useLocaleHooks()
     const message = useMessage()
     const jobStore = useJobStore()
 
@@ -37,42 +37,41 @@ export default defineComponent({
       render?: (row: any, index: number) => string | number | JSX.Element
     }
 
-    const initialData = computed(() => jobStore.getCurrentJob?.resultData || []);
-    const refreshedData = computed(() => jobStore.getJobResultData?.resultData || []);
-    const data = computed(() => refreshedData.value.length > 0 ? refreshedData.value : initialData.value);
+    const initialData = computed(() => jobStore.getCurrentJob?.resultData || [])
+    const refreshedData = computed(() => jobStore.getJobResultData?.resultData || [])
+    const data = computed(() => refreshedData.value.length > 0 ? refreshedData.value : initialData.value)
 
     const columns = computed(() => {
-      if (data.value.length > 0) {
-        return generateColumns(data.value[0]);
-      }
-      return [];
-    });
+      if (data.value.length > 0)
+        return generateColumns(data.value[0])
 
-    const {mittBus} = getCurrentInstance()!.appContext.config.globalProperties
+      return []
+    })
 
-    const generateColumns = (sampleObject: any) => {
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
+
+    function generateColumns(sampleObject: any) {
       const indexColumn: TableColumn = {
         title: '#',
         key: 'index',
         fixed: 'left',
         width: 50,
-        render: (row, index) => `${index + 1}`
+        render: (_, index) => `${index + 1}`,
       }
 
       const dynamicColumns = Object.keys(sampleObject).map(key => ({
         title: key,
-        key: key,
+        key,
         resizable: true,
-        sortable: true
+        sortable: true,
       }))
 
-      return [indexColumn, ...dynamicColumns];
+      return [indexColumn, ...dynamicColumns]
     }
 
     mittBus.on('triggerDownloadCsv', () => {
-      if (tableRef.value) {
-        tableRef.value.downloadCsv({fileName: 'data-table'})
-      }
+      if (tableRef.value)
+        tableRef.value?.downloadCsv({ fileName: 'data-table' })
     })
 
     mittBus.on('triggerCopyData', () => {
@@ -87,7 +86,7 @@ export default defineComponent({
     onUnmounted(() => {
       mittBus.off('triggerDownloadCsv')
       mittBus.off('triggerCopyData')
-    });
+    })
 
     return {
       columns,

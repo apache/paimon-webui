@@ -66,13 +66,13 @@ export default defineComponent({
       },
     ]
 
-    const onFetchData = async () => {
+    async function onFetchData() {
       useOptionsList({
         params: catalogStore.currentTable,
       })
     }
 
-    const onDeleteOption = async (optionKey: string) => {
+    async function onDeleteOption(optionKey: string) {
       await useDelete({
         config: {
           params: {

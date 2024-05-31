@@ -16,14 +16,14 @@ specific language governing permissions and limitations
 under the License. */
 
 import { ChevronDown, Play, ReaderOutline, Save } from '@vicons/ionicons5'
-import { getClusterListByType } from '@/api/models/cluster'
+import { useMessage } from 'naive-ui'
 import styles from './index.module.scss'
-import type { Cluster } from "@/api/models/cluster/types"
-import type {JobSubmitDTO} from "@/api/models/job/types/job"
-import { submitJob } from "@/api/models/job"
-import { useMessage } from "naive-ui"
+import { getClusterListByType } from '@/api/models/cluster'
+import type { Cluster } from '@/api/models/cluster/types'
+import type { JobSubmitDTO } from '@/api/models/job/types/job'
+import { submitJob } from '@/api/models/job'
 import { useJobStore } from '@/store/job'
-import type {ExecutionMode} from "@/store/job/type"
+import type { ExecutionMode } from '@/store/job/type'
 
 export default defineComponent({
   name: 'EditorDebugger',
@@ -36,13 +36,13 @@ export default defineComponent({
     const tabData = ref({}) as any
 
     const debuggerVariables = reactive<{
-      operatingConditionOptions: { label: string; key: string }[]
+      operatingConditionOptions: { label: string, key: string }[]
       conditionValue: string
-      bigDataOptions: { label: string; value: string }[]
+      bigDataOptions: { label: string, value: string }[]
       conditionValue2: string
-      clusterOptions: { label: string; value: string }[]
+      clusterOptions: { label: string, value: string }[]
       conditionValue3: string
-      executionModeOptions: { label: string; value: string }[]
+      executionModeOptions: { label: string, value: string }[]
     }>({
       operatingConditionOptions: [
         { label: 'Limit 100 items', key: '100' },
@@ -62,8 +62,7 @@ export default defineComponent({
       ],
     })
 
-    const handleSelect = (key: string) => {
-      console.log(key)
+    const handleSelect = () => {
     }
 
     const handleFormat = () => {
@@ -75,66 +74,65 @@ export default defineComponent({
     }
 
     function getClusterData() {
-      getClusterListByType(debuggerVariables.conditionValue, 1, Number.MAX_SAFE_INTEGER).then(response => {
+      getClusterListByType(debuggerVariables.conditionValue, 1, Number.MAX_SAFE_INTEGER).then((response) => {
         if (response && response.data) {
           const clusterList = response.data as Cluster[]
           debuggerVariables.clusterOptions = clusterList.map(cluster => ({
             label: cluster.clusterName,
-            value: cluster.id.toString()
+            value: cluster.id.toString(),
           }))
-          if (debuggerVariables.clusterOptions.length > 0) {
+          if (debuggerVariables.clusterOptions.length > 0)
             debuggerVariables.conditionValue2 = debuggerVariables.clusterOptions[0].value
-          }
         }
-      }).catch(error => {
+      }).catch((error) => {
         console.error('Failed to fetch clusters:', error)
       })
     }
 
-    watch(() => debuggerVariables.conditionValue, (newValue) => {
+    watch(() => debuggerVariables.conditionValue, () => {
       getClusterData()
     })
 
-    onMounted(() => {getClusterData()})
+    onMounted(getClusterData)
 
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
-    });
+    })
 
     const handleSubmit = async () => {
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
 
-      if (!currentTab) {
+      if (!currentTab)
         return
-      }
 
       jobStore.setExecutionMode(debuggerVariables.conditionValue3 as ExecutionMode)
       jobStore.resetCurrentResult()
 
       const currentSQL = currentTab.content
-      if (!currentSQL) {
+      if (!currentSQL)
         return
-      }
 
       const jobDataDTO: JobSubmitDTO = {
         jobName: currentTab.tableName,
         taskType: debuggerVariables.conditionValue,
         clusterId: debuggerVariables.conditionValue2,
         statements: currentSQL,
-        streaming: debuggerVariables.conditionValue3 === 'Streaming'
-      };
+        streaming: debuggerVariables.conditionValue3 === 'Streaming',
+      }
 
       try {
-        const response = await submitJob(jobDataDTO);
+        const response = await submitJob(jobDataDTO)
         if (response.code === 200) {
           message.success(t('playground.job_submission_successfully'))
           jobStore.setCurrentJob(response.data)
-          mittBus.emit('jobResult', response.data);
-        } else {
+          mittBus.emit('jobResult', response.data)
+        }
+        else {
           message.error(`${t('playground.job_submission_failed')}`)
         }
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Failed to submit job:', error)
       }
     }
@@ -145,7 +143,7 @@ export default defineComponent({
       handleSelect,
       handleFormat,
       handleSave,
-      handleSubmit
+      handleSubmit,
     }
   },
   render() {

@@ -22,7 +22,6 @@ import styles from './index.module.scss'
 import Modal from '@/components/modal'
 import { useCDCStore } from '@/store/cdc'
 import { type CdcJobSubmit, submitCdcJob } from '@/api/models/cdc'
-import job from '../job'
 
 export default defineComponent({
   name: 'CDCPage',
@@ -30,14 +29,8 @@ export default defineComponent({
     const { t } = useLocaleHooks()
     const showModalRef = ref(false)
     const showSubmitCdcJobModalRef = ref(false)
-    const handleOpenModal = () => {
-      showModalRef.value = true
-    }
 
-    const handleOpenSubmitCdcJobModal = () => {
-      showSubmitCdcJobModalRef.value = true
-    }
-
+    const filterValue = ref()
     const CDCStore = useCDCStore()
     const router: Router = useRouter()
     const CDCModalRef = ref()
@@ -51,17 +44,23 @@ export default defineComponent({
 
     const cdcJobTableRef = ref()
 
-    const handleCdcSubmitConfirm = (form: CdcJobSubmit) => {
+    function handleOpenModal() {
+      showModalRef.value = true
+    }
+
+    function handleOpenSubmitCdcJobModal() {
+      showSubmitCdcJobModalRef.value = true
+    }
+
+    function handleCdcSubmitConfirm(form: CdcJobSubmit) {
       const CDCStore = useCDCStore()
       submitCdcJob(CDCStore.getModel.id, form)
       showSubmitCdcJobModalRef.value = false
     }
 
-    const handleSeachCdcJobTable = ()=>{
+    function handleSeachCdcJobTable() {
       cdcJobTableRef.value.getTableData(filterValue.value)
     }
-
-    const filterValue = ref()
 
     return {
       t,
@@ -75,7 +74,7 @@ export default defineComponent({
       handleCdcSubmitConfirm,
       cdcJobTableRef,
       handleSeachCdcJobTable,
-      filterValue
+      filterValue,
     }
   },
   render() {
@@ -95,7 +94,7 @@ export default defineComponent({
                       placeholder={this.t('playground.search')}
                       v-model:value={this.filterValue}
                       v-slots={{
-                        prefix: () => <n-icon component={Search} />
+                        prefix: () => <n-icon component={Search} />,
                       }}
                       onBlur={this.handleSeachCdcJobTable}
                     />
@@ -131,5 +130,5 @@ export default defineComponent({
         </n-card>
       </div>
     )
-  }
+  },
 })

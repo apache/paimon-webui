@@ -61,17 +61,17 @@ export default defineComponent({
       props.onConfirm!()
     }
 
-    const handleOpenModal = (e: Event) => {
+    function handleOpenModal(e: Event) {
       e.stopPropagation()
       showModal.value = true
     }
 
-    const handleCloseModal = () => {
+    function handleCloseModal() {
       showModal.value = false
       resetState()
     }
 
-    const resetState = () => {
+    function resetState() {
       formValue.value = {
         options: [{ ...newOption }],
       }

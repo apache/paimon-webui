@@ -15,9 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import dayjs from 'dayjs'
 import styles from './index.module.scss'
 import ContextMenu from '@/components/context-menu'
-import dayjs from 'dayjs'
 
 export default defineComponent({
   name: 'EditorTabs',
