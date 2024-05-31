@@ -19,8 +19,7 @@ import { Copy, DataTable, Renew } from '@vicons/carbon'
 import { StopOutline, Stop } from '@vicons/ionicons5'
 import { ClockCircleOutlined, DownloadOutlined, LineChartOutlined } from '@vicons/antd'
 import styles from './index.module.scss'
-import type {Job, JobResultData} from "@/api/models/job/types/job"
-import {fetchResult, getJobStatus, stopJob} from "@/api/models/job"
+import {fetchResult, stopJob} from "@/api/models/job"
 import {useMessage} from "naive-ui"
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -35,22 +34,16 @@ export default defineComponent({
 
     const {mittBus} = getCurrentInstance()!.appContext.config.globalProperties
 
-    const currentJob = ref<Job | null>(null)
-    const tableData = ref<JobResultData | null>(null)
-    const jobStatus = ref<string>('')
+    const currentJob = computed(() => jobStore.getCurrentJob)
+    const jobStatus = computed(() => jobStore.getJobStatus)
+    const executionTime = computed(() => jobStore.getExecutionTime)
     const selectedInterval = ref('Disabled')
     const refreshIntervalId = ref<number | null>(null)
     const activeButton = ref('table')
-    const startTime = ref(0)
-    const elapsedTime = ref(0)
 
     const setActiveButton = (button: any) => {
       activeButton.value = button
     }
-
-    mittBus.on('jobResult', (jobData: any) => {
-      currentJob.value = jobData
-    })
 
     const handleRefreshData = async () => {
       if (currentJob.value) {
@@ -66,11 +59,8 @@ export default defineComponent({
               token
             }
             const response  = await fetchResult(resultFetchDTO)
-            tableData.value = response.data
-            console.log(response.data)
-            mittBus.emit('refreshedResult', response.data)
+            jobStore.setJobResultData(response.data)
           } catch (error) {
-            tableData.value = null;
             console.error('Error fetching result:', error)
           }
         } else {
@@ -103,18 +93,6 @@ export default defineComponent({
         }
       }
     }
-
-    let getJobStatusIntervalId: number
-    onMounted(() => {
-      getJobStatusIntervalId = setInterval(async () => {
-        if (currentJob.value && currentJob.value.jobId) {
-          const response = await getJobStatus(currentJob.value.jobId)
-          if (response.data) {
-            jobStatus.value = response.data.status
-          }
-        }
-      }, 1000)
-    })
 
     const currentStopIcon = computed(() => jobStatus.value === 'RUNNING' ? StopOutline : Stop);
 
@@ -200,47 +178,8 @@ export default defineComponent({
       }
     }
 
-    const formatTime =  (seconds: number)  => {
-      const days = Math.floor(seconds / 86400)
-      const hours = Math.floor((seconds % 86400) / 3600)
-      const mins = Math.floor((seconds % 3600) / 60)
-      const secs = seconds % 60
-      return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
-    }
-
-    let computeExecutionTimeIntervalId: number
-    const startTimer = () => {
-      if (computeExecutionTimeIntervalId) {
-        clearInterval(computeExecutionTimeIntervalId);
-      }
-      elapsedTime.value = 0;
-      startTime.value = Date.now();
-      computeExecutionTimeIntervalId = setInterval(() => {
-        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000);
-      }, 3000);
-    }
-
-    const stopTimer = ()=> {
-      if (computeExecutionTimeIntervalId) {
-        clearInterval(computeExecutionTimeIntervalId);
-      }
-    }
-
-    watch(jobStatus, (newStatus, oldStatus) => {
-      if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING') {
-        startTimer();
-      } else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
-        stopTimer();
-        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000);
-      }
-    });
-
-    const formattedTime = computed(() => formatTime(elapsedTime.value));
-
-    onUnmounted(() => {
-      clearInterval(getJobStatusIntervalId)
-      stopTimer();
-    })
+    const rowCount = computed(() => jobStore.getRows)
+    const columnCount = computed(() => jobStore.getColumns)
 
     return {
       t,
@@ -248,7 +187,6 @@ export default defineComponent({
       activeButton,
       setActiveButton,
       handleRefreshData,
-      tableData,
       jobStatus,
       currentStopIcon,
       isButtonDisabled,
@@ -259,7 +197,9 @@ export default defineComponent({
       dropdownOptions,
       selectedInterval,
       handleSelect,
-      formattedTime
+      columnCount,
+      rowCount,
+      executionTime
     }
   },
   render() {
@@ -374,7 +314,7 @@ export default defineComponent({
             }}
           />
           <n-divider vertical style="height: 20px; margin-left: 0px; margin-right: 0px;" />
-          <span class={styles['table-action-bar-text']}>{this.tableData?.columns} Columns</span>
+          <span class={styles['table-action-bar-text']}>{this.columnCount} Columns</span>
         </n-space>
         <div class={styles.right}>
           <n-space item-style="display: flex; align-items: center;">
@@ -382,8 +322,8 @@ export default defineComponent({
               Job:
               <span style={{color: this.jobStatusColor}}> {this.formattedJobStatus}</span>
             </div>
-            <span class={styles['table-action-bar-text']}>Rows: {this.tableData?.rows}</span>
-            <span class={styles['table-action-bar-text']}>{ this.formattedTime }</span>
+            <span class={styles['table-action-bar-text']}>Rows: {this.rowCount}</span>
+            <span class={styles['table-action-bar-text']}>{ this.executionTime }</span>
             <n-popover
               trigger="hover"
               placement="bottom-start"

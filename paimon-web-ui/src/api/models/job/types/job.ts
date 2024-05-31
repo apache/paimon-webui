@@ -26,14 +26,14 @@ export interface Job {
   uid: number
   status?: string
   shouldFetchResult: boolean
-  resultData?: Array<{ [key: string]: any }>
+  resultData: ResultDataItem[]
   token: number
   startTime: string
   endTime: string
 }
 
 export interface JobSubmitDTO {
-  jobName?: string
+  jobName: string
   taskType: string
   clusterId: string
   config?: {
@@ -44,10 +44,14 @@ export interface JobSubmitDTO {
 }
 
 export interface JobResultData {
-  resultData?: Array<{ [key: string]: any }>
+  resultData: ResultDataItem[]
   columns: number
   rows: number
   token: number
+}
+
+export interface ResultDataItem {
+  [key: string]: any
 }
 
 export interface ResultFetchDTO {

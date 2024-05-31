@@ -24,11 +24,19 @@ import EditorTabs from './components/tabs'
 import EditorDebugger from './components/debugger'
 import EditorConsole from './components/console'
 import MonacoEditor from '@/components/monaco-editor'
+import { useJobStore } from '@/store/job'
+import {getJobStatus} from "@/api/models/job"
 
 export default defineComponent({
   name: 'QueryPage',
   setup() {
     const message = useMessage()
+    const jobStore = useJobStore()
+
+    const startTime = ref(0)
+    const elapsedTime = ref(0)
+    const currentJob = computed(() => jobStore.getCurrentJob)
+    const jobStatus = computed(() => jobStore.getJobStatus)
 
     const editorVariables = reactive({
       editor: {} as any,
@@ -84,6 +92,58 @@ export default defineComponent({
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
+
+    let getJobStatusIntervalId: number
+    onMounted(() => {
+      getJobStatusIntervalId = setInterval(async () => {
+        if (currentJob.value && currentJob.value.jobId) {
+          const response = await getJobStatus(currentJob.value.jobId)
+          if (response.data) {
+            jobStore.setJobStatus(response.data.status)
+          }
+        }
+      }, 1000)
+    })
+
+    let computeExecutionTimeIntervalId: number
+    const startTimer = () => {
+      if (computeExecutionTimeIntervalId) {
+        clearInterval(computeExecutionTimeIntervalId)
+      }
+      elapsedTime.value = 0
+      startTime.value = Date.now()
+      computeExecutionTimeIntervalId = setInterval(() => {
+        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
+      }, 3000)
+    }
+
+    const stopTimer = ()=> {
+      if (computeExecutionTimeIntervalId) {
+        clearInterval(computeExecutionTimeIntervalId)
+      }
+    }
+
+    watch(jobStatus, (newStatus, oldStatus) => {
+      if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING') {
+        startTimer();
+      } else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
+        stopTimer();
+        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
+      }
+    })
+
+    const formatTime =  (seconds: number): string  => {
+      const days = Math.floor(seconds / 86400)
+      const hours = Math.floor((seconds % 86400) / 3600)
+      const mins = Math.floor((seconds % 3600) / 60)
+      const secs = seconds % 60
+      return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
+    }
+
+    const formattedTime = computed(() => formatTime(elapsedTime.value))
+    watch(formattedTime, (formattedTime) => jobStore.setExecutionTime(formattedTime))
+
+    onUnmounted(() => jobStore.resetCurrentResult())
 
     return {
       ...toRefs(editorVariables),

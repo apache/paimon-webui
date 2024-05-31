@@ -16,25 +16,82 @@ specific language governing permissions and limitations
 under the License. */
 
 import type { ExecutionMode } from './type'
+import type { Job, JobResultData } from '@/api/models/job/types/job'
 
 export interface JobState {
   executionMode: ExecutionMode
+  currentJob: Job | null
+  jobResultData: JobResultData | null
+  jobStatus: string,
+  executionTime: string
 }
 
 export const useJobStore = defineStore({
   id: 'job',
   state: (): JobState => ({
     executionMode: 'Streaming',
+    currentJob: null,
+    jobResultData: null,
+    jobStatus: '',
+    executionTime: '0m:0s'
   }),
-  persist: true,
+  persist: false,
   getters: {
     getExecutionMode(): ExecutionMode {
       return this.executionMode
+    },
+    getCurrentJob(): Job | null {
+      return this.currentJob
+    },
+    getJobResultData(): JobResultData | null {
+      return this.jobResultData
+    },
+    getColumns(): number {
+      if (this.currentJob && this.currentJob.resultData && this.currentJob.resultData.length > 0) {
+        return Object.keys(this.currentJob.resultData[0]).length
+      }else if (this.jobResultData && this.jobResultData.resultData && this.jobResultData.resultData.length > 0) {
+        return Object.keys(this.jobResultData.resultData[0]).length
+      } else {
+        return 0
+      }
+    },
+    getRows(): number {
+      if (this.currentJob && this.currentJob.resultData && this.currentJob.resultData.length > 0) {
+        return this.currentJob.resultData.length
+      }else if (this.jobResultData && this.jobResultData.resultData && this.jobResultData.resultData.length > 0) {
+        return this.jobResultData.resultData.length
+      } else {
+        return 0
+      }
+    },
+    getJobStatus(): string {
+      return this.jobStatus
+    },
+    getExecutionTime(): string {
+      return this.executionTime
     }
   },
   actions: {
     setExecutionMode(executionMode: ExecutionMode) {
       this.executionMode = executionMode
-    }
+    },
+    setCurrentJob(currentJob: Job) {
+      this.currentJob = currentJob
+    },
+    setJobResultData(jobResultData: JobResultData) {
+      this.jobResultData = jobResultData
+    },
+    setJobStatus(jobStatus: string) {
+      this.jobStatus = jobStatus
+    },
+    setExecutionTime(executionTime: string) {
+      this.executionTime = executionTime
+    },
+    resetCurrentResult() {
+      this.currentJob = null
+      this.jobResultData = null
+      this.jobStatus = ''
+      this.executionTime = '0m:0s'
+    },
   }
 })

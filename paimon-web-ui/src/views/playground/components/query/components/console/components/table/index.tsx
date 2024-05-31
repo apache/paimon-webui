@@ -17,13 +17,15 @@ under the License. */
 
 import styles from './index.module.scss'
 import type { DataTableInst } from 'naive-ui'
-import {useMessage} from "naive-ui"
+import { useMessage } from "naive-ui"
+import { useJobStore } from '@/store/job'
 
 export default defineComponent({
   name: 'TableResult',
-  setup(props, { emit }) {
+  setup: function (props, {emit}) {
     const {t} = useLocaleHooks()
     const message = useMessage()
+    const jobStore = useJobStore()
 
     const tableRef = ref<DataTableInst | null>(null)
 
@@ -35,19 +37,18 @@ export default defineComponent({
       render?: (row: any, index: number) => string | number | JSX.Element
     }
 
-    const data = ref([])
-    const columns = ref<TableColumn[]>([])
+    const initialData = computed(() => jobStore.getCurrentJob?.resultData || []);
+    const refreshedData = computed(() => jobStore.getJobResultData?.resultData || []);
+    const data = computed(() => refreshedData.value.length > 0 ? refreshedData.value : initialData.value);
 
-    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
-
-    const handleResult = (result: any) => {
-      if (result && result.resultData) {
-        data.value = result.resultData
-        if (data.value.length > 0) {
-          generateColumns(data.value[0])
-        }
+    const columns = computed(() => {
+      if (data.value.length > 0) {
+        return generateColumns(data.value[0]);
       }
-    }
+      return [];
+    });
+
+    const {mittBus} = getCurrentInstance()!.appContext.config.globalProperties
 
     const generateColumns = (sampleObject: any) => {
       const indexColumn: TableColumn = {
@@ -65,15 +66,12 @@ export default defineComponent({
         sortable: true
       }))
 
-      columns.value = [indexColumn, ...dynamicColumns]
+      return [indexColumn, ...dynamicColumns];
     }
-
-    mittBus?.on('jobResult', handleResult)
-    mittBus?.on('refreshedResult', handleResult)
 
     mittBus.on('triggerDownloadCsv', () => {
       if (tableRef.value) {
-        tableRef.value.downloadCsv({ fileName: 'data-table' })
+        tableRef.value.downloadCsv({fileName: 'data-table'})
       }
     })
 
@@ -87,8 +85,6 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
-      mittBus.off('jobResult', handleResult)
-      mittBus.off('refreshedResult', handleResult)
       mittBus.off('triggerDownloadCsv')
       mittBus.off('triggerCopyData')
     });

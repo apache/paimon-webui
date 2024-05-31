@@ -23,7 +23,7 @@ import type {JobSubmitDTO} from "@/api/models/job/types/job"
 import { submitJob } from "@/api/models/job"
 import { useMessage } from "naive-ui"
 import { useJobStore } from '@/store/job'
-import type {ExecutionMode} from "@/store/job/type";
+import type {ExecutionMode} from "@/store/job/type"
 
 export default defineComponent({
   name: 'EditorDebugger',
@@ -110,6 +110,7 @@ export default defineComponent({
       }
 
       jobStore.setExecutionMode(debuggerVariables.conditionValue3 as ExecutionMode)
+      jobStore.resetCurrentResult()
 
       const currentSQL = currentTab.content
       if (!currentSQL) {
@@ -128,6 +129,7 @@ export default defineComponent({
         const response = await submitJob(jobDataDTO);
         if (response.code === 200) {
           message.success(t('playground.job_submission_successfully'))
+          jobStore.setCurrentJob(response.data)
           mittBus.emit('jobResult', response.data);
         } else {
           message.error(`${t('playground.job_submission_failed')}`)
