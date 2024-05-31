@@ -101,7 +101,7 @@ function write(data, fPath) {
 
   const fileName = path.basename(fPath);
   let license;
-  if (fileName.endsWith('.ts') || fileName.endsWith('.js') || fileName.endsWith('.css') || fileName.endsWith('.scss')) {
+  if (fileName.endsWith('.tsx') || fileName.endsWith('.ts') || fileName.endsWith('.js') || fileName.endsWith('.css') || fileName.endsWith('.scss')) {
     license = tsLicenses
   }
   if (fileName.endsWith('.vue') || fileName.endsWith('.html')) {

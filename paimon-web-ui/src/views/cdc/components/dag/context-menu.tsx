@@ -24,12 +24,12 @@ export default defineComponent({
   props: {
     x: {
       type: Number,
-      default: 0
+      default: 0,
     },
     y: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
@@ -39,7 +39,7 @@ export default defineComponent({
 
     return {
       t,
-      handleDelete
+      handleDelete,
     }
   },
   render() {
@@ -48,8 +48,8 @@ export default defineComponent({
         class={styles['context-menu']}
         style={{ left: `${this.x}px`, top: `${this.y}px` }}
       >
-        <NButton type='primary' style={'width: 100%'} onClick={this.handleDelete}>{this.t('cdc.delete')}</NButton>
+        <NButton type="primary" style="width: 100%" onClick={this.handleDelete}>{this.t('cdc.delete')}</NButton>
       </div>
     )
-  }
+  },
 })

@@ -38,8 +38,8 @@ export const dataTypeOptions = [
   { value: 'DECIMAL', label: 'DECIMAL' },
   { value: 'TIMESTAMP_WITH_LOCAL_TIME_ZONE', label: 'TIMESTAMP_WITH_LOCAL_TIME_ZONE' },
   { value: 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)', label: 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)' },
-];
+]
 
-export const hasLength = ['CHAR', 'VARCHAR', 'BINARY', 'VARBINARY', 'TIME(precision)', 'TIMESTAMP(precision)', 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)', 'DECIMAL'];
+export const hasLength = ['CHAR', 'VARCHAR', 'BINARY', 'VARBINARY', 'TIME(precision)', 'TIMESTAMP(precision)', 'TIMESTAMP_WITH_LOCAL_TIME_ZONE(precision)', 'DECIMAL']
 
-export const hasEndLength = ['DECIMAL'];
+export const hasEndLength = ['DECIMAL']

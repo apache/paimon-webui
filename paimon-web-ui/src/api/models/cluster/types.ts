@@ -15,11 +15,30 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export interface Role {
-  roleName: string;
-  roleKey?: string;
-  sort?: number;
-  enabled: boolean;
-  remark?: string;
-  menuIds?: number[]
+export interface Cluster {
+  id: number
+  createTime?: string
+  updateTime?: string
+  clusterName: string
+  host: string
+  port: number
+  type: string
+  enabled: boolean
+}
+
+export interface ClusterNameParams {
+  clusterName?: string
+  pageNum: number
+  pageSize: number
+}
+
+export interface ClusterDTO {
+  id?: number
+  clusterName: string
+  host: string
+  port: number
+  type: string
+  enabled: boolean
+  createTime?: string
+  updateTime?: string
 }

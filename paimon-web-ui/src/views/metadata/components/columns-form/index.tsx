@@ -15,28 +15,27 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Add, AddCircleOutline } from '@vicons/ionicons5'
+import { Add } from '@vicons/ionicons5'
 
+import ColumnFormContent, { newField } from '../table-column-content'
 import { useCatalogStore } from '@/store/catalog'
 import { type ColumnDTO, createColumns } from '@/api/models/catalog'
 import { transformOption } from '@/views/metadata/constant'
 
-import ColumnFormContent, { newField } from '../table-column-content'
-
-type ColumnFormType = {
+interface ColumnFormType {
   tableColumns: ColumnDTO[]
 }
 
 const props = {
   visible: {
     type: Boolean as PropType<boolean>,
-    required: true
+    required: true,
   },
   tableColumns: {
-    type: Object as PropType<ColumnDTO[]>
+    type: Object as PropType<ColumnDTO[]>,
   },
   onConfirm: [Function, Array] as PropType<() => Promise<void>>,
-  onClose: [Function, Array] as PropType<() => void>
+  onClose: [Function, Array] as PropType<() => void>,
 }
 
 export default defineComponent({
@@ -61,8 +60,8 @@ export default defineComponent({
       await createFetch({
         params: transformOption({
           ...toRaw(catalogStore.currentTable),
-          tableColumns: toRaw(formValue.value).tableColumns
-        })
+          tableColumns: toRaw(formValue.value).tableColumns,
+        }),
       })
 
       handleCloseModal()
@@ -79,9 +78,9 @@ export default defineComponent({
 
     function resetState() {
       return {
-        tableColumns: (Boolean(props.tableColumns)
+        tableColumns: (props.tableColumns
           ? [...(toRaw(props.tableColumns) || [])]
-          : [JSON.parse(JSON.stringify(newField))]) as ColumnDTO[]
+          : [JSON.parse(JSON.stringify(newField))]) as ColumnDTO[],
       }
     }
 
@@ -89,7 +88,7 @@ export default defineComponent({
       () => isEdit.value,
       () => {
         formValue.value = resetState()
-      }
+      },
     )
 
     const handleAddOption = () => {
@@ -107,7 +106,7 @@ export default defineComponent({
       t,
       handleCloseModal,
       handleConfirm,
-      handleAddOption
+      handleAddOption,
     }
   },
   render() {
@@ -126,7 +125,7 @@ export default defineComponent({
                 </n-icon>
               </n-button>
             ),
-            default: () => (
+            'default': () => (
               <n-form
                 ref="formRef"
                 label-placement="top"
@@ -139,17 +138,17 @@ export default defineComponent({
                 />
               </n-form>
             ),
-            action: () => (
+            'action': () => (
               <n-space justify="end">
                 <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
                 <n-button type="primary" loading={this.loading} onClick={this.handleConfirm}>
                   {this.t('layout.confirm')}
                 </n-button>
               </n-space>
-            )
+            ),
           }}
         </n-card>
       </n-modal>
     )
-  }
+  },
 })

@@ -24,6 +24,7 @@ import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.vo.DatabaseVO;
 import org.apache.paimon.web.server.service.DatabaseService;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,7 @@ public class DatabaseController {
      * @param databaseDTO The details of the database to create
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:database:create")
     @PostMapping("/create")
     public R<Void> createDatabase(@RequestBody DatabaseDTO databaseDTO) {
         if (databaseService.databaseExists(databaseDTO)) {
@@ -67,6 +69,7 @@ public class DatabaseController {
      *
      * @return The list of databases of given catalog id
      */
+    @SaCheckPermission("metadata:database:list")
     @GetMapping("/list")
     public R<List<DatabaseVO>> listDatabases(
             @RequestParam(value = "catalogId", required = false) Integer catalogId) {
@@ -79,6 +82,7 @@ public class DatabaseController {
      * @param databaseDTO The database to be dropped
      * @return a {@code R<Void>} response indicating success or failure
      */
+    @SaCheckPermission("metadata:database:drop")
     @PostMapping("/drop")
     public R<Void> dropDatabase(@RequestBody DatabaseDTO databaseDTO) {
         return databaseService.dropDatabase(databaseDTO)

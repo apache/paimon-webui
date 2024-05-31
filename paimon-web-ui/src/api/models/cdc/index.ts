@@ -15,42 +15,48 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-
-import type { CdcJobDefinition } from './interface'
+import type { CdcJobDefinition, CdcJobSubmit } from './interface'
 import httpRequest from '@/api/request'
+
 export * from './interface'
 
 /**
  * # Create cdc job definition
  */
-export const createCdcJob = (cdcJobDefinition: CdcJobDefinition) => {
+export function createCdcJob(cdcJobDefinition: CdcJobDefinition) {
   return httpRequest.post('/cdc-job-definition/create', cdcJobDefinition)
 }
 
 /**
  * # Update cdc job definition
  */
-export const updateCdcJob = (cdcJobDefinition: CdcJobDefinition) => {
+export function updateCdcJob(cdcJobDefinition: CdcJobDefinition) {
   return httpRequest.put(`/cdc-job-definition/update`, cdcJobDefinition)
 }
 
 /**
  * # List all cdc job definitions
  */
-export const listAllCdcJob = (withConfig: boolean, currentPage: number, pageSize: number) => {
-  return httpRequest.get('/cdc-job-definition/list', { withConfig, currentPage, pageSize })
+export function listAllCdcJob(withConfig: boolean,jobName: string |undefined| null, currentPage: number, pageSize: number) {
+  return httpRequest.get('/cdc-job-definition/list', { withConfig,jobName, currentPage, pageSize })
 }
 
 /**
  * # Get cdc job definition detail
  */
-export const getCdcJobDefinition = (id: number) => {
+export function getCdcJobDefinition(id: number) {
   return httpRequest.get(`/cdc-job-definition/${id}`)
 }
 
 /**
  * # Delete cdc job definition
  */
-export const deleteCdcJobDefinition = (id: number) => {
+export function deleteCdcJobDefinition(id: number) {
   return httpRequest.delete(`/cdc-job-definition/${id}`)
+}
+/**
+ * # Submit cdc job
+ */
+export function submitCdcJob(id: number, form: CdcJobSubmit) {
+  return httpRequest.post(`/cdc-job-definition/${id}/submit`, form)
 }

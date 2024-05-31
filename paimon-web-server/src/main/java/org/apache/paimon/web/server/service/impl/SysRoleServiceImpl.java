@@ -169,6 +169,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertRole(SysRole role) {
+        List<SysRole> list = this.list();
+        role.setSort(list.size() + 1);
         this.save(role);
         return insertRoleMenu(role);
     }

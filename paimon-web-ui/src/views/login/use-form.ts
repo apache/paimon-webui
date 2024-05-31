@@ -26,20 +26,18 @@ export function useForm() {
     loginForm: ref(),
     model: {
       username: '',
-      password: ''
-    }
+      password: '',
+    },
   })
 
   const handleLogin = () => {
     state.loginForm.validate(async (errors: Array<FormValidationError>) => {
       if (!errors) {
         onLogin({
-          params: {
-            username: state.model.username,
-            password: state.model.password,
-            ldapLogin: false,
-            rememberMe: true
-          }
+          username: state.model.username,
+          password: state.model.password,
+          ldapLogin: false,
+          rememberMe: true,
         })
         router.push({ path: '/' })
       }
@@ -48,6 +46,6 @@ export function useForm() {
 
   return {
     state,
-    handleLogin
+    handleLogin,
   }
 }

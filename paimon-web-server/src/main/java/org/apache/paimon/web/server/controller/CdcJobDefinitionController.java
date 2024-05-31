@@ -19,11 +19,13 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
+import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.service.CdcJobDefinitionService;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,24 +49,29 @@ public class CdcJobDefinitionController {
         this.cdcJobDefinitionService = cdcJobDefinitionService;
     }
 
+    @SaCheckPermission("cdc:job:create")
     @PostMapping("create")
     public R<Void> createCdcJob(@RequestBody CdcJobDefinitionDTO cdcJobDefinitionDTO) {
         return cdcJobDefinitionService.create(cdcJobDefinitionDTO);
     }
 
+    @SaCheckPermission("cdc:job:update")
     @PutMapping("update")
     public R<Void> updateCdcJob(@RequestBody CdcJobDefinitionDTO cdcJobDefinitionDTO) {
         return cdcJobDefinitionService.update(cdcJobDefinitionDTO);
     }
 
+    @SaCheckPermission("cdc:job:list")
     @GetMapping("list")
     public PageR<CdcJobDefinition> listAllCdcJob(
             @RequestParam(required = false) boolean withConfig,
+            @RequestParam(required = false) String jobName,
             @RequestParam long currentPage,
             @RequestParam long pageSize) {
-        return cdcJobDefinitionService.listAll(withConfig, currentPage, pageSize);
+        return cdcJobDefinitionService.listAll(jobName, withConfig, currentPage, pageSize);
     }
 
+    @SaCheckPermission("cdc:job:query")
     @GetMapping("/{id}")
     public R<CdcJobDefinition> getById(@PathVariable Integer id) {
         CdcJobDefinition cdcJobDefinition = cdcJobDefinitionService.getById(id);
@@ -74,9 +81,15 @@ public class CdcJobDefinitionController {
         return R.succeed(cdcJobDefinition);
     }
 
+    @SaCheckPermission("cdc:job:delete")
     @DeleteMapping("{id}")
     public R<Void> deleteById(@PathVariable Integer id) {
         cdcJobDefinitionService.removeById(id);
         return R.succeed();
+    }
+
+    @PostMapping("{id}/submit")
+    public R<Void> submit(@PathVariable Integer id, @RequestBody CdcJobSubmitDTO cdcJobSubmitDTO) {
+        return cdcJobDefinitionService.submit(id, cdcJobSubmitDTO);
     }
 }

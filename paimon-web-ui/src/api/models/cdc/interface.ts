@@ -16,13 +16,16 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface CdcJobDefinition {
-    id?: number;
-    createTime?: string;
-    updateTime?: string;
-    name: string;
-    description?: string;
-    cdcType?: number;
-    config?: string;
-    createUser?: string;
+  id?: number
+  createTime?: string
+  updateTime?: string
+  name: string
+  description?: string
+  cdcType?: number
+  config?: string
+  createUser?: string
 }
-  
+
+export interface CdcJobSubmit {
+  flinkSessionUrl: string
+}

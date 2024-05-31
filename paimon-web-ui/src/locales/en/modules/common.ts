@@ -16,14 +16,16 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-    success:'Success',
-    add_success:'Add success',
-    update_success:'Update success',
-    delete_success:'Delete success',
-    create_user:'Create user',
-    create_time:'Create time',
-    update_time:'Update time',
-    search:'Search',
-    yes:'Yes',
-    no:'No'
+  success: 'Success',
+  add_success: 'Add success',
+  update_success: 'Update success',
+  delete_success: 'Delete success',
+  create_user: 'Create user',
+  create_time: 'Create time',
+  update_time: 'Update time',
+  search: 'Search',
+  yes: 'Yes',
+  no: 'No',
+  action: 'Action',
+  flink_session_url: 'Flink Session Url',
 }

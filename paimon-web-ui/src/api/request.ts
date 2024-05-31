@@ -15,33 +15,33 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { createAxle, type AxleInstance } from '@varlet/axle'
+import { type AxleInstance, createAxle } from '@varlet/axle'
 import { createUseAxle } from '@varlet/axle/use'
 
 import type { FetchOptions, ResponseOptions } from './types'
-import discreteApi from './message';
+import discreteApi from './message'
+import router from '@/router'
 
 const axle: AxleInstance & { createHooks?: typeof createHooks } = createAxle({
-  baseURL: import.meta.env.MODE === 'mock' ? '/mock/api' : '/api'
+  baseURL: import.meta.env.MODE === 'mock' ? '/mock/api' : '/api',
 })
 
 axle.axios.interceptors.request.use(
   (config) => {
     // token here
     const headers = Object.assign({}, config.headers, {
-      'token': '',
-    });
-    return Object.assign({}, config, { headers });
+      token: '',
+    })
+    return Object.assign({}, config, { headers })
   },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
+  (error) => {
+    return Promise.reject(error)
+  },
+)
 
 axle.axios.interceptors.response.use(
   (response) => {
     const { code, msg } = response.data
-
     if (code !== 200 && msg) {
       // do something there
       discreteApi.notification.error(
@@ -49,8 +49,8 @@ axle.axios.interceptors.response.use(
           content: 'Error',
           meta: response.data.msg,
           duration: 2500,
-          keepAliveOnHover: true
-        }
+          keepAliveOnHover: true,
+        },
       )
       return Promise.reject(response.data)
     }
@@ -58,17 +58,22 @@ axle.axios.interceptors.response.use(
     return response.data
   },
   (error) => {
+    const { data } = error.response
+
+    if (data.code === 401)
+      router.replace('/login')
+
     discreteApi.notification.error(
       {
         content: 'Error',
-        meta: error,
+        meta: data.msg,
         duration: 2500,
-        keepAliveOnHover: true
-      }
+        keepAliveOnHover: true,
+      },
     )
     // do something there
     return Promise.reject(error)
-  }
+  },
 )
 
 const useAxle = createUseAxle({

@@ -155,6 +155,52 @@ CREATE TABLE if not exists `cdc_job_definition`
     unique (`name`)
 ) engine = innodb;
 
+CREATE TABLE if not exists `job`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `job_id`     varchar(100)  not null comment 'job id',
+    `job_name`     varchar(200) comment 'job name',
+    `type`     varchar(100)  comment 'job type',
+    `execute_mode`     varchar(50)  comment 'execute mode',
+    `cluster_id`     varchar(100)  comment 'cluster id',
+    `uid`          INT(11) COMMENT 'User ID',
+    `config`     text   comment 'config',
+    `statements`   text COMMENT 'statements',
+    `status` varchar(50) COMMENT 'status',
+    `start_time` datetime(0) NULL COMMENT 'start time',
+    `end_time` datetime(0) NULL COMMENT 'end time',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `statement`;
+CREATE TABLE if not exists `statement`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `statement_name`     varchar(200)  not null comment 'task type',
+    `task_type`     varchar(100)  not null comment 'task type',
+    `is_streaming`  tinyint(1)  comment 'is steaming',
+    `uid`     int(11)  comment 'user id',
+    `cluster_id`     int(11)  comment 'cluster id',
+    `statements`   text COMMENT 'statements',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
+    
+DROP TABLE IF EXISTS `history`;
+CREATE TABLE if not exists `history`
+(
+    `id`          int(11)     not null auto_increment primary key comment 'id',
+    `name`     varchar(100)  not null comment 'name',
+    `task_type`     varchar(100)  not null comment 'task type',
+    `is_streaming`  tinyint(1)  comment 'is steaming',
+    `uid`     int(11)  comment 'user id',
+    `cluster_id`     int(11)  comment 'cluster id',
+    `statements`   text COMMENT 'statements',
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `user` ( id, username, password, nickname, mobile
                    , email, enabled, is_delete)
 VALUES ( 1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', 0
@@ -173,23 +219,23 @@ values (1, 'admin', 'admin', 1),
        (2, 'common', 'common', 2);
 
 insert into sys_menu (id, menu_name, parent_id, sort, path, component, is_frame, type, perms, icon, remark)
-values (1, 'all', 0, 1, 'system', null, 1, 'M', 'system', 'admin', 'system root path'),
-       (100, 'user manager', 1, 1, 'user', 'user/index', 1, 'C', 'system:user:list', 'user', 'user manager'),
-       (1000, 'user query', 100, 1, '', '', 1, 'F', 'system:user:query', '#', ''),
-       (1001, 'user add', 100, 2, '', '', 1, 'F', 'system:user:add', '#', ''),
-       (1002, 'user update', 100, 3, '', '', 1, 'F', 'system:user:update', '#', ''),
-       (1003, 'user delete', 100, 4, '', '', 1, 'F', 'system:user:delete', '#', ''),
-       (1004, 'user reset', 100, 5, '', '', 1, 'F', 'system:user:change:password', '#', ''),
-       (200, 'role manager', 1, 1, 'role', 'role/index', 1, 'C', 'system:role:list', 'role', 'role manager'),
-       (2000, 'role query', 200, 1, '', '', 1, 'F', 'system:role:query', '#', ''),
-       (2001, 'role add', 200, 2, '', '', 1, 'F', 'system:role:add', '#', ''),
-       (2002, 'role update', 200, 3, '', '', 1, 'F', 'system:role:update', '#', ''),
-       (2003, 'role delete', 200, 4, '', '', 1, 'F', 'system:role:delete', '#', ''),
-       (300, 'menu manager', 1, 1, 'menu', 'menu/index', 1, 'C', 'system:menu:list', 'menu', 'menu manager'),
-       (3000, 'menu query', 300, 1, '', '', 1, 'F', 'system:menu:query', '#', ''),
-       (3001, 'menu add', 300, 2, '', '', 1, 'F', 'system:menu:add', '#', ''),
-       (3002, 'menu update', 300, 3, '', '', 1, 'F', 'system:menu:update', '#', ''),
-       (3003, 'menu delete', 300, 4, '', '', 1, 'F', 'system:menu:delete', '#', '');
+values (1, 'system', 0, 1, 'system', null, 1, 'M', 'system', 'admin', 'system root path'),
+       (100, 'user_manager', 1, 1, 'user', 'user/index', 1, 'C', 'system:user:list', 'user', 'user manager'),
+       (1000, 'user_query', 100, 1, '', '', 1, 'F', 'system:user:query', '#', ''),
+       (1001, 'user_add', 100, 2, '', '', 1, 'F', 'system:user:add', '#', ''),
+       (1002, 'user_update', 100, 3, '', '', 1, 'F', 'system:user:update', '#', ''),
+       (1003, 'user_delete', 100, 4, '', '', 1, 'F', 'system:user:delete', '#', ''),
+       (1004, 'user_reset', 100, 5, '', '', 1, 'F', 'system:user:change:password', '#', ''),
+       (200, 'role_manager', 1, 1, 'role', 'role/index', 1, 'C', 'system:role:list', 'role', 'role manager'),
+       (2000, 'role_query', 200, 1, '', '', 1, 'F', 'system:role:query', '#', ''),
+       (2001, 'role_add', 200, 2, '', '', 1, 'F', 'system:role:add', '#', ''),
+       (2002, 'role_update', 200, 3, '', '', 1, 'F', 'system:role:update', '#', ''),
+       (2003, 'role_delete', 200, 4, '', '', 1, 'F', 'system:role:delete', '#', ''),
+       (300, 'menu_manager', 1, 1, 'menu', 'menu/index', 1, 'C', 'system:menu:list', 'menu', 'menu manager'),
+       (3000, 'menu_query', 300, 1, '', '', 1, 'F', 'system:menu:query', '#', ''),
+       (3001, 'menu_add', 300, 2, '', '', 1, 'F', 'system:menu:add', '#', ''),
+       (3002, 'menu_update', 300, 3, '', '', 1, 'F', 'system:menu:update', '#', ''),
+       (3003, 'menu_delete', 300, 4, '', '', 1, 'F', 'system:menu:delete', '#', '');
 
 insert into user_role (id, user_id, role_id)
 values (1, 1, 1), (2, 2, 2);

@@ -86,6 +86,6 @@ export interface OptionsDTO {
 }
 
 export interface TableOption {
-  key: string;
-  value: string;
+  key: string
+  value: string
 }

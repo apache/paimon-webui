@@ -15,9 +15,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { Language, LogoGithub, Moon, SunnyOutline } from '@vicons/ionicons5'
 import { LANGUAGES } from '@/locales'
 import { useConfigStore } from '@/store/config'
-import { LogoGithub, Moon, SunnyOutline, Language } from '@vicons/ionicons5'
 
 // ts-ignore
 export default defineComponent({
@@ -32,7 +32,7 @@ export default defineComponent({
     const configStore = useConfigStore()
     const handleTheme = () => {
       configStore.setCurrentTheme(
-        configStore.getCurrentTheme === 'light' ? 'dark' : 'light'
+        configStore.getCurrentTheme === 'light' ? 'dark' : 'light',
       )
     }
 
@@ -49,13 +49,15 @@ export default defineComponent({
       handleTheme,
       handleLanguage,
       configStore,
-      active: ref(false)
+      active: ref(false),
     }
   },
   render() {
     return (
       <n-space align="center" size={20}>
-        <n-popover trigger="hover" placement="bottom"
+        <n-popover
+          trigger="hover"
+          placement="bottom"
           v-slots={{
             trigger: () => (
               <n-icon size="24" onClick={this.handleTheme}>
@@ -63,10 +65,10 @@ export default defineComponent({
                   this.configStore.getCurrentTheme === 'light' ? <Moon /> : <SunnyOutline />
                 }
               </n-icon>
-            )
+            ),
           }}
         >
-          <span>{this.t('layout.' + String(this.configStore.getCurrentTheme === 'light' ? 'dark' : 'light'))}</span>
+          <span>{this.t(`layout.${String(this.configStore.getCurrentTheme === 'light' ? 'dark' : 'light')}`)}</span>
         </n-popover>
         <n-icon size="24" onClick={this.handleLink}>
           <LogoGithub />
@@ -76,5 +78,5 @@ export default defineComponent({
         </n-icon>
       </n-space>
     )
-  }
+  },
 })

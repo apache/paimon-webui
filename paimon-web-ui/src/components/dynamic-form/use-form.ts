@@ -16,11 +16,11 @@ specific language governing permissions and limitations
 under the License. */
 
 import type { FormInst } from 'naive-ui'
-import type { IFormInst, FormRules, IFormItemRule } from './types'
+import type { FormRules, IFormInst, IFormItemRule } from './types'
 
-export const useFormHooks = (): IFormInst & { state: { formRef: FormInst } } => {
+export function useFormHooks(): IFormInst & { state: { formRef: FormInst } } {
   const state = reactive({
-    formRef: ref()
+    formRef: ref(),
   })
 
   const validate = async (...args: []) => {
@@ -28,9 +28,8 @@ export const useFormHooks = (): IFormInst & { state: { formRef: FormInst } } => 
   }
 
   const setValues = (initialValues: { [field: string]: any }) => {
-    for (const [key, value] of Object.entries(initialValues)) {
+    for (const [key, value] of Object.entries(initialValues))
       state.formRef.model[key] = value
-    }
   }
 
   const restoreValidation = () => {
@@ -40,9 +39,8 @@ export const useFormHooks = (): IFormInst & { state: { formRef: FormInst } } => 
   const resetValues = (initialValues: { [field: string]: any }) => {
     const modelKeys = Object.keys(state.formRef.model)
     for (const key of modelKeys) {
-      if (!Object.keys(initialValues).includes(key)) {
+      if (!Object.keys(initialValues).includes(key))
         delete state.formRef.model[key]
-      }
     }
     setValues(initialValues)
   }
@@ -52,16 +50,19 @@ export const useFormHooks = (): IFormInst & { state: { formRef: FormInst } } => 
   }
 
   const formatValidate = (
-    validate?: IFormItemRule | FormRules
+    validate?: IFormItemRule | FormRules,
   ): IFormItemRule => {
-    if (!validate) return {}
+    if (!validate)
+      return {}
     if (Array.isArray(validate)) {
       validate.forEach((item: IFormItemRule) => {
-        if (!item?.message) delete item.message
+        if (!item?.message)
+          delete item.message
         return item
       })
     }
-    if (!validate.message) delete validate.message
+    if (!validate.message)
+      delete validate.message
     return validate
   }
 
@@ -72,6 +73,6 @@ export const useFormHooks = (): IFormInst & { state: { formRef: FormInst } } => 
     getValues,
     resetValues,
     restoreValidation,
-    formatValidate
+    formatValidate,
   }
 }

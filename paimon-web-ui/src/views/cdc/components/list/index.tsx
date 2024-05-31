@@ -15,20 +15,22 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 import { useTable } from './use-table'
 
 export default defineComponent({
   name: 'ListPage',
-  setup() {
+  emits: ['cdcJobSubmit'],
+  setup(_, ctx) {
     const { t } = useLocaleHooks()
 
-    const { tableVariables, getTableData } = useTable()
+    const { tableVariables, getTableData } = useTable(ctx)
     getTableData()
 
     return {
       t,
-      ...toRefs(tableVariables)
+      ...toRefs(tableVariables),
+      getTableData
     }
   },
   render() {
@@ -42,5 +44,5 @@ export default defineComponent({
         />
       </div>
     )
-  }
+  },
 })

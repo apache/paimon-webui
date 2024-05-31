@@ -15,13 +15,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { type DataTableColumns } from 'naive-ui'
+import type { DataTableColumns } from 'naive-ui'
 import { RemoveCircleOutline, Warning } from '@vicons/ionicons5'
 
-import { deleteOption, getOptions, type TableOption } from '@/api/models/catalog'
-import { useCatalogStore } from '@/store/catalog'
 import OptionsForm from '../options-form'
 import OptionsEditForm from '../options-form/edit'
+import { type TableOption, deleteOption, getOptions } from '@/api/models/catalog'
+import { useCatalogStore } from '@/store/catalog'
 
 export default defineComponent({
   name: 'MetadataOptions',
@@ -34,11 +34,11 @@ export default defineComponent({
     const columns: DataTableColumns<TableOption> = [
       {
         title: 'Key',
-        key: 'key'
+        key: 'key',
       },
       {
         title: 'Value',
-        key: 'value'
+        key: 'value',
       },
       {
         title: 'Operation',
@@ -53,22 +53,22 @@ export default defineComponent({
                   trigger: () => (
                     <n-button strong secondary circle type="error">
                       {{
-                        icon: () => <n-icon component={RemoveCircleOutline} />
+                        icon: () => <n-icon component={RemoveCircleOutline} />,
                       }}
                     </n-button>
                   ),
-                  icon: () => <n-icon color='#EC4C4D' component={Warning} />
+                  icon: () => <n-icon color="#EC4C4D" component={Warning} />,
                 }}
               </n-popconfirm>
             </n-space>
           )
-        }
-      }
+        },
+      },
     ]
 
     const onFetchData = async () => {
       useOptionsList({
-        params: catalogStore.currentTable
+        params: catalogStore.currentTable,
       })
     }
 
@@ -77,9 +77,9 @@ export default defineComponent({
         config: {
           params: {
             ...toRaw(catalogStore.currentTable),
-            key: optionKey
-          }
-        }
+            key: optionKey,
+          },
+        },
       })
 
       await onFetchData()
@@ -96,7 +96,7 @@ export default defineComponent({
       optionsList,
       loading,
       pagination: {
-        pageSize: 10
+        pageSize: 10,
       },
 
       onFetchData,
@@ -110,16 +110,16 @@ export default defineComponent({
             'header-extra': () => (
               <OptionsForm onConfirm={this.onFetchData} />
             ),
-            default: () => (
+            'default': () => (
               <n-data-table
                 columns={this.columns}
                 data={this.optionsList || []}
                 pagination={this.pagination}
               />
-            )
+            ),
           }}
         </n-card>
       </n-spin>
     )
-  }
+  },
 })

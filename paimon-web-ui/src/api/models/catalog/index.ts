@@ -15,25 +15,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import httpRequest from '@/api/request'
 import type {
   Catalog,
-  Database,
-  Table,
-  Schema,
-  Manifest,
-  Snapshot,
-  Datafile,
-  TableQuery,
   CatalogDTO,
+  ColumnParams,
+  Database,
   DatabaseDTO,
-  TableDTO,
-  TableParams,
+  Datafile,
+  Manifest,
+  Schema,
   SearchTable,
-  TableOption,
+  Snapshot,
+  Table,
+  TableDTO,
   TableDetail,
-  ColumnParams
+  TableOption,
+  TableParams,
+  TableQuery,
 } from './types'
+import httpRequest from '@/api/request'
 import type { RequestOptions, ResponseOptions } from '@/api/types'
 
 export * from './types'
@@ -43,59 +43,58 @@ export * from './types'
 /**
  * # Get all catalog
  */
-export const getAllCatalogs = () => {
+export function getAllCatalogs() {
   return httpRequest.get<unknown, ResponseOptions<Catalog[]>>('/catalog/list')
 }
 
 /**
  * # Create new Catalog
  */
-export const createCatalog = () => {
+export function createCatalog() {
   return httpRequest.createHooks!<unknown, CatalogDTO>({
     url: '/catalog/create',
-    method: 'post'
+    method: 'post',
   })
 }
 
 /**
  * # Get database by catalog id
  */
-export const getDatabasesByCatalogId = (id: number) => {
+export function getDatabasesByCatalogId(id: number) {
   return httpRequest.get<unknown, ResponseOptions<Database[]>>(`/database/list?catalogId=${id}`)
 }
 
 /**
  * # Create new Database
  */
-export const createDatabase = () => {
+export function createDatabase() {
   return httpRequest.createHooks!<unknown, DatabaseDTO>({
     url: '/database/create',
-    method: 'post'
+    method: 'post',
   })
 }
 
 /**
  * # Get table by catalog id and database name
  */
-export const getTables = (params: TableQuery) => {
+export function getTables(params: TableQuery) {
   return httpRequest.post<TableQuery, ResponseOptions<Table[] | SearchTable>>(`/table/list`, params)
 }
-
 
 /**
  * # Create new Table
  */
-export const createTable = () => {
+export function createTable() {
   return httpRequest.createHooks!<unknown, TableDTO>({
     url: '/table/create',
-    method: 'post'
+    method: 'post',
   })
 }
 
 /**
  * # Get options
  */
-export const getOptions = () => {
+export function getOptions() {
   return httpRequest.createHooks!<TableOption[], TableParams>({
     url: '/metadata/query/options',
     method: 'post',
@@ -105,18 +104,18 @@ export const getOptions = () => {
 /**
  * # Create new Option
  */
-export const createOption = () => {
+export function createOption() {
   return httpRequest.createHooks!<unknown, TableDTO>({
     url: '/table/option/add',
-    method: 'post'
+    method: 'post',
   })
 }
 
 /**
  * # Delete option
  */
-export const deleteOption = () => {
-  return httpRequest.createHooks!<TableOption[], TableQuery & { key: string; }>({
+export function deleteOption() {
+  return httpRequest.createHooks!<TableOption[], TableQuery & { key: string }>({
     url: '/table/option/remove',
     method: 'post',
   })
@@ -125,70 +124,70 @@ export const deleteOption = () => {
 /**
  * # Get columns
  */
-export const getColumns = (options?: RequestOptions<TableDetail, TableParams>) => {
+export function getColumns(options?: RequestOptions<TableDetail, TableParams>) {
   return httpRequest.createHooks!<TableDetail, TableParams>({
     ...options,
     url: '/table/column/list',
-    method: 'get'
+    method: 'get',
   })
 }
 
 /**
  * # Create new Columns
  */
-export const createColumns = () => {
+export function createColumns() {
   return httpRequest.createHooks!<unknown, TableDTO>({
     url: '/table/column/add',
-    method: 'post'
+    method: 'post',
   })
 }
 
 /**
  * # Delete columns
  */
-export const deleteColumns = (query: ColumnParams) => {
+export function deleteColumns(query: ColumnParams) {
   const { catalogName, databaseName, name, columnName } = query
-  
+
   return httpRequest.delete!<unknown, unknown>(`/table/column/drop/${catalogName}/${databaseName}/${name}/${columnName}`)
 }
 
 /**
  * # Get schema
  */
-export const getSchema = () => {
+export function getSchema() {
   return httpRequest.createHooks!<Schema[], TableParams>({
     url: '/metadata/query/schema',
-    method: 'post'
+    method: 'post',
   })
 }
 
 /**
  * # Get manifest
  */
-export const getManifest = () => {
+export function getManifest() {
   return httpRequest.createHooks!<Manifest[], TableParams>({
     url: '/metadata/query/manifest',
-    method: 'post'
+    method: 'post',
   })
 }
 
 /**
  * # Get data file
  */
-export const getDataFile = () => {
+export function getDataFile() {
   return httpRequest.createHooks!<Datafile[], TableParams>({
     url: '/metadata/query/dataFile',
-    method: 'post'
+    method: 'post',
   })
 }
 
 /**
  * # Get snapshot
  */
-export const getSnapshot = () => {
+export function getSnapshot() {
   return httpRequest.createHooks!<Snapshot[], TableParams>({
     url: '/metadata/query/snapshot',
-    method: 'post'
+    method: 'post',
   })
 }
 

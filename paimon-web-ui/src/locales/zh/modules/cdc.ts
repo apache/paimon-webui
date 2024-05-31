@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 export default {
-  synchronization_job_definition: '同步任务定义',
+  cdc_job_definition: 'CDC集成任务定义',
   create_synchronization_job: '创建同步作业',
   job_name: '作业名称',
   synchronization_type: '同步类型',
@@ -49,4 +49,5 @@ export default {
   synchronization_configuration: '同步配置',
   primary_key: '主键',
   partition_column: '分区列',
+  submit_cdc_job: '提交 CDC 作业',
 }

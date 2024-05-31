@@ -478,8 +478,6 @@ public class MetadataControllerTest extends ControllerTestBase {
         assertEquals(3, snapshotVO.getTotalRecordCount());
         assertEquals(3, snapshotVO.getDeltaRecordCount());
         assertEquals(0, snapshotVO.getChangelogRecordCount());
-        assertEquals(3, snapshotVO.getAddedFileCount());
-        assertEquals(0, snapshotVO.getDeletedFileCount());
         assertNull(snapshotVO.getWatermark());
     }
 

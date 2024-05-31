@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import { useCDCList } from './cdc/use-cdc-list'
+import { useSumbitCdcJob } from './cdc/use-submit-cdc-job'
 import { useMYSQL } from './cdc/use-mysql'
 import { usePaimon } from './cdc/use-paimon'
 
@@ -27,5 +28,6 @@ export default {
   MYSQL: useMYSQL,
   PAIMON: usePaimon,
   DATABASE: useDatabase,
-  OPTIONS: useOptions
+  OPTIONS: useOptions,
+  CDCSUBMIT: useSumbitCdcJob,
 }

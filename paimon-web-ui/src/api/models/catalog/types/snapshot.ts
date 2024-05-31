@@ -16,19 +16,19 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface Snapshot {
-  snapshotId: string;
-  schemaId: string;
-  commitUser: string;
-  commitIdentifier: string;
-  commitKind: string;
-  commitTime: string;
-  baseManifestList: string;
-  deltaManifestList: string;
-  changelogManifestList: string;
-  totalRecordCount: string;
-  deltaRecordCount: string;
-  changelogRecordCount: string;
-  addedFileCount: number;
-  deletedFileCount: number;
-  watermark: string;
+  snapshotId: string
+  schemaId: string
+  commitUser: string
+  commitIdentifier: string
+  commitKind: string
+  commitTime: string
+  baseManifestList: string
+  deltaManifestList: string
+  changelogManifestList: string
+  totalRecordCount: string
+  deltaRecordCount: string
+  changelogRecordCount: string
+  addedFileCount: number
+  deletedFileCount: number
+  watermark: string
 }

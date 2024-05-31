@@ -16,23 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.api.action.context;
+package org.apache.paimon.web.server.data.vo;
 
-import lombok.experimental.SuperBuilder;
-
-import javax.annotation.Nullable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
-/** Postgres sync table action context. */
-@SuperBuilder
-public class PostgresSyncTableCdcActionContext extends FlinkCdcTableSyncActionContext {
+/** VO of result data. */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResultDataVO {
 
-    @ActionConf(value = "postgres_conf")
-    @Nullable
-    private final List<String> postgresConfList;
+    private List<Map<String, Object>> resultData;
 
-    public String name() {
-        return "postgres_sync_table";
-    }
+    private Integer columns;
+
+    private Integer rows;
+
+    private Long token;
 }

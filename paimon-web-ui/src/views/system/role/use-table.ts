@@ -15,42 +15,47 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { listRoles } from '@/api/models/role';
-export const useTable = () => {
-    const tableVariables = reactive({
-        searchForm: {
-            roleName: ''
-        },
-        pagination: {
-            showQuickJumper: true,
-            showSizePicker: true,
-            pageSize: 10,
-            page: 1,
-            itemCount: 0,
-            onUpdatePage: (page: number) => {
-                tableVariables.pagination.page = page
-                getTableData()
-            },
-        }
-    })
-    const [roleList, useRoleList, { loading }] = listRoles()
-    const getTableData = () => {
-        let params = {
-            roleName: tableVariables.searchForm.roleName,
-            currentPage: tableVariables.pagination.page,
-            pageSize: tableVariables.pagination.pageSize
-        }
-        useRoleList({ params })
-    }
-    const handleResetage = () => {
-        tableVariables.pagination.page = 1
+import { listRoles } from '@/api/models/role'
+
+export function useTable() {
+  const tableVariables = reactive({
+    searchForm: {
+      roleName: '',
+    },
+    pagination: {
+      showQuickJumper: true,
+      showSizePicker: true,
+      pageSize: 10,
+      page: 1,
+      itemCount: 0,
+      onUpdatePage: (page: number) => {
+        tableVariables.pagination.page = page
         getTableData()
+      },
+    },
+  })
+
+  const [roleList, useRoleList, { loading }] = listRoles()
+
+  function getTableData() {
+    const params = {
+      roleName: tableVariables.searchForm.roleName,
+      currentPage: tableVariables.pagination.page,
+      pageSize: tableVariables.pagination.pageSize,
     }
-    return {
-        tableVariables,
-        getTableData,
-        handleResetage,
-        roleList,
-        loading
-    }
+    useRoleList({ params })
+  }
+
+  const handleResetage = () => {
+    tableVariables.pagination.page = 1
+    getTableData()
+  }
+
+  return {
+    tableVariables,
+    roleList,
+    loading,
+    getTableData,
+    handleResetage,
+  }
 }

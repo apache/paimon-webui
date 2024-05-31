@@ -18,13 +18,12 @@ under the License. */
 import { NIcon, type TreeOption } from 'naive-ui'
 import { FileTrayOutline } from '@vicons/ionicons5'
 
-
 import { getAllCatalogs, getDatabasesByCatalogId, getTables } from '@/api/models/catalog'
 import type { Catalog, Database, SearchTable, Table, TableParams, TableQuery } from '@/api/models/catalog'
 
 export interface CatalogState {
-  catalogs: TreeOption[];
-  _catalogLoading: boolean;
+  catalogs: TreeOption[]
+  _catalogLoading: boolean
   _currentTable?: TableParams
 }
 
@@ -32,7 +31,7 @@ export const useCatalogStore = defineStore('catalog', {
   state: (): CatalogState => ({
     catalogs: [],
     _catalogLoading: false,
-    _currentTable: undefined
+    _currentTable: undefined,
   }),
   persist: true,
   getters: {
@@ -41,13 +40,14 @@ export const useCatalogStore = defineStore('catalog', {
     },
     currentTable: (state): TableParams | undefined => {
       return state._currentTable
-    }
+    },
   },
   actions: {
     async getAllCatalogs(reload?: boolean): Promise<TreeOption[] | void> {
       if (!reload && this.catalogs.length !== 0) {
         return Promise.resolve(this.catalogs)
-      } else {
+      }
+      else {
         this._catalogLoading = true
         const res = await getAllCatalogs()
         this.catalogs = transformCatalog(res.data)
@@ -76,11 +76,11 @@ export const useCatalogStore = defineStore('catalog', {
     },
     async resetCurrentTable() {
       this._currentTable = undefined
-    }
-  }
+    },
+  },
 })
 
-const transformCatalog = (catalogs: Catalog[]): TreeOption[] => {
+function transformCatalog(catalogs: Catalog[]): TreeOption[] {
   return catalogs.map(catalog => ({
     label: catalog.catalogName,
     type: 'catalog',
@@ -89,7 +89,7 @@ const transformCatalog = (catalogs: Catalog[]): TreeOption[] => {
   }))
 }
 
-const transformDatabase = (databases: Database[]): TreeOption[] => {
+function transformDatabase(databases: Database[]): TreeOption[] {
   return databases.map(database => ({
     label: database.name,
     type: 'database',
@@ -98,7 +98,7 @@ const transformDatabase = (databases: Database[]): TreeOption[] => {
   }))
 }
 
-const transformTable = (tables: Table[]): TreeOption[] => {
+function transformTable(tables: Table[]): TreeOption[] {
   return tables.map(table => ({
     label: table.name,
     type: 'table',
@@ -106,12 +106,12 @@ const transformTable = (tables: Table[]): TreeOption[] => {
     isLeaf: true,
     prefix: () =>
       h(NIcon, null, {
-        default: () => h(FileTrayOutline)
+        default: () => h(FileTrayOutline),
       }),
   }))
 }
 
-const transformSearchTable = (searchResult: SearchTable): TreeOption[] => {
+function transformSearchTable(searchResult: SearchTable): TreeOption[] {
   const result: TreeOption[] = []
   const effect: string[] = []
 
@@ -126,14 +126,14 @@ const transformSearchTable = (searchResult: SearchTable): TreeOption[] => {
         type: 'catalog',
         key: catalogId,
         isLeaf: false,
-        children: []
+        children: [],
       }
 
       const database = catalog.children?.find(item => item.key === `${catalogId} ${databaseName}`) || {
         label: databaseName,
         type: 'database',
         key: `${catalogId} ${databaseName}`,
-        isLeaf: false
+        isLeaf: false,
       }
 
       database.children = transformTable(tables)

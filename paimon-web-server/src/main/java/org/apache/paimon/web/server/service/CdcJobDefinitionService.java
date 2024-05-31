@@ -19,6 +19,7 @@
 package org.apache.paimon.web.server.service;
 
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
+import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
@@ -30,7 +31,10 @@ public interface CdcJobDefinitionService extends IService<CdcJobDefinition> {
 
     R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO);
 
-    PageR<CdcJobDefinition> listAll(boolean withConfig, long currentPage, long pageSize);
+    PageR<CdcJobDefinition> listAll(
+            String name, boolean withConfig, long currentPage, long pageSize);
 
     R<Void> update(CdcJobDefinitionDTO cdcJobDefinitionDTO);
+
+    R<Void> submit(Integer id, CdcJobSubmitDTO cdcJobSubmitDTO);
 }

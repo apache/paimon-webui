@@ -16,8 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type { ResponseOptions } from '@/api/types'
 import type { LoginOptions } from './types/login_options'
+import type { ResponseOptions } from '@/api/types'
 
 // #region login-controller
 
@@ -25,14 +25,14 @@ import type { LoginOptions } from './types/login_options'
  * # Login
  * @param {LoginOptions} options
  */
-export const onLogin = (params: LoginOptions) => {
+export function onLogin(params: LoginOptions) {
   return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login', params)
 }
 
 /**
  * # Logout
  */
-export const onLogout = () => {
+export function onLogout() {
   return httpRequest.post<ResponseOptions<any>>('/logout')
 }
 

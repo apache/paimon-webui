@@ -19,14 +19,13 @@ import type { DataTableColumns } from 'naive-ui'
 import { VueDraggable } from 'vue-draggable-plus'
 import { UnorderedListOutlined } from '@vicons/antd'
 
+import { dataTypeOptions, hasEndLength, hasLength } from './constant'
 import type { ColumnDTO } from '@/api/models/catalog'
 
-import { hasLength, hasEndLength, dataTypeOptions } from './constant'
-
 const props = {
-  data: {
+  'data': {
     type: Array as PropType<ColumnDTO[]>,
-    default: () => []
+    default: () => [],
   },
   'onUpdate:data': [Function, Array] as PropType<((value: ColumnDTO[]) => void) | undefined>,
 }
@@ -35,11 +34,11 @@ export const newField: ColumnDTO = {
   field: '',
   dataType: {
     nullable: true,
-    type: undefined
+    type: undefined,
   },
   comment: '',
   defaultValue: '',
-  pk: false
+  pk: false,
 }
 
 export default defineComponent({
@@ -50,9 +49,9 @@ export default defineComponent({
 
     const onDelete = (i: number) => {
       const _data = toRaw(props.data)
-      if (_data.length <= 1) {
+      if (_data.length <= 1)
         return
-      }
+
       props.data.splice(i, 1)
     }
 
@@ -66,7 +65,7 @@ export default defineComponent({
               <UnorderedListOutlined />
             </n-icon>
           )
-        }
+        },
       },
       {
         title: t('metadata.column_field'),
@@ -81,13 +80,13 @@ export default defineComponent({
               rule={{
                 required: true,
                 message: 'Field is required',
-                trigger: ['input', 'blur']
+                trigger: ['input', 'blur'],
               }}
             >
               <n-input v-model:value={row.field} />
             </n-form-item>
           )
-        }
+        },
       },
       {
         title: t('metadata.column_type'),
@@ -102,7 +101,7 @@ export default defineComponent({
               rule={{
                 required: true,
                 message: 'DateType is required',
-                trigger: ['input', 'blur']
+                trigger: ['input', 'blur'],
               }}
             >
               <n-select
@@ -112,7 +111,7 @@ export default defineComponent({
               />
             </n-form-item>
           )
-        }
+        },
       },
       {
         title: t('metadata.column_length'),
@@ -131,7 +130,7 @@ export default defineComponent({
                   rule={{
                     type: 'number',
                     required: true,
-                    trigger: ['input', 'blur']
+                    trigger: ['input', 'blur'],
                   }}
                 >
                   <n-input-number v-model:value={row.dataType.precision} show-button={false} />
@@ -145,7 +144,7 @@ export default defineComponent({
                   rule={{
                     type: 'number',
                     required: true,
-                    trigger: ['input', 'blur']
+                    trigger: ['input', 'blur'],
                   }}
                 >
                   <n-input-number v-model:value={row.dataType.scale} show-button={false} />
@@ -153,7 +152,7 @@ export default defineComponent({
               )}
             </n-space>
           )
-        }
+        },
       },
       {
         title: t('metadata.column_pk'),
@@ -165,7 +164,7 @@ export default defineComponent({
               <n-checkbox v-model:checked={row.pk} />
             </n-form-item>
           )
-        }
+        },
       },
       {
         title: t('metadata.column_nullable'),
@@ -181,7 +180,7 @@ export default defineComponent({
               <n-checkbox v-model:checked={row.dataType.nullable} />
             </n-form-item>
           )
-        }
+        },
       },
       {
         title: t('metadata.column_default'),
@@ -197,7 +196,7 @@ export default defineComponent({
               <n-input v-model:value={row.defaultValue} />
             </n-form-item>
           )
-        }
+        },
       },
       {
         title: t('metadata.column_comment'),
@@ -213,7 +212,7 @@ export default defineComponent({
               <n-input v-model:value={row.comment} />
             </n-form-item>
           )
-        }
+        },
       },
       {
         title: t('metadata.column_action'),
@@ -224,21 +223,21 @@ export default defineComponent({
               Remove
             </n-button>
           )
-        }
-      }
+        },
+      },
     ]
 
     return {
       columns,
 
-      ...toRefs(props)
+      ...toRefs(props),
     }
   },
   render() {
     return (
-      <VueDraggable v-model:value={this.data} animation={150} handle='.drag-handle' target='.n-data-table-tbody'>
+      <vue-draggable v-model:value={this.data} animation={150} handle=".drag-handle" target=".n-data-table-tbody">
         <n-data-table columns={this.columns} data={this.data} style={{ marginBottom: '24px' }} />
-      </VueDraggable>
+      </vue-draggable>
     )
-  }
+  },
 })
