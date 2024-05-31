@@ -16,23 +16,23 @@ specific language governing permissions and limitations
 under the License. */
 
 import { Copy, DataTable, Renew } from '@vicons/carbon'
-import { StopOutline, Stop } from '@vicons/ionicons5'
+import { Stop, StopOutline } from '@vicons/ionicons5'
 import { ClockCircleOutlined, DownloadOutlined, LineChartOutlined } from '@vicons/antd'
-import styles from './index.module.scss'
-import {fetchResult, stopJob} from "@/api/models/job"
-import {useMessage} from "naive-ui"
+import { useMessage } from 'naive-ui'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
+import styles from './index.module.scss'
+import { fetchResult, stopJob } from '@/api/models/job'
 import { useJobStore } from '@/store/job'
 
 export default defineComponent({
   name: 'TableActionBar',
-  setup: function () {
-    const {t} = useLocaleHooks()
+  setup() {
+    const { t } = useLocaleHooks()
     const message = useMessage()
     const jobStore = useJobStore()
 
-    const {mittBus} = getCurrentInstance()!.appContext.config.globalProperties
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
 
     const currentJob = computed(() => jobStore.getCurrentJob)
     const jobStatus = computed(() => jobStore.getJobStatus)
@@ -56,45 +56,48 @@ export default defineComponent({
               clusterId,
               sessionId,
               taskType,
-              token
+              token,
             }
-            const response  = await fetchResult(resultFetchDTO)
+            const response = await fetchResult(resultFetchDTO)
             jobStore.setJobResultData(response.data)
-          } catch (error) {
+          }
+          catch (error) {
             console.error('Error fetching result:', error)
           }
-        } else {
+        }
+        else {
           message.warning(t('playground.no_data'))
         }
-      } else {
+      }
+      else {
         message.warning(t('playground.no_data'))
       }
     }
 
     const handleStopJob = async () => {
       if (currentJob.value) {
-        const job = toRaw(currentJob.value);
-        const { clusterId, jobId, type: taskType} = job
+        const job = toRaw(currentJob.value)
+        const { clusterId, jobId, type: taskType } = job
         const stopJobDTO = {
           clusterId,
           jobId,
           taskType,
-          withSavepoint: false
+          withSavepoint: false,
         }
         try {
-          const response = await stopJob(stopJobDTO);
-          if (response.code === 200) {
+          const response = await stopJob(stopJobDTO)
+          if (response.code === 200)
             message.success(t('playground.job_stopping_successfully'))
-          } else {
+          else
             message.warning(t('playground.job_stopping_failed'))
-          }
-        } catch (error) {
+        }
+        catch (error) {
           message.warning(t('playground.job_stopping_failed'))
         }
       }
     }
 
-    const currentStopIcon = computed(() => jobStatus.value === 'RUNNING' ? StopOutline : Stop);
+    const currentStopIcon = computed(() => jobStatus.value === 'RUNNING' ? StopOutline : Stop)
 
     const isButtonDisabled = computed(() => {
       return jobStatus.value !== 'RUNNING'
@@ -115,7 +118,7 @@ export default defineComponent({
         case 'FAILED':
           return '#f9827c'
         default:
-          return '#7ce998';
+          return '#7ce998'
       }
     })
 
@@ -129,8 +132,8 @@ export default defineComponent({
       { label: '10s', key: '10s' },
       { label: '30s', key: '30s' },
       { label: '1m', key: '1m' },
-      { label: '5m', key: '5m' }
-    ];
+      { label: '5m', key: '5m' },
+    ]
 
     const clearRefreshInterval = () => {
       if (refreshIntervalId.value) {
@@ -146,13 +149,12 @@ export default defineComponent({
 
     watch(jobStatus, () => {
       if (jobStatus.value !== 'RUNNING') {
-        if (refreshIntervalId.value) {
+        if (refreshIntervalId.value)
           clearRefreshInterval()
-        }
       }
     })
 
-    dayjs.extend(duration);
+    dayjs.extend(duration)
     const handleSelect = (key: any) => {
       selectedInterval.value = key
       switch (key) {
@@ -199,7 +201,7 @@ export default defineComponent({
       handleSelect,
       columnCount,
       rowCount,
-      executionTime
+      executionTime,
     }
   },
   render() {
@@ -302,27 +304,39 @@ export default defineComponent({
                 <n-button
                   text
                   disabled={this.isScheduleButtonDisabled}
-                  class={styles['table-action-bar-button']}>
+                  class={styles['table-action-bar-button']}
+                >
                 </n-button>
               ),
               default: () => (
                 <n-icon
                   size="20"
                   class={styles['table-action-bar-button']}
-                  component={ClockCircleOutlined}/>
-              )
+                  component={ClockCircleOutlined}
+                />
+              ),
             }}
           />
           <n-divider vertical style="height: 20px; margin-left: 0px; margin-right: 0px;" />
-          <span class={styles['table-action-bar-text']}>{this.columnCount} Columns</span>
+          <span class={styles['table-action-bar-text']}>
+            {this.columnCount}
+            {' '}
+            Columns
+          </span>
         </n-space>
         <div class={styles.right}>
           <n-space item-style="display: flex; align-items: center;">
             <div class={styles['table-action-bar-text']}>
               Job:
-              <span style={{color: this.jobStatusColor}}> {this.formattedJobStatus}</span>
+              <span style={{ color: this.jobStatusColor }}>
+                {' '}
+                {this.formattedJobStatus}
+              </span>
             </div>
-            <span class={styles['table-action-bar-text']}>Rows: {this.rowCount}</span>
+            <span class={styles['table-action-bar-text']}>
+              Rows:
+              {this.rowCount}
+            </span>
             <span class={styles['table-action-bar-text']}>{ this.executionTime }</span>
             <n-popover
               trigger="hover"

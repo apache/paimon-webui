@@ -55,7 +55,7 @@ export default defineComponent({
       return Boolean(props.tableColumns)
     })
 
-    const handleConfirm = async () => {
+    async function handleConfirm() {
       await formRef.value.validate()
       await createFetch({
         params: transformOption({
@@ -69,7 +69,7 @@ export default defineComponent({
       props.onConfirm!()
     }
 
-    const handleCloseModal = () => {
+    function handleCloseModal() {
       props.onClose!()
       nextTick(() => {
         formValue.value = resetState()

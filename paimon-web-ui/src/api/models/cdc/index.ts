@@ -37,8 +37,8 @@ export function updateCdcJob(cdcJobDefinition: CdcJobDefinition) {
 /**
  * # List all cdc job definitions
  */
-export function listAllCdcJob(withConfig: boolean,jobName: string |undefined| null, currentPage: number, pageSize: number) {
-  return httpRequest.get('/cdc-job-definition/list', { withConfig,jobName, currentPage, pageSize })
+export function listAllCdcJob(withConfig: boolean, jobName: string | undefined | null, currentPage: number, pageSize: number) {
+  return httpRequest.get('/cdc-job-definition/list', { withConfig, jobName, currentPage, pageSize })
 }
 
 /**

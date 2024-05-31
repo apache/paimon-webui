@@ -22,7 +22,7 @@ export interface JobState {
   executionMode: ExecutionMode
   currentJob: Job | null
   jobResultData: JobResultData | null
-  jobStatus: string,
+  jobStatus: string
   executionTime: string
 }
 
@@ -33,7 +33,7 @@ export const useJobStore = defineStore({
     currentJob: null,
     jobResultData: null,
     jobStatus: '',
-    executionTime: '0m:0s'
+    executionTime: '0m:0s',
   }),
   persist: false,
   getters: {
@@ -47,29 +47,27 @@ export const useJobStore = defineStore({
       return this.jobResultData
     },
     getColumns(): number {
-      if (this.currentJob && this.currentJob.resultData && this.currentJob.resultData.length > 0) {
+      if (this.currentJob && this.currentJob.resultData && this.currentJob.resultData.length > 0)
         return Object.keys(this.currentJob.resultData[0]).length
-      }else if (this.jobResultData && this.jobResultData.resultData && this.jobResultData.resultData.length > 0) {
+      else if (this.jobResultData && this.jobResultData.resultData && this.jobResultData.resultData.length > 0)
         return Object.keys(this.jobResultData.resultData[0]).length
-      } else {
+      else
         return 0
-      }
     },
     getRows(): number {
-      if (this.currentJob && this.currentJob.resultData && this.currentJob.resultData.length > 0) {
+      if (this.currentJob && this.currentJob.resultData && this.currentJob.resultData.length > 0)
         return this.currentJob.resultData.length
-      }else if (this.jobResultData && this.jobResultData.resultData && this.jobResultData.resultData.length > 0) {
+      else if (this.jobResultData && this.jobResultData.resultData && this.jobResultData.resultData.length > 0)
         return this.jobResultData.resultData.length
-      } else {
+      else
         return 0
-      }
     },
     getJobStatus(): string {
       return this.jobStatus
     },
     getExecutionTime(): string {
       return this.executionTime
-    }
+    },
   },
   actions: {
     setExecutionMode(executionMode: ExecutionMode) {
@@ -93,5 +91,5 @@ export const useJobStore = defineStore({
       this.jobStatus = ''
       this.executionTime = '0m:0s'
     },
-  }
+  },
 })

@@ -16,8 +16,8 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type {JobSubmitDTO, Job, ResultFetchDTO, JobResultData, JobStatus, StopJobDTO} from "@/api/models/job/types/job"
-import type {ResponseOptions} from "@/api/types"
+import type { Job, JobResultData, JobStatus, JobSubmitDTO, ResultFetchDTO, StopJobDTO } from '@/api/models/job/types/job'
+import type { ResponseOptions } from '@/api/types'
 
 /**
  * # Submit a job

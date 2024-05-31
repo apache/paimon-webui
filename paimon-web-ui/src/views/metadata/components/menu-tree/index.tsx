@@ -50,12 +50,14 @@ export default defineComponent({
 
     const renderSuffix = ({ option }: { option: TreeOption }) => {
       switch (option.type) {
-        case 'catalog':
+        case 'catalog': {
           const [catalogId] = option.key?.toString()?.split(' ') || []
           return h(DatabaseFormButton, { catalogId: Number(catalogId) })
-        case 'database':
+        }
+        case 'database': {
           const [id, name, databaseName] = option.key?.toString()?.split(' ') || []
           return h(TableFormButton, { catalogId: Number(id), catalogName: name, databaseName })
+        }
         default:
           return undefined
       }

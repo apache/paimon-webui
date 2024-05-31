@@ -26,13 +26,14 @@ const TYPES = [
   'checkbox',
 ]
 
-function getField(item: IJsonItem, fields: { [field: string]: any }, rules?: IFormRules) {
+function getField(item: IJsonItem, fields: { [field: string]: any }, _rules?: IFormRules) {
   const { type = 'input' } = isFunction(item) ? item() : item
   if (!TYPES.includes(type))
     return null
+
   const renderTypeName = `render${upperFirst(camelCase(type))}`
-  // @ts-expect-error
-  return Field[renderTypeName](item, fields)
+
+  return Field[renderTypeName as keyof typeof Field](item, fields)
 }
 
 export default getField

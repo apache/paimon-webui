@@ -25,7 +25,7 @@ import EditorDebugger from './components/debugger'
 import EditorConsole from './components/console'
 import MonacoEditor from '@/components/monaco-editor'
 import { useJobStore } from '@/store/job'
-import {getJobStatus} from "@/api/models/job"
+import { getJobStatus } from '@/api/models/job'
 
 export default defineComponent({
   name: 'QueryPage',
@@ -33,6 +33,7 @@ export default defineComponent({
     const message = useMessage()
     const jobStore = useJobStore()
 
+    const tabData = ref({}) as any
     const startTime = ref(0)
     const elapsedTime = ref(0)
     const currentJob = computed(() => jobStore.getCurrentJob)
@@ -87,29 +88,27 @@ export default defineComponent({
     )
 
     // mitt - handle tab choose
-    const tabData = ref({}) as any
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
 
-    let getJobStatusIntervalId: number
+    const getJobStatusIntervalId = ref<number | undefined>()
     onMounted(() => {
-      getJobStatusIntervalId = setInterval(async () => {
+      getJobStatusIntervalId.value = setInterval(async () => {
         if (currentJob.value && currentJob.value.jobId) {
           const response = await getJobStatus(currentJob.value.jobId)
-          if (response.data) {
+          if (response.data)
             jobStore.setJobStatus(response.data.status)
-          }
         }
       }, 1000)
     })
 
     let computeExecutionTimeIntervalId: number
     const startTimer = () => {
-      if (computeExecutionTimeIntervalId) {
+      if (computeExecutionTimeIntervalId)
         clearInterval(computeExecutionTimeIntervalId)
-      }
+
       elapsedTime.value = 0
       startTime.value = Date.now()
       computeExecutionTimeIntervalId = setInterval(() => {
@@ -117,22 +116,22 @@ export default defineComponent({
       }, 3000)
     }
 
-    const stopTimer = ()=> {
-      if (computeExecutionTimeIntervalId) {
+    const stopTimer = () => {
+      if (computeExecutionTimeIntervalId)
         clearInterval(computeExecutionTimeIntervalId)
-      }
     }
 
     watch(jobStatus, (newStatus, oldStatus) => {
       if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING') {
-        startTimer();
-      } else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
-        stopTimer();
+        startTimer()
+      }
+      else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
+        stopTimer()
         elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
       }
     })
 
-    const formatTime =  (seconds: number): string  => {
+    const formatTime = (seconds: number): string => {
       const days = Math.floor(seconds / 86400)
       const hours = Math.floor((seconds % 86400) / 3600)
       const mins = Math.floor((seconds % 3600) / 60)
@@ -141,7 +140,7 @@ export default defineComponent({
     }
 
     const formattedTime = computed(() => formatTime(elapsedTime.value))
-    watch(formattedTime, (formattedTime) => jobStore.setExecutionTime(formattedTime))
+    watch(formattedTime, formattedTime => jobStore.setExecutionTime(formattedTime))
 
     onUnmounted(() => jobStore.resetCurrentResult())
 
