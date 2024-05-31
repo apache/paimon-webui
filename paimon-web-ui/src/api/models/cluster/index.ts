@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type { Cluster, ClusterDTO, ClusterNameParams } from './types'
+import type {Cluster, ClusterDTO, ClusterNameParams} from './types'
 import type { ResponseOptions } from '@/api/types'
 
 /**
@@ -30,6 +30,17 @@ export function getClusterList() {
 }
 
 /**
+ * # List Cluster by ClusterType
+ */
+export function getClusterListByType(type: string, pageNum: number, pageSize: number) {
+  return httpRequest.get('/cluster/list', {
+    type,
+    pageNum,
+    pageSize
+  });
+}
+
+/**
  * # Create Cluster
  */
 export function createCluster() {
@@ -40,7 +51,7 @@ export function createCluster() {
 }
 
 /**
- * # Update user
+ * # Update Cluster
  */
 export function updateCluster() {
   return httpRequest.createHooks!<unknown, ClusterDTO>({
@@ -50,7 +61,7 @@ export function updateCluster() {
 }
 
 /**
- * # delete a Cluster
+ * # Delete a Cluster
  */
 export function deleteCluster(userId: number) {
   return httpRequest.delete!<unknown, ClusterDTO>(`/cluster/${userId}`)

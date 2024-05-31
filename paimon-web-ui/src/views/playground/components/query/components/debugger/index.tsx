@@ -16,46 +16,49 @@ specific language governing permissions and limitations
 under the License. */
 
 import { ChevronDown, Play, ReaderOutline, Save } from '@vicons/ionicons5'
+import { getClusterListByType } from '@/api/models/cluster'
 import styles from './index.module.scss'
+import type { Cluster } from "@/api/models/cluster/types"
+import type {JobSubmitDTO} from "@/api/models/job/types/job"
+import { submitJob } from "@/api/models/job"
+import { useMessage } from "naive-ui"
+import { useJobStore } from '@/store/job'
+import type {ExecutionMode} from "@/store/job/type"
 
 export default defineComponent({
   name: 'EditorDebugger',
   emits: ['handleFormat', 'handleSave'],
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
+    const message = useMessage()
+    const jobStore = useJobStore()
 
-    const debuggerVariables = reactive({
+    const tabData = ref({}) as any
+
+    const debuggerVariables = reactive<{
+      operatingConditionOptions: { label: string; key: string }[]
+      conditionValue: string
+      bigDataOptions: { label: string; value: string }[]
+      conditionValue2: string
+      clusterOptions: { label: string; value: string }[]
+      conditionValue3: string
+      executionModeOptions: { label: string; value: string }[]
+    }>({
       operatingConditionOptions: [
-        {
-          label: 'Limit 100 items',
-          key: '100',
-        },
-        {
-          label: 'Limit 1000 items',
-          key: '1000',
-        },
+        { label: 'Limit 100 items', key: '100' },
+        { label: 'Limit 1000 items', key: '1000' },
       ],
       conditionValue: 'Flink',
       bigDataOptions: [
-        {
-          label: 'Flink',
-          value: 'Flink',
-        },
-        {
-          label: 'Spark',
-          value: 'Spark',
-        },
+        { label: 'Flink', value: 'Flink' },
+        { label: 'Spark', value: 'Spark' },
       ],
-      conditionValue2: 'test1',
-      clusterOptions: [
-        {
-          label: 'test1',
-          value: 'test1',
-        },
-        {
-          label: 'test2',
-          value: 'test2',
-        },
+      conditionValue2: '',
+      clusterOptions: [],
+      conditionValue3: 'Streaming',
+      executionModeOptions: [
+        { label: 'Streaming', value: 'Streaming' },
+        { label: 'Batch', value: 'Batch' },
       ],
     })
 
@@ -71,12 +74,78 @@ export default defineComponent({
       emit('handleSave')
     }
 
+    function getClusterData() {
+      getClusterListByType(debuggerVariables.conditionValue, 1, Number.MAX_SAFE_INTEGER).then(response => {
+        if (response && response.data) {
+          const clusterList = response.data as Cluster[]
+          debuggerVariables.clusterOptions = clusterList.map(cluster => ({
+            label: cluster.clusterName,
+            value: cluster.id.toString()
+          }))
+          if (debuggerVariables.clusterOptions.length > 0) {
+            debuggerVariables.conditionValue2 = debuggerVariables.clusterOptions[0].value
+          }
+        }
+      }).catch(error => {
+        console.error('Failed to fetch clusters:', error)
+      })
+    }
+
+    watch(() => debuggerVariables.conditionValue, (newValue) => {
+      getClusterData()
+    })
+
+    onMounted(() => {getClusterData()})
+
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
+    mittBus.on('initTabData', (data: any) => {
+      tabData.value = data
+    });
+
+    const handleSubmit = async () => {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+
+      if (!currentTab) {
+        return
+      }
+
+      jobStore.setExecutionMode(debuggerVariables.conditionValue3 as ExecutionMode)
+      jobStore.resetCurrentResult()
+
+      const currentSQL = currentTab.content
+      if (!currentSQL) {
+        return
+      }
+
+      const jobDataDTO: JobSubmitDTO = {
+        jobName: currentTab.tableName,
+        taskType: debuggerVariables.conditionValue,
+        clusterId: debuggerVariables.conditionValue2,
+        statements: currentSQL,
+        streaming: debuggerVariables.conditionValue3 === 'Streaming'
+      };
+
+      try {
+        const response = await submitJob(jobDataDTO);
+        if (response.code === 200) {
+          message.success(t('playground.job_submission_successfully'))
+          jobStore.setCurrentJob(response.data)
+          mittBus.emit('jobResult', response.data);
+        } else {
+          message.error(`${t('playground.job_submission_failed')}`)
+        }
+      } catch (error) {
+        console.error('Failed to submit job:', error)
+      }
+    }
+
     return {
       t,
       ...toRefs(debuggerVariables),
       handleSelect,
       handleFormat,
       handleSave,
+      handleSubmit
     }
   },
   render() {
@@ -85,6 +154,7 @@ export default defineComponent({
         <n-space>
           <n-button
             type="primary"
+            onClick={this.handleSubmit}
             v-slots={{
               icon: () => <n-icon component={Play} />,
               default: () => {
@@ -103,6 +173,7 @@ export default defineComponent({
           </n-button>
           <n-select style="width:160px;" v-model:value={this.conditionValue} options={this.bigDataOptions} />
           <n-select style="width:160px;" v-model:value={this.conditionValue2} options={this.clusterOptions} />
+          <n-select style="width:160px;" v-model:value={this.conditionValue3} options={this.executionModeOptions} />
         </n-space>
         <div class={styles.operations}>
           <n-space>

@@ -17,6 +17,7 @@ under the License. */
 
 import styles from './index.module.scss'
 import ContextMenu from '@/components/context-menu'
+import dayjs from 'dayjs'
 
 export default defineComponent({
   name: 'EditorTabs',
@@ -30,13 +31,14 @@ export default defineComponent({
     })
 
     const handleAdd = () => {
+      const timestamp = dayjs().format('YYYY-MM-DD HH:mm:ss')
       tabVariables.panelsList.push({
-        tableName: `test${tabVariables.panelsList.length + 1}`,
-        key: `test${tabVariables.panelsList.length + 1}`,
+        tableName: timestamp,
+        key: timestamp,
         isSaved: false,
         content: '',
       })
-      tabVariables.chooseTab = `test${tabVariables.panelsList.length}`
+      tabVariables.chooseTab = timestamp
     }
 
     const handleClose = (key: any) => {

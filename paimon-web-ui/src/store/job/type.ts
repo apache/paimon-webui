@@ -15,39 +15,4 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
-  $color-gray: #7D818E;
-
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 42px;
-
-  .left {
-    display: flex;
-    padding: 10px 0 10px 20px;
-  }
-
-  .right {
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-    padding: 10px 20px 10px 0;
-  }
-
-  .active-button {
-    color: #1a6efb;
-  }
-
-  .table-action-bar-button {
-    color: $color-gray;
-  }
-
-  .stop-button-running {
-    color: #D94F4F
-  }
-
-  .table-action-bar-text {
-    color: $color-gray;
-  }
-}
+export type ExecutionMode = 'Streaming' | 'Batch'
