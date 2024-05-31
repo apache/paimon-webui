@@ -18,20 +18,30 @@ under the License. */
 import { CloseSharp, CodeSlash, FileTrayFullOutline, Search, ServerOutline } from '@vicons/ionicons5'
 import { NIcon, type TreeOption } from 'naive-ui'
 import { DatabaseOutlined } from '@vicons/antd'
+import { HistoryToggleOffOutlined } from '@vicons/material'
 import styles from './index.module.scss'
 import { useCatalogStore } from '@/store/catalog'
 import type { DataTypeDTO } from '@/api/models/catalog'
 import { getColumns } from '@/api/models/catalog'
+import { getJobHistoryList } from '@/api/models/job'
 
 export default defineComponent({
   name: 'MenuTree',
   setup() {
+    interface RecordItem {
+      key: number;
+      label: string;
+      prefix: () => VNode;
+      content: string;
+    }
+
     const { t } = useLocaleHooks()
 
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
     const [tableColumns, useColumns, { loading }] = getColumns()
 
+    const recordList = ref<RecordItem[]>([]);
     const filterValue = ref('')
     const selectedKeys = ref([])
 
@@ -139,26 +149,22 @@ export default defineComponent({
       },
     ]) as any
 
-    const recordList = ref([
-      {
-        key: 3,
-        label: 'test3',
-        prefix: () =>
-          h(NIcon, { color: '#0066FF' }, {
-            default: () => h(CodeSlash),
+    async function loadHistoryData() {
+      const params = {name: filterValue.value, pageNum: 1, pageSize: Number.MAX_SAFE_INTEGER }
+      try {
+        const response = await getJobHistoryList(params)
+        recordList.value = response.data.map(item => ({
+          key: item.id,
+          label: item.name,
+          prefix: () => h(NIcon, { color: '#0066FF', size: '20' }, {
+            default: () => h(HistoryToggleOffOutlined),
           }),
-        content: '',
-      },
-      {
-        key: 4,
-        label: 'test4',
-        prefix: () =>
-          h(NIcon, { color: '#0066FF' }, {
-            default: () => h(CodeSlash),
-          }),
-        content: '',
-      },
-    ]) as any
+          content: item.statements,
+        }))
+      } catch (error) {
+        console.error('Failed to fetch history data:', error)
+      }
+    }
 
     const isDetailVisible = ref(true)
     const handleClose = () => {
@@ -180,6 +186,7 @@ export default defineComponent({
     })
 
     onMounted(onFetchData)
+    onMounted(loadHistoryData)
 
     const columns = computed(() => tableColumns.value?.columns || [])
 

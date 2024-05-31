@@ -18,6 +18,7 @@ under the License. */
 import httpRequest from '../../request'
 import type {JobSubmitDTO, Job, ResultFetchDTO, JobResultData, JobStatus, StopJobDTO} from "@/api/models/job/types/job"
 import type {ResponseOptions} from "@/api/types"
+import type { HistoryNameParams, History } from "@/api/models/job/types/history";
 
 /**
  * # Submit a job
@@ -52,4 +53,11 @@ export function getJobStatus(jobId: string) {
  */
 export function stopJob(stopJobDTO: StopJobDTO) {
   return httpRequest.post<StopJobDTO, ResponseOptions<void>>('/job/stop', stopJobDTO)
+}
+
+/**
+ * # List job histories
+ */
+export function getJobHistoryList(params: HistoryNameParams) {
+  return httpRequest.get<HistoryNameParams, ResponseOptions<History[]>>('/history/list', { ...params })
 }
