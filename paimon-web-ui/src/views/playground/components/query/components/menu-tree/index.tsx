@@ -18,21 +18,34 @@ under the License. */
 import { CloseSharp, CodeSlash, FileTrayFullOutline, Search, ServerOutline } from '@vicons/ionicons5'
 import { NIcon, type TreeOption } from 'naive-ui'
 import { DatabaseOutlined } from '@vicons/antd'
+import { HistoryToggleOffOutlined } from '@vicons/material'
+
 import styles from './index.module.scss'
 import { useCatalogStore } from '@/store/catalog'
-import type { DataTypeDTO } from '@/api/models/catalog'
 import { getColumns } from '@/api/models/catalog'
+import { getJobHistoryList } from '@/api/models/job'
+
+import type { DataTypeDTO } from '@/api/models/catalog'
+
+interface RecordItem {
+  key: number
+  label: string
+  prefix: () => VNode
+  content: string
+}
 
 export default defineComponent({
   name: 'MenuTree',
   setup() {
     const { t } = useLocaleHooks()
+    const message = useMessage()
 
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
     const [tableColumns, useColumns] = getColumns()
 
     const tabData = ref({}) as any
+    const recordList = ref<RecordItem[]>([])
     const isDetailVisible = ref(true)
     const filterValue = ref('')
     const selectedKeys = ref([])
@@ -140,32 +153,11 @@ export default defineComponent({
       },
     ]) as any
 
-    const recordList = ref([
-      {
-        key: 3,
-        label: 'test3',
-        prefix: () =>
-          h(NIcon, { color: '#0066FF' }, {
-            default: () => h(CodeSlash),
-          }),
-        content: '',
-      },
-      {
-        key: 4,
-        label: 'test4',
-        prefix: () =>
-          h(NIcon, { color: '#0066FF' }, {
-            default: () => h(CodeSlash),
-          }),
-        content: '',
-      },
-    ]) as any
-
-    const handleClose = () => {
+    function handleClose() {
       isDetailVisible.value = !isDetailVisible.value
     }
 
-    const onFetchData = async () => {
+    async function onFetchData() {
       if (catalogStore.currentTable && Object.keys(catalogStore.currentTable).length > 0) {
         useColumns({
           params: catalogStore.currentTable,
@@ -173,13 +165,29 @@ export default defineComponent({
       }
     }
 
+    async function loadHistoryData() {
+      const params = { name: filterValue.value, pageNum: 1, pageSize: Number.MAX_SAFE_INTEGER }
+      try {
+        const response = await getJobHistoryList(params)
+        recordList.value = response.data.map(item => ({
+          key: item.id,
+          label: item.name,
+          prefix: () => (<n-icon color="#0066FF" size={20}><HistoryToggleOffOutlined /></n-icon>),
+          content: item.statements,
+        }))
+      }
+      catch (error) {
+        message.error(JSON.stringify(error))
+      }
+    }
+
     watch(() => catalogStore.currentTable, onFetchData)
 
     onMounted(() => {
+      onFetchData()
+      loadHistoryData()
       catalogStore.getAllCatalogs(true)
     })
-
-    onMounted(onFetchData)
 
     const columns = computed(() => tableColumns.value?.columns || [])
 

@@ -16,9 +16,10 @@ specific language governing permissions and limitations
 under the License. */
 
 import httpRequest from '../../request'
-import type { Job, JobResultData, JobStatus, JobSubmitDTO, ResultFetchDTO, StopJobDTO } from '@/api/models/job/types/job'
-import type { ResponseOptions } from '@/api/types'
 
+import type { ResponseOptions } from '@/api/types'
+import type { Job, JobResultData, JobStatus, JobSubmitDTO, ResultFetchDTO, StopJobDTO } from '@/api/models/job/types/job'
+import type { History, HistoryNameParams } from '@/api/models/job/types/history'
 /**
  * # Submit a job
  */
@@ -52,4 +53,11 @@ export function getJobStatus(jobId: string) {
  */
 export function stopJob(stopJobDTO: StopJobDTO) {
   return httpRequest.post<StopJobDTO, ResponseOptions<void>>('/job/stop', stopJobDTO)
+}
+
+/**
+ * # List job histories
+ */
+export function getJobHistoryList(params: HistoryNameParams) {
+  return httpRequest.get<HistoryNameParams, ResponseOptions<History[]>>('/history/list', { ...params })
 }
