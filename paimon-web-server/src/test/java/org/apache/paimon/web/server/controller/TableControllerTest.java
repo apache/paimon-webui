@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /** Test for {@link TableController}. */
 public class TableControllerTest extends ControllerTestBase {
@@ -200,6 +201,43 @@ public class TableControllerTest extends ControllerTestBase {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void testCreateTable() throws Exception {
+        List<TableColumn> tableColumns = new ArrayList<>();
+        TableColumn id =
+                TableColumn.builder()
+                        .field("f1")
+                        .dataType(PaimonDataType.builder().type("INT").build())
+                        .build();
+        tableColumns.add(id);
+
+        TableDTO table =
+                TableDTO.builder()
+                        .catalogName(catalogName)
+                        .databaseName(databaseName)
+                        .name("test_table")
+                        .tableColumns(tableColumns)
+                        .build();
+
+        String responseString =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post(tablePath + "/create")
+                                        .cookie(cookie)
+                                        .content(ObjectMapperUtils.toJSON(table))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        R<Void> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<Void>>() {});
+        assertEquals(200, r.getCode());
+        List<TableVO> tables = getTables();
+        assertFalse(tables.isEmpty());
+        assertEquals("test_table", tables.get(1).getName());
     }
 
     @Test
