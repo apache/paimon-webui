@@ -100,6 +100,16 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                     addPipelineNameStatement(pipelineName, jobSubmitDTO.getStatements()));
         }
 
+        if (jobSubmitDTO.isStreaming()) {
+            jobSubmitDTO.setStatements(
+                    addExecutionModeStatement(
+                            STREAMING_MODE.toLowerCase(), jobSubmitDTO.getStatements()));
+        } else {
+            jobSubmitDTO.setStatements(
+                    addExecutionModeStatement(
+                            BATCH_MODE.toLowerCase(), jobSubmitDTO.getStatements()));
+        }
+
         Executor executor =
                 this.getExecutor(jobSubmitDTO.getClusterId(), jobSubmitDTO.getTaskType());
         if (executor == null) {
@@ -435,6 +445,10 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     private String addPipelineNameStatement(String pipelineName, String statements) {
         return "SET 'pipeline.name' = '" + pipelineName + "';\n" + statements;
+    }
+
+    private String addExecutionModeStatement(String executionMode, String statements) {
+        return "SET 'execution.runtime-mode' = '" + executionMode + "';\n" + statements;
     }
 
     private boolean shouldCreateSession(String clusterId) {
