@@ -115,16 +115,20 @@ export default defineComponent({
         <n-card
           bordered={true}
           title={`${this.isEdit ? 'Edit' : 'Create'} Column`}
-          style="width: 1100px"
+          style={{ width: this.isEdit ? '1020px' : '1130px' }}
         >
           {{
-            'header-extra': () => (
-              <n-button quaternary circle size="tiny" onClick={this.handleAddOption}>
-                <n-icon>
-                  <Add />
-                </n-icon>
-              </n-button>
-            ),
+            'header-extra': () => {
+              if (!this.isEdit) {
+                return (
+                  <n-button quaternary circle size="tiny" onClick={this.handleAddOption}>
+                    <n-icon>
+                      <Add />
+                    </n-icon>
+                  </n-button>
+                )
+              }
+            },
             'default': () => (
               <n-form
                 ref="formRef"
@@ -135,6 +139,7 @@ export default defineComponent({
               >
                 <ColumnFormContent
                   v-model:data={this.formValue.tableColumns}
+                  isEdit={this.isEdit}
                 />
               </n-form>
             ),
