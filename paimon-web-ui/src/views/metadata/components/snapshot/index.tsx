@@ -64,32 +64,32 @@ export default defineComponent({
         },
       },
       {
-        title: 'Base ManifestList',
+        title: 'Base Manifest List',
         key: 'baseManifestList',
         width: 430,
       },
       {
-        title: 'Delta ManifestList',
+        title: 'Delta Manifest List',
         key: 'deltaManifestList',
         width: 430,
       },
       {
-        title: 'Changelog ManifestList',
+        title: 'Changelog Manifest List',
         key: 'changelogManifestList',
         width: 430,
       },
       {
-        title: 'Total RecordCount',
+        title: 'Total Record Count',
         key: 'totalRecordCount',
         width: 170,
       },
       {
-        title: 'Delta RecordCount',
+        title: 'Delta Record Count',
         key: 'deltaRecordCount',
         width: 170,
       },
       {
-        title: 'Changelog RecordCount',
+        title: 'Changelog Record Count',
         key: 'changelogRecordCount',
         width: 210,
       },
