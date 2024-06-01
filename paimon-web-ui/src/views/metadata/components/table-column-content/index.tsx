@@ -31,6 +31,7 @@ const props = {
 }
 
 export const newField: ColumnDTO = {
+  id: 1,
   field: '',
   dataType: {
     nullable: true,
@@ -39,6 +40,7 @@ export const newField: ColumnDTO = {
   comment: '',
   defaultValue: '',
   pk: false,
+  sort: 1,
 }
 
 export default defineComponent({
@@ -117,7 +119,7 @@ export default defineComponent({
         {
           title: t('metadata.column_length'),
           key: 'length',
-          width: 190,
+          width: 170,
           render: (row, index) => {
             const hasStartLength = hasLength.includes(row.dataType.type || '')
             const hasScaleLength = hasEndLength.includes(row.dataType.type || '')

@@ -19,7 +19,7 @@ import { Add } from '@vicons/ionicons5'
 
 import ColumnFormContent, { newField } from '../table-column-content'
 import { useCatalogStore } from '@/store/catalog'
-import { type ColumnDTO, createColumns } from '@/api/models/catalog'
+import { type ColumnDTO, alterTable, createColumns } from '@/api/models/catalog'
 import { transformOption } from '@/views/metadata/constant'
 
 interface ColumnFormType {
@@ -47,6 +47,7 @@ export default defineComponent({
 
     const catalogStore = useCatalogStore()
     const [, createFetch, { loading }] = createColumns()
+    const [, editColumn] = alterTable()
 
     const formRef = ref()
     const formValue = ref<ColumnFormType>(resetState())
@@ -55,13 +56,31 @@ export default defineComponent({
       return Boolean(props.tableColumns)
     })
 
-    async function handleConfirm() {
+    async function handleAddColumn() {
       await formRef.value.validate()
       await createFetch({
         params: transformOption({
           ...toRaw(catalogStore.currentTable),
           tableColumns: toRaw(formValue.value).tableColumns,
         }),
+      })
+
+      handleCloseModal()
+      message.success(t(`${isEdit.value ? 'Edit' : 'Create'} Column`))
+      props.onConfirm!()
+    }
+
+    async function handleEditColumn() {
+      await formRef.value.validate()
+      const currentTable = toRaw(catalogStore.currentTable)!
+      const { catalogName, databaseName, tableName } = currentTable
+      await editColumn({
+        params: {
+          catalogName,
+          databaseName,
+          tableName,
+          tableColumns: toRaw(formValue.value).tableColumns,
+        },
       })
 
       handleCloseModal()
@@ -105,8 +124,9 @@ export default defineComponent({
 
       t,
       handleCloseModal,
-      handleConfirm,
+      handleAddColumn,
       handleAddOption,
+      handleEditColumn,
     }
   },
   render() {
@@ -115,7 +135,7 @@ export default defineComponent({
         <n-card
           bordered={true}
           title={`${this.isEdit ? 'Edit' : 'Create'} Column`}
-          style={{ width: this.isEdit ? '1020px' : '1130px' }}
+          style={{ width: this.isEdit ? '1000px' : '1110px' }}
         >
           {{
             'header-extra': () => {
@@ -146,7 +166,7 @@ export default defineComponent({
             'action': () => (
               <n-space justify="end">
                 <n-button onClick={this.handleCloseModal}>{this.t('layout.cancel')}</n-button>
-                <n-button type="primary" loading={this.loading} onClick={this.handleConfirm}>
+                <n-button type="primary" loading={this.loading} onClick={this.isEdit ? this.handleEditColumn : this.handleAddColumn}>
                   {this.t('layout.confirm')}
                 </n-button>
               </n-space>
