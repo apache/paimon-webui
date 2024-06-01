@@ -31,7 +31,7 @@ const props = {
 }
 
 export const newField: ColumnDTO = {
-  id: 1,
+  id: 0,
   field: '',
   dataType: {
     nullable: true,
@@ -40,7 +40,7 @@ export const newField: ColumnDTO = {
   comment: '',
   defaultValue: '',
   pk: false,
-  sort: 1,
+  sort: 0,
 }
 
 export default defineComponent({
@@ -56,6 +56,12 @@ export default defineComponent({
 
       props.data.splice(i, 1)
     }
+
+    watch(props.data, (newData) => {
+      newData.forEach((item, index) => {
+        item.sort = index
+      })
+    }, { deep: true })
 
     const columns = computed(() => {
       const baseColumns: DataTableColumns<ColumnDTO> = [
