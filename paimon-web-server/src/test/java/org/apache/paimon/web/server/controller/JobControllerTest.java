@@ -81,8 +81,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
 
     @Autowired private ClusterService clusterService;
 
-    @Autowired
-    private HistoryService historyService;
+    @Autowired private HistoryService historyService;
 
     @BeforeEach
     public void before() throws Exception {
