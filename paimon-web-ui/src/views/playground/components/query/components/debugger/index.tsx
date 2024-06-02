@@ -16,24 +16,36 @@ specific language governing permissions and limitations
 under the License. */
 
 import { ChevronDown, Play, ReaderOutline, Save } from '@vicons/ionicons5'
-import { useMessage } from 'naive-ui'
+import { NInput, useMessage } from 'naive-ui'
+
 import styles from './index.module.scss'
 import { getClusterListByType } from '@/api/models/cluster'
 import type { Cluster } from '@/api/models/cluster/types'
 import type { JobSubmitDTO } from '@/api/models/job/types/job'
-import { submitJob } from '@/api/models/job'
+import { createRecord, submitJob } from '@/api/models/job'
 import { useJobStore } from '@/store/job'
+
 import type { ExecutionMode } from '@/store/job/type'
+import type { RecordDTO } from '@/api/models/job/types/record'
 
 export default defineComponent({
   name: 'EditorDebugger',
   emits: ['handleFormat', 'handleSave'],
+  props: {
+    tabData: {
+      type: Object as PropType<any>,
+      default: () => ({}),
+    },
+  },
   setup(props, { emit }) {
-    const { t } = useLocaleHooks()
     const message = useMessage()
+    const dialog = useDialog()
+
+    const { t } = useLocaleHooks()
     const jobStore = useJobStore()
 
-    const tabData = ref({}) as any
+    const statementName = ref<string>('')
+    const tabData = toRef(props.tabData)
 
     const debuggerVariables = reactive<{
       operatingConditionOptions: { label: string, key: string }[]
@@ -69,8 +81,60 @@ export default defineComponent({
       emit('handleFormat')
     }
 
-    const handleSave = () => {
-      emit('handleSave')
+    async function handleSave() {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+
+      if (!currentTab)
+        return
+
+      const currentSQL = currentTab.content
+      if (!currentSQL) {
+        message.warning(`Can't submit Empty content`)
+        return
+      }
+
+      const _dialogInst = dialog.create({
+        title: 'Create Record',
+        content: () => h(
+          NInput,
+          {
+            placeholder: 'Input you statement name',
+            modelValue: statementName.value,
+            onInput: (e: string) => {
+              statementName.value = e
+            },
+          },
+        ),
+        positiveText: t('playground.save'),
+        onPositiveClick: async () => {
+          if (!statementName.value || !statementName.value.trim())
+            return message.error('statement name is required')
+
+          const recordDataDTO: RecordDTO = {
+            statementName: statementName.value,
+            taskType: debuggerVariables.conditionValue,
+            clusterId: Number(debuggerVariables.conditionValue2),
+            statements: currentSQL,
+            isStreaming: debuggerVariables.conditionValue3 === 'Streaming',
+          }
+
+          _dialogInst.loading = true
+          try {
+            const response = await createRecord(recordDataDTO)
+            if (response.code === 200)
+              emit('handleSave')
+
+            else
+              message.error(`${t('playground.job_submission_failed')}`)
+          }
+          catch (error) {
+            console.error('Failed to submit job:', error)
+          }
+          finally {
+            _dialogInst.loading = false
+          }
+        },
+      })
     }
 
     function getClusterData() {

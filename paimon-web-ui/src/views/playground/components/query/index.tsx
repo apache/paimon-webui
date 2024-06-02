@@ -33,11 +33,15 @@ export default defineComponent({
     const message = useMessage()
     const jobStore = useJobStore()
 
+    const menuTreeRef = ref()
+
     const tabData = ref({}) as any
     const startTime = ref(0)
     const elapsedTime = ref(0)
     const currentJob = computed(() => jobStore.getCurrentJob)
     const jobStatus = computed(() => jobStore.getJobStatus)
+
+    const formattedTime = computed(() => formatTime(elapsedTime.value))
 
     const editorVariables = reactive({
       editor: {} as any,
@@ -57,6 +61,8 @@ export default defineComponent({
       tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab).content = toRaw(editorVariables.editor).getValue()
       handleFormat()
       tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab).isSaved = true
+
+      menuTreeRef.value && menuTreeRef.value?.onLoadRecordData()
     }
 
     const handleContentChange = (value: string) => {
@@ -94,6 +100,7 @@ export default defineComponent({
     })
 
     const getJobStatusIntervalId = ref<number | undefined>()
+
     onMounted(() => {
       getJobStatusIntervalId.value = setInterval(async () => {
         if (currentJob.value && currentJob.value.jobId) {
@@ -131,7 +138,7 @@ export default defineComponent({
       }
     })
 
-    const formatTime = (seconds: number): string => {
+    function formatTime(seconds: number): string {
       const days = Math.floor(seconds / 86400)
       const hours = Math.floor((seconds % 86400) / 3600)
       const mins = Math.floor((seconds % 3600) / 60)
@@ -139,13 +146,13 @@ export default defineComponent({
       return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
     }
 
-    const formattedTime = computed(() => formatTime(elapsedTime.value))
     watch(formattedTime, formattedTime => jobStore.setExecutionTime(formattedTime))
 
     onUnmounted(() => jobStore.resetCurrentResult())
 
     return {
       ...toRefs(editorVariables),
+      menuTreeRef,
       editorMounted,
       editorSave,
       handleContentChange,
@@ -162,7 +169,7 @@ export default defineComponent({
     return (
       <div class={styles.query}>
         <div class={styles['menu-tree']}>
-          <MenuTree />
+          <MenuTree ref="menuTreeRef" />
         </div>
         <div class={styles['editor-area']}>
           <n-card class={styles.card} content-style="padding: 5px 18px;display: flex;flex-direction: column;">
@@ -170,7 +177,7 @@ export default defineComponent({
               <EditorTabs />
             </div>
             <div class={styles.debugger}>
-              <EditorDebugger onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
+              <EditorDebugger tabData={this.tabData} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
             </div>
             <div class={styles.editor} style={`height: ${this.consoleHeightType === 'up' ? '20%' : '60%'}`}>
               {

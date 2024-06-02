@@ -20,6 +20,7 @@ import httpRequest from '../../request'
 import type { ResponseOptions } from '@/api/types'
 import type { Job, JobResultData, JobStatus, JobSubmitDTO, ResultFetchDTO, StopJobDTO } from '@/api/models/job/types/job'
 import type { History, HistoryNameParams } from '@/api/models/job/types/history'
+import type { Record, RecordDTO, RecordNameParams } from '@/api/models/job/types/record'
 /**
  * # Submit a job
  */
@@ -59,5 +60,19 @@ export function stopJob(stopJobDTO: StopJobDTO) {
  * # List job histories
  */
 export function getJobHistoryList(params: HistoryNameParams) {
-  return httpRequest.get<HistoryNameParams, ResponseOptions<History[]>>('/history/list', { ...params })
+  return httpRequest.get<HistoryNameParams, ResponseOptions<History[]>>('/history/list', params)
+}
+
+/**
+ * # List job record
+ */
+export function getRecordList(params: RecordNameParams) {
+  return httpRequest.get<RecordNameParams, ResponseOptions<Record[]>>('/statement/list', params)
+}
+
+/**
+ * # create job record
+ */
+export function createRecord(params: RecordDTO) {
+  return httpRequest.post<RecordDTO, ResponseOptions<unknown>>('/statement', params)
 }
