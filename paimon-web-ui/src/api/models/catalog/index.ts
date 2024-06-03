@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import type {
+  AlterTableDTO,
   Catalog,
   CatalogDTO,
   ColumnParams,
@@ -87,6 +88,16 @@ export function getTables(params: TableQuery) {
 export function createTable() {
   return httpRequest.createHooks!<unknown, TableDTO>({
     url: '/table/create',
+    method: 'post',
+  })
+}
+
+/**
+ * # Alter Table
+ */
+export function alterTable() {
+  return httpRequest.createHooks!<unknown, AlterTableDTO>({
+    url: '/table/alter',
     method: 'post',
   })
 }

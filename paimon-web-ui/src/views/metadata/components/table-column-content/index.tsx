@@ -26,10 +26,15 @@ const props = {
     type: Array as PropType<ColumnDTO[]>,
     default: () => [],
   },
+  'isEdit': {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
   'onUpdate:data': [Function, Array] as PropType<((value: ColumnDTO[]) => void) | undefined>,
 }
 
 export const newField: ColumnDTO = {
+  id: 0,
   field: '',
   dataType: {
     nullable: true,
@@ -38,6 +43,7 @@ export const newField: ColumnDTO = {
   comment: '',
   defaultValue: '',
   pk: false,
+  sort: 0,
 }
 
 export default defineComponent({
@@ -54,177 +60,189 @@ export default defineComponent({
       props.data.splice(i, 1)
     }
 
-    const columns: DataTableColumns<ColumnDTO> = [
-      {
-        title: '#',
-        key: 'field',
-        render: () => {
-          return (
-            <n-icon class="drag-handle">
-              <UnorderedListOutlined />
-            </n-icon>
-          )
+    watch(props.data, (newData) => {
+      newData.forEach((item, index) => {
+        item.sort = index
+      })
+    }, { deep: true })
+
+    const columns = computed(() => {
+      const baseColumns: DataTableColumns<ColumnDTO> = [
+        {
+          title: '#',
+          key: 'field',
+          render: () => {
+            return (
+              <n-icon class="drag-handle">
+                <UnorderedListOutlined />
+              </n-icon>
+            )
+          },
         },
-      },
-      {
-        title: t('metadata.column_field'),
-        key: 'field',
-        width: 120,
-        render: (row, index) => {
-          return (
-            <n-form-item
-              show-feedback={false}
-              showLabel={false}
-              path={`tableColumns[${index}].field`}
-              rule={{
-                required: true,
-                message: 'Field is required',
-                trigger: ['input', 'blur'],
-              }}
-            >
-              <n-input v-model:value={row.field} />
-            </n-form-item>
-          )
+        {
+          title: t('metadata.column_field'),
+          key: 'field',
+          width: 150,
+          render: (row, index) => {
+            return (
+              <n-form-item
+                show-feedback={false}
+                showLabel={false}
+                path={`tableColumns[${index}].field`}
+                rule={{
+                  required: true,
+                  message: 'Field is required',
+                  trigger: ['input', 'blur'],
+                }}
+              >
+                <n-input v-model:value={row.field} />
+              </n-form-item>
+            )
+          },
         },
-      },
-      {
-        title: t('metadata.column_type'),
-        key: 'dataType',
-        width: 150,
-        render: (row, index) => {
-          return (
-            <n-form-item
-              show-feedback={false}
-              showLabel={false}
-              path={`tableColumns[${index}].dataType.type`}
-              rule={{
-                required: true,
-                message: 'DateType is required',
-                trigger: ['input', 'blur'],
-              }}
-            >
-              <n-select
-                placeholder={t('metadata.column_type')}
-                v-model:value={row.dataType.type}
-                options={dataTypeOptions}
-              />
-            </n-form-item>
-          )
+        {
+          title: t('metadata.column_type'),
+          key: 'dataType',
+          width: 150,
+          render: (row, index) => {
+            return (
+              <n-form-item
+                show-feedback={false}
+                showLabel={false}
+                path={`tableColumns[${index}].dataType.type`}
+                rule={{
+                  required: true,
+                  message: 'DateType is required',
+                  trigger: ['input', 'blur'],
+                }}
+              >
+                <n-select
+                  placeholder={t('metadata.column_type')}
+                  v-model:value={row.dataType.type}
+                  options={dataTypeOptions}
+                />
+              </n-form-item>
+            )
+          },
         },
-      },
-      {
-        title: t('metadata.column_length'),
-        key: 'length',
-        width: 190,
-        render: (row, index) => {
-          const hasStartLength = hasLength.includes(row.dataType.type || '')
-          const hasScaleLength = hasEndLength.includes(row.dataType.type || '')
-          return (
-            <n-space wrap={false}>
-              {hasStartLength && (
-                <n-form-item
-                  show-feedback={false}
-                  showLabel={false}
-                  path={`tableColumns[${index}].dataType.precision`}
-                  rule={{
-                    type: 'number',
-                    required: true,
-                    trigger: ['input', 'blur'],
-                  }}
-                >
-                  <n-input-number v-model:value={row.dataType.precision} show-button={false} />
-                </n-form-item>
-              )}
-              {hasScaleLength && (
-                <n-form-item
-                  show-feedback={false}
-                  showLabel={false}
-                  path={`tableColumns[${index}].dataType.scale`}
-                  rule={{
-                    type: 'number',
-                    required: true,
-                    trigger: ['input', 'blur'],
-                  }}
-                >
-                  <n-input-number v-model:value={row.dataType.scale} show-button={false} />
-                </n-form-item>
-              )}
-            </n-space>
-          )
+        {
+          title: t('metadata.column_length'),
+          key: 'length',
+          width: 170,
+          render: (row, index) => {
+            const hasStartLength = hasLength.includes(row.dataType.type || '')
+            const hasScaleLength = hasEndLength.includes(row.dataType.type || '')
+            return (
+              <n-space wrap={false}>
+                {hasStartLength && (
+                  <n-form-item
+                    show-feedback={false}
+                    showLabel={false}
+                    path={`tableColumns[${index}].dataType.precision`}
+                    rule={{
+                      type: 'number',
+                      required: true,
+                      trigger: ['input', 'blur'],
+                    }}
+                  >
+                    <n-input-number v-model:value={row.dataType.precision} show-button={false} />
+                  </n-form-item>
+                )}
+                {hasScaleLength && (
+                  <n-form-item
+                    show-feedback={false}
+                    showLabel={false}
+                    path={`tableColumns[${index}].dataType.scale`}
+                    rule={{
+                      type: 'number',
+                      required: true,
+                      trigger: ['input', 'blur'],
+                    }}
+                  >
+                    <n-input-number v-model:value={row.dataType.scale} show-button={false} />
+                  </n-form-item>
+                )}
+              </n-space>
+            )
+          },
         },
-      },
-      {
-        title: t('metadata.column_pk'),
-        key: 'pk',
-        width: 60,
-        render: (row, index) => {
-          return (
-            <n-form-item show-feedback={false} showLabel={false} path={`tableColumns[${index}].pk`}>
-              <n-checkbox v-model:checked={row.pk} />
-            </n-form-item>
-          )
+        {
+          title: t('metadata.column_pk'),
+          key: 'pk',
+          width: 60,
+          render: (row, index) => {
+            return (
+              <n-form-item show-feedback={false} showLabel={false} path={`tableColumns[${index}].pk`}>
+                <n-checkbox v-model:checked={row.pk} />
+              </n-form-item>
+            )
+          },
         },
-      },
-      {
-        title: t('metadata.column_nullable'),
-        key: 'dataType.nullable',
-        width: 80,
-        render: (row, index) => {
-          return (
-            <n-form-item
-              show-feedback={false}
-              showLabel={false}
-              path={`tableColumns[${index}].dataType.nullable`}
-            >
-              <n-checkbox v-model:checked={row.dataType.nullable} />
-            </n-form-item>
-          )
+        {
+          title: t('metadata.column_nullable'),
+          key: 'dataType.nullable',
+          width: 80,
+          render: (row, index) => {
+            return (
+              <n-form-item
+                show-feedback={false}
+                showLabel={false}
+                path={`tableColumns[${index}].dataType.nullable`}
+              >
+                <n-checkbox v-model:checked={row.dataType.nullable} />
+              </n-form-item>
+            )
+          },
         },
-      },
-      {
-        title: t('metadata.column_default'),
-        key: 'defaultValue',
-        width: 150,
-        render: (row, index) => {
-          return (
-            <n-form-item
-              show-feedback={false}
-              showLabel={false}
-              path={`tableColumns[${index}].defaultValue`}
-            >
-              <n-input v-model:value={row.defaultValue} />
-            </n-form-item>
-          )
+        {
+          title: t('metadata.column_default'),
+          key: 'defaultValue',
+          width: 150,
+          render: (row, index) => {
+            return (
+              <n-form-item
+                show-feedback={false}
+                showLabel={false}
+                path={`tableColumns[${index}].defaultValue`}
+              >
+                <n-input v-model:value={row.defaultValue} />
+              </n-form-item>
+            )
+          },
         },
-      },
-      {
-        title: t('metadata.column_comment'),
-        key: 'comment',
-        width: 150,
-        render: (row, index) => {
-          return (
-            <n-form-item
-              show-feedback={false}
-              showLabel={false}
-              path={`tableColumns[${index}].defaultValue`}
-            >
-              <n-input v-model:value={row.comment} />
-            </n-form-item>
-          )
+        {
+          title: t('metadata.column_comment'),
+          key: 'comment',
+          width: 150,
+          render: (row, index) => {
+            return (
+              <n-form-item
+                show-feedback={false}
+                showLabel={false}
+                path={`tableColumns[${index}].defaultValue`}
+              >
+                <n-input v-model:value={row.comment} />
+              </n-form-item>
+            )
+          },
         },
-      },
-      {
-        title: t('metadata.column_action'),
-        key: 'Operate',
-        render: (_, index) => {
-          return (
-            <n-button onClick={() => onDelete(index)} tertiary type="error">
-              Remove
-            </n-button>
-          )
-        },
-      },
-    ]
+      ]
+
+      if (!props.isEdit) {
+        baseColumns.push({
+          title: t('metadata.column_action'),
+          key: 'Operate',
+          render: (_, index) => {
+            return (
+              <n-button onClick={() => onDelete(index)} tertiary type="error">
+                Remove
+              </n-button>
+            )
+          },
+        })
+      }
+      return baseColumns
+    })
 
     return {
       columns,
