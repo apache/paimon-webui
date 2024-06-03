@@ -23,6 +23,8 @@ under the License. */
   .content {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
+    overflow-x: auto;
     
     width: calc(100% - 60px);
 
