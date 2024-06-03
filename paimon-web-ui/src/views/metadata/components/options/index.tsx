@@ -41,11 +41,12 @@ export default defineComponent({
         key: 'value',
       },
       {
-        title: 'Operation',
+        title: () => <div style={{ paddingRight: '40px' }}>Operation</div>,
         key: 'operation',
+        align: 'right',
         render(rowData) {
           return (
-            <n-space>
+            <n-space style="justify-content: flex-end; padding-right: 31px;">
               <OptionsEditForm onConfirm={onFetchData} option={rowData} />
               <n-popconfirm onPositiveClick={() => onDeleteOption(rowData?.key)}>
                 {{
