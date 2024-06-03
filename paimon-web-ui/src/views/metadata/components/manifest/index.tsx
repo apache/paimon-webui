@@ -41,6 +41,14 @@ export default defineComponent({
         title: 'Number of Add Files',
         key: 'numAddedFiles',
       },
+      {
+        title: 'Number of Delete Files',
+        key: 'numDeletedFiles',
+      },
+      {
+        title: 'schemaId',
+        key: 'schemaId',
+      },
     ]
 
     const onFetchData = async () => {
