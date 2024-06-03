@@ -75,6 +75,7 @@ export default defineComponent({
           <n-data-table
             columns={this.columns}
             data={this.manifest || []}
+            max-height="calc(100vh - 280px)"
           />
         </n-spin>
       </n-card>
