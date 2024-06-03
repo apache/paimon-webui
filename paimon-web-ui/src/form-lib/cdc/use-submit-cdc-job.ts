@@ -16,7 +16,10 @@ specific language governing permissions and limitations
 under the License. */
 
 import type { CdcJobSubmit } from '@/api/models/cdc'
+import { getClusterListByType } from '@/api/models/cluster'
+import type { Cluster } from '@/api/models/cluster/types'
 import type { IJsonItem } from '@/components/dynamic-form/types'
+
 
 export function useSumbitCdcJob(item: any) {
   const { t } = useLocaleHooks()
@@ -25,15 +28,26 @@ export function useSumbitCdcJob(item: any) {
     flinkSessionUrl: item.flinkSessionUrl,
   })
 
+  let flinkSessionClusterOptions =  ref<any>([])
+   getClusterListByType ('Flink', 1, Number.MAX_SAFE_INTEGER).then((response) => {
+    if (response && response.data) {
+      const clusterList = response.data as Cluster[]
+       flinkSessionClusterOptions.value = clusterList.map(cluster => ({
+        label: cluster.clusterName,
+        value: cluster.id.toString(),
+      }))
+      debugger
+    }})
   return {
     json: [
       {
-        type: 'input',
-        field: 'flinkSessionUrl',
+        type: 'select',
+        field: 'clusterId',
         name: t('common.flink_session_url'),
         props: {
           placeholder: '',
         },
+        options:flinkSessionClusterOptions,
         validate: {
           trigger: ['input', 'blur'],
           required: true,
