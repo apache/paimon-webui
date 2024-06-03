@@ -15,14 +15,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Language, LogoGithub, Moon, SunnyOutline } from '@vicons/ionicons5'
+import { Language, LogOutOutline, LogoGithub, Moon, SunnyOutline } from '@vicons/ionicons5'
 import { LANGUAGES } from '@/locales'
 import { useConfigStore } from '@/store/config'
+import type { Router } from 'vue-router'
+import { onLogout } from '@/api/models/login'
 
 // ts-ignore
 export default defineComponent({
   name: 'ToolBar',
   setup() {
+    const router: Router = useRouter()
     const { t, setLanguage } = useLocaleHooks()
 
     const handleLink = () => {
@@ -43,11 +46,19 @@ export default defineComponent({
       setLanguage(lang)
     }
 
+    const handleLogout = ()=>{
+      onLogout().then(()=>{
+        router.push({ path: '/login' })
+      })
+      
+    }
+
     return {
       t,
       handleLink,
       handleTheme,
       handleLanguage,
+      handleLogout,
       configStore,
       active: ref(false),
     }
@@ -75,6 +86,9 @@ export default defineComponent({
         </n-icon>
         <n-icon size="24" onClick={this.handleLanguage}>
           <Language />
+        </n-icon>
+        <n-icon size="24" onClick={this.handleLogout}>
+          <LogOutOutline />
         </n-icon>
       </n-space>
     )
