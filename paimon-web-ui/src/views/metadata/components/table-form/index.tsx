@@ -106,7 +106,7 @@ export default defineComponent({
       showModal.value = true
     }
 
-    const handleCloseModal = () => {
+    function handleCloseModal() {
       showModal.value = false
       formValue.value = resetFormValue()
     }

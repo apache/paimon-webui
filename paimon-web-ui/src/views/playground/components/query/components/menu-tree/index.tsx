@@ -15,23 +15,39 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { CloseSharp, CodeSlash, FileTrayFullOutline, Search, ServerOutline } from '@vicons/ionicons5'
+import { CloseSharp, FileTrayFullOutline, Search, ServerOutline } from '@vicons/ionicons5'
 import { NIcon, type TreeOption } from 'naive-ui'
 import { DatabaseOutlined } from '@vicons/antd'
+import { HistoryToggleOffOutlined } from '@vicons/material'
+
 import styles from './index.module.scss'
 import { useCatalogStore } from '@/store/catalog'
-import type { DataTypeDTO } from '@/api/models/catalog'
 import { getColumns } from '@/api/models/catalog'
+import { getJobHistoryList, getRecordList } from '@/api/models/job'
+
+import type { DataTypeDTO } from '@/api/models/catalog'
+
+interface RecordItem {
+  key: number
+  label: string
+  prefix: () => VNode
+  content: string
+}
 
 export default defineComponent({
   name: 'MenuTree',
-  setup() {
+  setup(_, { expose }) {
     const { t } = useLocaleHooks()
+    const message = useMessage()
 
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
-    const [tableColumns, useColumns, { loading }] = getColumns()
+    const [tableColumns, useColumns] = getColumns()
 
+    const tabData = ref({}) as any
+    const recordList = ref<RecordItem[]>([])
+    const historyList = ref<RecordItem[]>([])
+    const isDetailVisible = ref(true)
     const filterValue = ref('')
     const selectedKeys = ref([])
 
@@ -79,6 +95,7 @@ export default defineComponent({
             tabData.value.chooseTab = option.key
             return
           }
+
           tabData.value.panelsList.push({
             tableName: option.label,
             key: option.key,
@@ -108,64 +125,20 @@ export default defineComponent({
       }
     }
 
-    const handleTreeSelect = ({ option }: { option: TreeOption }) => {
+    const handleTreeSelect = () => {
     }
 
     // mitt - handle tab choose
-    const tabData = ref({}) as any
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
 
-    const savedQueryList = ref([
-      {
-        key: 1,
-        label: 'test1',
-        prefix: () =>
-          h(NIcon, { color: '#0066FF' }, {
-            default: () => h(CodeSlash),
-          }),
-        content: '',
-      },
-      {
-        key: 2,
-        label: 'test2',
-        prefix: () =>
-          h(NIcon, { color: '#0066FF' }, {
-            default: () => h(CodeSlash),
-          }),
-        content: '',
-      },
-    ]) as any
-
-    const recordList = ref([
-      {
-        key: 3,
-        label: 'test3',
-        prefix: () =>
-          h(NIcon, { color: '#0066FF' }, {
-            default: () => h(CodeSlash),
-          }),
-        content: '',
-      },
-      {
-        key: 4,
-        label: 'test4',
-        prefix: () =>
-          h(NIcon, { color: '#0066FF' }, {
-            default: () => h(CodeSlash),
-          }),
-        content: '',
-      },
-    ]) as any
-
-    const isDetailVisible = ref(true)
-    const handleClose = () => {
+    function handleClose() {
       isDetailVisible.value = !isDetailVisible.value
     }
 
-    const onFetchData = async () => {
+    async function onFetchData() {
       if (catalogStore.currentTable && Object.keys(catalogStore.currentTable).length > 0) {
         useColumns({
           params: catalogStore.currentTable,
@@ -173,13 +146,47 @@ export default defineComponent({
       }
     }
 
+    async function onLoadHistoryData() {
+      const params = { name: filterValue.value, pageNum: 1, pageSize: Number.MAX_SAFE_INTEGER }
+      try {
+        const response = await getJobHistoryList(params)
+        historyList.value = response.data.map(item => ({
+          key: item.id,
+          label: item.name,
+          prefix: () => (<n-icon color="#0066FF" size={20}><HistoryToggleOffOutlined /></n-icon>),
+          content: item.statements,
+        }))
+      }
+      catch (error) {
+        message.error(JSON.stringify(error))
+      }
+    }
+
+    async function onLoadRecordData() {
+      const params = { statementName: filterValue.value, pageNum: 1, pageSize: Number.MAX_SAFE_INTEGER }
+      try {
+        const response = await getRecordList(params)
+
+        recordList.value = response.data.map(item => ({
+          key: item.id,
+          label: item.statementName || '',
+          prefix: () => (<n-icon color="#0066FF" size={20}><HistoryToggleOffOutlined /></n-icon>),
+          content: item.statements,
+        }))
+      }
+      catch (error) {
+        message.error(JSON.stringify(error))
+      }
+    }
+
     watch(() => catalogStore.currentTable, onFetchData)
 
     onMounted(() => {
+      onFetchData()
+      onLoadHistoryData()
+      onLoadRecordData()
       catalogStore.getAllCatalogs(true)
     })
-
-    onMounted(onFetchData)
 
     const columns = computed(() => tableColumns.value?.columns || [])
 
@@ -192,6 +199,27 @@ export default defineComponent({
         return { prefix: 'Aa' }
     }
 
+    function onChangeTab(value: string) {
+      switch (value) {
+        case 'data':
+          onFetchData()
+          break
+        case 'saved_query':
+          onLoadRecordData()
+          break
+        case 'query_record':
+          onLoadHistoryData()
+          break
+
+        default:
+          break
+      }
+    }
+
+    expose({
+      onLoadRecordData,
+    })
+
     return {
       t,
       filterValue,
@@ -202,20 +230,21 @@ export default defineComponent({
       handleTreeSelect,
       renderPrefix,
       handleClose,
-      savedQueryList,
       recordList,
+      historyList,
       currentTable: catalogStoreRef.currentTable,
       columns,
       isDetailVisible,
       selectedKeys,
       getTypePrefix,
+      onChangeTab,
     }
   },
   render() {
     return (
       <div class={styles.container}>
         <n-card class={styles.card} content-style="padding:7px 18px;">
-          <n-tabs default-value="data" justify-content="space-between" type="line" style="height: 100%">
+          <n-tabs default-value="data" justify-content="space-between" type="line" style="height: 100%" onUpdateValue={this.onChangeTab}>
             <n-tab-pane name="data" tab={this.t('playground.data')} style="height: 100%">
               <div class={styles.vertical}>
                 <n-input
@@ -302,7 +331,7 @@ export default defineComponent({
                   expand-on-click
                   selected-keys={this.selectedKeys}
                   on-update:selected-keys={this.handleTreeSelect}
-                  data={this.savedQueryList}
+                  data={this.recordList}
                   pattern={this.filterValue}
                   node-props={this.nodeProps}
                 />
@@ -324,7 +353,7 @@ export default defineComponent({
                   expand-on-click
                   selected-keys={this.selectedKeys}
                   on-update:selected-keys={this.handleTreeSelect}
-                  data={this.recordList}
+                  data={this.historyList}
                   pattern={this.filterValue}
                   node-props={this.nodeProps}
                 />

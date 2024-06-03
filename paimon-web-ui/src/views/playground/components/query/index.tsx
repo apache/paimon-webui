@@ -24,11 +24,24 @@ import EditorTabs from './components/tabs'
 import EditorDebugger from './components/debugger'
 import EditorConsole from './components/console'
 import MonacoEditor from '@/components/monaco-editor'
+import { useJobStore } from '@/store/job'
+import { getJobStatus } from '@/api/models/job'
 
 export default defineComponent({
   name: 'QueryPage',
   setup() {
     const message = useMessage()
+    const jobStore = useJobStore()
+
+    const menuTreeRef = ref()
+
+    const tabData = ref({}) as any
+    const startTime = ref(0)
+    const elapsedTime = ref(0)
+    const currentJob = computed(() => jobStore.getCurrentJob)
+    const jobStatus = computed(() => jobStore.getJobStatus)
+
+    const formattedTime = computed(() => formatTime(elapsedTime.value))
 
     const editorVariables = reactive({
       editor: {} as any,
@@ -48,6 +61,8 @@ export default defineComponent({
       tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab).content = toRaw(editorVariables.editor).getValue()
       handleFormat()
       tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab).isSaved = true
+
+      menuTreeRef.value && menuTreeRef.value?.onLoadRecordData()
     }
 
     const handleContentChange = (value: string) => {
@@ -79,14 +94,65 @@ export default defineComponent({
     )
 
     // mitt - handle tab choose
-    const tabData = ref({}) as any
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
 
+    const getJobStatusIntervalId = ref<number | undefined>()
+
+    onMounted(() => {
+      getJobStatusIntervalId.value = setInterval(async () => {
+        if (currentJob.value && currentJob.value.jobId) {
+          const response = await getJobStatus(currentJob.value.jobId)
+          if (response.data)
+            jobStore.setJobStatus(response.data.status)
+        }
+      }, 1000)
+    })
+
+    let computeExecutionTimeIntervalId: number
+    const startTimer = () => {
+      if (computeExecutionTimeIntervalId)
+        clearInterval(computeExecutionTimeIntervalId)
+
+      elapsedTime.value = 0
+      startTime.value = Date.now()
+      computeExecutionTimeIntervalId = setInterval(() => {
+        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
+      }, 3000)
+    }
+
+    const stopTimer = () => {
+      if (computeExecutionTimeIntervalId)
+        clearInterval(computeExecutionTimeIntervalId)
+    }
+
+    watch(jobStatus, (newStatus, oldStatus) => {
+      if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING') {
+        startTimer()
+      }
+      else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
+        stopTimer()
+        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
+      }
+    })
+
+    function formatTime(seconds: number): string {
+      const days = Math.floor(seconds / 86400)
+      const hours = Math.floor((seconds % 86400) / 3600)
+      const mins = Math.floor((seconds % 3600) / 60)
+      const secs = seconds % 60
+      return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
+    }
+
+    watch(formattedTime, formattedTime => jobStore.setExecutionTime(formattedTime))
+
+    onUnmounted(() => jobStore.resetCurrentResult())
+
     return {
       ...toRefs(editorVariables),
+      menuTreeRef,
       editorMounted,
       editorSave,
       handleContentChange,
@@ -103,7 +169,7 @@ export default defineComponent({
     return (
       <div class={styles.query}>
         <div class={styles['menu-tree']}>
-          <MenuTree />
+          <MenuTree ref="menuTreeRef" />
         </div>
         <div class={styles['editor-area']}>
           <n-card class={styles.card} content-style="padding: 5px 18px;display: flex;flex-direction: column;">
@@ -111,7 +177,7 @@ export default defineComponent({
               <EditorTabs />
             </div>
             <div class={styles.debugger}>
-              <EditorDebugger onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
+              <EditorDebugger tabData={this.tabData} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
             </div>
             <div class={styles.editor} style={`height: ${this.consoleHeightType === 'up' ? '20%' : '60%'}`}>
               {

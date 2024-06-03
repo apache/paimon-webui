@@ -37,12 +37,12 @@ export default defineComponent({
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [, createFetch, { loading }] = createDatabase()
+    const [, createFetch] = createDatabase()
 
     const modalRef = ref<{ formRef: IFormInst }>()
     const showModal = ref(false)
 
-    const handleConfirm = async (values: DatabaseFormDTO) => {
+    async function handleConfirm(values: DatabaseFormDTO) {
       await modalRef.value?.formRef?.validate()
       if (props.catalogId) {
         await createFetch({
@@ -61,12 +61,12 @@ export default defineComponent({
       }
     }
 
-    const handleOpenModal = (e: Event) => {
+    function handleOpenModal(e: Event) {
       e.stopPropagation()
       showModal.value = true
     }
 
-    const handleCloseModal = () => {
+    function handleCloseModal() {
       showModal.value = false
       modalRef.value?.formRef?.resetValues({
         name: '',

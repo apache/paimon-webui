@@ -50,7 +50,7 @@ export default {
   column_pk: '主键',
   column_nullable: '是否为空',
   column_default: '默认值',
-  column_comment: '标注',
+  column_comment: '备注',
   column_action: '操作',
 
   partition_columns: '分区列',

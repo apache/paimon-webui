@@ -49,7 +49,8 @@ export function useTask({
   const task = tasks[formType as keyof typeof tasks]
   const { model, json } = task(params)
   jsonRef.value = json
-  const getElements = () => {
+
+  function getElements() {
     const { rules, elements } = getElementByJson(jsonRef.value, model)
     elementsRef.value = elements
     rulesRef.value = rules

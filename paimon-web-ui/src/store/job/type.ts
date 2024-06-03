@@ -15,25 +15,4 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import httpRequest from '../../request'
-import type { LoginOptions } from './types/login_options'
-import type { ResponseOptions } from '@/api/types'
-
-// #region login-controller
-
-/**
- * # Login
- * @params {LoginOptions} options
- */
-export function onLogin(params: LoginOptions) {
-  return httpRequest.post<LoginOptions, ResponseOptions<any>>('/login', params)
-}
-
-/**
- * # Logout
- */
-export function onLogout() {
-  return httpRequest.post<ResponseOptions<any>>('/logout')
-}
-
-// #endregion
+export type ExecutionMode = 'Streaming' | 'Batch'

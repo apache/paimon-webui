@@ -49,4 +49,10 @@ export default {
   schedule_refresh: 'Schedule Refresh',
   download: 'Export Data',
   copy: 'Copy Data',
+  job_submission_successfully: 'Job Submitted Successfully',
+  job_submission_failed: 'Job Submitted Failed',
+  no_data: 'No Data',
+  job_stopping_successfully: 'Job Stopped Successfully',
+  job_stopping_failed: 'Job Stopped Failed',
+  data_copied_successfully: 'Data Copied to Clipboard',
 }

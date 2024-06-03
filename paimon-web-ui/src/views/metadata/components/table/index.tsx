@@ -122,7 +122,7 @@ export default defineComponent({
       },
     ]
 
-    const onDeleteColumn = async (columnName: string) => {
+    async function onDeleteColumn(columnName: string) {
       await deleteColumns({
         ...toRaw(catalogStore.currentTable),
         columnName,
@@ -131,7 +131,7 @@ export default defineComponent({
       await onFetchData()
     }
 
-    const onFetchData = async () => {
+    async function onFetchData() {
       useColumns({
         params: catalogStore.currentTable,
       })

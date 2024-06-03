@@ -103,7 +103,7 @@ export default defineComponent({
             row-key={(rowData: Schema) => rowData.schemaId}
             columns={this.columns}
             data={this.schemaData || []}
-            max-height="calc(100vh - 260px)"
+            max-height="calc(100vh - 280px)"
           />
         </n-spin>
       </n-card>

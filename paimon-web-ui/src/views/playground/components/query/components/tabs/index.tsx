@@ -15,6 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import dayjs from 'dayjs'
 import styles from './index.module.scss'
 import ContextMenu from '@/components/context-menu'
 
@@ -30,13 +31,14 @@ export default defineComponent({
     })
 
     const handleAdd = () => {
+      const timestamp = dayjs().format('YYYY-MM-DD HH:mm:ss')
       tabVariables.panelsList.push({
-        tableName: `test${tabVariables.panelsList.length + 1}`,
-        key: `test${tabVariables.panelsList.length + 1}`,
+        tableName: timestamp,
+        key: timestamp,
         isSaved: false,
         content: '',
       })
-      tabVariables.chooseTab = `test${tabVariables.panelsList.length}`
+      tabVariables.chooseTab = timestamp
     }
 
     const handleClose = (key: any) => {

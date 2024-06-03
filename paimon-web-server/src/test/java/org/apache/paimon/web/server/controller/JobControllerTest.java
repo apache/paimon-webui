@@ -24,12 +24,14 @@ import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.dto.ResultFetchDTO;
 import org.apache.paimon.web.server.data.dto.StopJobDTO;
 import org.apache.paimon.web.server.data.model.ClusterInfo;
+import org.apache.paimon.web.server.data.model.History;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
 import org.apache.paimon.web.server.data.vo.JobStatusVO;
 import org.apache.paimon.web.server.data.vo.JobVO;
 import org.apache.paimon.web.server.data.vo.ResultDataVO;
 import org.apache.paimon.web.server.service.ClusterService;
+import org.apache.paimon.web.server.service.HistoryService;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 import org.apache.paimon.web.server.util.StringUtils;
 
@@ -78,6 +80,8 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     public static MockCookie cookie;
 
     @Autowired private ClusterService clusterService;
+
+    @Autowired private HistoryService historyService;
 
     @BeforeEach
     public void before() throws Exception {
@@ -146,6 +150,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
         jobSubmitDTO.setJobName("flink-job-test");
         jobSubmitDTO.setTaskType("Flink");
+        jobSubmitDTO.setStreaming(true);
         jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
         jobSubmitDTO.setStatements(StatementsConstant.statement);
 
@@ -168,6 +173,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
         jobSubmitDTO.setJobName("flink-job-test-fetch-result");
         jobSubmitDTO.setTaskType("Flink");
+        jobSubmitDTO.setStreaming(true);
         jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
         jobSubmitDTO.setStatements(StatementsConstant.selectStatement);
 
@@ -212,6 +218,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
         jobSubmitDTO.setJobName("flink-job-test-list-jobs");
         jobSubmitDTO.setTaskType("Flink");
+        jobSubmitDTO.setStreaming(true);
         jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
         jobSubmitDTO.setStatements(StatementsConstant.selectStatement);
 
@@ -253,6 +260,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
         jobSubmitDTO.setJobName("flink-job-test-get-job-status");
         jobSubmitDTO.setTaskType("Flink");
+        jobSubmitDTO.setStreaming(true);
         jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
         jobSubmitDTO.setStatements(StatementsConstant.selectStatement);
 
@@ -278,6 +286,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
         jobSubmitDTO.setJobName("flink-job-test-stop-job");
         jobSubmitDTO.setTaskType("Flink");
+        jobSubmitDTO.setStreaming(true);
         jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
         jobSubmitDTO.setStatements(StatementsConstant.selectStatement);
         String responseString = submit(jobSubmitDTO);
@@ -331,6 +340,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
         jobSubmitDTO.setJobName("flink-job-test-get-job-statistics");
         jobSubmitDTO.setTaskType("Flink");
+        jobSubmitDTO.setStreaming(true);
         jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
         jobSubmitDTO.setStatements(StatementsConstant.selectStatement);
         String responseString = submit(jobSubmitDTO);
@@ -360,6 +370,13 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         assertEquals(1, getJobStatisticsRes.getData().getCanceledNum());
         assertEquals(0, getJobStatisticsRes.getData().getFinishedNum());
         assertEquals(0, getJobStatisticsRes.getData().getFailedNum());
+    }
+
+    @Test
+    @Order(7)
+    public void testExecutionMode() {
+        History history = historyService.list().get(0);
+        assertTrue(history.getStatements().contains("SET 'execution.runtime-mode' = 'streaming';"));
     }
 
     private String submit(JobSubmitDTO jobSubmitDTO) throws Exception {

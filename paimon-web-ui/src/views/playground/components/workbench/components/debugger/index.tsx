@@ -59,8 +59,7 @@ export default defineComponent({
       ],
     })
 
-    const handleSelect = (key: string) => {
-      console.log(key)
+    const handleSelect = () => {
     }
 
     const handleFormat = () => {
