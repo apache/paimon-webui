@@ -46,8 +46,8 @@ export default defineComponent({
     const message = useMessage()
 
     const catalogStore = useCatalogStore()
-    const [, createFetch, { loading }] = createColumns()
-    const [, editColumn] = alterTable()
+    const [, createFetch, { loading: createLoading }] = createColumns()
+    const [, editColumn, { loading: editLoading }] = alterTable()
 
     const formRef = ref()
     const formValue = ref<ColumnFormType>(resetState())
@@ -55,6 +55,8 @@ export default defineComponent({
     const isEdit = computed(() => {
       return Boolean(props.tableColumns)
     })
+
+    const loading = computed(() => createLoading.value || editLoading.value)
 
     async function handleAddColumn() {
       await formRef.value.validate()

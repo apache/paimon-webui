@@ -26,7 +26,10 @@ const props = {
     type: Array as PropType<ColumnDTO[]>,
     default: () => [],
   },
-  'isEdit': Boolean,
+  'isEdit': {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
   'onUpdate:data': [Function, Array] as PropType<((value: ColumnDTO[]) => void) | undefined>,
 }
 
