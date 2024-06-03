@@ -15,68 +15,97 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import type { DataTableInst } from 'naive-ui'
+import { useMessage } from 'naive-ui'
 import styles from './index.module.scss'
+import { useJobStore } from '@/store/job'
 
 export default defineComponent({
   name: 'TableResult',
   setup() {
-    const columns = [
-      {
-        title: '#',
-        key: 'key',
-        render: (_: any, index: number) => {
-          return `${index + 1}`
-        },
-      },
-      {
-        title: 'id',
-        key: 'id',
-        resizable: true,
-      },
-      {
-        title: 'name',
-        key: 'name',
-        resizable: true,
-      },
-      {
-        title: 'age',
-        key: 'age',
-        resizable: true,
-      },
-      {
-        title: 'address',
-        key: 'address',
-        resizable: true,
-      },
-    ]
+    const { t } = useLocaleHooks()
+    const message = useMessage()
+    const jobStore = useJobStore()
 
-    interface User {
-      id: number
-      name: string
-      age: number
-      address: string
+    const tableRef = ref<DataTableInst | null>(null)
+
+    interface TableColumn {
+      title: string
+      key: string
+      fixed?: string
+      width?: number
+      render?: (row: any, index: number) => string | number | JSX.Element
     }
 
-    const data: User[] = [
-      { id: 1, name: 'jack', age: 36, address: 'beijing' },
-      { id: 2, name: 'li hua', age: 38, address: 'shanghai' },
-      { id: 3, name: 'zhao ming', age: 27, address: 'hangzhou' },
-      { id: 3, name: 'zhao ming', age: 27, address: 'hangzhou' },
-    ]
+    const initialData = computed(() => jobStore.getCurrentJob?.resultData || [])
+    const refreshedData = computed(() => jobStore.getJobResultData?.resultData || [])
+    const data = computed(() => refreshedData.value.length > 0 ? refreshedData.value : initialData.value)
+
+    const columns = computed(() => {
+      if (data.value.length > 0)
+        return generateColumns(data.value[0])
+
+      return []
+    })
+
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
+
+    function generateColumns(sampleObject: any) {
+      const indexColumn: TableColumn = {
+        title: '#',
+        key: 'index',
+        fixed: 'left',
+        width: 50,
+        render: (_, index) => `${index + 1}`,
+      }
+
+      const dynamicColumns = Object.keys(sampleObject).map(key => ({
+        title: key,
+        key,
+        resizable: true,
+        sortable: true,
+      }))
+
+      return [indexColumn, ...dynamicColumns]
+    }
+
+    mittBus.on('triggerDownloadCsv', () => {
+      if (tableRef.value)
+        tableRef.value?.downloadCsv({ fileName: 'data-table' })
+    })
+
+    mittBus.on('triggerCopyData', () => {
+      if (data.value && data.value.length > 0) {
+        const jsonData = JSON.stringify(data.value, null, 2)
+        navigator.clipboard.writeText(jsonData)
+          .then(() => message.success(t('playground.data_copied_successfully')))
+          .catch(err => console.error('Failed to copy data: ', err))
+      }
+    })
+
+    onUnmounted(() => {
+      mittBus.off('triggerDownloadCsv')
+      mittBus.off('triggerCopyData')
+    })
 
     return {
       columns,
       data,
+      tableRef,
     }
   },
   render() {
     return (
       <div>
         <n-data-table
+          ref={(el: any) => { this.tableRef = el }}
           class={styles.table}
           columns={this.columns}
           data={this.data}
-          max-height={138}
+          max-height={90}
+          v-slots={{
+            empty: () => '',
+          }}
         />
       </div>
     )

@@ -15,10 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormItemRule } from 'naive-ui'
-
 import type { ClusterDTO } from '@/api/models/cluster/types'
-import { listRoles } from '@/api/models/role'
 
 const props = {
   'visible': {

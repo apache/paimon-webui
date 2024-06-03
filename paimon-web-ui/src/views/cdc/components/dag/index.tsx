@@ -27,6 +27,8 @@ export default defineComponent({
   setup() {
     const { t } = useLocaleHooks()
     const CDCStore = useCDCStore()
+    const router: Router = useRouter()
+
     const name = ref('')
     onMounted(() => {
       name.value = CDCStore.getModel.name
@@ -47,10 +49,8 @@ export default defineComponent({
             router.push({ path: '/cdc_ingestion' })
           })
       }
-
     }
 
-    const router: Router = useRouter()
     const handleJump = () => {
       router.push({ path: '/cdc_ingestion' })
     }

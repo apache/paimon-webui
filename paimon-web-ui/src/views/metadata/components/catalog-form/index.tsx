@@ -82,7 +82,7 @@ export default defineComponent({
     })
     const showModal = ref(false)
 
-    const handleConfirm = async () => {
+    async function handleConfirm() {
       await formRef.value.validate()
       await createFetch({
         params: toRaw(formValue.value),
@@ -94,17 +94,17 @@ export default defineComponent({
       catalogStore.getAllCatalogs(true)
     }
 
-    const handleOpenModal = (e: Event) => {
+    function handleOpenModal(e: Event) {
       e.stopPropagation()
       showModal.value = true
     }
 
-    const handleCloseModal = () => {
+    function handleCloseModal() {
       showModal.value = false
       resetState()
     }
 
-    const resetState = () => {
+    function resetState() {
       formValue.value = {
         name: '',
         type: '',

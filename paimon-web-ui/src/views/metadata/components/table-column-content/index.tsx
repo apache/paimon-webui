@@ -16,7 +16,6 @@ specific language governing permissions and limitations
 under the License. */
 
 import type { DataTableColumns } from 'naive-ui'
-import { VueDraggable } from 'vue-draggable-plus'
 import { UnorderedListOutlined } from '@vicons/antd'
 
 import { dataTypeOptions, hasEndLength, hasLength } from './constant'

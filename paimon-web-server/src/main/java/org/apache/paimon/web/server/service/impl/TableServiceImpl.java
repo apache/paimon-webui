@@ -38,6 +38,8 @@ import org.apache.paimon.web.server.util.PaimonServiceUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -96,15 +98,23 @@ public class TableServiceImpl implements TableService {
                 }
             }
 
-            TableMetadata tableMetadata =
+            TableMetadata.Builder builder =
                     TableMetadata.builder()
                             .columns(buildColumns(tableDTO))
-                            .partitionKeys(partitionKeys)
-                            .primaryKeys(buildPrimaryKeys(tableDTO))
-                            .options(tableOptions)
-                            .comment(tableDTO.getDescription())
-                            .build();
-            service.createTable(tableDTO.getDatabaseName(), tableDTO.getName(), tableMetadata);
+                            .primaryKeys(buildPrimaryKeys(tableDTO));
+
+            if (CollectionUtils.isNotEmpty(partitionKeys)) {
+                builder.partitionKeys(partitionKeys);
+            }
+
+            if (MapUtils.isNotEmpty(tableOptions)) {
+                builder.options(tableOptions);
+            }
+
+            if (StringUtils.isNotEmpty(tableDTO.getDescription())) {
+                builder.comment(tableDTO.getDescription());
+            }
+            service.createTable(tableDTO.getDatabaseName(), tableDTO.getName(), builder.build());
             return true;
         } catch (Exception e) {
             log.error("Exception with creating table.", e);

@@ -15,8 +15,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { UseI18nOptions } from 'vue-i18n'
-
 import type { LANGUAGES } from '@/locales'
 import i18n from '@/locales'
 
