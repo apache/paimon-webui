@@ -185,6 +185,7 @@ export default defineComponent({
                 columns={this.columns}
                 data={this.tableColumns?.columns || []}
                 pagination={this.pagination}
+                max-height="calc(100vh - 370px)"
               />
             ),
           }}
