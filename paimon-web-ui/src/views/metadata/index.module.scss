@@ -20,6 +20,25 @@ under the License. */
   width: 100%;
   height: 100%;
 
+  .split {
+    position: relative;
+    width: 0;
+    height: 100%;
+    flex: none;
+    cursor: col-resize;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -5px;
+      bottom: 0;
+      left: -5px;
+      background: transparent;
+      z-index: 1;
+    }
+  }
+
   .content {
     display: flex;
     flex-direction: column;
