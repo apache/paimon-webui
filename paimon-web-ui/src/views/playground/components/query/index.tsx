@@ -184,7 +184,7 @@ export default defineComponent({
                   <div class={styles.debugger}>
                     <EditorDebugger tabData={this.tabData} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
                   </div>
-                  <n-split direction="vertical" max={0.70} min={0.00} resize-trigger-size={0} default-size={0.6}>
+                  <n-split direction="vertical" max={0.60} min={0.00} resize-trigger-size={0} default-size={0.6}>
                     {{
                       '1': () => (
                         <div class={styles.editor}>

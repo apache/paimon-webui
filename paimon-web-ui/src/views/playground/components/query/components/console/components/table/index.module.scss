@@ -24,4 +24,11 @@ under the License. */
   .table {
     padding-left: 20px;
   }
+
+  .no-data-only-top-border {
+    border-top: 1px solid #ccc;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+  }
 }
