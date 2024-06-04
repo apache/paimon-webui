@@ -20,6 +20,10 @@ import { getClusterListByType } from '@/api/models/cluster'
 import type { Cluster } from '@/api/models/cluster/types'
 import type { IJsonItem } from '@/components/dynamic-form/types'
 
+interface FlinkSessionClusterOptions {
+  label: string;
+  value: string
+}
 
 export function useSumbitCdcJob(item: any) {
   const { t } = useLocaleHooks()
@@ -28,7 +32,7 @@ export function useSumbitCdcJob(item: any) {
     flinkSessionUrl: item.flinkSessionUrl,
   })
 
-  let flinkSessionClusterOptions =  ref<any>([])
+  const flinkSessionClusterOptions =  ref<FlinkSessionClusterOptions[]>([])
    getClusterListByType ('Flink', 1, Number.MAX_SAFE_INTEGER).then((response) => {
     if (response && response.data) {
       const clusterList = response.data as Cluster[]
@@ -36,7 +40,6 @@ export function useSumbitCdcJob(item: any) {
         label: cluster.clusterName,
         value: cluster.id.toString(),
       }))
-      debugger
     }})
   return {
     json: [
@@ -47,7 +50,7 @@ export function useSumbitCdcJob(item: any) {
         props: {
           placeholder: '',
         },
-        options:flinkSessionClusterOptions,
+        options: flinkSessionClusterOptions,
         validate: {
           trigger: ['input', 'blur'],
           required: true,
