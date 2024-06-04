@@ -34,7 +34,7 @@ export default defineComponent({
   render() {
     return (
       <div class={styles.container}>
-        <n-split direction="horizontal" max={0.45} min={0.12} resize-trigger-size={0} default-size={0.165}>
+        <n-split direction="horizontal" max={0.45} min={0.12} resize-trigger-size={0} default-size={0.168}>
           {{
             '1': () => (
               <MenuTree />
