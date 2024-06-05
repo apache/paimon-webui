@@ -19,7 +19,9 @@
 package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
+import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
+import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
@@ -123,7 +125,6 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
     @Order(3)
     @Test
     public void testSearchCdcJobDefinition() throws Exception {
-        testCreateCdcJob(cdcJobDefinitionDto());
         testCreateCdcJob(cdcJobDefinitionDtoForSearch());
         MockHttpServletResponse listAllResponse =
                 mockMvc.perform(
@@ -180,5 +181,40 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
         PageR<CdcJobDefinition> searchResult =
                 getPageR(searchResponse, new TypeReference<PageR<CdcJobDefinition>>() {});
         return searchResult.getTotal();
+    }
+
+    @Order(4)
+    @Test
+    public void submitCdcJob() throws Exception {
+        System.setProperty("FLINK_HOME", "/opt/flink");
+        System.setProperty("ACTION_JAR_PATH", "/opt/flink/jar");
+        ClusterInfo cluster = new ClusterInfo();
+        cluster.setId(1);
+        cluster.setClusterName("clusterName");
+        cluster.setHost("127.0.0.1");
+        cluster.setPort(8083);
+        cluster.setType("Flink");
+        cluster.setEnabled(true);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/cluster")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(cluster))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        CdcJobDefinitionDTO cdcJobDefinitionDTO = cdcJobDefinitionDto();
+        CdcJobSubmitDTO cdcJobSubmitDTO = new CdcJobSubmitDTO();
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get(
+                                        cdcJobDefinitionPath + "/" + cdcJobDefinitionDTO.getId())
+                                .cookie(cookie)
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                                .content(ObjectMapperUtils.toJSON(cdcJobSubmitDTO))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn()
+                .getResponse();
     }
 }
