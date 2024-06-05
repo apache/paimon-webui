@@ -113,8 +113,7 @@ CREATE TABLE if not exists `role_menu`
 DROP TABLE IF EXISTS `catalog`;
 CREATE TABLE if not exists `catalog`
 (
-    id            int                                  not null comment 'id'
-    primary key,
+    id            int(11)  not null auto_increment primary key comment 'id',
     catalog_type  varchar(50)                          not null comment 'catalog type',
     catalog_name  varchar(100)                         not null comment 'catalog name',
     warehouse     varchar(200)                         not null comment 'warehouse',
@@ -142,7 +141,7 @@ CREATE TABLE if not exists `cluster`
 DROP TABLE IF EXISTS `cdc_job_definition`;
 CREATE TABLE if not exists `cdc_job_definition`
 (
-    id          int                                not null comment 'id',
+    id          int(11)  not null auto_increment primary key comment 'id',
     `name`      varchar(20)                        not null comment 'name',
     description varchar(200)                       null comment 'description',
     cdc_type    int                                not null comment 'cdc type ',
