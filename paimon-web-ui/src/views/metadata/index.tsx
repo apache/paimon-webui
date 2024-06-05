@@ -50,7 +50,7 @@ export default defineComponent({
                     )
                   : (
                     <div class={styles.empty}>
-                      <n-empty description="Select the table. Please"></n-empty>
+                      <n-empty description="Please choose a table."></n-empty>
                     </div>
                     )}
               </div>
