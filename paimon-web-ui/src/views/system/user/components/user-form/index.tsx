@@ -130,7 +130,7 @@ export default defineComponent({
   render() {
     return (
       <n-modal v-model:show={this.visible} mask-closable={false}>
-        <n-card bordered={false} title={this.t(this.formType === 'create' ? 'system.role.create' : 'system.role.update')} style="width: 600px">
+        <n-card bordered={false} title={this.t(this.formType === 'create' ? 'system.user.create' : 'system.user.update')} style="width: 600px">
           {{
             default: () => (
               <n-form
