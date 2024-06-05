@@ -19,11 +19,7 @@ import type { CdcJobSubmit } from '@/api/models/cdc'
 import { getClusterListByType } from '@/api/models/cluster'
 import type { Cluster } from '@/api/models/cluster/types'
 import type { IJsonItem } from '@/components/dynamic-form/types'
-
-interface FlinkSessionClusterOptions {
-  label: string;
-  value: string
-}
+import type { SelectOption } from 'naive-ui'
 
 export function useSumbitCdcJob(item: any) {
   const { t } = useLocaleHooks()
@@ -32,7 +28,7 @@ export function useSumbitCdcJob(item: any) {
     flinkSessionUrl: item.flinkSessionUrl,
   })
 
-  const flinkSessionClusterOptions =  ref<FlinkSessionClusterOptions[]>([])
+  const flinkSessionClusterOptions =  ref<SelectOption[]>([])
    getClusterListByType ('Flink', 1, Number.MAX_SAFE_INTEGER).then((response) => {
     if (response && response.data) {
       const clusterList = response.data as Cluster[]
