@@ -142,7 +142,7 @@ export default defineComponent({
           class={styles.table}
           columns={this.columns}
           data={this.data}
-          max-height={200}
+          max-height={70}
           scroll-x={this.scrollX || undefined}
           v-slots={{
             empty: () => '',
