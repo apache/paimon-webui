@@ -22,13 +22,20 @@ import { useJobStore } from '@/store/job'
 
 export default defineComponent({
   name: 'TableResult',
-  setup() {
+  props: {
+    maxHeight: {
+      type: Number,
+      default: 150,
+    },
+  },
+  setup(props) {
     const { t } = useLocaleHooks()
     const message = useMessage()
     const jobStore = useJobStore()
     const scrollX = ref('100%')
     const tableContainer = ref<HTMLElement | null>(null)
     const tableRef = ref<DataTableInst | null>(null)
+    const maxTableHeight = ref(0)
 
     interface TableColumn {
       title: string
@@ -113,6 +120,19 @@ export default defineComponent({
 
     watchEffect(updateTableWidth)
 
+    watch(data, async (newData) => {
+      if (newData && newData.length > 0) {
+        await nextTick()
+        if (tableContainer.value) {
+          const headerElement = tableContainer.value.querySelector('.n-data-table-base-table-header')
+          if (headerElement) {
+            const headerHeight = headerElement.clientHeight
+            maxTableHeight.value = Math.max(0, props.maxHeight - headerHeight)
+          }
+        }
+      }
+    }, { immediate: true })
+
     onMounted(() => {
       nextTick(() => {
         updateTableWidth()
@@ -132,17 +152,22 @@ export default defineComponent({
       tableRef,
       tableContainer,
       scrollX,
+      maxHeight: props.maxHeight,
+      maxTableHeight,
     }
   },
   render() {
     return (
-      <div ref={(el: any) => { this.tableContainer = el }}>
+      <div
+        ref={(el: any) => { this.tableContainer = el }}
+        style={{ height: `${this.maxHeight}px` }}
+      >
         <n-data-table
           ref={(el: any) => { this.tableRef = el }}
           class={styles.table}
           columns={this.columns}
           data={this.data}
-          max-height={70}
+          max-height={`${this.maxTableHeight}px`}
           scroll-x={this.scrollX || undefined}
           v-slots={{
             empty: () => '',

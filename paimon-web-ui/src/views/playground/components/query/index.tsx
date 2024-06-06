@@ -168,7 +168,7 @@ export default defineComponent({
   render() {
     return (
       <div class={styles.query}>
-        <n-split direction="horizontal" max={0.35} min={0.20} resize-trigger-size={0} default-size={0.20}>
+        <n-split direction="horizontal" max={0.35} min={0.16} resize-trigger-size={0} default-size={0.20}>
           {{
             '1': () => (
               <div class={styles['menu-tree']}>
