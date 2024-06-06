@@ -34,21 +34,32 @@ export default defineComponent({
   render() {
     return (
       <div class={styles.container}>
-        <MenuTree />
-        <div class={styles.content}>
-          {this.currentTable
-            ? (
-              <>
-                <Breadcrumb />
-                <Tabs />
-              </>
-              )
-            : (
-              <div class={styles.empty}>
-                <n-empty description="Select the table. Please"></n-empty>
+        <n-split direction="horizontal" max={0.45} min={0.12} resize-trigger-size={0} default-size={0.168}>
+          {{
+            '1': () => (
+              <MenuTree />
+            ),
+            '2': () => (
+              <div class={styles.content}>
+                {this.currentTable
+                  ? (
+                    <>
+                      <Breadcrumb />
+                      <Tabs />
+                    </>
+                    )
+                  : (
+                    <div class={styles.empty}>
+                      <n-empty description="Please choose a table."></n-empty>
+                    </div>
+                    )}
               </div>
-              )}
-        </div>
+            ),
+            'resize-trigger': () => (
+              <div class={styles.split} />
+            ),
+          }}
+        </n-split>
       </div>
     )
   },
