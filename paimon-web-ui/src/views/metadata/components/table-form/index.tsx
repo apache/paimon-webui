@@ -145,7 +145,7 @@ export default defineComponent({
           </n-icon>
         </n-button>
         <n-modal v-model:show={this.showModal} mask-closable={false}>
-          <n-card bordered={false} title={this.t('metadata.create_table')} style="width: 1100px">
+          <n-card bordered={false} title={this.t('metadata.create_table')} style="width: 1110px">
             {{
               default: () => (
                 <n-form ref="formRef" rules={this.rules} model={this.formValue}>

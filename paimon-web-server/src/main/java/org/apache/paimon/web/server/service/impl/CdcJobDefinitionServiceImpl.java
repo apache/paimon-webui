@@ -31,6 +31,7 @@ import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
 import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
 import org.apache.paimon.web.server.data.model.CatalogInfo;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
+import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.data.model.cdc.CdcGraph;
 import org.apache.paimon.web.server.data.model.cdc.CdcNode;
 import org.apache.paimon.web.server.data.result.PageR;
@@ -39,6 +40,7 @@ import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.mapper.CdcJobDefinitionMapper;
 import org.apache.paimon.web.server.service.CatalogService;
 import org.apache.paimon.web.server.service.CdcJobDefinitionService;
+import org.apache.paimon.web.server.service.ClusterService;
 import org.apache.paimon.web.server.util.StringUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -60,6 +62,8 @@ public class CdcJobDefinitionServiceImpl
         implements CdcJobDefinitionService {
 
     @Autowired private CatalogService catalogService;
+
+    @Autowired private ClusterService clusterService;
 
     @Override
     public R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO) {
@@ -142,7 +146,11 @@ public class CdcJobDefinitionServiceImpl
                         cdcGraph.getTarget().getType(),
                         flinkCdcSyncType);
         ObjectNode actionConfigs = JSONUtils.createObjectNode();
-        actionConfigs.put(FlinkCdcOptions.SESSION_URL, cdcJobSubmitDTO.getFlinkSessionUrl());
+        String clusterId = cdcJobSubmitDTO.getClusterId();
+        ClusterInfo clusterInfo = clusterService.getById(clusterId);
+        actionConfigs.put(
+                FlinkCdcOptions.SESSION_URL,
+                String.format("http://%s:%s", clusterInfo.getHost(), clusterInfo.getPort()));
         handleCdcGraphNodeData(actionConfigs, cdcGraph.getSource());
         handleCdcGraphNodeData(actionConfigs, cdcGraph.getTarget());
         ActionContext actionContext = factory.getActionContext(actionConfigs);

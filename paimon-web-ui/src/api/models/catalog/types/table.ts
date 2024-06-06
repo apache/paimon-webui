@@ -54,6 +54,13 @@ export interface TableDTO {
   options?: TableOption[]
 }
 
+export interface AlterTableDTO {
+  catalogName: string
+  databaseName: string
+  tableName: string
+  tableColumns?: ColumnDTO[]
+}
+
 export interface TableDetail {
   catalogId?: number
   catalogName?: string
@@ -67,11 +74,13 @@ export interface TableDetail {
 }
 
 export interface ColumnDTO {
+  id: number
   field: string
   dataType: DataTypeDTO
   comment: string
   defaultValue: string
   pk: boolean
+  sort: number
 }
 
 export interface DataTypeDTO {

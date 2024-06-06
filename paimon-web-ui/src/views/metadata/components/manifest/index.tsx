@@ -41,6 +41,14 @@ export default defineComponent({
         title: 'Number of Add Files',
         key: 'numAddedFiles',
       },
+      {
+        title: 'Number of Delete Files',
+        key: 'numDeletedFiles',
+      },
+      {
+        title: 'schemaId',
+        key: 'schemaId',
+      },
     ]
 
     const onFetchData = async () => {
@@ -67,6 +75,7 @@ export default defineComponent({
           <n-data-table
             columns={this.columns}
             data={this.manifest || []}
+            max-height="calc(100vh - 280px)"
           />
         </n-spin>
       </n-card>
