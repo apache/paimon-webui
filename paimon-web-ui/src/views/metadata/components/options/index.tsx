@@ -41,7 +41,7 @@ export default defineComponent({
         key: 'value',
       },
       {
-        title: () => <div style={{ paddingRight: '6px' }}>Operation</div>,
+        title: 'Operation',
         key: 'operation',
         align: 'right',
         render(rowData) {
