@@ -24,5 +24,5 @@ import lombok.Data;
 @Data
 public class CdcJobSubmitDTO {
 
-    private String flinkSessionUrl;
+    private String clusterId;
 }
