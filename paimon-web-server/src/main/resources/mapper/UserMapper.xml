@@ -63,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<sql id="selectUserVo">
         select u.id, u.username, u.nickname, u.user_type, u.email, u.url, u.mobile, u.password, u.is_delete, u.enabled, u.create_time,
-        r.id, r.role_name, r.role_key, r.sort, r.enabled as role_status
+        u.update_time, r.id, r.role_name, r.role_key, r.sort, r.enabled as role_status
         from user u
 		    left join user_role urole on u.id = urole.user_id
 		    left join sys_role r on r.id = urole.role_id
