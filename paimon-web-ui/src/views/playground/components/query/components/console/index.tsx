@@ -72,7 +72,7 @@ export default defineComponent({
   },
   render() {
     return (
-      <div class={styles['editor-console']} ref={(el: any) => { this.editorConsoleRef = el }}>
+      <div class={styles['editor-console']} ref="editorConsoleRef">
         <n-tabs
           type="line"
           size="large"

@@ -24,7 +24,7 @@ export default defineComponent({
   name: 'TableResult',
   props: {
     maxHeight: {
-      type: Number,
+      type: Number as PropType<number>,
       default: 150,
     },
   },
@@ -159,7 +159,7 @@ export default defineComponent({
   render() {
     return (
       <div
-        ref={(el: any) => { this.tableContainer = el }}
+        ref="tableContainer"
         style={{ height: `${this.maxHeight}px` }}
       >
         <n-data-table
