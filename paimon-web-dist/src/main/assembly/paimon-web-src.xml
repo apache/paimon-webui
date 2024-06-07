@@ -56,9 +56,9 @@
                 <exclude>*.gpg</exclude>
 
                 <!-- node ignore -->
-                <exclude>**/dolphinscheduler-ui/dist/**</exclude>
-                <exclude>**/dolphinscheduler-ui/node/**</exclude>
-                <exclude>**/dolphinscheduler-ui/node_modules/**</exclude>
+                <exclude>**/paimon-ui/dist/**</exclude>
+                <exclude>**/paimon-ui/node/**</exclude>
+                <exclude>**/paimon-ui/node_modules/**</exclude>
 
                 <!-- eclipse ignore -->
                 <exclude>**/.settings/**</exclude>
@@ -80,9 +80,6 @@
                 <exclude>**/*.patch</exclude>
                 <exclude>**/*.tmp</exclude>
 
-                <!-- system ignore -->
-                <exclude>**/.DS_Store</exclude>
-                <exclude>**/Thumbs.db</exclude>
             </excludes>
         </fileSet>
     </fileSets>
