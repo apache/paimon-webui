@@ -285,16 +285,20 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                                 if (JobStatus.RUNNING.getValue().equals(jobStatus)) {
                                     updateJobStatusAndStartTime(jobId, jobStatus, startTime);
                                 } else if (JobStatus.FINISHED.getValue().equals(jobStatus)
-                                        || JobStatus.CANCELED.getValue().equals(jobStatus)) {
+                                        || JobStatus.CANCELED.getValue().equals(jobStatus)
+                                        || JobStatus.FAILED.getValue().equals(jobStatus)) {
                                     LocalDateTime endTime =
                                             job.getEndTime() == null
                                                     ? LocalDateTime.now()
                                                     : job.getEndTime();
                                     updateJobStatusAndEndTime(jobId, jobStatus, endTime);
+                                } else {
+                                    JobInfo jobInfo = new JobInfo();
+                                    jobInfo.setId(job.getId());
+                                    jobInfo.setStatus(jobStatus);
+                                    this.updateById(jobInfo);
                                 }
                             }
-                        } else {
-                            log.warn("Job with ID {} not found in the database.", jobId);
                         }
                     }
                 } catch (Exception e) {
