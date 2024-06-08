@@ -29,18 +29,19 @@ under the License.
     </parent>
 
     <artifactId>paimon-web-ui</artifactId>
-    <packaging>pom</packaging>
+<!--    <packaging>pom</packaging>-->
     <name>Paimon : Web : UI</name>
 
     <properties>
         <node.version>v18.0.0</node.version>
         <npm.version>9.4.1</npm.version>
         <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
+        <build.ui.skip>false</build.ui.skip>
     </properties>
 
     <profiles>
         <profile>
-            <id>web</id>
+            <id>release</id>
             <build>
                 <finalName>${project.artifactId}-${project.version}</finalName>
                 <plugins>
@@ -48,6 +49,9 @@ under the License.
                         <groupId>com.github.eirslett</groupId>
                         <artifactId>frontend-maven-plugin</artifactId>
                         <version>${frontend-maven-plugin.version}</version>
+                        <configuration>
+                            <skip>${build.ui.skip}</skip>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>install node and npm</id>

@@ -59,6 +59,12 @@ under the License.
         </dependency>
 
         <dependency>
+            <groupId>org.apache.paimon</groupId>
+            <artifactId>paimon-web-ui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
@@ -256,7 +262,7 @@ under the License.
                 <directory>${project.basedir}/src/test/resources</directory>
             </testResource>
         </testResources>
-        <finalName>${project.artifactId}-${project.version}</finalName>
+        <finalName>${project.artifactId}</finalName>
         <resources>
             <resource>
                 <filtering>true</filtering>
@@ -309,7 +315,7 @@ under the License.
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
-                        <descriptor>src/main/assembly/package.xml</descriptor>
+                        <descriptor>src/main/assembly/paimon-web-server.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>
@@ -319,30 +325,6 @@ under the License.
                             <goal>single</goal>
                         </goals>
                         <phase>package</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resource.version}</version>
-                <executions>
-                    <execution>
-                        <id>copy-static</id>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <outputDirectory>src/main/resources/static</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>../paimon-web-ui/dist</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
