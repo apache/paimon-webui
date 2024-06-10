@@ -102,6 +102,9 @@ export default defineComponent({
     const getJobStatusIntervalId = ref<number | undefined>()
 
     const startGetJobStatus = () => {
+      if (getJobStatusIntervalId.value)
+        clearInterval(getJobStatusIntervalId.value)
+
       getJobStatusIntervalId.value = setInterval(async () => {
         if (currentJob.value && currentJob.value.jobId) {
           const response = await getJobStatus(currentJob.value.jobId)
