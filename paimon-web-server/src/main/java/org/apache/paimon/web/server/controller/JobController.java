@@ -31,6 +31,7 @@ import org.apache.paimon.web.server.data.vo.ResultDataVO;
 import org.apache.paimon.web.server.service.JobService;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaIgnore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,7 +62,7 @@ public class JobController {
         }
     }
 
-    @SaCheckPermission("playground:job:fetch")
+    @SaIgnore
     @PostMapping("/fetch")
     public R<ResultDataVO> fetchResult(@RequestBody ResultFetchDTO resultFetchDTO) {
         try {
@@ -84,7 +85,7 @@ public class JobController {
         return R.succeed(jobService.listJobsByPage(current, size));
     }
 
-    @SaCheckPermission("playground:job:query")
+    @SaIgnore
     @GetMapping("/status/get/{jobId}")
     public R<JobStatusVO> getJobStatus(@PathVariable("jobId") String jobId) {
         JobInfo job = jobService.getJobById(jobId);
@@ -111,7 +112,7 @@ public class JobController {
         }
     }
 
-    @SaCheckPermission("playground:job:refresh")
+    @SaIgnore
     @PostMapping("/refresh")
     public R<Void> refresh() {
         jobService.refreshJobStatus("Flink");
