@@ -263,10 +263,16 @@ values (1, 'system', 0, 1, 'system', null, 1, 'M', 'system', 'admin', 'system ro
        (208, 'datafile_manager', 2, 9, 'datafile', 'datafile/index', 1, 'C', 'metadata:datafile:list', 'datafile', 'datafile manager'),
        (3, 'cdc', 0, 3, 'cdc', null, 1, 'M', 'cdc', 'cdc', 'cdc root path'),
        (300, 'cdc_job_manager', 3, 1, 'cdc', 'cdc/index', 1, 'C', 'cdc:job:list', 'cdc', 'cdc job manager'),
-       (3000, 'cdc_job_query', 300, 1, '', '', 1, 'F', 'cdc:job:query', '#', ''),
-       (3001, 'cdc_job_create', 300, 2, '', '', 1, 'F', 'cdc:job:create', '#', ''),
-       (3002, 'cdc_job_update', 300, 3, '', '', 1, 'F', 'cdc:job:update', '#', ''),
-       (3003, 'cdc_job_delete', 300, 4, '', '', 1, 'F', 'cdc:job:delete', '#', '');
+       (3000, 'cdc_job_create', 3, 2, '', '', 1, 'F', 'cdc:job:create', '#', ''),
+       (3001, 'cdc_job_query', 300, 1, '', '', 1, 'F', 'cdc:job:query', '#', ''),
+       (3002, 'cdc_job_update', 300, 2, '', '', 1, 'F', 'cdc:job:update', '#', ''),
+       (3003, 'cdc_job_delete', 300, 3, '', '', 1, 'F', 'cdc:job:delete', '#', ''),
+       (3004, 'cdc_job_submit', 300, 4, '', '', 1, 'F', 'cdc:job:submit', '#', ''),
+       (4, 'playground', 0, 4, 'playground', null, 1, 'M', 'playground', 'playground', 'playground root path'),
+       (400, 'playground_job_manager', 4, 1, 'playground', 'playground/index', 1, 'C', 'playground:job:list', 'playground', 'playground job manager'),
+       (4000, 'playground_job_query', 400, 1, '', '', 1, 'F', 'playground:job:query', '#', ''),
+       (4001, 'playground_job_submit', 4, 2, '', '', 1, 'F', 'playground:job:submit', '#', ''),
+       (4002, 'playground_job_stop', 4, 3, '', '', 1, 'F', 'playground:job:stop', '#', '');
 
 insert into user_role (id, user_id, role_id)
 values (1, 1, 1), (2, 2, 2);
