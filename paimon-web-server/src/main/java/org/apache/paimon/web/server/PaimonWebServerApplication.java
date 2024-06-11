@@ -20,16 +20,13 @@ package org.apache.paimon.web.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
-/** Paimon Manager Server Application. */
+/** Paimon Web Server Application. */
 @SpringBootApplication
+@EnableScheduling
 public class PaimonWebServerApplication {
 
-    /**
-     * Main.
-     *
-     * @param args args
-     */
     public static void main(String[] args) {
         SpringApplication.run(PaimonWebServerApplication.class, args);
     }
