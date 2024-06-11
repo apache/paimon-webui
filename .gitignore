@@ -73,3 +73,10 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+docs/node_modules
+docs/.vitepress/cache
+docs/.vitepress/cache/*
+docs/.vitepress/cache/deps
+docs/.vitepress/cache/deps/*
+docs/.vitepress/dist
