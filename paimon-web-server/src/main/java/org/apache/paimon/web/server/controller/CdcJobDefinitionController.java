@@ -88,6 +88,7 @@ public class CdcJobDefinitionController {
         return R.succeed();
     }
 
+    @SaCheckPermission("cdc:job:submit")
     @PostMapping("{id}/submit")
     public R<Void> submit(@PathVariable Integer id, @RequestBody CdcJobSubmitDTO cdcJobSubmitDTO) {
         return cdcJobDefinitionService.submit(id, cdcJobSubmitDTO);
