@@ -114,7 +114,6 @@ export default defineComponent({
                 <n-input clearable style={{ width: '300px' }} />
                 <n-button type="primary">
                   <n-icon>
-                    {' '}
                     <SearchOutline />
                   </n-icon>
                 </n-button>
@@ -122,13 +121,11 @@ export default defineComponent({
               <n-space>
                 <n-button quaternary circle type="primary">
                   <n-icon>
-                    {' '}
                     <Reload />
                   </n-icon>
                 </n-button>
                 <n-button quaternary circle type="primary">
                   <n-icon>
-                    {' '}
                     <SettingsOutline />
                   </n-icon>
                 </n-button>
