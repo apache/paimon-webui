@@ -35,7 +35,7 @@ export function renderCheckbox(
     NCheckboxGroup,
     {
       value: fields[field],
-      onUpdateValue: value => void (fields[field] = value),
+      onUpdateValue: (value: any) => void (fields[field] = value),
     },
     () =>
       h(NSpace, null, () =>
