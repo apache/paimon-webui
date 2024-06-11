@@ -39,7 +39,7 @@ const props = {
   },
 }
 
-function resetFormValue() {
+function resetFormValue(): TableDTO {
   return {
     name: '',
     tableColumns: [

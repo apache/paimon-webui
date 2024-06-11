@@ -15,11 +15,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import type { SelectOption } from 'naive-ui'
 import type { CdcJobSubmit } from '@/api/models/cdc'
 import { getClusterListByType } from '@/api/models/cluster'
 import type { Cluster } from '@/api/models/cluster/types'
 import type { IJsonItem } from '@/components/dynamic-form/types'
-import type { SelectOption } from 'naive-ui'
 
 export function useSumbitCdcJob(item: any) {
   const { t } = useLocaleHooks()
@@ -28,15 +28,16 @@ export function useSumbitCdcJob(item: any) {
     flinkSessionUrl: item.flinkSessionUrl,
   })
 
-  const flinkSessionClusterOptions =  ref<SelectOption[]>([])
-   getClusterListByType ('Flink', 1, Number.MAX_SAFE_INTEGER).then((response) => {
+  const flinkSessionClusterOptions = ref<SelectOption[]>([])
+  getClusterListByType ('Flink', 1, Number.MAX_SAFE_INTEGER).then((response) => {
     if (response && response.data) {
       const clusterList = response.data as Cluster[]
-       flinkSessionClusterOptions.value = clusterList.map(cluster => ({
+      flinkSessionClusterOptions.value = clusterList.map(cluster => ({
         label: cluster.clusterName,
         value: cluster.id.toString(),
       }))
-    }})
+    }
+  })
   return {
     json: [
       {

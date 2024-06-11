@@ -74,13 +74,13 @@ export interface TableDetail {
 }
 
 export interface ColumnDTO {
-  id: number
+  id?: number
   field: string
   dataType: DataTypeDTO
   comment: string
   defaultValue: string
   pk: boolean
-  sort: number
+  sort?: number
 }
 
 export interface DataTypeDTO {

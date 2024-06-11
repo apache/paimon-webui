@@ -21,17 +21,40 @@ under the License. */
   height: 100%;
 
   .menu-tree {
-    width: 20%;
+    width: 100%;
     height: 100%;
   }
 
-  .editor-area {
-    width: 80%;
+  .split {
+    position: relative;
+    width: 0;
     height: 100%;
+    flex: none;
+    cursor: col-resize;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -5px;
+      bottom: 0;
+      left: -5px;
+      background: transparent;
+      z-index: 1;
+    }
+  }
+
+  .editor-area {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    flex-direction: column;
 
     :global {
       .n-card {
         height: 100%;
+        display: flex;
+        flex-direction: column;
       }
     }
 
@@ -46,13 +69,31 @@ under the License. */
     }
   
     .editor {
-      height: 60%;
-      overflow-y: scroll;
+      height: 100%;
+      flex: 1;
     }
 
     .console {
-      height: 40%;
-      overflow-y: scroll;
+      height: 100%;
+      flex: 1;
+    }
+
+    .console-splitter {
+      position: relative;
+      height: 0;
+      background: transparent;
+      cursor: ns-resize;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: -5px;
+        right: 0;
+        bottom: -5px;
+        left: 0;
+        background: transparent;
+        z-index: 1;
+      }
     }
   }
 }

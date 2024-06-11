@@ -16,7 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import { getPermissionByRoleId } from '@/api/models/role'
-import type { Role, RoleMenu } from '@/api/models/role/types/role'
+import type { Role, RoleMenu } from '@/api/models/role/types'
 
 export default defineComponent({
   name: 'RoleDetail',

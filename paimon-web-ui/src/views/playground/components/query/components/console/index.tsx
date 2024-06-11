@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 import { CloseSharp, KeyboardDoubleArrowDownSharp, KeyboardDoubleArrowUpSharp } from '@vicons/material'
+import { throttle } from 'lodash'
 import TableActionBar from './components/controls'
 import TableResult from './components/table'
 import styles from './index.module.scss'
@@ -25,6 +26,8 @@ export default defineComponent({
   emits: ['ConsoleUp', 'ConsoleDown', 'ConsoleClose'],
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
+    const editorConsoleRef = ref<HTMLElement | null>(null)
+    const adjustedHeight = ref(0)
 
     const handleUp = () => {
       emit('ConsoleUp', 'up')
@@ -38,16 +41,38 @@ export default defineComponent({
       emit('ConsoleClose', 'close')
     }
 
+    const handleResize = throttle((entries) => {
+      for (const entry of entries) {
+        const { height } = entry.contentRect
+        adjustedHeight.value = height - 106
+      }
+    }, 100)
+
+    let resizeObserver: ResizeObserver
+    onMounted(() => {
+      if (editorConsoleRef.value) {
+        resizeObserver = new ResizeObserver(handleResize)
+        resizeObserver.observe(editorConsoleRef.value)
+      }
+    })
+
+    onUnmounted(() => {
+      if (editorConsoleRef.value)
+        resizeObserver.unobserve(editorConsoleRef.value)
+    })
+
     return {
       t,
       handleUp,
       handleDown,
       handleClose,
+      editorConsoleRef,
+      adjustedHeight,
     }
   },
   render() {
     return (
-      <div class={styles['editor-console']}>
+      <div class={styles['editor-console']} ref="editorConsoleRef">
         <n-tabs
           type="line"
           size="large"
@@ -60,7 +85,7 @@ export default defineComponent({
           </n-tab-pane>
           <n-tab-pane name="result" tab={this.t('playground.result')}>
             <TableActionBar />
-            <TableResult />
+            <TableResult maxHeight={this.adjustedHeight} />
           </n-tab-pane>
         </n-tabs>
         <div class={styles.operations}>

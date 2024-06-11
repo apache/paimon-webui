@@ -23,6 +23,7 @@ under the License.
     <modelVersion>4.0.0</modelVersion>
 
     <modules>
+        <module>paimon-web-dist</module>
         <module>paimon-web-ui</module>
         <module>paimon-web-server</module>
         <module>paimon-web-common</module>

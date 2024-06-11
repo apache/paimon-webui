@@ -22,18 +22,27 @@ import { useJobStore } from '@/store/job'
 
 export default defineComponent({
   name: 'TableResult',
-  setup() {
+  props: {
+    maxHeight: {
+      type: Number as PropType<number>,
+      default: 150,
+    },
+  },
+  setup(props) {
     const { t } = useLocaleHooks()
     const message = useMessage()
     const jobStore = useJobStore()
-
+    const scrollX = ref('100%')
+    const tableContainer = ref<HTMLElement | null>(null)
     const tableRef = ref<DataTableInst | null>(null)
+    const maxTableHeight = ref(0)
 
     interface TableColumn {
       title: string
       key: string
       fixed?: string
       width?: number
+      originalWidth?: number
       render?: (row: any, index: number) => string | number | JSX.Element
     }
 
@@ -59,12 +68,19 @@ export default defineComponent({
         render: (_, index) => `${index + 1}`,
       }
 
-      const dynamicColumns = Object.keys(sampleObject).map(key => ({
-        title: key,
-        key,
-        resizable: true,
-        sortable: true,
-      }))
+      const dynamicColumns = Object.keys(sampleObject).map((key) => {
+        const maxContentWidth = Math.max(...data.value.map(item => item[key]?.toString().length || 0))
+        const maxTitleWidth = key.length * 10
+        const originalWidth = Math.max(100, maxContentWidth * 10, maxTitleWidth)
+        return {
+          title: key,
+          key,
+          width: originalWidth,
+          originalWidth,
+          resizable: true,
+          sortable: true,
+        }
+      })
 
       return [indexColumn, ...dynamicColumns]
     }
@@ -83,26 +99,76 @@ export default defineComponent({
       }
     })
 
+    const updateTableWidth = () => {
+      if (tableContainer.value) {
+        const totalColumnWidth = columns.value.reduce((acc, col) => acc + (col.originalWidth || 100), 0)
+        if (totalColumnWidth > tableContainer.value.clientWidth) {
+          scrollX.value = `${totalColumnWidth}px`
+          columns.value.forEach((col) => {
+            if (col.originalWidth !== undefined)
+              col.width = col.originalWidth
+          })
+        }
+        else {
+          scrollX.value = ''
+          columns.value.forEach((col) => {
+            col.width = undefined
+          })
+        }
+      }
+    }
+
+    watchEffect(updateTableWidth)
+
+    watch(data, async (newData) => {
+      if (newData && newData.length > 0) {
+        await nextTick()
+        if (tableContainer.value) {
+          const headerElement = tableContainer.value.querySelector('.n-data-table-base-table-header')
+          if (headerElement) {
+            const headerHeight = headerElement.clientHeight
+            maxTableHeight.value = Math.max(0, props.maxHeight - headerHeight)
+          }
+        }
+      }
+    }, { immediate: true })
+
+    onMounted(() => {
+      nextTick(() => {
+        updateTableWidth()
+        window.addEventListener('resize', updateTableWidth)
+      })
+    })
+
     onUnmounted(() => {
       mittBus.off('triggerDownloadCsv')
       mittBus.off('triggerCopyData')
+      window.removeEventListener('resize', updateTableWidth)
     })
 
     return {
       columns,
       data,
       tableRef,
+      tableContainer,
+      scrollX,
+      maxHeight: props.maxHeight,
+      maxTableHeight,
     }
   },
   render() {
     return (
-      <div>
+      <div
+        ref="tableContainer"
+        style={{ height: `${this.maxHeight}px` }}
+      >
         <n-data-table
           ref={(el: any) => { this.tableRef = el }}
           class={styles.table}
           columns={this.columns}
           data={this.data}
-          max-height={90}
+          max-height={`${this.maxTableHeight}px`}
+          scroll-x={this.scrollX || undefined}
           v-slots={{
             empty: () => '',
           }}

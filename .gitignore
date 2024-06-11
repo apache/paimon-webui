@@ -24,6 +24,7 @@ paimon-web-ui/components.d.ts
 paimon-web-ui/.eslintrc-auto-import.json
 paimon-web-ui/httpData
 paimon-web-ui/apiWeb.json
+paimon-web-server/src/main/resources/static/**
 logs/*
 .mvn/
 .www
@@ -43,7 +44,7 @@ target
 dependency-reduced-pom.xml
 *.dependency-reduced-pom.xml
 !.idea/paimon.svg
-
+**/dist/**
 # Logs
 logs
 *.log

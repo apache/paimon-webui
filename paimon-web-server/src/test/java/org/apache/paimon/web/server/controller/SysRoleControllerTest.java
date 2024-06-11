@@ -97,6 +97,8 @@ public class SysRoleControllerTest extends ControllerTestBase {
                 ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<SysRole>>() {});
         assertEquals(200, r.getCode());
         assertNotNull(r.getData());
+        assertNotNull(r.getData().getCreateTime());
+        assertNotNull(r.getData().getUpdateTime());
         assertEquals(r.getData().getRoleName(), roleName);
     }
 
@@ -189,6 +191,8 @@ public class SysRoleControllerTest extends ControllerTestBase {
         assertEquals(1, firstRole.getSort());
         assertTrue(firstRole.getEnabled());
         assertFalse(firstRole.getIsDelete());
+        assertNotNull(firstRole.getCreateTime());
+        assertNotNull(firstRole.getUpdateTime());
 
         SysRole secondRole = r.getData().get(1);
         assertEquals(2, secondRole.getId());
@@ -197,14 +201,18 @@ public class SysRoleControllerTest extends ControllerTestBase {
         assertEquals(2, secondRole.getSort());
         assertTrue(secondRole.getEnabled());
         assertFalse(secondRole.getIsDelete());
+        assertNotNull(secondRole.getCreateTime());
+        assertNotNull(secondRole.getUpdateTime());
 
         SysRole thirdRole = r.getData().get(2);
         assertEquals(3, thirdRole.getId());
         assertEquals("test-edit", thirdRole.getRoleName());
         assertEquals("test-edit", thirdRole.getRoleKey());
         assertEquals(3, thirdRole.getSort());
-        assertTrue(secondRole.getEnabled());
-        assertFalse(secondRole.getIsDelete());
+        assertTrue(thirdRole.getEnabled());
+        assertFalse(thirdRole.getIsDelete());
+        assertNotNull(thirdRole.getCreateTime());
+        assertNotNull(thirdRole.getUpdateTime());
     }
 
     @Test
