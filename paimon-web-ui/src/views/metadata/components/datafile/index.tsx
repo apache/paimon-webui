@@ -130,6 +130,14 @@ export default defineComponent({
       },
     ]
 
+    const totalWidth = computed(() => {
+      const extraPixels = 60
+      return `${columns.reduce((sum, col) => {
+        const width = typeof col.width === 'number' ? col.width : 0
+        return sum + width
+      }, 0) + extraPixels}px`
+    })
+
     const onFetchData = async () => {
       useDataFile({
         params: catalogStore.currentTable,
@@ -144,6 +152,7 @@ export default defineComponent({
       columns,
       datafiles,
       loading,
+      totalWidth,
     }
   },
   render() {
@@ -155,7 +164,7 @@ export default defineComponent({
             columns={this.columns}
             data={this.datafiles || []}
             max-height="calc(100vh - 280px)"
-            scroll-x="2200px"
+            scroll-x={this.totalWidth}
           />
         </n-spin>
       </n-card>
