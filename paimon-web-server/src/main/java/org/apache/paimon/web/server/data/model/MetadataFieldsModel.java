@@ -34,5 +34,5 @@ public class MetadataFieldsModel {
 
     private String type;
 
-    private String comment;
+    private String description;
 }
