@@ -20,7 +20,7 @@ package org.apache.paimon.web.server.data.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 
-/** user type. */
+/** User type. */
 public enum UserType {
     /** ldap user. */
     LDAP(1, "LDAP"),
