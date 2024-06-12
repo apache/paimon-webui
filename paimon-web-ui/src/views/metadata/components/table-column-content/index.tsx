@@ -60,11 +60,11 @@ export default defineComponent({
       props.modelValue.splice(i, 1)
     }
 
-    watch(props.modelValue, (newData) => {
-      newData.forEach((item, index) => {
+    watchEffect(() => {
+      props.modelValue.forEach((item, index) => {
         item.sort = index
       })
-    }, { deep: true })
+    })
 
     const columns = computed(() => {
       const baseColumns: DataTableColumns<ColumnDTO> = [
