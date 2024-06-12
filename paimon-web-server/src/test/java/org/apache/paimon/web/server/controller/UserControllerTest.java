@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.User;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
@@ -63,7 +64,7 @@ public class UserControllerTest extends ControllerTestBase {
         user.setUsername(username);
         user.setNickname(username);
         user.setPassword("test");
-        user.setUserType(0);
+        user.setUserType(UserType.LOCAL);
         user.setEnabled(true);
         user.setIsDelete(false);
 
@@ -95,7 +96,7 @@ public class UserControllerTest extends ControllerTestBase {
         user.setId(userId);
         user.setUsername(newUserName);
         user.setNickname(newUserName);
-        user.setUserType(0);
+        user.setUserType(UserType.LOCAL);
         user.setEnabled(true);
         user.setIsDelete(false);
 
@@ -132,7 +133,7 @@ public class UserControllerTest extends ControllerTestBase {
         user.setId(userId);
         user.setUsername(username);
         user.setNickname(username);
-        user.setUserType(0);
+        user.setUserType(UserType.LOCAL);
         user.setEnabled(true);
         user.setIsDelete(false);
         user.setRoleIds(new Integer[] {2});
@@ -191,7 +192,7 @@ public class UserControllerTest extends ControllerTestBase {
         assertEquals("admin", firstUser.getUsername());
         assertEquals("Admin", firstUser.getNickname());
         assertEquals("admin@paimon.com", firstUser.getEmail());
-        assertEquals("LOCAL", firstUser.getUserType());
+        assertEquals(UserType.LOCAL, firstUser.getUserType());
         assertNotNull(firstUser.getCreateTime());
         assertNotNull(firstUser.getUpdateTime());
         assertTrue(firstUser.getEnabled());
@@ -200,7 +201,7 @@ public class UserControllerTest extends ControllerTestBase {
         assertEquals("common", secondUser.getUsername());
         assertEquals("common", secondUser.getNickname());
         assertEquals("common@paimon.com", secondUser.getEmail());
-        assertEquals("LOCAL", secondUser.getUserType());
+        assertEquals(UserType.LOCAL, secondUser.getUserType());
         assertNotNull(secondUser.getCreateTime());
         assertNotNull(secondUser.getUpdateTime());
         assertTrue(secondUser.getEnabled());

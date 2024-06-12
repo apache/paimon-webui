@@ -19,6 +19,7 @@
 package org.apache.paimon.web.server.data.model;
 
 import org.apache.paimon.web.server.constant.Constants;
+import org.apache.paimon.web.server.data.enums.UserType;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
@@ -42,7 +43,7 @@ public class User extends BaseModel {
     private String nickname;
 
     /** login type (0:LOCAL,1:LDAP). */
-    private Integer userType;
+    private UserType userType;
 
     /** mobile phone. */
     private String mobile;
