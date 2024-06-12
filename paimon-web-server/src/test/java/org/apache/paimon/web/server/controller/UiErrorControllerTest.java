@@ -43,6 +43,5 @@ public class UiErrorControllerTest extends ControllerTestBase {
                         .andDo(MockMvcResultHandlers.print())
                         .andReturn()
                         .getResponse();
-        System.out.println(response.getContentAsString());
     }
 }

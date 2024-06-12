@@ -23,13 +23,16 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Optional;
+
 /** AppConfiguration. */
 @Configuration
 public class AppConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/ui/**").addResourceLocations("file:ui/");
+        String uiPath = Optional.ofNullable(System.getenv("UI_PATH")).orElse("file:ui/");
+        registry.addResourceHandler("/ui/**").addResourceLocations(uiPath);
     }
 
     @Override
