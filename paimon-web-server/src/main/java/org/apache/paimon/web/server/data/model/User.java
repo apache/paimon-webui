@@ -19,12 +19,12 @@
 package org.apache.paimon.web.server.data.model;
 
 import org.apache.paimon.web.server.constant.Constants;
+import org.apache.paimon.web.server.data.enums.UserType;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apache.paimon.web.server.data.enums.UserType;
 
 /** user table model. */
 @Data

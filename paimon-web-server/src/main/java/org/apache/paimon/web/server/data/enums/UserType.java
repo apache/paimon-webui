@@ -27,8 +27,7 @@ public enum UserType {
     /** local user. */
     LOCAL(0, "LOCAL");
 
-    @EnumValue
-    private final int code;
+    @EnumValue private final int code;
     private final String type;
 
     public int getCode() {
