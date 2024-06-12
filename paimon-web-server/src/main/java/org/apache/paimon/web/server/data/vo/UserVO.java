@@ -41,7 +41,7 @@ public class UserVO {
 
     private String nickname;
 
-    private String userType;
+    private Integer userType;
 
     private String mobile;
 

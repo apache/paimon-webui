@@ -299,7 +299,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                         StringUtils.isNotEmpty(userWithRolesDTO.getNickname())
                                 ? userWithRolesDTO.getNickname()
                                 : "")
-                .userType(userWithRolesDTO.getUserType() == 0 ? "LOCAL" : "LDAP")
+                .userType(userWithRolesDTO.getUserType())
                 .mobile(
                         StringUtils.isNotEmpty(userWithRolesDTO.getMobile())
                                 ? userWithRolesDTO.getMobile()

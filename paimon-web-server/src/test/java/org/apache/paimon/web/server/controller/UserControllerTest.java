@@ -191,7 +191,7 @@ public class UserControllerTest extends ControllerTestBase {
         assertEquals("admin", firstUser.getUsername());
         assertEquals("Admin", firstUser.getNickname());
         assertEquals("admin@paimon.com", firstUser.getEmail());
-        assertEquals("LOCAL", firstUser.getUserType());
+        assertEquals(0, firstUser.getUserType());
         assertNotNull(firstUser.getCreateTime());
         assertNotNull(firstUser.getUpdateTime());
         assertTrue(firstUser.getEnabled());
@@ -200,7 +200,7 @@ public class UserControllerTest extends ControllerTestBase {
         assertEquals("common", secondUser.getUsername());
         assertEquals("common", secondUser.getNickname());
         assertEquals("common@paimon.com", secondUser.getEmail());
-        assertEquals("LOCAL", secondUser.getUserType());
+        assertEquals(0, secondUser.getUserType());
         assertNotNull(secondUser.getCreateTime());
         assertNotNull(secondUser.getUpdateTime());
         assertTrue(secondUser.getEnabled());
