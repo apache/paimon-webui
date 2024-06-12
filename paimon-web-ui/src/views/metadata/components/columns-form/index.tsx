@@ -160,7 +160,7 @@ export default defineComponent({
                 model={this.formValue}
               >
                 <ColumnFormContent
-                  v-model:data={this.formValue.tableColumns}
+                  v-model:modelValue={this.formValue.tableColumns}
                   isEdit={this.isEdit}
                 />
               </n-form>
