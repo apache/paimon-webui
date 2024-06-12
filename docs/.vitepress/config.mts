@@ -1,12 +1,10 @@
 import { defineConfig } from 'vitepress'
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Paimon Web",
   description: "Web UI for Apache Paimon",
   themeConfig: {
-    logo: "/public/favicon_blue.svg",
-    head: [["link", { rel: "icon", href: "/public/favicon_blue.svg" }]],
+    logo: "/favicon_blue.svg",
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Docs', link: '/src/guide/getting-started' }
