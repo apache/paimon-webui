@@ -120,7 +120,7 @@ under the License.
         <auto-service.version>1.0.1</auto-service.version>
         <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
         <docker.hub>apache</docker.hub>
-        <docker.repo>${project.name}</docker.repo>
+        <docker.repo>paimon-webui</docker.repo>
         <docker.tag>${project.version}</docker.tag>
         <docker.build.skip>true</docker.build.skip>
         <docker.push.skip>true</docker.push.skip>
