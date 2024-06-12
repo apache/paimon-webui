@@ -17,10 +17,10 @@ Download the Paimon Web installation package from paimon.apache.org and proceed 
 [root@paimon ~]# wget https://repository.apache.org/snapshots/org/apache/paimon/paimon-web/0.1-SNAPSHOT/apache-paimon-webui-0.1-SNAPSHOT-bin.tar.gz
 
 # Extract the installation package
-[root@pamon ~]# tar zxf apache-paimon-webui-0.1-SNAPSHOT-bin.tar.gz
+[root@paimon ~]# tar zxf apache-paimon-webui-0.1-SNAPSHOT-bin.tar.gz
     
 # Rename the directory to paimon-webui for simplicity
-[root@pamon ~]# mv apache-paimon-webui-0.1-SNAPSHOT-bin.tar.gz paimon-webui
+[root@paimon ~]# mv apache-paimon-webui-0.1-SNAPSHOT-bin.tar.gz paimon-webui
 ```
 The directory after decompression is as follows:
 ```shell
@@ -46,15 +46,15 @@ You need to configure FLINK_HOME, ACTION_JAR_PATH, JAVA_HOME and other informati
 If you do not use the CDC function, FLINK_HOME and ACTION_JAR_PATH do not need to be configured.
 
 ```shell
-[root@pamon ~]# cd bin
-[root@pamon ~]# chmod 755 env.sh
-[root@pamon ~]# vim evn.sh
+[root@paimon ~]# cd bin
+[root@paimon ~]# chmod 755 env.sh
+[root@paimon ~]# vim evn.sh
 ```
 
 ## Start the service
 
 ```shell
-[root@pamon ~]# bin/start.sh
+[root@paimon ~]# bin/start.sh
 ```
 Then enter `http://{ip}:{port}` in the browser to enter the paimon web page.
 
@@ -63,7 +63,7 @@ Then enter `http://{ip}:{port}` in the browser to enter the paimon web page.
 - Start Flink SQL Gateway
 
 ```shell
-[root@pamon ~]#  ./bin/sql-gateway.sh start -Dsql-gateway.endpoint.rest.address=localhost
+[root@paimon ~]#  ./bin/sql-gateway.sh start -Dsql-gateway.endpoint.rest.address=localhost
 ```
 
 - Create a cluster instance in the cluster management of paimon web
