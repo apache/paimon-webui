@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.data.vo;
 
+import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.data.model.SysRole;
 
 import lombok.AllArgsConstructor;
@@ -41,7 +42,7 @@ public class UserVO {
 
     private String nickname;
 
-    private Integer userType;
+    private UserType userType;
 
     private String mobile;
 

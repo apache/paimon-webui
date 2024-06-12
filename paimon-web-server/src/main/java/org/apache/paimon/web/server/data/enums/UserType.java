@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.server.data.enums;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+
 /** user type. */
 public enum UserType {
     /** ldap user. */
@@ -25,6 +27,7 @@ public enum UserType {
     /** local user. */
     LOCAL(0, "LOCAL");
 
+    @EnumValue
     private final int code;
     private final String type;
 

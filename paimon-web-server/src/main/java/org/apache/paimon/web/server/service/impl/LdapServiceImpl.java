@@ -120,7 +120,7 @@ public class LdapServiceImpl implements LdapService {
                                             return StringUtils.EMPTY;
                                         })
                                 .orElse(StringUtils.EMPTY));
-                user.setUserType(UserType.LDAP.getCode());
+                user.setUserType(UserType.LDAP);
                 user.setEnabled(true);
                 return user;
             }
