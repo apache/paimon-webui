@@ -30,10 +30,10 @@ export function useForm() {
     },
   })
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     state.loginForm.validate(async (errors: Array<FormValidationError>) => {
       if (!errors) {
-        onLogin({
+        await onLogin({
           username: state.model.username,
           password: state.model.password,
           ldapLogin: false,
