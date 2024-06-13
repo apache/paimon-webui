@@ -51,7 +51,7 @@ while [[ $# -gt 0 ]]; do
       DAEMON=true
       ;;
     *)
-      echo "Unknown parameter: $1"
+      echo "Unsupported parameter: $1"
       exit 1
       ;;
   esac
@@ -63,7 +63,7 @@ if [ "$DAEMON" = true ]; then
     -cp "$PAIMON_UI_HOME/conf:$PAIMON_UI_HOME/libs/*" \
     org.apache.paimon.web.server.PaimonWebServerApplication \
     > /dev/null 2>&1 &
-  echo "Paimon Web Server started in the background."
+  echo "Paimon Web Server started in daemon."
 else
   $JAVA_HOME/bin/java $JAVA_OPTS \
     -cp "$PAIMON_UI_HOME/conf:$PAIMON_UI_HOME/libs/*" \
