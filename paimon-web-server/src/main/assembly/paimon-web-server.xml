@@ -46,7 +46,12 @@ under the License.
             <directory>${basedir}/../paimon-web-ui/dist</directory>
             <outputDirectory>./ui</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>${basedir}/../scripts</directory>
+            <outputDirectory>./scripts</outputDirectory>
+        </fileSet>
     </fileSets>
+
     <dependencySets>
         <dependencySet>
             <outputDirectory>libs</outputDirectory>
