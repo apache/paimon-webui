@@ -31,10 +31,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
-/** Test for {@link PaimonWebUiForwardController}. */
+/** Test for {@link ForwardController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PaimonWebUiForwardControllerTest extends ControllerTestBase {
+public class ForwardControllerTest extends ControllerTestBase {
 
     @MockBean private HttpServletRequest request;
 

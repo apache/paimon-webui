@@ -23,9 +23,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-/** PaimonWebUiForwardController. */
+/** UiForwardController. */
 @Controller
-public class PaimonWebUiForwardController {
+public class ForwardController {
 
     @GetMapping(value = "/ui/{[path:[^\\.]*}")
     public ModelAndView forwardToIndex() {
