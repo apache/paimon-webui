@@ -18,20 +18,14 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.servlet.RequestDispatcher;
@@ -42,16 +36,18 @@ import javax.servlet.http.HttpServletRequest;
 @AutoConfigureMockMvc
 public class ErrorControllerTest extends ControllerTestBase {
 
-    @MockBean
-    private HttpServletRequest request;
+    @MockBean private HttpServletRequest request;
 
     @Test
     public void testHandleErrorNotFoundRedirect() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/error")
-                        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE,HttpStatus.NOT_FOUND.value()))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // 预期处理后状态为200，因为进行了重定向处理
-                .andReturn();
-
+        MvcResult result =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get("/error")
+                                        .requestAttr(
+                                                RequestDispatcher.ERROR_STATUS_CODE,
+                                                HttpStatus.NOT_FOUND.value()))
+                        .andExpect(MockMvcResultMatchers.status().isOk()) // 预期处理后状态为200，因为进行了重定向处理
+                        .andReturn();
         Assertions.assertEquals("forward:/ui/index.html", result.getModelAndView().getViewName());
     }
 }
