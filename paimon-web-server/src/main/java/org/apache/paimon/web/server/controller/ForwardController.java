@@ -23,7 +23,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-/** UiForwardController. */
+/**
+ * When accessing front-end pages through the back-end server, requests to /ui/{routePath} ought to
+ * be forwarded to ui/index.html to guarantee correct page rendering.
+ */
 @Controller
 public class ForwardController {
 
