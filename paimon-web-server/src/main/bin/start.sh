@@ -26,8 +26,8 @@ fi
 echo "JAVA_HOME=${JAVA_HOME}"
 echo "JAVA_OPTS=${JAVA_OPTS}"
 echo "PAIMON_UI_HOME=${PAIMON_UI_HOME}"
-echo "FLINK_HOME=${PAIMON_UI_HOME}"
-echo "ACTION_JAR_PATH=${PAIMON_UI_HOME}"
+echo "FLINK_HOME=${FLINK_HOME}"
+echo "ACTION_JAR_PATH=${ACTION_JAR_PATH}"
 
 if [ -z "$PAIMON_UI_HOME" ]; then
     echo "PAIMON_UI_HOME is null, exit..."
