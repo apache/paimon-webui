@@ -134,7 +134,6 @@ public class SessionControllerTest extends FlinkSQLGatewayTestBase {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(sessionPath + "/create")
                                         .cookie(cookie)
-                                        .param("uid", "1")
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -159,7 +158,6 @@ public class SessionControllerTest extends FlinkSQLGatewayTestBase {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post(sessionPath + "/drop")
                                         .cookie(cookie)
-                                        .param("uid", "1")
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(MockMvcResultMatchers.status().isOk())
