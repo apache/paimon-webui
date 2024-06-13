@@ -101,10 +101,13 @@ export default defineComponent({
 
     const getJobStatusIntervalId = ref<number | undefined>()
 
-    const startGetJobStatus = () => {
+    const stopGetJobStatus = () => {
       if (getJobStatusIntervalId.value)
         clearInterval(getJobStatusIntervalId.value)
+    }
 
+    const startGetJobStatus = () => {
+      stopGetJobStatus()
       getJobStatusIntervalId.value = setInterval(async () => {
         if (currentJob.value && currentJob.value.jobId) {
           const response = await getJobStatus(currentJob.value.jobId)
@@ -112,11 +115,6 @@ export default defineComponent({
             jobStore.setJobStatus(response.data.status)
         }
       }, 1000)
-    }
-
-    const stopGetJobStatus = () => {
-      if (getJobStatusIntervalId.value)
-        clearInterval(getJobStatusIntervalId.value)
     }
 
     mittBus.on('getStatus', () => startGetJobStatus())
