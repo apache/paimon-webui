@@ -182,7 +182,10 @@ export default defineComponent({
                     <EditorTabs />
                   </div>
                   <div class={styles.debugger}>
-                    <EditorDebugger tabData={this.tabData} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
+                    {
+                      this.tabData.panelsList?.length > 0
+                      && (<EditorDebugger tabData={this.tabData} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />)
+                    }
                   </div>
                   <n-split direction="vertical" max={0.60} min={0.00} resize-trigger-size={0} default-size={0.6}>
                     {{
