@@ -21,9 +21,11 @@ package org.apache.paimon.web.server.controller;
 import org.apache.paimon.web.server.data.dto.SessionDTO;
 import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.service.ClusterService;
 import org.apache.paimon.web.server.service.SessionService;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +53,11 @@ public class SessionController {
             value = {Exception.class},
             maxAttempts = 3,
             backoff = @Backoff(delay = 3000))
-    public R<Void> createSession(Integer uid) {
+    public R<Void> createSession() {
+        if (!StpUtil.isLogin()) {
+            return R.failed(Status.UNAUTHORIZED, "User must be logged in to access this resource");
+        }
+        int uid = StpUtil.getLoginIdAsInt();
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("type", "Flink");
         List<ClusterInfo> clusterInfos = clusterService.list(queryWrapper);
@@ -67,13 +73,17 @@ public class SessionController {
     }
 
     @Recover
-    public R<Void> recover(Exception e, Integer uid) {
-        log.error("After retries failed to create session for UID: {}", uid, e);
+    public R<Void> recover(Exception e) {
+        log.error("After retries failed to create session", e);
         return R.failed();
     }
 
     @PostMapping("/drop")
-    public R<Void> dropSession(Integer uid) {
+    public R<Void> dropSession() {
+        if (!StpUtil.isLogin()) {
+            return R.failed(Status.UNAUTHORIZED, "User must be logged in to access this resource");
+        }
+        int uid = StpUtil.getLoginIdAsInt();
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("type", "Flink");
         List<ClusterInfo> clusterInfos = clusterService.list(queryWrapper);
