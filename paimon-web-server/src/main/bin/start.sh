@@ -44,6 +44,28 @@ if [ -z "$ACTION_JAR_PATH" ]; then
     echo "ACTION_JAR_PATH is null, CDC cannot be used normally!"
 fi
 
-$JAVA_HOME/bin/java $JAVA_OPTS \
-  -cp "$PAIMON_UI_HOME/conf":"$PAIMON_UI_HOME/libs/*" \
-   org.apache.paimon.web.server.PaimonWebServerApplication
+DAEMON=false
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --daemon)
+      DAEMON=true
+      ;;
+    *)
+      echo "Unknown parameter: $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+if [ "$DAEMON" = true ]; then
+  nohup $JAVA_HOME/bin/java $JAVA_OPTS \
+    -cp "$PAIMON_UI_HOME/conf:$PAIMON_UI_HOME/libs/*" \
+    org.apache.paimon.web.server.PaimonWebServerApplication \
+    > /dev/null 2>&1 &
+  echo "Paimon Web Server started in the background."
+else
+  $JAVA_HOME/bin/java $JAVA_OPTS \
+    -cp "$PAIMON_UI_HOME/conf:$PAIMON_UI_HOME/libs/*" \
+    org.apache.paimon.web.server.PaimonWebServerApplication
+fi
