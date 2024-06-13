@@ -39,7 +39,7 @@ public class ForwardControllerTest extends ControllerTestBase {
     @MockBean private HttpServletRequest request;
 
     @Test
-    public void testUiForward() throws Exception {
+    public void testForwardIndex() throws Exception {
         MvcResult result =
                 mockMvc.perform(
                                 MockMvcRequestBuilders.get("/ui/login")
