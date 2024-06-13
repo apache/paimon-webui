@@ -17,12 +17,12 @@ under the License. */
 
 import type { DataTableColumns } from 'naive-ui'
 import { UnorderedListOutlined } from '@vicons/antd'
-
+import { VueDraggable } from 'vue-draggable-plus'
 import { dataTypeOptions, hasEndLength, hasLength } from './constant'
 import type { ColumnDTO } from '@/api/models/catalog'
 
 const props = {
-  'data': {
+  'modelValue': {
     type: Array as PropType<ColumnDTO[]>,
     default: () => [],
   },
@@ -30,7 +30,7 @@ const props = {
     type: Boolean as PropType<boolean>,
     default: false,
   },
-  'onUpdate:data': [Function, Array] as PropType<((value: ColumnDTO[]) => void) | undefined>,
+  'onUpdate:modelValue': [Function, Array] as PropType<((value: ColumnDTO[]) => void) | undefined>,
 }
 
 export const newField: ColumnDTO = {
@@ -53,14 +53,14 @@ export default defineComponent({
     const { t } = useLocaleHooks()
 
     const onDelete = (i: number) => {
-      const _data = toRaw(props.data)
+      const _data = toRaw(props.modelValue)
       if (_data.length <= 1)
         return
 
-      props.data.splice(i, 1)
+      props.modelValue.splice(i, 1)
     }
 
-    watch(props.data, (newData) => {
+    watch(props.modelValue, (newData) => {
       newData.forEach((item, index) => {
         item.sort = index
       })
@@ -252,9 +252,21 @@ export default defineComponent({
   },
   render() {
     return (
-      <vue-draggable v-model:value={this.data} animation={150} handle=".drag-handle" target=".n-data-table-tbody">
-        <n-data-table columns={this.columns} data={this.data} style={{ marginBottom: '24px' }} />
-      </vue-draggable>
+      h(
+        VueDraggable,
+        {
+          'modelValue': this.modelValue,
+          'onUpdate:modelValue': (value: any) => {
+            this.$props['onUpdate:modelValue']?.(value)
+          },
+          'animation': 150,
+          'handle': '.drag-handle',
+          'target': '.n-data-table-tbody',
+        },
+        {
+          default: () => <n-data-table columns={this.columns} data={this.modelValue} style={{ marginBottom: '24px' }} />,
+        },
+      )
     )
   },
 })
