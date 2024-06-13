@@ -33,6 +33,6 @@ public class SaTokenConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
                 .addPathPatterns("/**")
-                .excludePathPatterns(Arrays.asList("/api/login", "/ui/**", "*.html", "/error"));
+                .excludePathPatterns(Arrays.asList("/api/login", "/ui/**", "/error"));
     }
 }
