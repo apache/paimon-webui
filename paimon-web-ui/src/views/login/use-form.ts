@@ -18,10 +18,12 @@ under the License. */
 import type { FormValidationError } from 'naive-ui'
 import type { Router } from 'vue-router'
 import { onLogin } from '@/api'
+import { useUserStore } from '@/store/user'
+import type { ResponseOptions } from '@/api/types'
 
 export function useForm() {
   const router: Router = useRouter()
-
+  const userStore = useUserStore()
   const state = reactive({
     loginForm: ref(),
     model: {
@@ -38,6 +40,9 @@ export function useForm() {
           password: state.model.password,
           ldapLogin: false,
           rememberMe: true,
+        }).then((res: ResponseOptions<any>) => {
+          userStore.username = res.data.user.username
+          userStore.nickname = res.data.user.nickname
         })
         router.push({ path: '/' })
       }

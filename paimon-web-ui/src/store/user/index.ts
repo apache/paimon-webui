@@ -15,13 +15,32 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export default {
-  login: '登录',
-  username: '用户名',
-  password: '密码',
-  username_tips: '请输入用户名',
-  password_tips: '请输入密码',
-  light: '浅色',
-  dark: '暗色',
-  logout: '退出登录',
+export interface UserState {
+  username: string | null
+  nickname: string | null
 }
+
+export const useUserStore = defineStore({
+  id: 'config',
+  state: (): UserState => ({
+    username: '',
+    nickname: '',
+  }),
+  persist: true,
+  getters: {
+    getUsername(): string | null {
+      return this.username
+    },
+    getNickname(): string | null {
+      return this.nickname
+    },
+  },
+  actions: {
+    setUsername(username: string): void {
+      this.username = username
+    },
+    setNickname(nickname: string): void {
+      this.nickname = nickname
+    },
+  },
+})
