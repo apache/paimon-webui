@@ -31,18 +31,18 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
-/** Test for {@link PaimonWebErrorController}. */
+/** Test for {@link ForwardController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PaimonWebErrorControllerTest extends ControllerTestBase {
+public class ForwardControllerTest extends ControllerTestBase {
 
     @MockBean private HttpServletRequest request;
 
     @Test
-    public void testHandleErrorNotFoundRedirect() throws Exception {
+    public void testForwardIndex() throws Exception {
         MvcResult result =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get("/error")
+                                MockMvcRequestBuilders.get("/ui/login")
                                         .requestAttr(
                                                 RequestDispatcher.ERROR_STATUS_CODE,
                                                 HttpStatus.NOT_FOUND.value()))
