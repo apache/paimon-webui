@@ -46,7 +46,7 @@ public class ErrorControllerTest extends ControllerTestBase {
                                         .requestAttr(
                                                 RequestDispatcher.ERROR_STATUS_CODE,
                                                 HttpStatus.NOT_FOUND.value()))
-                        .andExpect(MockMvcResultMatchers.status().isOk()) // 预期处理后状态为200，因为进行了重定向处理
+                        .andExpect(MockMvcResultMatchers.status().isOk())
                         .andReturn();
         Assertions.assertEquals("forward:/ui/index.html", result.getModelAndView().getViewName());
     }
