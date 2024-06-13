@@ -24,13 +24,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
+
 /** Sa-Token path config. */
 @Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
+public class SaTokenConfigurer implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/login");
+                .excludePathPatterns(Arrays.asList("/api/login", "/error", "/ui/**"));
     }
 }
