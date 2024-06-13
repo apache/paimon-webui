@@ -26,10 +26,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-/** Test for {@link UiErrorController}. */
+/** Test for {@link ErrorController}. */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UiErrorControllerTest extends ControllerTestBase {
+public class ErrorControllerTest extends ControllerTestBase {
 
     private static final String NOT_FOUND = "/ui/login";
 

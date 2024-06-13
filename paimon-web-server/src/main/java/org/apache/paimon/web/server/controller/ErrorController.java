@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /** UiErrorController. */
 @Controller
-public class UiErrorController implements ErrorController {
+public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
 
     @RequestMapping("/error")
     public ModelAndView handleError(HttpServletRequest request) {
