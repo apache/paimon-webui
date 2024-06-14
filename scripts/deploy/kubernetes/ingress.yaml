@@ -20,11 +20,12 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: / # Example annotation for path-based routing with Nginx Ingress Controller
 spec:
+  ingressClassName: nginx # Your ingress class name
   rules:
-    - host: paimon-web.example.com # Replace with your desired hostname
+    - host: paimonweb.k8s.io # Replace with your desired hostname
       http:
         paths:
-          - path: /
+          - path: /paimon-web
             pathType: Prefix
             backend:
               service:

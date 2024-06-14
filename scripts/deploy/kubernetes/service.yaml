@@ -24,3 +24,5 @@ spec:
       targetPort: 10088
       name: port
       protocol: TCP
+  selector:
+    app: paimon-web
