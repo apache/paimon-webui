@@ -65,3 +65,7 @@ sa-token:
   is-write-header: true
   is-read-header: true
   is-read-body: true
+
+interceptor:
+  path:
+    exclude: /api/login, /ui/**

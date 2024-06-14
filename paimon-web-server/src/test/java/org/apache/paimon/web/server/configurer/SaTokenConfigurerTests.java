@@ -16,26 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.configrue;
+package org.apache.paimon.web.server.configurer;
 
-import cn.dev33.satoken.interceptor.SaInterceptor;
-import cn.dev33.satoken.stp.StpUtil;
+import org.apache.paimon.web.server.configrue.SaTokenConfigurer;
+
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 
-/** Sa-Token path config. */
-@Configuration
-public class SaTokenConfigurer implements WebMvcConfigurer {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/** Test for {@link SaTokenConfigurer}. */
+@SpringBootTest
+@AutoConfigureMockMvc
+public class SaTokenConfigurerTests {
 
     @Value("${interceptor.path.exclude}")
     private String[] excludes;
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
-                .addPathPatterns("/**")
-                .excludePathPatterns(excludes);
+    @Test
+    @Order(1)
+    public void testPathExclude() throws Exception {
+        assertEquals(excludes.length, 2);
+        assertEquals(excludes[0], "/api/login");
+        assertEquals(excludes[1], "/ui/**");
     }
 }

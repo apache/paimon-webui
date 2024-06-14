@@ -77,3 +77,9 @@ management:
   health:
     ldap:
       enabled: false
+
+interceptor:
+  path:
+    exclude: /api/login, /ui/**
+
+
