@@ -225,10 +225,7 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
     private void checkCdcJobDefinitionAndSaSession() throws Exception {
         MockHttpServletResponse getCdcJobDefinitionResponse =
                 mockMvc.perform(
-                                MockMvcRequestBuilders.get(
-                                                cdcJobDefinitionPath
-                                                        + "/"
-                                                        + 1)
+                                MockMvcRequestBuilders.get(cdcJobDefinitionPath + "/" + 1)
                                         .cookie(cookie)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -251,7 +248,10 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
                         .andDo(MockMvcResultHandlers.print())
                         .andReturn()
                         .getResponse();
-        R<UserInfoVO> getLoginuser = getR(getLoginUserResponse, new TypeReference<R<UserInfoVO>>() {});
-        assertEquals(getResult.getData().getCreateUser(),getLoginuser.getData().getUser().getUsername());
+        R<UserInfoVO> getLoginuser =
+                getR(getLoginUserResponse, new TypeReference<R<UserInfoVO>>() {});
+        assertEquals(
+                getResult.getData().getCreateUser(),
+                getLoginuser.getData().getUser().getUsername());
     }
 }

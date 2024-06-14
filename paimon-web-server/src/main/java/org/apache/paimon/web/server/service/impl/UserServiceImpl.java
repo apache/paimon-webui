@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import cn.dev33.satoken.session.SaSession;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
 import org.apache.paimon.web.server.data.dto.UserWithRolesDTO;
@@ -46,6 +45,7 @@ import org.apache.paimon.web.server.service.UserService;
 import org.apache.paimon.web.server.util.StringUtils;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

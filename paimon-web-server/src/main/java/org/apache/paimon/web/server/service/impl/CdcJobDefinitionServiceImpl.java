@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import org.apache.paimon.web.api.action.context.ActionContext;
 import org.apache.paimon.web.api.action.context.factory.ActionContextFactoryServiceLoadUtil;
 import org.apache.paimon.web.api.action.context.factory.FlinkCdcActionContextFactory;
@@ -43,9 +42,9 @@ import org.apache.paimon.web.server.mapper.CdcJobDefinitionMapper;
 import org.apache.paimon.web.server.service.CatalogService;
 import org.apache.paimon.web.server.service.CdcJobDefinitionService;
 import org.apache.paimon.web.server.service.ClusterService;
-import org.apache.paimon.web.server.service.UserService;
 import org.apache.paimon.web.server.util.StringUtils;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -65,9 +64,7 @@ public class CdcJobDefinitionServiceImpl
         implements CdcJobDefinitionService {
 
     @Autowired private CatalogService catalogService;
-
     @Autowired private ClusterService clusterService;
-    @Autowired private UserService userService;
 
     @Override
     public R<Void> create(CdcJobDefinitionDTO cdcJobDefinitionDTO) {
@@ -78,12 +75,13 @@ public class CdcJobDefinitionServiceImpl
             return R.failed(Status.CDC_JOB_EXIST_ERROR);
         }
         String jobCreateUser;
-        if(StringUtils.isBlank(cdcJobDefinitionDTO.getCreateUser())){
+        if (StringUtils.isBlank(cdcJobDefinitionDTO.getCreateUser())) {
             int loginId = StpUtil.getLoginIdAsInt();
-            UserInfoVO   userInfoVo  = (UserInfoVO) StpUtil.getSession().get(Integer.toString(loginId));
-            jobCreateUser=userInfoVo.getUser().getUsername();
-        }else {
-            jobCreateUser=cdcJobDefinitionDTO.getCreateUser();
+            UserInfoVO userInfoVo =
+                    (UserInfoVO) StpUtil.getSession().get(Integer.toString(loginId));
+            jobCreateUser = userInfoVo.getUser().getUsername();
+        } else {
+            jobCreateUser = cdcJobDefinitionDTO.getCreateUser();
         }
         CdcJobDefinition cdcJobDefinition =
                 CdcJobDefinition.builder()
