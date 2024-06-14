@@ -27,7 +27,8 @@ CREATE TABLE if not exists `user`
     `enabled`     tinyint(1)   NOT NULL DEFAULT 1 COMMENT 'is enable',
     `is_delete`   tinyint(1)   NOT NULL DEFAULT 0 COMMENT 'is delete',
     `create_time` datetime(0)  NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-    `update_time` datetime(0)  NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
+    `update_time` datetime(0)  NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+    UNIQUE KEY `username` (`username`)
     ) ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `tenant`;
