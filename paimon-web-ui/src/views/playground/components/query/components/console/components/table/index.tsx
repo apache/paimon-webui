@@ -120,18 +120,26 @@ export default defineComponent({
 
     watchEffect(updateTableWidth)
 
+    function updateTableHeight() {
+      if (tableContainer.value) {
+        const headerElement = tableContainer.value.querySelector('.n-data-table-base-table-header')
+        if (headerElement) {
+          const headerHeight = headerElement.clientHeight
+          maxTableHeight.value = Math.max(0, props.maxHeight - headerHeight)
+        }
+      }
+    }
+
     watch(data, async (newData) => {
       if (newData && newData.length > 0) {
         await nextTick()
-        if (tableContainer.value) {
-          const headerElement = tableContainer.value.querySelector('.n-data-table-base-table-header')
-          if (headerElement) {
-            const headerHeight = headerElement.clientHeight
-            maxTableHeight.value = Math.max(0, props.maxHeight - headerHeight)
-          }
-        }
+        updateTableHeight()
       }
     }, { immediate: true })
+
+    mittBus.on('editorResized', () => {
+      updateTableHeight()
+    })
 
     onMounted(() => {
       nextTick(() => {
@@ -143,6 +151,7 @@ export default defineComponent({
     onUnmounted(() => {
       mittBus.off('triggerDownloadCsv')
       mittBus.off('triggerCopyData')
+      mittBus.off('editorResized')
       window.removeEventListener('resize', updateTableWidth)
     })
 

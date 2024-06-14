@@ -15,14 +15,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { ChevronDown, Play, ReaderOutline, Save } from '@vicons/ionicons5'
+import { ChevronDown, Pause, Play, Reload, Save } from '@vicons/ionicons5'
+import { FormatAlignLeftOutlined } from '@vicons/material'
 import { NInput, useMessage } from 'naive-ui'
 
 import styles from './index.module.scss'
 import { getClusterListByType } from '@/api/models/cluster'
 import type { Cluster } from '@/api/models/cluster/types'
 import type { JobSubmitDTO } from '@/api/models/job/types/job'
-import { createRecord, submitJob } from '@/api/models/job'
+import { createRecord, stopJob, submitJob } from '@/api/models/job'
 import { useJobStore } from '@/store/job'
 
 import type { ExecutionMode } from '@/store/job/type'
@@ -30,7 +31,7 @@ import type { RecordDTO } from '@/api/models/job/types/record'
 
 export default defineComponent({
   name: 'EditorDebugger',
-  emits: ['handleFormat', 'handleSave'],
+  emits: ['handleFormat', 'reloadLayout', 'handleSave'],
   props: {
     tabData: {
       type: Object as PropType<any>,
@@ -43,9 +44,11 @@ export default defineComponent({
 
     const { t } = useLocaleHooks()
     const jobStore = useJobStore()
-
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const statementName = ref<string>('')
     const tabData = toRef(props.tabData)
+    const currentJob = computed(() => jobStore.getCurrentJob)
+    const jobStatus = computed(() => jobStore.getJobStatus)
 
     const debuggerVariables = reactive<{
       operatingConditionOptions: { label: string, key: string }[]
@@ -79,6 +82,10 @@ export default defineComponent({
 
     const handleFormat = () => {
       emit('handleFormat')
+    }
+
+    const handleReload = () => {
+      mittBus.emit('reloadLayout')
     }
 
     async function handleSave() {
@@ -159,10 +166,32 @@ export default defineComponent({
 
     onMounted(getClusterData)
 
-    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
+
+    const handleStopJob = async () => {
+      if (currentJob.value) {
+        const job = toRaw(currentJob.value)
+        const { clusterId, jobId, type: taskType } = job
+        const stopJobDTO = {
+          clusterId,
+          jobId,
+          taskType,
+          withSavepoint: false,
+        }
+        try {
+          const response = await stopJob(stopJobDTO)
+          if (response.code === 200)
+            message.success(t('playground.job_stopping_successfully'))
+          else
+            message.warning(t('playground.job_stopping_failed'))
+        }
+        catch (error) {
+          message.warning(t('playground.job_stopping_failed'))
+        }
+      }
+    }
 
     const handleSubmit = async () => {
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
@@ -170,35 +199,41 @@ export default defineComponent({
       if (!currentTab)
         return
 
-      jobStore.setExecutionMode(debuggerVariables.conditionValue3 as ExecutionMode)
-      jobStore.resetCurrentResult()
-
-      const currentSQL = currentTab.content
-      if (!currentSQL)
-        return
-
-      const jobDataDTO: JobSubmitDTO = {
-        jobName: currentTab.tableName,
-        taskType: debuggerVariables.conditionValue,
-        clusterId: debuggerVariables.conditionValue2,
-        statements: currentSQL,
-        streaming: debuggerVariables.conditionValue3 === 'Streaming',
+      if (jobStatus.value === 'RUNNING') {
+        handleStopJob()
       }
+      else {
+        jobStore.setExecutionMode(debuggerVariables.conditionValue3 as ExecutionMode)
+        jobStore.resetCurrentResult()
 
-      try {
-        const response = await submitJob(jobDataDTO)
-        if (response.code === 200) {
-          message.success(t('playground.job_submission_successfully'))
-          jobStore.setCurrentJob(response.data)
-          mittBus.emit('jobResult', response.data)
-          mittBus.emit('getStatus')
+        const currentSQL = currentTab.content
+        if (!currentSQL)
+          return
+
+        const jobDataDTO: JobSubmitDTO = {
+          jobName: currentTab.tableName,
+          taskType: debuggerVariables.conditionValue,
+          clusterId: debuggerVariables.conditionValue2,
+          statements: currentSQL,
+          streaming: debuggerVariables.conditionValue3 === 'Streaming',
         }
-        else {
-          message.error(`${t('playground.job_submission_failed')}`)
+
+        try {
+          const response = await submitJob(jobDataDTO)
+          if (response.code === 200) {
+            message.success(t('playground.job_submission_successfully'))
+            jobStore.setCurrentJob(response.data)
+            mittBus.emit('jobResult', response.data)
+            mittBus.emit('getStatus')
+            mittBus.emit('displayResult')
+          }
+          else {
+            message.error(`${t('playground.job_submission_failed')}`)
+          }
         }
-      }
-      catch (error) {
-        console.error('Failed to submit job:', error)
+        catch (error) {
+          console.error('Failed to submit job:', error)
+        }
       }
     }
 
@@ -209,6 +244,8 @@ export default defineComponent({
       handleFormat,
       handleSave,
       handleSubmit,
+      jobStatus,
+      handleReload,
     }
   },
   render() {
@@ -219,11 +256,11 @@ export default defineComponent({
             type="primary"
             onClick={this.handleSubmit}
             v-slots={{
-              icon: () => <n-icon component={Play} />,
+              icon: () => <n-icon component={this.jobStatus === 'RUNNING' ? Pause : Play} />,
               default: () => {
                 return (
                   <div class={styles.run}>
-                    {this.t('playground.run')}
+                    {this.jobStatus === 'RUNNING' ? this.t('playground.stop') : this.t('playground.run')}
                     <n-divider vertical />
                     <n-dropdown trigger="hover" show-arrow options={this.operatingConditionOptions} on-select={this.handleSelect}>
                       <n-icon component={ChevronDown} />
@@ -248,7 +285,7 @@ export default defineComponent({
                   <n-button
                     onClick={this.handleFormat}
                     v-slots={{
-                      icon: () => <n-icon component={ReaderOutline}></n-icon>,
+                      icon: () => <n-icon component={FormatAlignLeftOutlined}></n-icon>,
                     }}
                   >
                   </n-button>
@@ -256,6 +293,23 @@ export default defineComponent({
               }}
             >
               <span>{this.t('playground.format')}</span>
+            </n-popover>
+            <n-popover
+              trigger="hover"
+              placement="bottom"
+              v-slots={{
+                trigger: () => (
+                  <n-button
+                    onClick={this.handleReload}
+                    v-slots={{
+                      icon: () => <n-icon component={Reload}></n-icon>,
+                    }}
+                  >
+                  </n-button>
+                ),
+              }}
+            >
+              <span>{this.t('playground.reload')}</span>
             </n-popover>
             <n-popover
               trigger="hover"
