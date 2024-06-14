@@ -16,5 +16,5 @@ specific language governing permissions and limitations
 under the License. */
 
 export type Theme = 'dark' | 'light'
-export type NavBar = 'playground' | 'cdc' | 'system' | 'settings'
+export type NavBar = 'playground' | 'cdc' | 'system' | 'settings' | 'null'
 export type Menu = 'Query' | 'Workbench'
