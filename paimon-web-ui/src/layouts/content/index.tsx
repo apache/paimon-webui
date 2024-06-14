@@ -34,10 +34,10 @@ export default defineComponent({
     const isAdmin = userStore.getAdmin
     const userMenus = userStore.getMenus
     const userDirectories = userStore.getDiresctoies
-    const showMenuOptions = ref(menuOptions.value?.filter(e => isAdmin || userDirectories.includes(e.menuName)))
+    const showDirectories = ref(menuOptions.value?.filter(e => isAdmin || userDirectories.includes(e.menuName)))
     const getSideOption = (state: any) => {
       const activeNavKey = configStore.getCurrentNavActive
-      state.sideMenuOptions = showMenuOptions.value.find((m: any) => m.key === activeNavKey)?.sideMenuOptions?.filter((e) => {
+      state.sideMenuOptions = showDirectories.value.find((m: any) => m.key === activeNavKey)?.sideMenuOptions?.filter((e) => {
         return isAdmin || userMenus?.includes(e.menuName)
       }) || []
       state.isShowSided = state.sideMenuOptions && state.sideMenuOptions.length
@@ -56,7 +56,7 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
-      showMenuOptions,
+      showDirectories,
     }
   },
   render() {
@@ -64,7 +64,7 @@ export default defineComponent({
       <div class={styles.container}>
         <n-layout style="height: 100%">
           <n-layout-header style="height: 64px;" bordered>
-            <NavBar headerMenuOptions={this.showMenuOptions}></NavBar>
+            <NavBar headerMenuOptions={this.showDirectories}></NavBar>
           </n-layout-header>
           <n-layout has-sider position="absolute" style="top: 64px">
             {this.isShowSided
