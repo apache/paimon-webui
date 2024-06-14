@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.service.impl;
 
+import cn.dev33.satoken.session.SaSession;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.dto.RoleWithUserDTO;
 import org.apache.paimon.web.server.data.dto.UserWithRolesDTO;
@@ -122,10 +123,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         /*if (CollectionUtils.isEmpty(userInfoVo.getTenantList())) {
             throw new UserNotBindTenantException();
         }*/
-
+        // Setting login user info to SaSession.
         StpUtil.login(user.getId(), loginDTO.isRememberMe());
         userInfoVo.setPermissions(StpUtil.getPermissionList());
-
+        SaSession saSession = StpUtil.getSession();
+        saSession.set(user.getId().toString(), userInfoVo);
         return userInfoVo;
     }
 
