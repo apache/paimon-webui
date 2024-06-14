@@ -37,7 +37,7 @@ export const fieldsColumns: DataTableColumns<SchemaField> = [
     key: 'comment',
     align: 'center',
     render: (row) => {
-      return row.comment || '-'
+      return row.description || '-'
     },
   },
 ]

@@ -72,10 +72,18 @@ export default defineComponent({
       props.onConfirm!()
     }
 
+    function handleFieldSort() {
+      const columns = toRaw(formValue.value).tableColumns
+      columns.forEach((item, index) => {
+        item.sort = index
+      })
+    }
+
     async function handleEditColumn() {
       await formRef.value.validate()
       const currentTable = toRaw(catalogStore.currentTable)!
       const { catalogName, databaseName, tableName } = currentTable
+      handleFieldSort()
       await editColumn({
         params: {
           catalogName,

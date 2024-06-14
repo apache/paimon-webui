@@ -16,21 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.configrue;
+package org.apache.paimon.web.server.controller;
 
-import cn.dev33.satoken.interceptor.SaInterceptor;
-import cn.dev33.satoken.stp.StpUtil;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 
-/** Sa-Token path config. */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
-                .addPathPatterns("/**")
-                .excludePathPatterns("/api/login");
+/**
+ * When accessing front-end pages through the back-end server, requests to /ui/{routePath} ought to
+ * be forwarded to ui/index.html to guarantee correct page rendering.
+ */
+@Controller
+public class ForwardController {
+
+    @GetMapping(value = "/ui/{[path:[^\\.]*}")
+    public ModelAndView forwardToIndex() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setStatus(HttpStatus.OK);
+        modelAndView.setViewName("forward:/ui/index.html");
+        return modelAndView;
     }
 }

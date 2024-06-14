@@ -258,6 +258,13 @@ under the License.
                 </includes>
             </testResource>
             <testResource>
+                <directory>${project.basedir}/../paimon-web-ui/dist/</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <targetPath>ui</targetPath>
+            </testResource>
+            <testResource>
                 <directory>${project.basedir}/src/test/resources</directory>
             </testResource>
         </testResources>
@@ -270,7 +277,13 @@ under the License.
                     <exclude>static/**</exclude>
                 </excludes>
             </resource>
-
+            <resource>
+                <directory>${project.basedir}/../paimon-web-ui/dist/</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <targetPath>ui</targetPath>
+            </resource>
             <resource>
                 <filtering>false</filtering>
                 <directory>src/main/resources</directory>

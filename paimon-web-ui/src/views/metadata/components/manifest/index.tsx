@@ -32,6 +32,7 @@ export default defineComponent({
       {
         title: 'File Name',
         key: 'fileName',
+        width: 480,
       },
       {
         title: 'File Size',

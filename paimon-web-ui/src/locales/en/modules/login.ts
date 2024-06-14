@@ -23,4 +23,5 @@ export default {
   password_tips: 'Please input password',
   light: 'Light',
   dark: 'Dark',
+  logout: 'Logout',
 }

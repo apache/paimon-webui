@@ -15,6 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import { KeepAlive } from 'vue'
 import NavBar from './components/topbar'
 import styles from './index.module.scss'
 import SideBar from './components/sidebar'
@@ -66,7 +67,17 @@ export default defineComponent({
                 )
               : null}
             <n-layout-content content-style="height: calc(100vh - 64px);">
-              <router-view />
+              <router-view v-slots={{
+                default: (props: any) => {
+                  const Comp = props.Component
+                  return (
+                    <KeepAlive>
+                      <Comp />
+                    </KeepAlive>
+                  )
+                },
+              }}
+              />
             </n-layout-content>
           </n-layout>
         </n-layout>

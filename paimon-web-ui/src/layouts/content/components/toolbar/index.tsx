@@ -16,13 +16,17 @@ specific language governing permissions and limitations
 under the License. */
 
 import { Language, LogoGithub, Moon, SunnyOutline } from '@vicons/ionicons5'
+import type { Router } from 'vue-router'
 import { LANGUAGES } from '@/locales'
 import { useConfigStore } from '@/store/config'
+import { onLogout } from '@/api/models/login'
+import { useUserStore } from '@/store/user'
 
 // ts-ignore
 export default defineComponent({
   name: 'ToolBar',
   setup() {
+    const router: Router = useRouter()
     const { t, setLanguage } = useLocaleHooks()
 
     const handleLink = () => {
@@ -30,6 +34,8 @@ export default defineComponent({
     }
 
     const configStore = useConfigStore()
+    const userStore = useUserStore()
+    const nickname = ref(userStore.nickname)
     const handleTheme = () => {
       configStore.setCurrentTheme(
         configStore.getCurrentTheme === 'light' ? 'dark' : 'light',
@@ -43,13 +49,34 @@ export default defineComponent({
       setLanguage(lang)
     }
 
+    const handleLogout = () => {
+      onLogout().then(() => {
+        router.push({ path: '/login' })
+      })
+    }
+
+    const avatarMenuOptions = [
+      {
+        label: t('login.logout'),
+        key: 'log-out',
+        props: {
+          onClick: () => {
+            handleLogout()
+          },
+        },
+      },
+    ]
+
     return {
       t,
       handleLink,
       handleTheme,
       handleLanguage,
+      handleLogout,
       configStore,
       active: ref(false),
+      nickname,
+      avatarMenuOptions,
     }
   },
   render() {
@@ -76,6 +103,13 @@ export default defineComponent({
         <n-icon size="24" onClick={this.handleLanguage}>
           <Language />
         </n-icon>
+        <n-dropdown trigger="click" options={this.avatarMenuOptions}>
+          <n-avatar round>
+            {' '}
+            {this.nickname?.slice(0, 1)}
+          </n-avatar>
+        </n-dropdown>
+
       </n-space>
     )
   },

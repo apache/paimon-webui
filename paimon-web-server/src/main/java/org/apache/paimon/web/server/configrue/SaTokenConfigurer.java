@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.server.configrue;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import cn.dev33.satoken.interceptor.SaInterceptor;
+import cn.dev33.satoken.stp.StpUtil;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/** Model of metadata fields. */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class MetadataFieldsModel {
+import java.util.Arrays;
 
-    private int id;
-
-    private String name;
-
-    private String type;
-
-    private String description;
+/** Sa-Token path config. */
+@Configuration
+public class SaTokenConfigurer implements WebMvcConfigurer {
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
+                .addPathPatterns("/**")
+                .excludePathPatterns(Arrays.asList("/api/login", "/ui/**"));
+    }
 }

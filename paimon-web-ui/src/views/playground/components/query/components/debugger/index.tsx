@@ -191,6 +191,7 @@ export default defineComponent({
           message.success(t('playground.job_submission_successfully'))
           jobStore.setCurrentJob(response.data)
           mittBus.emit('jobResult', response.data)
+          mittBus.emit('getStatus')
         }
         else {
           message.error(`${t('playground.job_submission_failed')}`)
