@@ -83,7 +83,7 @@ export default defineComponent({
 
     const showConsole = ref(true)
     const handleConsoleClose = () => {
-      editorSize.value = 0.99
+      editorSize.value = 0.98
       showConsole.value = false
     }
 
