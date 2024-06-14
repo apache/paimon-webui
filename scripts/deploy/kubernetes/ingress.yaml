@@ -25,10 +25,10 @@ spec:
     - host: paimonweb.k8s.io # Replace with your desired hostname
       http:
         paths:
-          - path: /paimon-web
+          - path: /
             pathType: Prefix
             backend:
               service:
                 name: paimon-web-svc
                 port:
-                  name: port
+                  name: server
