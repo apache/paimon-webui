@@ -123,7 +123,7 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
         assertEquals(realRdcJobDefinition.getName(), cdcJobDefinition.getName());
         assertEquals(realRdcJobDefinition.getDescription(), cdcJobDefinition.getDescription());
         assertEquals(realRdcJobDefinition.getConfig(), cdcJobDefinition.getConfig());
-        assertEquals(realRdcJobDefinition.getCreateUser(), cdcJobDefinition.getCreateUser());
+        assertEquals(realRdcJobDefinition.getCreateUser(),cdcJobDefinition.getCreateUser());
     }
 
     @Order(3)
