@@ -26,8 +26,10 @@ export default defineComponent({
   emits: ['ConsoleUp', 'ConsoleDown', 'ConsoleClose'],
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const editorConsoleRef = ref<HTMLElement | null>(null)
     const adjustedHeight = ref(0)
+    const displayResult = ref(false)
 
     const handleUp = () => {
       emit('ConsoleUp', 'up')
@@ -40,6 +42,8 @@ export default defineComponent({
     const handleClose = () => {
       emit('ConsoleClose', 'close')
     }
+
+    mittBus.on('displayResult', () => displayResult.value = true)
 
     const handleResize = throttle((entries) => {
       for (const entry of entries) {
@@ -68,6 +72,7 @@ export default defineComponent({
       handleClose,
       editorConsoleRef,
       adjustedHeight,
+      displayResult,
     }
   },
   render() {
@@ -81,11 +86,16 @@ export default defineComponent({
           pane-style="padding: 0px;box-sizing: border-box;"
         >
           <n-tab-pane name="logs" tab={this.t('playground.logs')}>
-            {this.t('playground.logs')}
+            {/* {this.t('playground.logs')} */}
           </n-tab-pane>
           <n-tab-pane name="result" tab={this.t('playground.result')}>
-            <TableActionBar />
-            <TableResult maxHeight={this.adjustedHeight} />
+            {
+              this.displayResult
+              && [
+                <TableActionBar />,
+                <TableResult maxHeight={this.adjustedHeight} />,
+              ]
+            }
           </n-tab-pane>
         </n-tabs>
         <div class={styles.operations}>
