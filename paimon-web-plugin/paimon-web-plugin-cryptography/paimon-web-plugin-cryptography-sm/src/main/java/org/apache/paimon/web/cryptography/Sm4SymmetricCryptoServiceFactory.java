@@ -38,7 +38,7 @@ public class Sm4SymmetricCryptoServiceFactory implements SymmetricCryptoServiceF
     public SymmetricCryptoService getSymmetricCryptoService(Properties properties) {
         String key = properties.getProperty("secret-key");
         if (key == null) {
-            throw new Sm4Exception("SecretKey is required.");
+            throw new IllegalArgumentException("SecretKey is required.");
         }
         return new Sm4SymmetricCryptoService(key);
     }
