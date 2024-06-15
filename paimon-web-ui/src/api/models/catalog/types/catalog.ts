@@ -41,4 +41,6 @@ export interface FileSystemOption {
   endpoint?: string
   accessKey?: string
   secretKey?: string
+  hiveUri?: string
+  hiveConfDir?: string
 }

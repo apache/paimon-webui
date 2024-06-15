@@ -45,7 +45,7 @@ export default defineComponent({
         message: 'catalog hiveUri required',
       },
       hiveConfDir: {
-        required: true,
+        required: false,
         trigger: ['blur', 'input'],
         message: 'catalog hiveConfDir required',
       },
@@ -84,6 +84,11 @@ export default defineComponent({
 
     async function handleConfirm() {
       await formRef.value.validate()
+      if (formValue.value.type === 'hive') {
+        formValue.value.options.hiveUri = formValue.value.hiveUri
+        formValue.value.options.hiveConfDir = formValue.value.hiveConfDir
+      }
+
       await createFetch({
         params: toRaw(formValue.value),
       })
@@ -114,6 +119,8 @@ export default defineComponent({
           endpoint: '',
           accessKey: '',
           secretKey: '',
+          hiveUri: '',
+          hiveConfDir: '',
         },
       }
     }
