@@ -70,7 +70,6 @@ export default defineComponent({
         message: 'roleIds required',
       },
       mobile: {
-
         trigger: ['input'],
       },
     }
