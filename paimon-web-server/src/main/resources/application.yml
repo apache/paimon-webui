@@ -79,7 +79,8 @@ management:
       enabled: false
 
 interceptor:
-  path:
-    exclude: /api/login, /ui/**
+  exclude:
+    path:
+      pattern: /api/login, /ui/**
 
 

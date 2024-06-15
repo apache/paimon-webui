@@ -67,5 +67,6 @@ sa-token:
   is-read-body: true
 
 interceptor:
-  path:
-    exclude: /api/login, /ui/**
+  exclude:
+    path:
+      pattern: /api/login, /ui/**

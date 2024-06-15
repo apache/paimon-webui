@@ -33,14 +33,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureMockMvc
 public class SaTokenConfigurerTests {
 
-    @Value("${interceptor.path.exclude}")
-    private String[] excludes;
+    @Value("${interceptor.exclude.path.pattern}")
+    private String[] excludePathPatterns;
 
     @Test
     @Order(1)
     public void testPathExclude() throws Exception {
-        assertEquals(excludes.length, 2);
-        assertEquals(excludes[0], "/api/login");
-        assertEquals(excludes[1], "/ui/**");
+        assertEquals(excludePathPatterns.length, 2);
+        assertEquals(excludePathPatterns[0], "/api/login");
+        assertEquals(excludePathPatterns[1], "/ui/**");
     }
 }

@@ -29,13 +29,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class SaTokenConfigurer implements WebMvcConfigurer {
 
-    @Value("${interceptor.path.exclude}")
-    private String[] excludes;
+    @Value("${interceptor.exclude.path.pattern}")
+    private String[] excludePathPatterns;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
                 .addPathPatterns("/**")
-                .excludePathPatterns(excludes);
+                .excludePathPatterns(excludePathPatterns);
     }
 }
