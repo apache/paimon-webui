@@ -37,12 +37,14 @@ import org.apache.paimon.web.server.data.model.cdc.CdcNode;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.data.vo.UserInfoVO;
 import org.apache.paimon.web.server.mapper.CdcJobDefinitionMapper;
 import org.apache.paimon.web.server.service.CatalogService;
 import org.apache.paimon.web.server.service.CdcJobDefinitionService;
 import org.apache.paimon.web.server.service.ClusterService;
 import org.apache.paimon.web.server.util.StringUtils;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -62,7 +64,6 @@ public class CdcJobDefinitionServiceImpl
         implements CdcJobDefinitionService {
 
     @Autowired private CatalogService catalogService;
-
     @Autowired private ClusterService clusterService;
 
     @Override
@@ -73,12 +74,21 @@ public class CdcJobDefinitionServiceImpl
         if (baseMapper.exists(queryWrapper)) {
             return R.failed(Status.CDC_JOB_EXIST_ERROR);
         }
+        String jobCreateUser;
+        if (StringUtils.isBlank(cdcJobDefinitionDTO.getCreateUser())) {
+            int loginId = StpUtil.getLoginIdAsInt();
+            UserInfoVO userInfoVo =
+                    (UserInfoVO) StpUtil.getSession().get(Integer.toString(loginId));
+            jobCreateUser = userInfoVo.getUser().getUsername();
+        } else {
+            jobCreateUser = cdcJobDefinitionDTO.getCreateUser();
+        }
         CdcJobDefinition cdcJobDefinition =
                 CdcJobDefinition.builder()
                         .name(cdcJobDefinitionDTO.getName())
                         .config(cdcJobDefinitionDTO.getConfig())
                         .cdcType(cdcJobDefinitionDTO.getCdcType())
-                        .createUser(cdcJobDefinitionDTO.getCreateUser())
+                        .createUser(jobCreateUser)
                         .description(cdcJobDefinitionDTO.getDescription())
                         .build();
         baseMapper.insert(cdcJobDefinition);

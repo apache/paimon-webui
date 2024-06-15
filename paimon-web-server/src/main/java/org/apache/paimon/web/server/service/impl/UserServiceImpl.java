@@ -45,6 +45,7 @@ import org.apache.paimon.web.server.service.UserService;
 import org.apache.paimon.web.server.util.StringUtils;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -122,10 +123,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         /*if (CollectionUtils.isEmpty(userInfoVo.getTenantList())) {
             throw new UserNotBindTenantException();
         }*/
-
+        // Setting login user info to SaSession.
         StpUtil.login(user.getId(), loginDTO.isRememberMe());
         userInfoVo.setPermissions(StpUtil.getPermissionList());
-
+        SaSession saSession = StpUtil.getSession();
+        saSession.set(user.getId().toString(), userInfoVo);
         return userInfoVo;
     }
 
