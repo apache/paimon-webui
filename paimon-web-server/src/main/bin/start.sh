@@ -19,6 +19,34 @@
 PAIMON_UI_HOME="${PAIMON_UI_HOME:-$(pwd)}"
 source ${PAIMON_UI_HOME}/bin/env.sh
 
+
+
+function print_usage {
+    echo "Usage: $0 [--daemon] [--help|-h]"
+    echo ""
+    echo "Options:"
+    echo "  --daemon  Run Paimon Web Server as a background process."
+    echo "  --help|-h Show this help message and exit."
+}
+
+DAEMON=false
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --daemon|-d)
+      DAEMON=true
+      ;;
+    --help|-h)
+      print_usage
+      exit 0
+      ;;
+    *)
+      echo "Unsupported parameter: $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
 if [[ "$DOCKER" == "true" ]]; then
   JAVA_OPTS="${JAVA_OPTS} -XX:-UseContainerSupport"
 fi
@@ -44,28 +72,16 @@ if [ -z "$ACTION_JAR_PATH" ]; then
     echo "ACTION_JAR_PATH is null, CDC cannot be used normally!"
 fi
 
-DAEMON=false
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --daemon)
-      DAEMON=true
-      ;;
-    *)
-      echo "Unsupported parameter: $1"
-      exit 1
-      ;;
-  esac
-  shift
-done
 
 if [ "$DAEMON" = true ]; then
   nohup $JAVA_HOME/bin/java $JAVA_OPTS \
     -cp "$PAIMON_UI_HOME/conf:$PAIMON_UI_HOME/libs/*" \
     org.apache.paimon.web.server.PaimonWebServerApplication \
-    > /dev/null 2>&1 &
+    > /dev/nul  l 2>&1 &
   echo "Paimon Web Server started in daemon."
 else
   $JAVA_HOME/bin/java $JAVA_OPTS \
     -cp "$PAIMON_UI_HOME/conf:$PAIMON_UI_HOME/libs/*" \
     org.apache.paimon.web.server.PaimonWebServerApplication
 fi
+
