@@ -20,7 +20,7 @@ package org.apache.paimon.web.cryptography;
 
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Test for {@link Sm3DigesterService}. */
 public class Sm3DigesterServiceTest {
@@ -28,13 +28,26 @@ public class Sm3DigesterServiceTest {
     @Test
     public void testDigest() throws Exception {
         String data = "admin";
-        Sm3DigesterService sm3DigesterService = new Sm3DigesterService();
+        Sm3DigesterService sm3DigesterService = new Sm3DigesterService(null);
         String result1 = sm3DigesterService.digestHex(data);
         String result2 = sm3DigesterService.digestHex(data);
-        assertThat(result1).isEqualTo(result2);
+        assertEquals(result1, result2);
         String salt = "salt";
         String result3 = sm3DigesterService.digestHex(data, salt);
         String result4 = sm3DigesterService.digestHex(data, salt);
-        assertThat(result3).isEqualTo(result4);
+        assertEquals(result3, result4);
+    }
+
+    @Test
+    public void testDigestConfoundKey() throws Exception {
+        String data = "admin";
+        Sm3DigesterService sm3DigesterService = new Sm3DigesterService("dsadasdw22d");
+        String result1 = sm3DigesterService.digestHex(data);
+        String result2 = sm3DigesterService.digestHex(data);
+        assertEquals(result1, result2);
+        String salt = "salt";
+        String result3 = sm3DigesterService.digestHex(data, salt);
+        String result4 = sm3DigesterService.digestHex(data, salt);
+        assertEquals(result3, result4);
     }
 }

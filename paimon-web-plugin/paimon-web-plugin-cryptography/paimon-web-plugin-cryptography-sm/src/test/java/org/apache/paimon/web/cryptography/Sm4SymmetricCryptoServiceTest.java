@@ -20,7 +20,7 @@ package org.apache.paimon.web.cryptography;
 
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Test for {@link Sm4SymmetricCryptoServiceTest}. */
 public class Sm4SymmetricCryptoServiceTest {
@@ -33,6 +33,6 @@ public class Sm4SymmetricCryptoServiceTest {
         String data = "admin";
         String encrypted = sm4SymmetricCryptoService.encrypt(data);
         String decrypted = sm4SymmetricCryptoService.decrypt(encrypted);
-        assertThat(decrypted).isEqualTo(data);
+        assertEquals(decrypted, data);
     }
 }
