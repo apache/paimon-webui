@@ -46,7 +46,7 @@ export function useForm() {
         }).then((res: ResponseOptions<any>) => {
           userStore.setUsername(res.data.user.username)
           userStore.setNickname(res.data.user.nickname)
-          configStore.setCurrentNavActive('null')
+          configStore.setCurrentNavActive(null)
           userStore.setAdmin(res.data.user.admin)
           userStore.setMenus(res.data.sysMenuList?.filter((e: any) => e.type === 'C')?.map((e: any) => {
             return e.menuName
