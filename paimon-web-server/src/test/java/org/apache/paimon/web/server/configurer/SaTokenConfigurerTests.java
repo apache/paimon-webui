@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureMockMvc
 public class SaTokenConfigurerTests {
 
-    @Value("${interceptor.exclude.path.pattern}")
+    @Value("${interceptor.exclude.path.patterns}")
     private String[] excludePathPatterns;
 
     @Test

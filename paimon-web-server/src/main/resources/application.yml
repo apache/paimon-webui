@@ -81,6 +81,6 @@ management:
 interceptor:
   exclude:
     path:
-      pattern: /api/login, /ui/**
+      patterns: /api/login, /ui/**
 
 

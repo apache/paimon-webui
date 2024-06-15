@@ -29,7 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class SaTokenConfigurer implements WebMvcConfigurer {
 
-    @Value("${interceptor.exclude.path.pattern}")
+    @Value("${interceptor.exclude.path.patterns}")
     private String[] excludePathPatterns;
 
     @Override
