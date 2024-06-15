@@ -30,6 +30,7 @@ under the License.
         <module>paimon-web-gateway</module>
         <module>paimon-web-api</module>
         <module>paimon-web-engine</module>
+        <module>paimon-web-plugin</module>
     </modules>
 
     <parent>
@@ -118,6 +119,7 @@ under the License.
         <common-io.version>2.7</common-io.version>
         <gson.version>2.10.1</gson.version>
         <auto-service.version>1.0.1</auto-service.version>
+        <bouncycastle.version>1.69</bouncycastle.version>
     </properties>
 
     <dependencyManagement>
@@ -225,13 +227,17 @@ under the License.
                 <groupId>com.google.auto.service</groupId>
                 <artifactId>auto-service</artifactId>
                 <version>${auto-service.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${common-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15to18</artifactId>
+                <version>${bouncycastle.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
