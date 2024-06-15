@@ -5,8 +5,8 @@ This brief tutorial will guide you through the steps to deploy and utilize Paimo
 ## Prerequisite
 
 - Install Java 8 runtime environment.
-- Apache Flink-1.17+
-- Apache Paimon-0.8+
+- Apache Flink 1.17+
+- Apache Paimon 0.8.1+
 
 ## Download binary package
 
