@@ -7,7 +7,7 @@ export default defineConfig({
     logo: "/favicon_blue.svg",
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Docs', link: '/src/guide/getting-started' }
+      { text: 'Docs', link: '/src/guide/quick-start' }
     ],
 
     sidebar: [
@@ -15,7 +15,7 @@ export default defineConfig({
         text: 'Get Started',
         items: [
           { text: 'What is Paimon Web', link: '/src/guide/about' },
-          { text: 'Quick Start', link: '/src/guide/getting-started' }
+          { text: 'Quick Start', link: '/src/guide/quick-start' }
         ]
       }
     ],

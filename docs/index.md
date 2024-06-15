@@ -8,18 +8,18 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /src/guide/getting-started
+      link: /src/guide/quick-start
     - theme: alt
       text: GitHub
       link: https://github.com/apache/paimon-webui
 
 features:
   - title: Paimon table management
-    details: Visual management of paimon tables, such as creating and modifying tables, adding columns, moving column order, etc. makes paimon table management simple.
+    details: Simplify the management of Paimon tables with visual tools that enable easy creation, modification, and organization of tables, including adding and reordering columns.
   - title: Online SQL IDE
-    details: Online SQL IDE can submit and execute Flink SQL tasks and display the result data.
+    details: The Online SQL IDE facilitates the submission and execution of Flink SQL tasks, providing an immediate display of result data, enhancing productivity and interaction with data.
   - title: CDC task drag integration
-    details: CDC integration can create CDC integration tasks by dragging and dropping and submitting tasks to the Flink cluster.
+    details: Enhance data integration workflows with CDC task drag integration, allowing users to intuitively create and manage CDC tasks by dragging and dropping configuration elements.
   - title: Permission management
-    details: Permission management provides button-level permission control, making the operation of paimon tables safer.
+    details: Ensure secure and controlled access to Paimon tables with detailed button-level permission control, increasing the safety and integrity of data operations.
 ---

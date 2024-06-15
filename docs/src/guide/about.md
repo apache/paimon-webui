@@ -1,4 +1,5 @@
 # About Paimon Web
 
-Paimon Web is the Web UI of Apache Paimon. It can visualize the management of Paimon table information, and has permission management function, 
-making the operation of Paimon table safer. It also provides SQL IDE, which can execute Flink SQL.
+Paimon Web, the Web UI for Apache Paimon, enhances the management of Paimon table information through advanced visualization capabilities. 
+It incorporates robust permission management features to ensure secure operations across Paimon tables. Additionally, 
+Paimon Web includes a SQL IDE that supports the execution of Flink SQL, making it a powerful and user-friendly tool for managing data and executing complex SQL operations.
