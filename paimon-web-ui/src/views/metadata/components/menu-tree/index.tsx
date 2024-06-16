@@ -18,7 +18,7 @@ under the License. */
 import { Search, Warning } from '@vicons/ionicons5'
 import { Catalog, ChangeCatalog, DataBase } from '@vicons/carbon'
 import { DatabaseFilled } from '@vicons/antd'
-import { NIcon, type TreeOption } from 'naive-ui'
+import { NIcon, NInput, type TreeOption, useMessage } from 'naive-ui'
 
 import CatalogFormButton from '../catalog-form'
 import DatabaseFormButton from '../database-form'
@@ -31,6 +31,8 @@ export default defineComponent({
   name: 'MenuTree',
   setup() {
     const { t } = useLocaleHooks()
+    const dialog = useDialog()
+    const message = useMessage()
 
     const catalogStore = useCatalogStore()
     const catalogStoreRef = storeToRefs(catalogStore)
@@ -170,15 +172,8 @@ export default defineComponent({
       showConfirm.value = false
     }
 
-    const onRenameTable = async () => {
-      if (!currentOption.value)
-        return
-      renameDialogVisible.value = true
-      newTableName.value = ''
-    }
-
     const submitRenameTable = async () => {
-      if (!currentOption.value || newTableName.value.trim() === '')
+      if (!currentOption.value)
         return
       const { catalogName, databaseName, name: oldTableName } = JSON.parse(currentOption.value?.key?.toString() || '')
 
@@ -190,6 +185,44 @@ export default defineComponent({
         .catch((error) => {
           console.error('Failed to rename table:', error)
         })
+    }
+
+    const onRenameTable = async () => {
+      if (!currentOption.value)
+        return
+      const _dialogInst = dialog.create({
+        title: 'Rename Table',
+        content: () => h(
+          NInput,
+          {
+            placeholder: 'Input you new table name',
+            modelValue: newTableName.value,
+            onInput: (e: string) => {
+              newTableName.value = e
+            },
+          },
+        ),
+        positiveText: t('playground.save'),
+        onPositiveClick: async () => {
+          if (!newTableName.value || !newTableName.value.trim())
+            return message.error('new table name is required')
+          _dialogInst.loading = true
+          try {
+            const { catalogName, databaseName, name: oldTableName } = JSON.parse(currentOption.value?.key?.toString() || '')
+            await renameTable(catalogName, databaseName, oldTableName, newTableName.value.trim())
+              .then(() => {
+                message.success('Rename table successfully')
+                catalogStore.getAllCatalogs(true)
+              })
+          }
+          catch (error) {
+            console.error('Failed to rename table:', error)
+          }
+          finally {
+            _dialogInst.loading = false
+          }
+        },
+      })
     }
 
     const onPositiveClick = () => {
@@ -239,10 +272,6 @@ export default defineComponent({
       contextMenuVisible.value = false
     }
 
-    /*  const _dialogInst = dialog.create({
-      title: 'Rename Table',
-    } */
-
     const onSearch = async (e: KeyboardEvent) => {
       if (e.code === 'Enter') {
         isSearch.value = true
@@ -254,10 +283,6 @@ export default defineComponent({
 
     const handleClickOutside = () => {
       contextMenuVisible.value = false
-    }
-
-    const closeRenameDialog = () => {
-      renameDialogVisible.value = false
     }
 
     return {
@@ -283,7 +308,6 @@ export default defineComponent({
       submitRenameTable,
       renameDialogVisible,
       newTableName,
-      closeRenameDialog,
     }
   },
   render() {
@@ -347,21 +371,6 @@ export default defineComponent({
                 icon: () => <n-icon color="#EC4C4D" component={Warning} />,
               }}
             </n-popconfirm>
-            <n-dialog
-              v-model:show={this.renameDialogVisible}
-              title="Rename Table"
-              onPositiveClick={this.submitRenameTable}
-              onClose={this.closeRenameDialog}
-              onNegativeClick={this.closeRenameDialog}
-              positive-text="Rename"
-              negative-text="Cancel"
-            >
-              <n-form>
-                <n-form-item>
-                  <n-input v-model:value={this.newTableName} placeholder="Enter new table name" />
-                </n-form-item>
-              </n-form>
-            </n-dialog>
           </div>
         </n-card>
       </div>
