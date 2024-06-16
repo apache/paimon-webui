@@ -44,6 +44,7 @@ export function useForm() {
           ldapLogin: false,
           rememberMe: true,
         }).then((res: ResponseOptions<any>) => {
+          userStore.setUserId(res.data.user.id)
           userStore.setUsername(res.data.user.username)
           userStore.setNickname(res.data.user.nickname)
           configStore.setCurrentNavActive(null)
