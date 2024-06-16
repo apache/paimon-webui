@@ -24,6 +24,7 @@ import org.apache.paimon.web.server.data.dto.StopJobDTO;
 import org.apache.paimon.web.server.data.model.JobInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
+import org.apache.paimon.web.server.data.vo.JobLogsVo;
 import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
 import org.apache.paimon.web.server.data.vo.JobStatusVO;
 import org.apache.paimon.web.server.data.vo.JobVO;
@@ -100,17 +101,23 @@ public class JobController {
         return R.succeed(jobService.getJobStatistics());
     }
 
-    @SaCheckPermission("playground:job:stop")
-    @PostMapping("/stop")
-    public R<Void> stop(@RequestBody StopJobDTO stopJobDTO) {
-        try {
-            jobService.stop(stopJobDTO);
-            return R.succeed();
-        } catch (Exception e) {
-            log.error("Exception with stopping a job.", e);
-            return R.failed(Status.JOB_STOP_ERROR);
-        }
+  @SaCheckPermission("playground:job:query")
+  @GetMapping("/logs/{submitId}")
+  public R<JobLogsVo> getJobLogs() {
+    return R.succeed(new JobLogsVo());
+  }
+
+  @SaCheckPermission("playground:job:stop")
+  @PostMapping("/stop")
+  public R<Void> stop(@RequestBody StopJobDTO stopJobDTO) {
+    try {
+      jobService.stop(stopJobDTO);
+      return R.succeed();
+    } catch (Exception e) {
+      log.error("Exception with stopping a job.", e);
+      return R.failed(Status.JOB_STOP_ERROR);
     }
+  }
 
     @SaIgnore
     @PostMapping("/refresh")
