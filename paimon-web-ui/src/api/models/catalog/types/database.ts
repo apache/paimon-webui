@@ -29,4 +29,6 @@ export interface DatabaseFormDTO {
 
 export interface DatabaseDTO extends DatabaseFormDTO {
   catalogId: number
+  ignoreIfExists?: boolean
+  cascade?: boolean
 }

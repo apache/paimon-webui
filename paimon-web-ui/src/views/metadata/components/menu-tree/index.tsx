@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { Search } from '@vicons/ionicons5'
+import { Search, Warning } from '@vicons/ionicons5'
 import { Catalog, ChangeCatalog, DataBase } from '@vicons/carbon'
 import { DatabaseFilled } from '@vicons/antd'
 import { NIcon, type TreeOption } from 'naive-ui'
@@ -25,6 +25,7 @@ import DatabaseFormButton from '../database-form'
 import TableFormButton from '../table-form'
 import styles from './index.module.scss'
 import { useCatalogStore } from '@/store/catalog'
+import { dropDatabase, dropTable, removeCatalog, renameTable } from '@/api/models/catalog'
 
 export default defineComponent({
   name: 'MenuTree',
@@ -37,6 +38,15 @@ export default defineComponent({
     const filterValue = ref('')
     const isSearch = ref(false)
     const formType = ref('CATALOG')
+    const contextMenuVisible = ref(false)
+    const contextMenuPosition = ref({ x: 0, y: 0 })
+    const currentOption = ref<TreeOption | null>(null)
+    const showConfirm = ref(false)
+    const renameDialogVisible = ref(false)
+    const newTableName = ref('')
+
+    const [, useRemoveCatalog] = removeCatalog()
+    const [, useDropDatabase] = dropDatabase()
 
     const renderPrefix = ({ option, expanded }: { option: TreeOption, expanded: boolean }) => {
       let icon = expanded ? Catalog : ChangeCatalog
@@ -110,8 +120,128 @@ export default defineComponent({
             })
           }
         },
+        onContextmenu(event: MouseEvent) {
+          event.preventDefault()
+          contextMenuPosition.value = { x: event.clientX, y: event.clientY }
+          currentOption.value = option
+          contextMenuVisible.value = true
+        },
       }
     }
+
+    async function onDeleteCatalog() {
+      const name = currentOption.value?.label || ''
+      await useRemoveCatalog({
+        params: {
+          type: '',
+          name,
+          warehouse: '',
+          options: {
+            fileSystemType: 'local',
+            endpoint: '',
+            accessKey: '',
+            secretKey: '',
+          },
+        },
+      })
+      catalogStore.getAllCatalogs(true)
+      showConfirm.value = false
+    }
+
+    async function onDeleteDatabase() {
+      const [catalogId,, databaseName] = (currentOption.value?.key as string)?.split(' ') || []
+      await useDropDatabase({
+        params: {
+          catalogId: Number(catalogId),
+          name: databaseName,
+          description: '',
+          ignoreIfExists: false,
+          cascade: true,
+        },
+      })
+      catalogStore.getAllCatalogs(true)
+      showConfirm.value = false
+    }
+
+    async function onDeleteTable() {
+      const { catalogName, databaseName, name } = JSON.parse(currentOption.value?.key?.toString() || '')
+      await dropTable(catalogName, databaseName, name)
+      catalogStore.getAllCatalogs(true)
+      showConfirm.value = false
+    }
+
+    const onRenameTable = async () => {
+      if (!currentOption.value)
+        return
+      renameDialogVisible.value = true
+      newTableName.value = ''
+    }
+
+    const submitRenameTable = async () => {
+      if (!currentOption.value || newTableName.value.trim() === '')
+        return
+      const { catalogName, databaseName, name: oldTableName } = JSON.parse(currentOption.value?.key?.toString() || '')
+
+      await renameTable(catalogName, databaseName, oldTableName, newTableName.value.trim())
+        .then(() => {
+          catalogStore.getAllCatalogs(true)
+          renameDialogVisible.value = false
+        })
+        .catch((error) => {
+          console.error('Failed to rename table:', error)
+        })
+    }
+
+    const onPositiveClick = () => {
+      if (!currentOption.value)
+        return
+      switch (currentOption.value.type) {
+        case 'catalog':
+          return onDeleteCatalog()
+        case 'database':
+          return onDeleteDatabase()
+        case 'table':
+          return onDeleteTable()
+      }
+    }
+
+    const generateContextMenuItems = () => {
+      if (!currentOption.value)
+        return []
+
+      const items = []
+      switch (currentOption.value.type) {
+        case 'catalog':
+          items.push({ label: t('metadata.delete_catalog'), key: 'delete-catalog' })
+          break
+        case 'database':
+          items.push({ label: t('metadata.delete_database'), key: 'delete-database' })
+          break
+        case 'table':
+          items.push({ label: t('metadata.rename_table'), key: 'rename-table' })
+          items.push({ label: t('metadata.delete_table'), key: 'delete-table' })
+          break
+      }
+      return items
+    }
+
+    const handleMenuSelect = (key: string) => {
+      switch (key) {
+        case 'delete-catalog':
+        case 'delete-database':
+        case 'delete-table':
+          showConfirm.value = true
+          break
+        case 'rename-table':
+          onRenameTable()
+          break
+      }
+      contextMenuVisible.value = false
+    }
+
+    /*  const _dialogInst = dialog.create({
+      title: 'Rename Table',
+    } */
 
     const onSearch = async (e: KeyboardEvent) => {
       if (e.code === 'Enter') {
@@ -120,6 +250,14 @@ export default defineComponent({
           name: filterValue.value,
         })
       }
+    }
+
+    const handleClickOutside = () => {
+      contextMenuVisible.value = false
+    }
+
+    const closeRenameDialog = () => {
+      renameDialogVisible.value = false
     }
 
     return {
@@ -134,6 +272,18 @@ export default defineComponent({
       renderPrefix,
       renderSuffix,
       nodeProps,
+      contextMenuVisible,
+      contextMenuPosition,
+      currentOption,
+      generateContextMenuItems,
+      handleMenuSelect,
+      handleClickOutside,
+      onPositiveClick,
+      showConfirm,
+      submitRenameTable,
+      renameDialogVisible,
+      newTableName,
+      closeRenameDialog,
     }
   },
   render() {
@@ -156,7 +306,7 @@ export default defineComponent({
             >
             </n-input>
             <div class={styles.scroll}>
-              <n-scrollbar style="position: absolute">
+              <n-scrollbar style="position: absolute" x-scrollable>
                 <n-spin show={this.menuLoading}>
                   <n-tree
                     block-line
@@ -167,10 +317,51 @@ export default defineComponent({
                     renderSuffix={this.renderSuffix}
                     renderSwitcherIcon={this.renderPrefix}
                     onLoad={this.onLoadMenu}
+                    style="white-space: nowrap;"
                   />
                 </n-spin>
               </n-scrollbar>
             </div>
+            <n-dropdown
+              trigger="manual"
+              show={this.contextMenuVisible}
+              x={this.contextMenuPosition.x}
+              y={this.contextMenuPosition.y}
+              options={this.generateContextMenuItems()}
+              onSelect={this.handleMenuSelect}
+              on-clickoutside={this.handleClickOutside}
+            />
+            <n-popconfirm
+              v-model:show={this.showConfirm}
+              positive-text="Confirm"
+              negative-text="Cancel"
+              onPositiveClick={this.onPositiveClick}
+              onNegativeClick={() => { this.showConfirm = false }}
+              style={`position: fixed; left: ${this.contextMenuPosition.x}px; top: ${this.contextMenuPosition.y}px; min-width: 160px; padding: 10px; text-align: center;`}
+            >
+              {{
+                default: () => 'Confirm to delete ? ',
+                trigger: () => (
+                  <n-button style="display: none;" />
+                ),
+                icon: () => <n-icon color="#EC4C4D" component={Warning} />,
+              }}
+            </n-popconfirm>
+            <n-dialog
+              v-model:show={this.renameDialogVisible}
+              title="Rename Table"
+              onPositiveClick={this.submitRenameTable}
+              onClose={this.closeRenameDialog}
+              onNegativeClick={this.closeRenameDialog}
+              positive-text="Rename"
+              negative-text="Cancel"
+            >
+              <n-form>
+                <n-form-item>
+                  <n-input v-model:value={this.newTableName} placeholder="Enter new table name" />
+                </n-form-item>
+              </n-form>
+            </n-dialog>
           </div>
         </n-card>
       </div>
