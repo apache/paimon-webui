@@ -44,7 +44,6 @@ export default defineComponent({
     const contextMenuPosition = ref({ x: 0, y: 0 })
     const currentOption = ref<TreeOption | null>(null)
     const showConfirm = ref(false)
-    const renameDialogVisible = ref(false)
     const newTableName = ref('')
 
     const [, useRemoveCatalog] = removeCatalog()
@@ -172,21 +171,6 @@ export default defineComponent({
       showConfirm.value = false
     }
 
-    const submitRenameTable = async () => {
-      if (!currentOption.value)
-        return
-      const { catalogName, databaseName, name: oldTableName } = JSON.parse(currentOption.value?.key?.toString() || '')
-
-      await renameTable(catalogName, databaseName, oldTableName, newTableName.value.trim())
-        .then(() => {
-          catalogStore.getAllCatalogs(true)
-          renameDialogVisible.value = false
-        })
-        .catch((error) => {
-          console.error('Failed to rename table:', error)
-        })
-    }
-
     const onRenameTable = async () => {
       if (!currentOption.value)
         return
@@ -305,8 +289,6 @@ export default defineComponent({
       handleClickOutside,
       onPositiveClick,
       showConfirm,
-      submitRenameTable,
-      renameDialogVisible,
       newTableName,
     }
   },
