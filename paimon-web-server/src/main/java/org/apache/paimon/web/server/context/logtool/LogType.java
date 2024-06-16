@@ -16,29 +16,35 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.context.logTool;
+package org.apache.paimon.web.server.context.logtool;
 
-import org.apache.paimon.web.server.util.LRUCache;
+/** support batch streaming. */
+public enum LogType {
+    STREAMING("Streaming"),
 
-/** log abstract */
-public abstract class AbstractPool<T> {
-    public abstract LRUCache<String, T> getLRUCache();
+    BATCH("Batch"),
+    UNKNOWN("Unknown");
 
-    public boolean exist(String key) {
-        return getLRUCache().containsKey(key);
+    private String value;
+
+    LogType(String value) {
+        this.value = value;
     }
 
-    public int push(String key, T entity) {
-        getLRUCache().put(key, entity);
-        return getLRUCache().size();
+    public String getValue() {
+        return value;
     }
 
-    public int remove(String key) {
-        getLRUCache().remove(key);
-        return getLRUCache().size();
+    public static LogType get(String value) {
+        for (LogType type : LogType.values()) {
+            if (type.getValue().equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        return LogType.UNKNOWN;
     }
 
-    public T get(String key) {
-        return getLRUCache().get(key);
+    public boolean equalsValue(String type) {
+        return value.equalsIgnoreCase(type);
     }
 }

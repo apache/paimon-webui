@@ -26,7 +26,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 
-/** log util */
+/** log util. */
 public class LogUtil {
     private static final Logger logger = LoggerFactory.getLogger(LogUtil.class);
 

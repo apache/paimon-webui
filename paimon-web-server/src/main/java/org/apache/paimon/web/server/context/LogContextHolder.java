@@ -18,10 +18,10 @@
 
 package org.apache.paimon.web.server.context;
 
-import org.apache.paimon.web.server.context.logTool.LogEntity;
-import org.apache.paimon.web.server.context.logTool.LogWritePool;
+import org.apache.paimon.web.server.context.logtool.LogEntity;
+import org.apache.paimon.web.server.context.logtool.LogWritePool;
 
-/** Use Thread local cache log */
+/** Use Thread local cache log. */
 public class LogContextHolder {
     private static final ThreadLocal<LogEntity> PROCESS_CONTEXT = new ThreadLocal<>();
 

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.context.logTool;
+package org.apache.paimon.web.server.context.logtool;
 
 import org.apache.paimon.web.server.util.LRUCache;
 

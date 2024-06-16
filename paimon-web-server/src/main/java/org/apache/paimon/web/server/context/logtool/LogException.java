@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.context.logTool;
+package org.apache.paimon.web.server.context.logtool;
 
 import org.apache.paimon.web.server.context.LogContextHolder;
 import org.apache.paimon.web.server.util.LogUtil;
 
-/** log exception */
+/** log exception. */
 public class LogException extends RuntimeException {
 
     public LogException() {}

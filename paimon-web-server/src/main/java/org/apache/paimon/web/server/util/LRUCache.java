@@ -21,12 +21,12 @@ package org.apache.paimon.web.server.util;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** LRU Cache */
+/** LRU Cache. */
 public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     private final int cacheSize;
 
     /**
-     * Initialize LRUCache with cache size
+     * Initialize LRUCache with cache size.
      *
      * @param cacheSize Cache size
      */
@@ -37,7 +37,7 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     }
 
     /**
-     * When map size over CACHE_SIZE, remove oldest entry
+     * When map size over CACHE_SIZE, remove oldest entry.
      *
      * @param eldest The least recently accessed entry in the map
      * @return boolean value indicates whether the oldest entry should be removed

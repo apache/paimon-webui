@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.context.logTool;
+package org.apache.paimon.web.server.context.logtool;
 
-/** log status */
+/** log status. */
 public enum LogStatus {
     INITIALIZING("INITIALIZING"),
     RUNNING("RUNNING"),

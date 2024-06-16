@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.context.logTool;
+package org.apache.paimon.web.server.context.logtool;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/** log entity */
+/** log entity. */
 public class LogEntity {
     private String pid;
     private String name;

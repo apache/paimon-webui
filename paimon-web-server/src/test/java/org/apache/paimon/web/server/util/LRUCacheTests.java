@@ -23,7 +23,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** lru cache test */
+/** lru cache test. */
 public class LRUCacheTests {
 
     @Test

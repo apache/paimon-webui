@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.context.logTool;
+package org.apache.paimon.web.server.context.logtool;
 
 import org.apache.paimon.web.server.util.LRUCache;
 
-/** log read pool for cosole read */
+/** log read pool for console read. */
 public class LogReadPool extends AbstractPool<StringBuilder> {
     private static final LRUCache<String, StringBuilder> consoleEntityCache = new LRUCache<>(64);
 
