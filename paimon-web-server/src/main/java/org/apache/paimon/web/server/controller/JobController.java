@@ -18,22 +18,21 @@
 
 package org.apache.paimon.web.server.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.StpUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.paimon.web.server.data.dto.JobSubmitDTO;
 import org.apache.paimon.web.server.data.dto.ResultFetchDTO;
 import org.apache.paimon.web.server.data.dto.StopJobDTO;
 import org.apache.paimon.web.server.data.model.JobInfo;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
-import org.apache.paimon.web.server.data.vo.JobLogsVo;
 import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
 import org.apache.paimon.web.server.data.vo.JobStatusVO;
 import org.apache.paimon.web.server.data.vo.JobVO;
 import org.apache.paimon.web.server.data.vo.ResultDataVO;
 import org.apache.paimon.web.server.service.JobService;
-
-import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.annotation.SaIgnore;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,61 +49,61 @@ import java.util.List;
 @RequestMapping("/api/job")
 public class JobController {
 
-    @Autowired private JobService jobService;
+  @Autowired private JobService jobService;
 
-    @SaCheckPermission("playground:job:submit")
-    @PostMapping("/submit")
-    public R<JobVO> submit(@RequestBody JobSubmitDTO jobSubmitDTO) {
-        try {
-            return R.succeed(jobService.submitJob(jobSubmitDTO));
-        } catch (Exception e) {
-            log.error("Exception with submitting a job.", e);
-            return R.failed(Status.JOB_SUBMIT_ERROR);
-        }
+  @SaCheckPermission("playground:job:submit")
+  @PostMapping("/submit")
+  public R<JobVO> submit(@RequestBody JobSubmitDTO jobSubmitDTO) {
+    try {
+      return R.succeed(jobService.submitJob(jobSubmitDTO));
+    } catch (Exception e) {
+      log.error("Exception with submitting a job.", e);
+      return R.failed(Status.JOB_SUBMIT_ERROR);
     }
+  }
 
-    @SaIgnore
-    @PostMapping("/fetch")
-    public R<ResultDataVO> fetchResult(@RequestBody ResultFetchDTO resultFetchDTO) {
-        try {
-            return R.succeed(jobService.fetchResult(resultFetchDTO));
-        } catch (Exception e) {
-            log.error("Exception with fetching result data.", e);
-            return R.failed(Status.RESULT_FETCH_ERROR);
-        }
+  @SaIgnore
+  @PostMapping("/fetch")
+  public R<ResultDataVO> fetchResult(@RequestBody ResultFetchDTO resultFetchDTO) {
+    try {
+      return R.succeed(jobService.fetchResult(resultFetchDTO));
+    } catch (Exception e) {
+      log.error("Exception with fetching result data.", e);
+      return R.failed(Status.RESULT_FETCH_ERROR);
     }
+  }
 
-    @SaCheckPermission("playground:job:list")
-    @GetMapping("/list")
-    public R<List<JobVO>> list() {
-        return R.succeed(jobService.listJobs());
-    }
+  @SaCheckPermission("playground:job:list")
+  @GetMapping("/list")
+  public R<List<JobVO>> list() {
+    return R.succeed(jobService.listJobs());
+  }
 
-    @SaCheckPermission("playground:job:list")
-    @GetMapping("/list/page")
-    public R<List<JobVO>> listJobsByPage(int current, int size) {
-        return R.succeed(jobService.listJobsByPage(current, size));
-    }
+  @SaCheckPermission("playground:job:list")
+  @GetMapping("/list/page")
+  public R<List<JobVO>> listJobsByPage(int current, int size) {
+    return R.succeed(jobService.listJobsByPage(current, size));
+  }
 
-    @SaIgnore
-    @GetMapping("/status/get/{jobId}")
-    public R<JobStatusVO> getJobStatus(@PathVariable("jobId") String jobId) {
-        JobInfo job = jobService.getJobById(jobId);
-        JobStatusVO jobStatusVO =
-                JobStatusVO.builder().jobId(job.getJobId()).status(job.getStatus()).build();
-        return R.succeed(jobStatusVO);
-    }
-
-    @SaCheckPermission("playground:job:query")
-    @GetMapping("/statistics/get")
-    public R<JobStatisticsVO> getJobStatistics() {
-        return R.succeed(jobService.getJobStatistics());
-    }
+  @SaIgnore
+  @GetMapping("/status/get/{jobId}")
+  public R<JobStatusVO> getJobStatus(@PathVariable("jobId") String jobId) {
+    JobInfo job = jobService.getJobById(jobId);
+    JobStatusVO jobStatusVO =
+        JobStatusVO.builder().jobId(job.getJobId()).status(job.getStatus()).build();
+    return R.succeed(jobStatusVO);
+  }
 
   @SaCheckPermission("playground:job:query")
-  @GetMapping("/logs/{submitId}")
-  public R<JobLogsVo> getJobLogs() {
-    return R.succeed(new JobLogsVo());
+  @GetMapping("/statistics/get")
+  public R<JobStatisticsVO> getJobStatistics() {
+    return R.succeed(jobService.getJobStatistics());
+  }
+
+  @SaCheckPermission("playground:job:query")
+  @GetMapping("/logs/get")
+  public R<String> getLogs() {
+    return R.succeed(jobService.getLogsByUserId(StpUtil.getLoginIdAsString()));
   }
 
   @SaCheckPermission("playground:job:stop")
@@ -119,10 +118,10 @@ public class JobController {
     }
   }
 
-    @SaIgnore
-    @PostMapping("/refresh")
-    public R<Void> refresh() {
-        jobService.refreshJobStatus("Flink");
-        return R.succeed();
-    }
+  @SaIgnore
+  @PostMapping("/refresh")
+  public R<Void> refresh() {
+    jobService.refreshJobStatus("Flink");
+    return R.succeed();
+  }
 }

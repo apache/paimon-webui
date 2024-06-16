@@ -16,20 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.vo;
+package org.apache.paimon.web.server.context.logTool;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.paimon.web.server.util.LRUCache;
 
-/** VO of job logs. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class JobLogsVo {
-  private String userId;
+/** log abstract */
+public abstract class AbstractPool<T> {
+  public abstract LRUCache<String, T> getLRUCache();
 
-  private String logDetail;
+  public boolean exist(String key) {
+    return getLRUCache().containsKey(key);
+  }
+
+  public int push(String key, T entity) {
+    getLRUCache().put(key, entity);
+    return getLRUCache().size();
+  }
+
+  public int remove(String key) {
+    getLRUCache().remove(key);
+    return getLRUCache().size();
+  }
+
+  public T get(String key) {
+    return getLRUCache().get(key);
+  }
 }

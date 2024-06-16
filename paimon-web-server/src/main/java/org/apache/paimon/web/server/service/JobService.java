@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.paimon.web.server.data.dto.JobSubmitDTO;
 import org.apache.paimon.web.server.data.dto.ResultFetchDTO;
 import org.apache.paimon.web.server.data.dto.StopJobDTO;
@@ -26,71 +27,71 @@ import org.apache.paimon.web.server.data.vo.JobStatisticsVO;
 import org.apache.paimon.web.server.data.vo.JobVO;
 import org.apache.paimon.web.server.data.vo.ResultDataVO;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-
 import java.util.List;
 
 /** Job Service. */
 public interface JobService extends IService<JobInfo> {
 
-    /**
-     * Submits a new job based on the provided job submission data.
-     *
-     * @param jobSubmitDTO the data transfer object containing job submission details
-     * @return the job view object after submission
-     */
-    JobVO submitJob(JobSubmitDTO jobSubmitDTO);
+  /**
+   * Submits a new job based on the provided job submission data.
+   *
+   * @param jobSubmitDTO the data transfer object containing job submission details
+   * @return the job view object after submission
+   */
+  JobVO submitJob(JobSubmitDTO jobSubmitDTO);
 
-    /**
-     * Fetches the result of a job specified by the result fetch data transfer object.
-     *
-     * @param resultFetchDTO the data transfer object containing job result fetching details
-     * @return result data view object containing the job results
-     */
-    ResultDataVO fetchResult(ResultFetchDTO resultFetchDTO);
+  /**
+   * Fetches the result of a job specified by the result fetch data transfer object.
+   *
+   * @param resultFetchDTO the data transfer object containing job result fetching details
+   * @return result data view object containing the job results
+   */
+  ResultDataVO fetchResult(ResultFetchDTO resultFetchDTO);
 
-    /**
-     * Lists all jobs.
-     *
-     * @return a list of job view objects
-     */
-    List<JobVO> listJobs();
+  /**
+   * Lists all jobs.
+   *
+   * @return a list of job view objects
+   */
+  List<JobVO> listJobs();
 
-    /**
-     * Lists jobs in a paginated format.
-     *
-     * @param current the current page number
-     * @param size the number of jobs per page
-     * @return a list of job view objects for the specified page
-     */
-    List<JobVO> listJobsByPage(int current, int size);
+  /**
+   * Lists jobs in a paginated format.
+   *
+   * @param current the current page number
+   * @param size the number of jobs per page
+   * @return a list of job view objects for the specified page
+   */
+  List<JobVO> listJobsByPage(int current, int size);
 
-    /**
-     * Retrieves detailed information about a job identified by its job ID.
-     *
-     * @param id the unique identifier of the job
-     * @return job information object
-     */
-    JobInfo getJobById(String id);
+  /**
+   * Retrieves detailed information about a job identified by its job ID.
+   *
+   * @param id the unique identifier of the job
+   * @return job information object
+   */
+  JobInfo getJobById(String id);
 
-    /**
-     * Retrieves statistics about jobs.
-     *
-     * @return a job statistics view object containing aggregated job data
-     */
-    JobStatisticsVO getJobStatistics();
+  /**
+   * Retrieves statistics about jobs.
+   *
+   * @return a job statistics view object containing aggregated job data
+   */
+  JobStatisticsVO getJobStatistics();
 
-    /**
-     * Stops a job as specified by the stop job data transfer object.
-     *
-     * @param stopJobDTO the data transfer object containing job stopping details
-     */
-    void stop(StopJobDTO stopJobDTO);
+  /**
+   * Stops a job as specified by the stop job data transfer object.
+   *
+   * @param stopJobDTO the data transfer object containing job stopping details
+   */
+  void stop(StopJobDTO stopJobDTO);
 
-    /**
-     * Refreshes the status of a job based on the specified task type.
-     *
-     * @param taskType the type of task for which the job status needs to be updated
-     */
-    void refreshJobStatus(String taskType);
+  /**
+   * Refreshes the status of a job based on the specified task type.
+   *
+   * @param taskType the type of task for which the job status needs to be updated
+   */
+  void refreshJobStatus(String taskType);
+
+  public String getLogsByUserId(String userId);
 }

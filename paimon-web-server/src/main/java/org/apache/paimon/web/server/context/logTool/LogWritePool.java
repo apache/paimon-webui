@@ -16,20 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.vo;
+package org.apache.paimon.web.server.context.logTool;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.paimon.web.server.util.LRUCache;
 
-/** VO of job logs. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class JobLogsVo {
-  private String userId;
+/** log write pool is used for write logs to process thread local. */
+public class LogWritePool extends AbstractPool<LogEntity> {
 
-  private String logDetail;
+  private static final LRUCache<String, LogEntity> logEntityCache = new LRUCache<>(64);
+
+  private static final LogWritePool instance = new LogWritePool();
+
+  public static LogWritePool getInstance() {
+    return instance;
+  }
+
+  @Override
+  public LRUCache<String, LogEntity> getLRUCache() {
+    return logEntityCache;
+  }
 }

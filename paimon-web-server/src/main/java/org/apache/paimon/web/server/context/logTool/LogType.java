@@ -16,20 +16,35 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.vo;
+package org.apache.paimon.web.server.context.logTool;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+/** support batch streaming */
+public enum LogType {
+  STREAMING("Streaming"),
 
-/** VO of job logs. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class JobLogsVo {
-  private String userId;
+  BATCH("Batch"),
+  UNKNOWN("Unknown");
 
-  private String logDetail;
+  private String value;
+
+  LogType(String value) {
+    this.value = value;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public static LogType get(String value) {
+    for (LogType type : LogType.values()) {
+      if (type.getValue().equalsIgnoreCase(value)) {
+        return type;
+      }
+    }
+    return LogType.UNKNOWN;
+  }
+
+  public boolean equalsValue(String type) {
+    return value.equalsIgnoreCase(type);
+  }
 }

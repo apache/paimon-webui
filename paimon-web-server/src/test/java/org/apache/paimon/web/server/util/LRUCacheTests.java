@@ -16,20 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.vo;
+package org.apache.paimon.web.server.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.junit.Test;
 
-/** VO of job logs. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class JobLogsVo {
-  private String userId;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  private String logDetail;
+/** lru cache test */
+public class LRUCacheTests {
+
+  @Test
+  public void lruCacheTest() {
+    LRUCache<String, String> lruCache = new LRUCache<>(5);
+    for (int i = 0; i < 5; i++) {
+      lruCache.put(String.valueOf(i), String.valueOf(i));
+    }
+    assertEquals(lruCache.size(), 5);
+    lruCache.put("6", "6");
+    assertEquals(lruCache.size(), 5);
+    assertNull(lruCache.get("0"));
+  }
 }
