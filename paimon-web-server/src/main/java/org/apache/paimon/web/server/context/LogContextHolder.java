@@ -23,22 +23,22 @@ import org.apache.paimon.web.server.context.logTool.LogWritePool;
 
 /** Use Thread local cache log */
 public class LogContextHolder {
-  private static final ThreadLocal<LogEntity> PROCESS_CONTEXT = new ThreadLocal<>();
+    private static final ThreadLocal<LogEntity> PROCESS_CONTEXT = new ThreadLocal<>();
 
-  public static void setProcess(LogEntity process) {
-    PROCESS_CONTEXT.set(process);
-  }
-
-  public static LogEntity getProcess() {
-    if (PROCESS_CONTEXT.get() == null) {
-      return LogEntity.NULL_PROCESS;
+    public static void setProcess(LogEntity process) {
+        PROCESS_CONTEXT.set(process);
     }
-    return PROCESS_CONTEXT.get();
-  }
 
-  public static LogEntity registerProcess(LogEntity process) {
-    setProcess(process);
-    LogWritePool.getInstance().push(process.getName(), process);
-    return process;
-  }
+    public static LogEntity getProcess() {
+        if (PROCESS_CONTEXT.get() == null) {
+            return LogEntity.NULL_PROCESS;
+        }
+        return PROCESS_CONTEXT.get();
+    }
+
+    public static LogEntity registerProcess(LogEntity process) {
+        setProcess(process);
+        LogWritePool.getInstance().push(process.getName(), process);
+        return process;
+    }
 }

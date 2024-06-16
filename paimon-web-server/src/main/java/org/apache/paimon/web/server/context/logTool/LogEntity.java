@@ -25,240 +25,243 @@ import java.util.UUID;
 
 /** log entity */
 public class LogEntity {
-  private String pid;
-  private String name;
-  private Integer taskId;
-  private LogType type;
-  private LogStatus status;
-  private LocalDateTime startTime;
-  private LocalDateTime endTime;
-  private long time;
-  private int stepIndex = 0;
-  private List<LogStep> steps;
-  private String userId;
+    private String pid;
+    private String name;
+    private Integer taskId;
+    private LogType type;
+    private LogStatus status;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private long time;
+    private int stepIndex = 0;
+    private List<LogStep> steps;
+    private String userId;
 
-  public static final LogEntity NULL_PROCESS = new LogEntity();
+    public static final LogEntity NULL_PROCESS = new LogEntity();
 
-  public LogEntity() {}
+    public LogEntity() {}
 
-  public LogEntity(String pid, String name, Integer taskId, LogType type, String userId) {
-    this.pid = pid;
-    this.name = name;
-    this.taskId = taskId;
-    this.type = type;
-    this.userId = userId;
-  }
-
-  public LogEntity(
-      String name,
-      Integer taskId,
-      LogType type,
-      LogStatus status,
-      LocalDateTime startTime,
-      LocalDateTime endTime,
-      long time,
-      List<LogStep> steps,
-      String userId) {
-    this.name = name;
-    this.taskId = taskId;
-    this.type = type;
-    this.status = status;
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.time = time;
-    this.steps = steps;
-    this.userId = userId;
-  }
-
-  public static LogEntity init(LogType type, String submitId) {
-    return init(type.getValue() + "_TEMP", null, type, submitId);
-  }
-
-  public static LogEntity init(Integer taskId, LogType type, String submitId) {
-    return init(type.getValue() + taskId, taskId, type, submitId);
-  }
-
-  public static LogEntity init(String name, Integer taskId, LogType type, String submitId) {
-    LogEntity process = new LogEntity(UUID.randomUUID().toString(), name, taskId, type, submitId);
-    process.setStatus(LogStatus.INITIALIZING);
-    process.setStartTime(LocalDateTime.now());
-    process.setSteps(new ArrayList<>());
-    process.getSteps().add(LogStep.init());
-    process.nextStep();
-    return process;
-  }
-
-  public void start() {
-    if (isNullProcess()) {
-      return;
+    public LogEntity(String pid, String name, Integer taskId, LogType type, String userId) {
+        this.pid = pid;
+        this.name = name;
+        this.taskId = taskId;
+        this.type = type;
+        this.userId = userId;
     }
-    steps.get(stepIndex - 1).setEndTime(LocalDateTime.now());
-    setStatus(LogStatus.RUNNING);
-    steps.add(LogStep.run());
-    nextStep();
-  }
 
-  public void finish() {
-    if (isNullProcess()) {
-      return;
+    public LogEntity(
+            String name,
+            Integer taskId,
+            LogType type,
+            LogStatus status,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            long time,
+            List<LogStep> steps,
+            String userId) {
+        this.name = name;
+        this.taskId = taskId;
+        this.type = type;
+        this.status = status;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.time = time;
+        this.steps = steps;
+        this.userId = userId;
     }
-    steps.get(stepIndex - 1).setEndTime(LocalDateTime.now());
-    setStatus(LogStatus.FINISHED);
-    setEndTime(LocalDateTime.now());
-    setTime(getEndTime().compareTo(getStartTime()));
-  }
 
-  public void finish(String str) {
-    if (isNullProcess()) {
-      return;
+    public static LogEntity init(LogType type, String submitId) {
+        return init(type.getValue() + "_TEMP", null, type, submitId);
     }
-    steps.get(stepIndex - 1).setEndTime(LocalDateTime.now());
-    String message = String.format("\n[%s] %s INFO: %s", type.getValue(), LocalDateTime.now(), str);
-    steps.get(stepIndex - 1).appendInfo(message);
-    setStatus(LogStatus.FINISHED);
-    setEndTime(LocalDateTime.now());
-    setTime(getEndTime().compareTo(getStartTime()));
-    LogReadPool.write(message, userId);
-  }
 
-  public void config(String str) {
-    if (isNullProcess()) {
-      return;
+    public static LogEntity init(Integer taskId, LogType type, String submitId) {
+        return init(type.getValue() + taskId, taskId, type, submitId);
     }
-    String message =
-        String.format("\n[%s] %s CONFIG: %s", type.getValue(), LocalDateTime.now(), str);
-    steps.get(stepIndex - 1).appendInfo(message);
-    LogReadPool.write(message, userId);
-  }
 
-  public void info(String str) {
-    if (isNullProcess()) {
-      return;
+    public static LogEntity init(String name, Integer taskId, LogType type, String submitId) {
+        LogEntity process =
+                new LogEntity(UUID.randomUUID().toString(), name, taskId, type, submitId);
+        process.setStatus(LogStatus.INITIALIZING);
+        process.setStartTime(LocalDateTime.now());
+        process.setSteps(new ArrayList<>());
+        process.getSteps().add(LogStep.init());
+        process.nextStep();
+        return process;
     }
-    String message = String.format("\n[%s] %s INFO: %s", type.getValue(), LocalDateTime.now(), str);
-    steps.get(stepIndex - 1).appendInfo(message);
-    LogReadPool.write(message, userId);
-  }
 
-  public void infoSuccess() {
-    if (isNullProcess()) {
-      return;
+    public void start() {
+        if (isNullProcess()) {
+            return;
+        }
+        steps.get(stepIndex - 1).setEndTime(LocalDateTime.now());
+        setStatus(LogStatus.RUNNING);
+        steps.add(LogStep.run());
+        nextStep();
     }
-    steps.get(stepIndex - 1).appendInfo("Success.");
-    LogReadPool.write("Success.", userId);
-  }
 
-  public void infoFail() {
-    if (isNullProcess()) {
-      return;
+    public void finish() {
+        if (isNullProcess()) {
+            return;
+        }
+        steps.get(stepIndex - 1).setEndTime(LocalDateTime.now());
+        setStatus(LogStatus.FINISHED);
+        setEndTime(LocalDateTime.now());
+        setTime(getEndTime().compareTo(getStartTime()));
     }
-    steps.get(stepIndex - 1).appendInfo("Fail.");
-    LogReadPool.write("Fail.", userId);
-  }
 
-  public void error(String str) {
-    if (isNullProcess()) {
-      return;
+    public void finish(String str) {
+        if (isNullProcess()) {
+            return;
+        }
+        steps.get(stepIndex - 1).setEndTime(LocalDateTime.now());
+        String message =
+                String.format("\n[%s] %s INFO: %s", type.getValue(), LocalDateTime.now(), str);
+        steps.get(stepIndex - 1).appendInfo(message);
+        setStatus(LogStatus.FINISHED);
+        setEndTime(LocalDateTime.now());
+        setTime(getEndTime().compareTo(getStartTime()));
+        LogReadPool.write(message, userId);
     }
-    String message =
-        String.format("\n[%s] %s ERROR: %s", type.getValue(), LocalDateTime.now(), str);
-    steps.get(stepIndex - 1).appendInfo(message);
-    steps.get(stepIndex - 1).appendError(message);
-    LogReadPool.write(message, userId);
-  }
 
-  public void nextStep() {
-    if (isNullProcess()) {
-      return;
+    public void config(String str) {
+        if (isNullProcess()) {
+            return;
+        }
+        String message =
+                String.format("\n[%s] %s CONFIG: %s", type.getValue(), LocalDateTime.now(), str);
+        steps.get(stepIndex - 1).appendInfo(message);
+        LogReadPool.write(message, userId);
     }
-    stepIndex++;
-  }
 
-  public boolean isNullProcess() {
-    return pid == null;
-  }
+    public void info(String str) {
+        if (isNullProcess()) {
+            return;
+        }
+        String message =
+                String.format("\n[%s] %s INFO: %s", type.getValue(), LocalDateTime.now(), str);
+        steps.get(stepIndex - 1).appendInfo(message);
+        LogReadPool.write(message, userId);
+    }
 
-  public boolean isActiveProcess() {
-    return status.isActiveStatus();
-  }
+    public void infoSuccess() {
+        if (isNullProcess()) {
+            return;
+        }
+        steps.get(stepIndex - 1).appendInfo("Success.");
+        LogReadPool.write("Success.", userId);
+    }
 
-  public String getPid() {
-    return pid;
-  }
+    public void infoFail() {
+        if (isNullProcess()) {
+            return;
+        }
+        steps.get(stepIndex - 1).appendInfo("Fail.");
+        LogReadPool.write("Fail.", userId);
+    }
 
-  public void setPid(String pid) {
-    this.pid = pid;
-  }
+    public void error(String str) {
+        if (isNullProcess()) {
+            return;
+        }
+        String message =
+                String.format("\n[%s] %s ERROR: %s", type.getValue(), LocalDateTime.now(), str);
+        steps.get(stepIndex - 1).appendInfo(message);
+        steps.get(stepIndex - 1).appendError(message);
+        LogReadPool.write(message, userId);
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void nextStep() {
+        if (isNullProcess()) {
+            return;
+        }
+        stepIndex++;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public boolean isNullProcess() {
+        return pid == null;
+    }
 
-  public Integer getTaskId() {
-    return taskId;
-  }
+    public boolean isActiveProcess() {
+        return status.isActiveStatus();
+    }
 
-  public void setTaskId(Integer taskId) {
-    this.taskId = taskId;
-  }
+    public String getPid() {
+        return pid;
+    }
 
-  public LogType getType() {
-    return type;
-  }
+    public void setPid(String pid) {
+        this.pid = pid;
+    }
 
-  public void setType(LogType type) {
-    this.type = type;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public LogStatus getStatus() {
-    return status;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setStatus(LogStatus status) {
-    this.status = status;
-  }
+    public Integer getTaskId() {
+        return taskId;
+    }
 
-  public LocalDateTime getStartTime() {
-    return startTime;
-  }
+    public void setTaskId(Integer taskId) {
+        this.taskId = taskId;
+    }
 
-  public void setStartTime(LocalDateTime startTime) {
-    this.startTime = startTime;
-  }
+    public LogType getType() {
+        return type;
+    }
 
-  public LocalDateTime getEndTime() {
-    return endTime;
-  }
+    public void setType(LogType type) {
+        this.type = type;
+    }
 
-  public void setEndTime(LocalDateTime endTime) {
-    this.endTime = endTime;
-  }
+    public LogStatus getStatus() {
+        return status;
+    }
 
-  public long getTime() {
-    return time;
-  }
+    public void setStatus(LogStatus status) {
+        this.status = status;
+    }
 
-  public void setTime(long time) {
-    this.time = time;
-  }
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
 
-  public List<LogStep> getSteps() {
-    return steps;
-  }
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
-  public void setSteps(List<LogStep> steps) {
-    this.steps = steps;
-  }
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
 
-  public int getStepIndex() {
-    return stepIndex;
-  }
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
 
-  public void setStepIndex(int stepIndex) {
-    this.stepIndex = stepIndex;
-  }
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public List<LogStep> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<LogStep> steps) {
+        this.steps = steps;
+    }
+
+    public int getStepIndex() {
+        return stepIndex;
+    }
+
+    public void setStepIndex(int stepIndex) {
+        this.stepIndex = stepIndex;
+    }
 }

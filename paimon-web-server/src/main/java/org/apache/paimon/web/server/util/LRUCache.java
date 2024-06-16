@@ -23,27 +23,27 @@ import java.util.Map;
 
 /** LRU Cache */
 public class LRUCache<K, V> extends LinkedHashMap<K, V> {
-  private final int cacheSize;
+    private final int cacheSize;
 
-  /**
-   * Initialize LRUCache with cache size
-   *
-   * @param cacheSize Cache size
-   */
-  public LRUCache(int cacheSize) {
-    // true means based on access order
-    super((int) Math.ceil(cacheSize / 0.75) + 1, 0.75f, true);
-    this.cacheSize = cacheSize;
-  }
+    /**
+     * Initialize LRUCache with cache size
+     *
+     * @param cacheSize Cache size
+     */
+    public LRUCache(int cacheSize) {
+        // true means based on access order
+        super((int) Math.ceil(cacheSize / 0.75) + 1, 0.75f, true);
+        this.cacheSize = cacheSize;
+    }
 
-  /**
-   * When map size over CACHE_SIZE, remove oldest entry
-   *
-   * @param eldest The least recently accessed entry in the map
-   * @return boolean value indicates whether the oldest entry should be removed
-   */
-  @Override
-  protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-    return size() > this.cacheSize;
-  }
+    /**
+     * When map size over CACHE_SIZE, remove oldest entry
+     *
+     * @param eldest The least recently accessed entry in the map
+     * @return boolean value indicates whether the oldest entry should be removed
+     */
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return size() > this.cacheSize;
+    }
 }

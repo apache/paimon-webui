@@ -24,26 +24,29 @@ import org.apache.paimon.web.server.util.LogUtil;
 /** log exception */
 public class LogException extends RuntimeException {
 
-  public LogException() {}
+    public LogException() {}
 
-  public LogException(String message) {
-    super(message);
-    LogContextHolder.getProcess().error(message);
-  }
+    public LogException(String message) {
+        super(message);
+        LogContextHolder.getProcess().error(message);
+    }
 
-  public LogException(String message, Throwable cause) {
-    super(message, cause);
-    LogContextHolder.getProcess().error(LogUtil.getError(cause));
-  }
+    public LogException(String message, Throwable cause) {
+        super(message, cause);
+        LogContextHolder.getProcess().error(LogUtil.getError(cause));
+    }
 
-  public LogException(Throwable cause) {
-    super(cause);
-    LogContextHolder.getProcess().error(cause.toString());
-  }
+    public LogException(Throwable cause) {
+        super(cause);
+        LogContextHolder.getProcess().error(cause.toString());
+    }
 
-  public LogException(
-      String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
-    LogContextHolder.getProcess().error(LogUtil.getError(cause));
-  }
+    public LogException(
+            String message,
+            Throwable cause,
+            boolean enableSuppression,
+            boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+        LogContextHolder.getProcess().error(LogUtil.getError(cause));
+    }
 }

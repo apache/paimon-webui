@@ -20,46 +20,46 @@ package org.apache.paimon.web.server.context.logTool;
 
 /** log status */
 public enum LogStatus {
-  INITIALIZING("INITIALIZING"),
-  RUNNING("RUNNING"),
-  FAILED("FAILED"),
-  CANCELED("CANCELED"),
-  FINISHED("FINISHED"),
-  UNKNOWN("UNKNOWN");
+    INITIALIZING("INITIALIZING"),
+    RUNNING("RUNNING"),
+    FAILED("FAILED"),
+    CANCELED("CANCELED"),
+    FINISHED("FINISHED"),
+    UNKNOWN("UNKNOWN");
 
-  private String value;
+    private String value;
 
-  LogStatus(String value) {
-    this.value = value;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public static LogStatus get(String value) {
-    for (LogStatus type : LogStatus.values()) {
-      if (type.getValue().equalsIgnoreCase(value)) {
-        return type;
-      }
+    LogStatus(String value) {
+        this.value = value;
     }
-    return LogStatus.UNKNOWN;
-  }
 
-  public boolean equalsValue(String type) {
-    if (value.equalsIgnoreCase(type)) {
-      return true;
+    public String getValue() {
+        return value;
     }
-    return false;
-  }
 
-  public boolean isActiveStatus() {
-    switch (this) {
-      case INITIALIZING:
-      case RUNNING:
-        return true;
-      default:
+    public static LogStatus get(String value) {
+        for (LogStatus type : LogStatus.values()) {
+            if (type.getValue().equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        return LogStatus.UNKNOWN;
+    }
+
+    public boolean equalsValue(String type) {
+        if (value.equalsIgnoreCase(type)) {
+            return true;
+        }
         return false;
     }
-  }
+
+    public boolean isActiveStatus() {
+        switch (this) {
+            case INITIALIZING:
+            case RUNNING:
+                return true;
+            default:
+                return false;
+        }
+    }
 }

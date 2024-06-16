@@ -26,15 +26,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /** lru cache test */
 public class LRUCacheTests {
 
-  @Test
-  public void lruCacheTest() {
-    LRUCache<String, String> lruCache = new LRUCache<>(5);
-    for (int i = 0; i < 5; i++) {
-      lruCache.put(String.valueOf(i), String.valueOf(i));
+    @Test
+    public void lruCacheTest() {
+        LRUCache<String, String> lruCache = new LRUCache<>(5);
+        for (int i = 0; i < 5; i++) {
+            lruCache.put(String.valueOf(i), String.valueOf(i));
+        }
+        assertEquals(lruCache.size(), 5);
+        lruCache.put("6", "6");
+        assertEquals(lruCache.size(), 5);
+        assertNull(lruCache.get("0"));
     }
-    assertEquals(lruCache.size(), 5);
-    lruCache.put("6", "6");
-    assertEquals(lruCache.size(), 5);
-    assertNull(lruCache.get("0"));
-  }
 }

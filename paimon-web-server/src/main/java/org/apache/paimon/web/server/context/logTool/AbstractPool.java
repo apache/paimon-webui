@@ -22,23 +22,23 @@ import org.apache.paimon.web.server.util.LRUCache;
 
 /** log abstract */
 public abstract class AbstractPool<T> {
-  public abstract LRUCache<String, T> getLRUCache();
+    public abstract LRUCache<String, T> getLRUCache();
 
-  public boolean exist(String key) {
-    return getLRUCache().containsKey(key);
-  }
+    public boolean exist(String key) {
+        return getLRUCache().containsKey(key);
+    }
 
-  public int push(String key, T entity) {
-    getLRUCache().put(key, entity);
-    return getLRUCache().size();
-  }
+    public int push(String key, T entity) {
+        getLRUCache().put(key, entity);
+        return getLRUCache().size();
+    }
 
-  public int remove(String key) {
-    getLRUCache().remove(key);
-    return getLRUCache().size();
-  }
+    public int remove(String key) {
+        getLRUCache().remove(key);
+        return getLRUCache().size();
+    }
 
-  public T get(String key) {
-    return getLRUCache().get(key);
-  }
+    public T get(String key) {
+        return getLRUCache().get(key);
+    }
 }

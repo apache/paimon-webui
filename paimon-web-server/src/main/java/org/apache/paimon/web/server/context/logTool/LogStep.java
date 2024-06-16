@@ -22,106 +22,106 @@ import java.time.LocalDateTime;
 
 /** Record the current log write to step. */
 public class LogStep {
-  private LogStatus stepStatus;
-  private LocalDateTime startTime;
-  private LocalDateTime endTime;
-  private long time;
-  private StringBuilder info = new StringBuilder();
-  private StringBuilder error = new StringBuilder();
-  private boolean isError = false;
+    private LogStatus stepStatus;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private long time;
+    private StringBuilder info = new StringBuilder();
+    private StringBuilder error = new StringBuilder();
+    private boolean isError = false;
 
-  public LogStep() {}
+    public LogStep() {}
 
-  public LogStep(LogStatus stepStatus, LocalDateTime startTime) {
-    this(stepStatus, startTime, null, 0, new StringBuilder(), new StringBuilder());
-  }
+    public LogStep(LogStatus stepStatus, LocalDateTime startTime) {
+        this(stepStatus, startTime, null, 0, new StringBuilder(), new StringBuilder());
+    }
 
-  public LogStep(
-      LogStatus stepStatus,
-      LocalDateTime startTime,
-      LocalDateTime endTime,
-      long time,
-      StringBuilder info,
-      StringBuilder error) {
-    this.stepStatus = stepStatus;
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.time = time;
-    this.info = info;
-    this.error = error;
-  }
+    public LogStep(
+            LogStatus stepStatus,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            long time,
+            StringBuilder info,
+            StringBuilder error) {
+        this.stepStatus = stepStatus;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.time = time;
+        this.info = info;
+        this.error = error;
+    }
 
-  public static LogStep init() {
-    return new LogStep(LogStatus.INITIALIZING, LocalDateTime.now());
-  }
+    public static LogStep init() {
+        return new LogStep(LogStatus.INITIALIZING, LocalDateTime.now());
+    }
 
-  public static LogStep run() {
-    return new LogStep(LogStatus.RUNNING, LocalDateTime.now());
-  }
+    public static LogStep run() {
+        return new LogStep(LogStatus.RUNNING, LocalDateTime.now());
+    }
 
-  public void appendInfo(String str) {
-    info.append(str);
-  }
+    public void appendInfo(String str) {
+        info.append(str);
+    }
 
-  public void appendError(String str) {
-    error.append(str);
-    isError = true;
-  }
+    public void appendError(String str) {
+        error.append(str);
+        isError = true;
+    }
 
-  public LogStatus getStepStatus() {
-    return stepStatus;
-  }
+    public LogStatus getStepStatus() {
+        return stepStatus;
+    }
 
-  public void setStepStatus(LogStatus stepStatus) {
-    this.stepStatus = stepStatus;
-  }
+    public void setStepStatus(LogStatus stepStatus) {
+        this.stepStatus = stepStatus;
+    }
 
-  public LocalDateTime getStartTime() {
-    return startTime;
-  }
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
 
-  public void setStartTime(LocalDateTime startTime) {
-    this.startTime = startTime;
-  }
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
-  public LocalDateTime getEndTime() {
-    return endTime;
-  }
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
 
-  public void setEndTime(LocalDateTime endTime) {
-    this.endTime = endTime;
-    this.time = endTime.compareTo(startTime);
-  }
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+        this.time = endTime.compareTo(startTime);
+    }
 
-  public long getTime() {
-    return time;
-  }
+    public long getTime() {
+        return time;
+    }
 
-  public void setTime(long time) {
-    this.time = time;
-  }
+    public void setTime(long time) {
+        this.time = time;
+    }
 
-  public StringBuilder getInfo() {
-    return info;
-  }
+    public StringBuilder getInfo() {
+        return info;
+    }
 
-  public void setInfo(StringBuilder info) {
-    this.info = info;
-  }
+    public void setInfo(StringBuilder info) {
+        this.info = info;
+    }
 
-  public StringBuilder getError() {
-    return error;
-  }
+    public StringBuilder getError() {
+        return error;
+    }
 
-  public void setError(StringBuilder error) {
-    this.error = error;
-  }
+    public void setError(StringBuilder error) {
+        this.error = error;
+    }
 
-  public boolean isError() {
-    return isError;
-  }
+    public boolean isError() {
+        return isError;
+    }
 
-  public void setError(boolean error) {
-    isError = error;
-  }
+    public void setError(boolean error) {
+        isError = error;
+    }
 }

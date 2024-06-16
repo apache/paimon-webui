@@ -22,24 +22,26 @@ import org.apache.paimon.web.server.util.LRUCache;
 
 /** log read pool for cosole read */
 public class LogReadPool extends AbstractPool<StringBuilder> {
-  private static final LRUCache<String, StringBuilder> consoleEntityCache = new LRUCache<>(64);
+    private static final LRUCache<String, StringBuilder> consoleEntityCache = new LRUCache<>(64);
 
-  private static final LogReadPool instance = new LogReadPool();
+    private static final LogReadPool instance = new LogReadPool();
 
-  public static LogReadPool getInstance() {
-    return instance;
-  }
+    public static LogReadPool getInstance() {
+        return instance;
+    }
 
-  @Override
-  public LRUCache<String, StringBuilder> getLRUCache() {
-    return consoleEntityCache;
-  }
+    @Override
+    public LRUCache<String, StringBuilder> getLRUCache() {
+        return consoleEntityCache;
+    }
 
-  public static void write(String str, String userId) {
-    consoleEntityCache.computeIfAbsent(userId, k -> new StringBuilder("Console:\n")).append(str);
-  }
+    public static void write(String str, String userId) {
+        consoleEntityCache
+                .computeIfAbsent(userId, k -> new StringBuilder("Console:\n"))
+                .append(str);
+    }
 
-  public static void clear(String userId) {
-    consoleEntityCache.put(userId, new StringBuilder("Console:\n"));
-  }
+    public static void clear(String userId) {
+        consoleEntityCache.put(userId, new StringBuilder("Console:\n"));
+    }
 }

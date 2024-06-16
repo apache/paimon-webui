@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JobLogsVo {
-  private String userId;
+    private String userId;
 
-  private String logDetail;
+    private String logDetail;
 }

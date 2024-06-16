@@ -20,31 +20,31 @@ package org.apache.paimon.web.server.context.logTool;
 
 /** support batch streaming */
 public enum LogType {
-  STREAMING("Streaming"),
+    STREAMING("Streaming"),
 
-  BATCH("Batch"),
-  UNKNOWN("Unknown");
+    BATCH("Batch"),
+    UNKNOWN("Unknown");
 
-  private String value;
+    private String value;
 
-  LogType(String value) {
-    this.value = value;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public static LogType get(String value) {
-    for (LogType type : LogType.values()) {
-      if (type.getValue().equalsIgnoreCase(value)) {
-        return type;
-      }
+    LogType(String value) {
+        this.value = value;
     }
-    return LogType.UNKNOWN;
-  }
 
-  public boolean equalsValue(String type) {
-    return value.equalsIgnoreCase(type);
-  }
+    public String getValue() {
+        return value;
+    }
+
+    public static LogType get(String value) {
+        for (LogType type : LogType.values()) {
+            if (type.getValue().equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        return LogType.UNKNOWN;
+    }
+
+    public boolean equalsValue(String type) {
+        return value.equalsIgnoreCase(type);
+    }
 }
