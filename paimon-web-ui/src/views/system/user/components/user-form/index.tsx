@@ -15,8 +15,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { FormItemRule } from 'naive-ui'
-
 import type { UserDTO } from '@/api/models/user/types'
 import { listRoles } from '@/api/models/role'
 
@@ -72,11 +70,7 @@ export default defineComponent({
         message: 'roleIds required',
       },
       mobile: {
-        required: true,
         trigger: ['input'],
-        validator: (rule: FormItemRule, value: string) => {
-          return /^1+[3,8]+\d{9}$/.test(value)
-        },
       },
     }
 

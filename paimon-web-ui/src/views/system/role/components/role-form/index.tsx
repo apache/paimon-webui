@@ -162,7 +162,6 @@ export default defineComponent({
                     key-field="id"
                     default-expand-all
                     block-line
-                    cascade
                     renderLabel={this.renderLabel}
                     onUpdate:checkedKeys={this.onUpdateMenuIds}
                     checkedKeys={this.formValue.menuIds}
