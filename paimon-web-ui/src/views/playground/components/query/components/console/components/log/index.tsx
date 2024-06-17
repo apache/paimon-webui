@@ -16,42 +16,64 @@ specific language governing permissions and limitations
 under the License. */
 
 import styles from './index.module.scss'
-import { getLogs } from '@/api/models/job'
 import { useJobStore } from '@/store/job'
 
 export default defineComponent({
   name: 'LogConsole',
-  setup() {
+  props: {
+    maxHeight: {
+      type: Number as PropType<number>,
+      default: 150,
+    },
+  },
+  setup(props) {
     const jobStore = useJobStore()
-    const currentJob = computed(() => jobStore.getCurrentJob)
-    const logContent = ref('')
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
+    const logContent = computed(() => jobStore.getJobLog)
+    const maxLogHeight = ref(0)
+    const logRef = ref<any>(null)
 
-    let getJobLogsIntervalId: number | undefined
-    watch(currentJob, (newJob) => {
-      if (newJob && getJobLogsIntervalId === undefined) {
-        getJobLogsIntervalId = setInterval(async () => {
-          const response = await getLogs()
-          logContent.value = response.data
-        }, 1000)
-      }
+    function updateLogHeight() {
+      maxLogHeight.value = Math.max(0, props.maxHeight + 52)
+    }
 
-      if (!newJob && getJobLogsIntervalId !== undefined) {
-        clearInterval(getJobLogsIntervalId)
-        getJobLogsIntervalId = undefined
-      }
+    mittBus.on('resizeLog', () => {
+      updateLogHeight()
+    })
+
+    onMounted(() => {
+      nextTick(() => {
+        updateLogHeight()
+      })
+      watchEffect(() => {
+        if (logContent.value) {
+          nextTick(() => {
+            logRef.value?.scrollTo({ position: 'bottom', silent: true })
+          })
+        }
+      })
+    })
+
+    onUnmounted(() => {
+      mittBus.off('resizeLog')
     })
 
     return {
       logContent,
+      maxLogHeight,
+      logRef,
     }
   },
   render() {
     return (
       <div class={styles.container}>
         <n-log
+          ref="logRef"
           class={styles.log}
+          style={{ maxHeight: `${this.maxLogHeight}px` }}
           line-height={1.8}
           log={this.logContent}
+          language="javascript"
         />
       </div>
     )

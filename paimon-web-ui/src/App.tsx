@@ -22,8 +22,12 @@ import {
   enUS,
   zhCN,
 } from 'naive-ui'
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/csharp'
 import { useConfigStore } from '@/store/config'
 import themes from '@/themes'
+
+hljs.registerLanguage('javascript', javascript)
 
 export default defineComponent({
   name: 'App',
@@ -37,6 +41,7 @@ export default defineComponent({
       theme,
       themeOverrides,
       locale,
+      hljs,
     }
   },
   render() {
@@ -47,6 +52,7 @@ export default defineComponent({
         locale={this.locale === 'en' ? enUS : zhCN}
         date-locale={this.locale === 'en' ? dateEnUS : dateZhCN}
         style={{ width: '100%', height: '100vh' }}
+        hljs={this.hljs}
       >
         <n-message-provider>
           <n-dialog-provider>

@@ -18,6 +18,7 @@ under the License. */
 import type * as monaco from 'monaco-editor'
 import { format } from 'sql-formatter'
 import { useMessage } from 'naive-ui'
+import { onMounted } from 'vue'
 import styles from './index.module.scss'
 import MenuTree from './components/menu-tree'
 import EditorTabs from './components/tabs'
@@ -25,7 +26,7 @@ import EditorDebugger from './components/debugger'
 import EditorConsole from './components/console'
 import MonacoEditor from '@/components/monaco-editor'
 import { useJobStore } from '@/store/job'
-import { getJobStatus, refreshJobStatus } from '@/api/models/job'
+import { getJobStatus, getLogs, refreshJobStatus } from '@/api/models/job'
 import { createSession } from '@/api/models/session'
 
 export default defineComponent({
@@ -90,12 +91,23 @@ export default defineComponent({
 
     const handleDragEnd = () => {
       mittBus.emit('editorResized')
+      mittBus.emit('resizeLog')
     }
 
     // mitt - handle tab choose
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
+
+    let getJobLogsIntervalId: number | undefined
+    const getJobLog = () => {
+      getJobLogsIntervalId = setInterval(async () => {
+        const response = await getLogs()
+        jobStore.setJobLog(response.data)
+      }, 1000)
+    }
+
+    onMounted(getJobLog)
 
     let createSessionIntervalId: number | undefined
     watch(currentJob, (newJob) => {
@@ -200,6 +212,10 @@ export default defineComponent({
       if (createSessionIntervalId !== undefined) {
         clearInterval(createSessionIntervalId)
         createSessionIntervalId = undefined
+      }
+      if (getJobLogsIntervalId !== undefined) {
+        clearInterval(getJobLogsIntervalId)
+        getJobLogsIntervalId = undefined
       }
     })
 

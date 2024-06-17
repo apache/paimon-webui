@@ -87,7 +87,7 @@ export default defineComponent({
           pane-style="padding: 0px;box-sizing: border-box;"
         >
           <n-tab-pane name="logs" tab={this.t('playground.logs')}>
-            <LogConsole />
+            <LogConsole maxHeight={this.adjustedHeight} />
           </n-tab-pane>
           <n-tab-pane name="result" tab={this.t('playground.result')}>
             {
