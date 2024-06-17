@@ -26,18 +26,18 @@
 
     <parent>
         <groupId>org.apache.paimon</groupId>
-        <artifactId>paimon-web-plugin</artifactId>
+        <artifactId>paimon-web-plugin-cryptography</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <packaging>pom</packaging>
+    <artifactId>paimon-web-plugin-cryptography-none</artifactId>
 
-    <artifactId>paimon-web-plugin-cryptography</artifactId>
-
-    <modules>
-        <module>paimon-web-plugin-cryptography-api</module>
-        <module>paimon-web-plugin-cryptography-sm</module>
-        <module>paimon-web-plugin-cryptography-none</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.paimon</groupId>
+            <artifactId>paimon-web-plugin-cryptography-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

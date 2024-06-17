@@ -47,7 +47,7 @@ public class DigesterConfiguration {
     @Bean
     public DigesterService digesterService() {
         if (algorithm == null) {
-            return new NoneDigesterService();
+            algorithm = "none";
         }
         ServiceLoader<DigesterServiceFactory> factories =
                 ServiceLoader.load(DigesterServiceFactory.class);
@@ -58,36 +58,6 @@ public class DigesterConfiguration {
                         properties == null ? new Properties() : properties);
             }
         }
-        return new NoneDigesterServiceFactory().getDigesterService(properties);
-    }
-
-    /**
-     * When the encryption algorithm in the configuration file is incorrect, encryption is not
-     * performed.
-     */
-    private static class NoneDigesterService implements DigesterService {
-        @Override
-        public String digestHex(String data) {
-            return data;
-        }
-
-        @Override
-        public String digestHex(String data, String salt) {
-            return data;
-        }
-    }
-
-    /** Factory of {@link NoneDigesterService } . */
-    private static class NoneDigesterServiceFactory implements DigesterServiceFactory {
-
-        @Override
-        public String name() {
-            return "none";
-        }
-
-        @Override
-        public DigesterService getDigesterService(Properties properties) {
-            return new NoneDigesterService();
-        }
+        throw new RuntimeException("Could not find suitable DigesterServiceFactory.");
     }
 }

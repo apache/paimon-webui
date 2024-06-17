@@ -47,7 +47,7 @@ public class SymmetricCryptoConfiguration {
     @Bean
     public SymmetricCryptoService symmetricCryptoService() {
         if (algorithm == null) {
-            return new NoneSymmetricCryptoService();
+            algorithm = "none";
         }
         ServiceLoader<SymmetricCryptoServiceFactory> factories =
                 ServiceLoader.load(SymmetricCryptoServiceFactory.class);
@@ -58,34 +58,6 @@ public class SymmetricCryptoConfiguration {
                         properties == null ? new Properties() : properties);
             }
         }
-        return new NoneSymmetricCryptoServiceFactory().getSymmetricCryptoService(properties);
-    }
-
-    /** NoneSymmetricCryptoService. */
-    private static class NoneSymmetricCryptoService implements SymmetricCryptoService {
-
-        @Override
-        public String encrypt(String data) {
-            return data;
-        }
-
-        @Override
-        public String decrypt(String data) {
-            return data;
-        }
-    }
-
-    /** Factory of {@link NoneSymmetricCryptoService } . */
-    private static class NoneSymmetricCryptoServiceFactory
-            implements SymmetricCryptoServiceFactory {
-        @Override
-        public String name() {
-            return "none";
-        }
-
-        @Override
-        public SymmetricCryptoService getSymmetricCryptoService(Properties properties) {
-            return new NoneSymmetricCryptoService();
-        }
+        throw new RuntimeException("Could not find suitable SymmetricCryptoServiceFactory.");
     }
 }
