@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.server.context.logtool;
 
+import org.apache.paimon.web.server.util.LocalDateTimeUtil;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +117,9 @@ public class LogEntity {
         }
         steps.get(stepIndex - 1).setEndTime(LocalDateTime.now());
         String message =
-                String.format("\n[%s] %s INFO: %s", type.getValue(), LocalDateTime.now(), str);
+                String.format(
+                        "\n[%s] INFO: %s",
+                        LocalDateTimeUtil.getFormattedDateTime(LocalDateTime.now()), str);
         steps.get(stepIndex - 1).appendInfo(message);
         setStatus(LogStatus.FINISHED);
         setEndTime(LocalDateTime.now());
@@ -128,7 +132,9 @@ public class LogEntity {
             return;
         }
         String message =
-                String.format("\n[%s] %s CONFIG: %s", type.getValue(), LocalDateTime.now(), str);
+                String.format(
+                        "\n[%s] CONFIG: %s",
+                        LocalDateTimeUtil.getFormattedDateTime(LocalDateTime.now()), str);
         steps.get(stepIndex - 1).appendInfo(message);
         LogReadPool.write(message, userId);
     }
@@ -138,7 +144,9 @@ public class LogEntity {
             return;
         }
         String message =
-                String.format("\n[%s] %s INFO: %s", type.getValue(), LocalDateTime.now(), str);
+                String.format(
+                        "\n[%s] INFO: %s",
+                        LocalDateTimeUtil.getFormattedDateTime(LocalDateTime.now()), str);
         steps.get(stepIndex - 1).appendInfo(message);
         LogReadPool.write(message, userId);
     }
@@ -164,7 +172,9 @@ public class LogEntity {
             return;
         }
         String message =
-                String.format("\n[%s] %s ERROR: %s", type.getValue(), LocalDateTime.now(), str);
+                String.format(
+                        "\n[%s] ERROR: %s",
+                        LocalDateTimeUtil.getFormattedDateTime(LocalDateTime.now()), str);
         steps.get(stepIndex - 1).appendInfo(message);
         steps.get(stepIndex - 1).appendError(message);
         LogReadPool.write(message, userId);
