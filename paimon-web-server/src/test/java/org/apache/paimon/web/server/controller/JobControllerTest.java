@@ -279,6 +279,31 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
 
     @Test
     @Order(5)
+    public void testGetLogs() throws Exception {
+        QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("cluster_name", "test_cluster");
+        ClusterInfo one = clusterService.getOne(queryWrapper);
+        JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
+        jobSubmitDTO.setJobName("flink-job-test-get-job-status");
+        jobSubmitDTO.setTaskType("Flink");
+        jobSubmitDTO.setStreaming(true);
+        jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
+        jobSubmitDTO.setStatements(StatementsConstant.selectStatement);
+
+        String responseString = submit(jobSubmitDTO);
+        R<JobVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<JobVO>>() {});
+        assertEquals(200, r.getCode());
+
+        String logsResponseStr = getLogs();
+        R<String> getJobStatusRes =
+                ObjectMapperUtils.fromJSON(logsResponseStr, new TypeReference<R<String>>() {});
+        assertEquals(200, getJobStatusRes.getCode());
+
+        assertNotNull(getJobStatusRes.getData());
+    }
+
+    @Test
+    @Order(6)
     public void testStopJob() throws Exception {
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
@@ -332,7 +357,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void testGetJobStatistics() throws Exception {
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("cluster_name", "test_cluster");
@@ -373,7 +398,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void testExecutionMode() {
         History history = historyService.list().get(0);
         assertTrue(history.getStatements().contains("SET 'execution.runtime-mode' = 'streaming';"));
@@ -396,6 +421,19 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     private String getJobStatus(String jobId) throws Exception {
         return mockMvc.perform(
                         MockMvcRequestBuilders.get(jobPath + "/status/get/" + jobId)
+                                .cookie(cookie)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+    }
+
+    private String getLogs() throws Exception {
+        return mockMvc.perform(
+                        MockMvcRequestBuilders.get(jobPath + "/logs/get")
                                 .cookie(cookie)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))
