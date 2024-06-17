@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** Test for {@link Sm4SymmetricCryptoServiceTest}. */
+/** Test for {@link Sm4SymmetricCryptoService}. */
 public class Sm4SymmetricCryptoServiceTest {
 
     @Test
