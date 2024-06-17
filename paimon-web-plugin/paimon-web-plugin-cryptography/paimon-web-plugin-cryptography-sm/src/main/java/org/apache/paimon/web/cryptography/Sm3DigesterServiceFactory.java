@@ -21,12 +21,9 @@ package org.apache.paimon.web.cryptography;
 import org.apache.paimon.web.cyptography.DigesterService;
 import org.apache.paimon.web.cyptography.DigesterServiceFactory;
 
-import com.google.auto.service.AutoService;
-
 import java.util.Properties;
 
 /** Factory of {@link Sm3DigesterServiceFactory}. */
-@AutoService(DigesterServiceFactory.class)
 public class Sm3DigesterServiceFactory implements DigesterServiceFactory {
     @Override
     public String name() {

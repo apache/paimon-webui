@@ -21,12 +21,9 @@ package org.apache.paimon.web.cryptography;
 import org.apache.paimon.web.cyptography.SymmetricCryptoService;
 import org.apache.paimon.web.cyptography.SymmetricCryptoServiceFactory;
 
-import com.google.auto.service.AutoService;
-
 import java.util.Properties;
 
 /** Factory of {@link Sm4SymmetricCryptoService}. */
-@AutoService(SymmetricCryptoServiceFactory.class)
 public class Sm4SymmetricCryptoServiceFactory implements SymmetricCryptoServiceFactory {
 
     @Override
