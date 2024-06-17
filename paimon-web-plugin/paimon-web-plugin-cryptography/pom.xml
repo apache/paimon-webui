@@ -37,7 +37,6 @@
     <modules>
         <module>paimon-web-plugin-cryptography-api</module>
         <module>paimon-web-plugin-cryptography-sm</module>
-        <module>paimon-web-plugin-cryptography-all</module>
     </modules>
 
 </project>
