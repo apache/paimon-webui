@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface UserState {
+  userId: number
   username: string | null
   nickname: string | null
   directories: Array<string>
@@ -26,6 +27,7 @@ export interface UserState {
 export const useUserStore = defineStore({
   id: 'user',
   state: (): UserState => ({
+    userId: 1,
     username: '',
     nickname: '',
     directories: [],
@@ -34,6 +36,9 @@ export const useUserStore = defineStore({
   }),
   persist: true,
   getters: {
+    getUserId(): number {
+      return this.userId
+    },
     getUsername(): string | null {
       return this.username
     },
@@ -51,6 +56,9 @@ export const useUserStore = defineStore({
     },
   },
   actions: {
+    setUserId(userId: number): void {
+      this.userId = userId
+    },
     setUsername(username: string): void {
       this.username = username
     },

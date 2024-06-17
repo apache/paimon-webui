@@ -24,4 +24,6 @@ export default {
   light: 'Light',
   dark: 'Dark',
   logout: 'Logout',
+  change_password: 'Change Password',
+  modify: 'Modify',
 }

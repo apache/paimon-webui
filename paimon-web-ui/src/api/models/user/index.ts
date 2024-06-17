@@ -55,3 +55,10 @@ export function updateUser() {
 export function deleteUser(userId: number) {
   return httpRequest.delete!<unknown, UserDTO>(`/user/${userId}`)
 }
+
+/**
+ * # Change password
+ */
+export function changePassword(user: UserDTO) {
+  return httpRequest.post('/user/change/password', user)
+}

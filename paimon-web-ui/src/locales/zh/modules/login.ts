@@ -24,4 +24,6 @@ export default {
   light: '浅色',
   dark: '暗色',
   logout: '退出登录',
+  change_password: '修改密码',
+  modify: '修改',
 }
