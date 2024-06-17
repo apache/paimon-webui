@@ -27,10 +27,12 @@ import org.bouncycastle.util.encoders.Hex;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
 
-/** Sm3 Cryptographic Algorithm. */
+/**
+ * Sm3 Cryptographic Algorithm.
+ */
 public class Sm3DigesterService implements DigesterService {
 
-    private String confoundKey = "";
+    private String confoundKey;
 
     public Sm3DigesterService(String confoundKey) {
         Security.addProvider(new BouncyCastleProvider());
@@ -41,7 +43,7 @@ public class Sm3DigesterService implements DigesterService {
 
     @Override
     public String digestHex(String data) {
-        String confounded = data + confoundKey;
+        String confounded = data + (confoundKey != null ? confoundKey : "");
         byte[] dataBytes = confounded.getBytes(StandardCharsets.UTF_8);
         SM3Digest sm3Digest = new SM3Digest();
         sm3Digest.update(dataBytes, 0, dataBytes.length);
