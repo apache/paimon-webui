@@ -24,6 +24,7 @@ export default {
   data_file: 'Data File',
 
   create_catalog: 'Create Catalog',
+  delete_catalog: 'Delete Catalog',
   catalog_name: 'Catalog Name',
   catalog_type: 'Catalog Type',
   catalog_warehouse: 'Warehouse',
@@ -35,10 +36,13 @@ export default {
   catalog_secret_key: 'Secret Key',
 
   create_database: 'Create Database',
+  delete_database: 'Delete Database',
   database_name: 'Database Name',
   database_des: 'Database Description',
 
   create_table: 'Create Table',
+  rename_table: 'Rename Table',
+  delete_table: 'Delete Table',
   table_basic_information: 'Basic Information',
   table_name: 'Table Name',
   table_des: 'Table Description',

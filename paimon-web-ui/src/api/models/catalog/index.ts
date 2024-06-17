@@ -59,6 +59,16 @@ export function createCatalog() {
 }
 
 /**
+ * # Remove a Catalog
+ */
+export function removeCatalog() {
+  return httpRequest.createHooks!<unknown, CatalogDTO>({
+    url: '/catalog/remove',
+    method: 'post',
+  })
+}
+
+/**
  * # Get database by catalog id
  */
 export function getDatabasesByCatalogId(id: number) {
@@ -71,6 +81,16 @@ export function getDatabasesByCatalogId(id: number) {
 export function createDatabase() {
   return httpRequest.createHooks!<unknown, DatabaseDTO>({
     url: '/database/create',
+    method: 'post',
+  })
+}
+
+/**
+ * # Drop a Database
+ */
+export function dropDatabase() {
+  return httpRequest.createHooks!<unknown, DatabaseDTO>({
+    url: '/database/drop',
     method: 'post',
   })
 }
@@ -90,6 +110,20 @@ export function createTable() {
     url: '/table/create',
     method: 'post',
   })
+}
+
+/**
+ * # Drop a Table
+ */
+export function dropTable(catalogName: string, databaseName: string, tableName: string) {
+  return httpRequest.delete!<unknown, unknown>(`/table/drop/${catalogName}/${databaseName}/${tableName}`)
+}
+
+/**
+ * # Rename a Table
+ */
+export function renameTable(catalogName: string, databaseName: string, fromTableName: string, toTableName: string) {
+  return httpRequest.post(`/table/rename?catalogName=${catalogName}&databaseName=${databaseName}&fromTableName=${fromTableName}&toTableName=${toTableName}`)
 }
 
 /**
