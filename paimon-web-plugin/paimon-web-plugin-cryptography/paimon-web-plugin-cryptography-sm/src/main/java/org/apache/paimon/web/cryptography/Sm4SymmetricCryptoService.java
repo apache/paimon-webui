@@ -48,7 +48,7 @@ public class Sm4SymmetricCryptoService implements SymmetricCryptoService {
             byte[] bytes = cipher.doFinal(keyBytes);
             return Hex.toHexString(bytes);
         } catch (Exception e) {
-            throw new Sm4Exception(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -71,7 +71,7 @@ public class Sm4SymmetricCryptoService implements SymmetricCryptoService {
             byte[] bytes = cipher.doFinal(decode);
             return new String(bytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            throw new Sm4Exception(e);
+            throw new RuntimeException(e);
         }
     }
 }
