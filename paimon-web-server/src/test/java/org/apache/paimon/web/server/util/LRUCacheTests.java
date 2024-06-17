@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class LRUCacheTests {
 
     @Test
-    public void lruCacheTest() {
+    public void testLRUCache() {
         LRUCache<String, String> lruCache = new LRUCache<>(5);
         for (int i = 0; i < 5; i++) {
             lruCache.put(String.valueOf(i), String.valueOf(i));
