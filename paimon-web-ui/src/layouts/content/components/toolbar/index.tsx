@@ -139,7 +139,7 @@ export default defineComponent({
   },
   render() {
     return (
-      <n-space align="center" size={20}>
+      <n-space align="center" size={20} item-style="display: flex; align-items: center">
         <n-popover
           trigger="hover"
           placement="bottom"
