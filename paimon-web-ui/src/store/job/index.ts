@@ -24,6 +24,7 @@ export interface JobState {
   jobResultData: JobResultData | null
   jobStatus: string
   executionTime: string
+  jobLog?: string
 }
 
 export const useJobStore = defineStore({
@@ -34,6 +35,7 @@ export const useJobStore = defineStore({
     jobResultData: null,
     jobStatus: '',
     executionTime: '0m:0s',
+    jobLog: '',
   }),
   persist: false,
   getters: {
@@ -68,6 +70,9 @@ export const useJobStore = defineStore({
     getExecutionTime(): string {
       return this.executionTime
     },
+    getJobLog(): string | undefined {
+      return this.jobLog
+    },
   },
   actions: {
     setExecutionMode(executionMode: ExecutionMode) {
@@ -84,6 +89,9 @@ export const useJobStore = defineStore({
     },
     setExecutionTime(executionTime: string) {
       this.executionTime = executionTime
+    },
+    setJobLog(jobLog: string) {
+      this.jobLog = jobLog
     },
     resetCurrentResult() {
       this.currentJob = null

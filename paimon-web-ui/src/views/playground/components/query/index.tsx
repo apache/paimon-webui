@@ -18,6 +18,7 @@ under the License. */
 import type * as monaco from 'monaco-editor'
 import { format } from 'sql-formatter'
 import { useMessage } from 'naive-ui'
+import { onMounted } from 'vue'
 import styles from './index.module.scss'
 import MenuTree from './components/menu-tree'
 import EditorTabs from './components/tabs'
@@ -25,7 +26,7 @@ import EditorDebugger from './components/debugger'
 import EditorConsole from './components/console'
 import MonacoEditor from '@/components/monaco-editor'
 import { useJobStore } from '@/store/job'
-import { getJobStatus, refreshJobStatus } from '@/api/models/job'
+import { getJobStatus, getLogs, refreshJobStatus } from '@/api/models/job'
 import { createSession } from '@/api/models/session'
 
 export default defineComponent({
@@ -90,12 +91,23 @@ export default defineComponent({
 
     const handleDragEnd = () => {
       mittBus.emit('editorResized')
+      mittBus.emit('resizeLog')
     }
 
     // mitt - handle tab choose
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
+
+    let getJobLogsIntervalId: number | undefined
+    const getJobLog = () => {
+      getJobLogsIntervalId = setInterval(async () => {
+        const response = await getLogs()
+        jobStore.setJobLog(response.data)
+      }, 1000)
+    }
+
+    onMounted(getJobLog)
 
     let createSessionIntervalId: number | undefined
     watch(currentJob, (newJob) => {
@@ -201,6 +213,10 @@ export default defineComponent({
         clearInterval(createSessionIntervalId)
         createSessionIntervalId = undefined
       }
+      if (getJobLogsIntervalId !== undefined) {
+        clearInterval(getJobLogsIntervalId)
+        getJobLogsIntervalId = undefined
+      }
     })
 
     return {
@@ -243,44 +259,46 @@ export default defineComponent({
                       )
                     }
                   </div>
-                  <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
-                    {{
-                      '1': () => (
-                        <div class={styles.editor}>
-                          {
-                            this.tabData.panelsList?.length > 0
-                            && (
-                              <n-card content-style="height: 100%;padding: 0;">
-                                <MonacoEditor
-                                  v-model={this.tabData.panelsList.find((item: any) => item.key === this.tabData.chooseTab).content}
-                                  language={this.language}
-                                  onEditorMounted={this.editorMounted}
-                                  onEditorSave={this.editorSave}
-                                  onChange={this.handleContentChange}
-                                />
-                              </n-card>
-                            )
-                          }
-                        </div>
-                      ),
-                      '2': () => (this.showConsole && (
-                        <div class={styles.console}>
-                          {
+                  <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
+                    <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
+                      {{
+                        '1': () => (
+                          <div class={styles.editor}>
+                            {
                               this.tabData.panelsList?.length > 0
                               && (
                                 <n-card content-style="height: 100%;padding: 0;">
-                                  <EditorConsole onConsoleDown={this.handleConsoleDown} onConsoleUp={this.handleConsoleUp} onConsoleClose={this.handleConsoleClose} />
+                                  <MonacoEditor
+                                    v-model={this.tabData.panelsList.find((item: any) => item.key === this.tabData.chooseTab).content}
+                                    language={this.language}
+                                    onEditorMounted={this.editorMounted}
+                                    onEditorSave={this.editorSave}
+                                    onChange={this.handleContentChange}
+                                  />
                                 </n-card>
                               )
                             }
-                        </div>
-                      )
-                      ),
-                      'resize-trigger': () => (
-                        <div class={styles['console-splitter']} />
-                      ),
-                    }}
-                  </n-split>
+                          </div>
+                        ),
+                        '2': () => (this.showConsole && (
+                          <div class={styles.console}>
+                            {
+                                this.tabData.panelsList?.length > 0
+                                && (
+                                  <n-card content-style="height: 100%;padding: 0;">
+                                    <EditorConsole onConsoleDown={this.handleConsoleDown} onConsoleUp={this.handleConsoleUp} onConsoleClose={this.handleConsoleClose} />
+                                  </n-card>
+                                )
+                              }
+                          </div>
+                        )
+                        ),
+                        'resize-trigger': () => (
+                          <div class={styles['console-splitter']} />
+                        ),
+                      }}
+                    </n-split>
+                  </div>
                 </n-card>
               </div>
             ),

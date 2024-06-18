@@ -19,6 +19,7 @@ import { CloseSharp, KeyboardDoubleArrowDownSharp, KeyboardDoubleArrowUpSharp } 
 import { throttle } from 'lodash'
 import TableActionBar from './components/controls'
 import TableResult from './components/table'
+import LogConsole from './components/log'
 import styles from './index.module.scss'
 
 export default defineComponent({
@@ -77,7 +78,7 @@ export default defineComponent({
   },
   render() {
     return (
-      <div class={styles['editor-console']} ref="editorConsoleRef">
+      <div class={styles.container} ref="editorConsoleRef">
         <n-tabs
           type="line"
           size="large"
@@ -86,7 +87,7 @@ export default defineComponent({
           pane-style="padding: 0px;box-sizing: border-box;"
         >
           <n-tab-pane name="logs" tab={this.t('playground.logs')}>
-            {/* {this.t('playground.logs')} */}
+            <LogConsole maxHeight={this.adjustedHeight} />
           </n-tab-pane>
           <n-tab-pane name="result" tab={this.t('playground.result')}>
             {
