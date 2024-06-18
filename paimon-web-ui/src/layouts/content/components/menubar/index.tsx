@@ -29,7 +29,7 @@ export default defineComponent({
   name: 'MenuBar',
   setup() {
     const configStore = useConfigStore()
-    const activeKey = ref<string | null>('playground')
+    const activeKey = ref<string>('playground')
 
     const handleUpdateValue = (value: string) => {
       activeKey.value = value
