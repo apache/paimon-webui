@@ -14,17 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-FROM eclipse-temurin:8-jre
+ARG java_image_tag=8-jdk-focal
+FROM eclipse-temurin:${java_image_tag}
 
 ENV DOCKER true
 ENV TZ Asia/Shanghai
 ENV PAIMON_UI_HOME /opt/paimon-webui
 
-WORKDIR $PAIMON_UI_HOME
+COPY target/paimon-web-server $PAIMON_UI_HOME
 
-ADD ./target/paimon-web-server $PAIMON_UI_HOME
+RUN useradd paimon && chown -R paimon:paimon $PAIMON_UI_HOME
+
+USER paimon
+
+WORKDIR $PAIMON_UI_HOME
 
 EXPOSE 10088
 
-CMD [ "/bin/bash", "./bin/start.sh" ]
+CMD [ "/bin/bash", "./bin/start.sh"]
