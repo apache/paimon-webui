@@ -134,12 +134,18 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
         try {
             logWriter.start();
+            logWriter.info(
+                    String.format(
+                            "Starting to submit %s %s job...",
+                            jobSubmitDTO.getTaskType(), executeMode));
             ExecutionResult executionResult = executor.executeSql(jobSubmitDTO.getStatements());
             if (StringUtils.isNotBlank(executionResult.getJobId())) {
                 JobInfo jobInfo = buildJobInfo(executionResult, jobSubmitDTO);
                 this.save(jobInfo);
             }
-            logWriter.finish(String.format("Execute %s job finished.", jobSubmitDTO.getTaskType()));
+            logWriter.finish(
+                    String.format(
+                            "Execution successful [Job ID: %s].", executionResult.getJobId()));
             historyService.saveHistory(
                     History.builder()
                             .name(LocalDateTimeUtil.getFormattedDateTime(LocalDateTime.now()))
@@ -249,8 +255,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                 LogContextHolder.registerProcess(
                         LogEntity.init(LogType.UNKNOWN, getLoginIdAsString()));
         try {
-            logWriter.info(
-                    String.format("Initializing %s job config...", stopJobDTO.getTaskType()));
+            logWriter.info(String.format("Starting to stop %s job...", stopJobDTO.getTaskType()));
             Executor executor = getExecutor(stopJobDTO.getClusterId(), stopJobDTO.getTaskType());
             if (executor == null) {
                 logWriter.error("No executor available for job stopping.");
@@ -271,6 +276,10 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                 log.error(
                         "Failed to update job status in the database for jobId: {}",
                         stopJobDTO.getJobId());
+            } else {
+                logWriter.info(
+                        String.format(
+                                "Successfully stopped job [Job ID: %s].", stopJobDTO.getJobId()));
             }
             logWriter.finish();
         } catch (Exception e) {
