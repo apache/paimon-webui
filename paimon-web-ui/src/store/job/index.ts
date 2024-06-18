@@ -24,7 +24,7 @@ export interface JobState {
   jobResultData: JobResultData | null
   jobStatus: string
   executionTime: string
-  jobLog: string
+  jobLog?: string
 }
 
 export const useJobStore = defineStore({
@@ -70,7 +70,7 @@ export const useJobStore = defineStore({
     getExecutionTime(): string {
       return this.executionTime
     },
-    getJobLog(): string {
+    getJobLog(): string | undefined {
       return this.jobLog
     },
   },
