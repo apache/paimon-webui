@@ -80,16 +80,6 @@ export default defineComponent({
 
     onUnmounted(catalogStore.resetCurrentTable)
 
-    watch(
-      () => filterValue.value,
-      async (newValue) => {
-        if (!newValue && isSearch.value) {
-          isSearch.value = false
-          await catalogStore.getAllCatalogs(true)
-        }
-      },
-    )
-
     const onLoadMenu = async (node: TreeOption) => {
       if (node.type === 'catalog') {
         node.children = await catalogStore.getDatabasesById(node.key as number)
@@ -258,10 +248,12 @@ export default defineComponent({
 
     const onSearch = async (e: KeyboardEvent) => {
       if (e.code === 'Enter') {
-        isSearch.value = true
-        await catalogStore.getTablesByDataBaseId({
-          name: filterValue.value,
-        })
+        isSearch.value = Boolean(filterValue.value)
+        filterValue.value
+          ? await catalogStore.getTablesByDataBaseId({
+            name: filterValue.value,
+          })
+          : await catalogStore.getAllCatalogs(true)
       }
     }
 
@@ -318,7 +310,6 @@ export default defineComponent({
                     block-line
                     expand-on-click
                     data={this.menuList}
-                    defaultExpandAll={this.isSearch}
                     nodeProps={this.nodeProps}
                     renderSuffix={this.renderSuffix}
                     renderSwitcherIcon={this.renderPrefix}
