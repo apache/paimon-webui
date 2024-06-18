@@ -1,0 +1,87 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+# http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paimon-web-deployment # Deployment name for Paimon Web UI
+  labels:
+    app: paimon-web # Label to categorize the Deployment
+
+spec:
+  replicas: 1 # Number of desired replicas
+  selector: # Selector to match Pods controlled by this Deployment
+    matchLabels:
+      app: paimon-web
+
+  strategy:
+    type: RollingUpdate # Strategy for updating Pods
+    rollingUpdate:
+      maxSurge: 25% # Maximum surge of new Pods during update
+      maxUnavailable: 0 # Ensure no Pods are unavailable during update
+
+  template: # Pod template specification
+    metadata:
+      labels:
+        app: paimon-web # Pod labels to match Deployment selector
+
+    spec:
+      serviceAccountName: default # Use the default service account
+      containers:
+        - name: paimon-web-container # Name of the container
+          ports:
+            - containerPort: 10088 # Exposed port within the container
+              name: "port"
+
+          image: apache/paimon-webui:latest # Docker image to use
+          imagePullPolicy: IfNotPresent # Always pull the latest image
+
+          env: # Environment variables for container configuration
+          - name: MYSQL_HOST # MySQL host address
+            value: xxxxx
+          - name: MYSQL_USERNAME # MySQL username
+            value: xxxxx
+          - name: MYSQL_PASSWORD # MySQL password
+            value: xxxxx
+          - name: ACTION_JAR_PATH # Path to action JAR file
+            value: xxxxx
+          - name: FLINK_HOME # Home directory for Flink
+            value: xxxxx
+          - name: JAVA_HOME
+            value: java
+          livenessProbe: # Liveness probe to check container health
+            exec: # Command execution for probe
+              command: ["curl", "-s", "http://localhost:10088/actuator/health/liveness"]
+            initialDelaySeconds: 30 # Initial delay before probe starts
+            periodSeconds: 30 # How often to perform the probe
+            timeoutSeconds: 5 # Probe timeout
+            successThreshold: 1 # Minimum consecutive successes for healthy status
+            failureThreshold: 1 # Minimum consecutive failures for unhealthy status
+
+          readinessProbe: # Readiness probe to verify if Pod is ready to serve traffic
+            exec:
+              command: ["curl", "-s", "http://localhost:10088/actuator/health/readiness"]
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 1
+
+          volumeMounts: # Volume mounts for the container
+            - mountPath: /opt/paimon/config # Path where the volume is mounted inside the container
+              name: config-volume # Named volume
+      volumes:
+        - name: config-volume
+          configMap:
+            name: paimon-web-configmap
+
