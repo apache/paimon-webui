@@ -32,6 +32,7 @@ import org.apache.paimon.web.server.service.JobService;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,6 +99,12 @@ public class JobController {
     @GetMapping("/statistics/get")
     public R<JobStatisticsVO> getJobStatistics() {
         return R.succeed(jobService.getJobStatistics());
+    }
+
+    @SaCheckPermission("playground:job:query")
+    @GetMapping("/logs/get")
+    public R<String> getLogs() {
+        return R.succeed(jobService.getLogsByUserId(StpUtil.getLoginIdAsString()));
     }
 
     @SaCheckPermission("playground:job:stop")

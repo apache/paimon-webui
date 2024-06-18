@@ -15,20 +15,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-export interface Database {
-  name: string
-  catalogId: number
-  catalogName: string
-  description?: string
-}
+import httpRequest from '../../request'
 
-export interface DatabaseFormDTO {
-  name: string
-  description?: string
-}
-
-export interface DatabaseDTO extends DatabaseFormDTO {
-  catalogId: number
-  ignoreIfExists?: boolean
-  cascade?: boolean
+/**
+ * # Create a session
+ */
+export function createSession() {
+  return httpRequest.post('/session/create')
 }

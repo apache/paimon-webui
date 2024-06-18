@@ -16,31 +16,63 @@ specific language governing permissions and limitations
 under the License. */
 
 export interface UserState {
+  userId: number
   username: string | null
   nickname: string | null
+  directories: Array<string>
+  menus: Array<string>
+  admin: boolean
 }
 
 export const useUserStore = defineStore({
-  id: 'config',
+  id: 'user',
   state: (): UserState => ({
+    userId: 1,
     username: '',
     nickname: '',
+    directories: [],
+    menus: [],
+    admin: false,
   }),
   persist: true,
   getters: {
+    getUserId(): number {
+      return this.userId
+    },
     getUsername(): string | null {
       return this.username
     },
     getNickname(): string | null {
       return this.nickname
     },
+    getMenus(): Array<string> | null {
+      return this.menus
+    },
+    getDiresctoies(): Array<string> {
+      return this.directories
+    },
+    getAdmin(): boolean | null {
+      return this.admin
+    },
   },
   actions: {
+    setUserId(userId: number): void {
+      this.userId = userId
+    },
     setUsername(username: string): void {
       this.username = username
     },
     setNickname(nickname: string): void {
       this.nickname = nickname
+    },
+    setAdmin(admin: boolean): void {
+      this.admin = admin
+    },
+    setMenus(menus: Array<string>): void {
+      this.menus = menus
+    },
+    setDirectories(directories: Array<string>) {
+      this.directories = directories
     },
   },
 })

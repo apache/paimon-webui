@@ -20,7 +20,7 @@ import { LANGUAGES } from '@/locales'
 
 export const useConfigStore = defineStore({
   id: 'config',
-  state: (): { theme: Theme, locale: LANGUAGES, navActive: NavBar, menuActive: Menu } => ({
+  state: (): { theme: Theme, locale: LANGUAGES, navActive: NavBar | null, menuActive: Menu } => ({
     theme: 'light',
     locale: LANGUAGES.ZH,
     navActive: 'playground',
@@ -34,7 +34,7 @@ export const useConfigStore = defineStore({
     getCurrentTheme(): Theme {
       return this.theme
     },
-    getCurrentNavActive(): NavBar {
+    getCurrentNavActive(): NavBar | null {
       return this.navActive
     },
     getCurrentMenuActive(): Menu {
@@ -48,7 +48,7 @@ export const useConfigStore = defineStore({
     setCurrentTheme(theme: Theme): void {
       this.theme = theme
     },
-    setCurrentNavActive(navActive: NavBar): void {
+    setCurrentNavActive(navActive: NavBar | null): void {
       this.navActive = navActive
     },
     setCurrentMenuActive(menuActive: Menu): void {

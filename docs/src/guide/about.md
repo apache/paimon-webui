@@ -1,4 +1,5 @@
-/* Licensed to the Apache Software Foundation (ASF) under one
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
 regarding copyright ownership.  The ASF licenses this file
@@ -13,22 +14,10 @@ software distributed under the License is distributed on an
 "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
-under the License. */
+under the License.
+-->
+# About Paimon Web
 
-export interface Database {
-  name: string
-  catalogId: number
-  catalogName: string
-  description?: string
-}
-
-export interface DatabaseFormDTO {
-  name: string
-  description?: string
-}
-
-export interface DatabaseDTO extends DatabaseFormDTO {
-  catalogId: number
-  ignoreIfExists?: boolean
-  cascade?: boolean
-}
+Paimon Web, the Web UI for Apache Paimon, enhances the management of Paimon table information through advanced visualization capabilities. 
+It incorporates robust permission management features to ensure secure operations across Paimon tables. Additionally, 
+Paimon Web includes a SQL IDE that supports the execution of Flink SQL, making it a powerful and user-friendly tool for managing data and executing complex SQL operations.

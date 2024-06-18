@@ -25,7 +25,8 @@ import EditorDebugger from './components/debugger'
 import EditorConsole from './components/console'
 import MonacoEditor from '@/components/monaco-editor'
 import { useJobStore } from '@/store/job'
-import { getJobStatus } from '@/api/models/job'
+import { getJobStatus, refreshJobStatus } from '@/api/models/job'
+import { createSession } from '@/api/models/session'
 
 export default defineComponent({
   name: 'QueryPage',
@@ -96,6 +97,34 @@ export default defineComponent({
       tabData.value = data
     })
 
+    let createSessionIntervalId: number | undefined
+    watch(currentJob, (newJob) => {
+      if (newJob && createSessionIntervalId === undefined) {
+        createSessionIntervalId = setInterval(() => {
+          createSession()
+        }, 300000)
+      }
+
+      if (!newJob && createSessionIntervalId !== undefined) {
+        clearInterval(createSessionIntervalId)
+        createSessionIntervalId = undefined
+      }
+    })
+
+    let refreshJobStatusIntervalId: number | undefined
+    watch(currentJob, (newJob) => {
+      if (newJob && refreshJobStatusIntervalId === undefined) {
+        refreshJobStatusIntervalId = setInterval(() => {
+          refreshJobStatus()
+        }, 1000)
+      }
+
+      if (!newJob && refreshJobStatusIntervalId !== undefined) {
+        clearInterval(refreshJobStatusIntervalId)
+        refreshJobStatusIntervalId = undefined
+      }
+    })
+
     const getJobStatusIntervalId = ref<number | undefined>()
 
     const stopGetJobStatus = () => {
@@ -162,7 +191,17 @@ export default defineComponent({
 
     watch(formattedTime, formattedTime => jobStore.setExecutionTime(formattedTime))
 
-    onUnmounted(() => jobStore.resetCurrentResult())
+    onUnmounted(() => {
+      jobStore.resetCurrentResult()
+      if (refreshJobStatusIntervalId !== undefined) {
+        clearInterval(refreshJobStatusIntervalId)
+        refreshJobStatusIntervalId = undefined
+      }
+      if (createSessionIntervalId !== undefined) {
+        clearInterval(createSessionIntervalId)
+        createSessionIntervalId = undefined
+      }
+    })
 
     return {
       ...toRefs(editorVariables),

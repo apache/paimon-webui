@@ -43,33 +43,40 @@ export function useData() {
     {
       label: () => renderLabel(t('layout.playground'), 'playground'),
       key: 'playground',
+      menuName: 'playground',
       icon: renderIcon(Code),
     },
     {
       label: () => renderLabel(t('layout.metadata'), 'metadata'),
       key: 'metadata',
+      menuName: 'metadata',
       icon: renderIcon(Catalog),
     },
     {
       label: () => renderLabel(t('layout.cdc_ingestion'), 'cdc_ingestion'),
       key: 'cdc_ingestion',
+      menuName: 'cdc',
       icon: renderIcon(FileSyncOutlined),
     },
     {
       label: () => renderLabel(t('layout.system'), 'system'),
       key: 'system',
+      menuName: 'system',
       icon: renderIcon(SettingsOutline),
       sideMenuOptions: [{
         label: () => renderLabel(t('layout.user'), 'system'),
         key: '/system/user',
+        menuName: 'user_manager',
         icon: renderIcon(UserOutlined),
       }, {
         label: () => renderLabel(t('layout.role'), 'system'),
         key: '/system/role',
+        menuName: 'role_manager',
         icon: renderIcon(UserSwitchOutlined),
       }, {
         label: () => renderLabel(t('layout.cluster'), 'system'),
         key: '/system/cluster',
+        menuName: 'menu_manager',
         icon: renderIcon(ClusterOutlined),
       }],
     },
