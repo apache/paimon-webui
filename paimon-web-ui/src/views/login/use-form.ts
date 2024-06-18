@@ -56,7 +56,7 @@ export function useForm() {
             return e.menuName
           }) || [])
         })
-        router.push({ path: '/' })
+        router.push({ path: '/playground/query' })
       }
     })
   }
