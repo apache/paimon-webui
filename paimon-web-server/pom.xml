@@ -253,7 +253,12 @@ under the License.
             <artifactId>paimon-web-plugin-cryptography-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.paimon</groupId>
+            <artifactId>paimon-web-plugin-cryptography-sm</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -372,17 +377,5 @@ under the License.
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>cryptography-sm</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.paimon</groupId>
-                    <artifactId>paimon-web-plugin-cryptography-sm</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>
 

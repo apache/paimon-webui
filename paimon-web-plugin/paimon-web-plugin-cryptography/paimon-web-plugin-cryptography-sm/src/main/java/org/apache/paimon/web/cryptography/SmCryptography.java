@@ -18,10 +18,7 @@
 
 package org.apache.paimon.web.cryptography;
 
-import lombok.Getter;
-
 /** Sm's cryptography type. */
-@Getter
 public enum SmCryptography {
     SM4("sm4"),
     SM3("sm3");
@@ -30,5 +27,9 @@ public enum SmCryptography {
 
     SmCryptography(String type) {
         this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 }

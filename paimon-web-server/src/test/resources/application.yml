@@ -66,6 +66,16 @@ sa-token:
   is-read-header: true
   is-read-body: true
 
+paimon:
+  web:
+    cryptography:
+      digester:
+        algorithm: sm3
+      symmetric:
+        algorithm: sm4
+        properties:
+          secret-key: ${SECRET_KEY}
+
 interceptor:
   exclude:
     path:
