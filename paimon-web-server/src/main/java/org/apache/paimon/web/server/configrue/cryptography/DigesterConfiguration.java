@@ -46,9 +46,6 @@ public class DigesterConfiguration {
 
     @Bean
     public DigesterService digesterService() {
-        if (algorithm == null) {
-            algorithm = "none";
-        }
         ServiceLoader<DigesterServiceFactory> factories =
                 ServiceLoader.load(DigesterServiceFactory.class);
         for (DigesterServiceFactory factory : factories) {

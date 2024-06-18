@@ -46,9 +46,6 @@ public class SymmetricCryptoConfiguration {
 
     @Bean
     public SymmetricCryptoService symmetricCryptoService() {
-        if (algorithm == null) {
-            algorithm = "none";
-        }
         ServiceLoader<SymmetricCryptoServiceFactory> factories =
                 ServiceLoader.load(SymmetricCryptoServiceFactory.class);
         for (SymmetricCryptoServiceFactory factory : factories) {

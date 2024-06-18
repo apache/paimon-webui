@@ -27,9 +27,7 @@ import org.bouncycastle.util.encoders.Hex;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
 
-/**
- * Sm3 Cryptographic Algorithm.
- */
+/** Sm3 Cryptographic Algorithm. */
 public class Sm3DigesterService implements DigesterService {
 
     private String confoundKey;
