@@ -94,5 +94,11 @@ public interface JobService extends IService<JobInfo> {
      */
     void refreshJobStatus(String taskType);
 
-    public String getLogsByUserId(String userId);
+    /**
+     * Fetches log entries for a given user ID.
+     *
+     * @param userId the user's ID
+     * @return log entries as a string
+     */
+    String getLogsByUserId(String userId);
 }
