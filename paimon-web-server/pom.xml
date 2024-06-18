@@ -119,11 +119,6 @@ under the License.
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.paimon</groupId>
-            <artifactId>paimon-web-plugin-cryptography-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -252,6 +247,13 @@ under the License.
             <artifactId>commons-cli</artifactId>
             <version>1.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.paimon</groupId>
+            <artifactId>paimon-web-plugin-cryptography-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
