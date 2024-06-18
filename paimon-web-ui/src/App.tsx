@@ -23,11 +23,25 @@ import {
   zhCN,
 } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
-import javascript from 'highlight.js/lib/languages/csharp'
+import csharp from 'highlight.js/lib/languages/csharp'
 import { useConfigStore } from '@/store/config'
 import themes from '@/themes'
 
-hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('csharp', csharp)
+
+const log = function (hljs: any) {
+  return {
+    contains: [
+      ...hljs.getLanguage('csharp').contains,
+      {
+        begin: /Job ID: [^\]]+/,
+        relevance: 0,
+      },
+    ],
+  }
+}
+
+hljs.registerLanguage('log', log)
 
 export default defineComponent({
   name: 'App',

@@ -78,7 +78,7 @@ export default defineComponent({
   },
   render() {
     return (
-      <div class={styles['editor-console']} ref="editorConsoleRef">
+      <div class={styles.container} ref="editorConsoleRef">
         <n-tabs
           type="line"
           size="large"

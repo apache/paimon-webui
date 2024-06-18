@@ -32,25 +32,29 @@ export default defineComponent({
     const logContent = computed(() => jobStore.getJobLog)
     const maxLogHeight = ref(0)
     const logRef = ref<any>(null)
+    const containerRef = ref<HTMLElement | null>(null)
 
     function updateLogHeight() {
-      maxLogHeight.value = Math.max(0, props.maxHeight + 52)
+      const viewportHeight = window.innerHeight
+      const calculatedHeight = (viewportHeight - 181) * 0.4 - 54
+      maxLogHeight.value = Math.max(calculatedHeight, props.maxHeight + 52)
     }
 
     mittBus.on('resizeLog', () => {
       updateLogHeight()
     })
 
+    watchEffect(() => {
+      if (logContent.value) {
+        nextTick(() => {
+          logRef.value?.scrollTo({ position: 'bottom', silent: true })
+        })
+      }
+    })
+
     onMounted(() => {
       nextTick(() => {
         updateLogHeight()
-      })
-      watchEffect(() => {
-        if (logContent.value) {
-          nextTick(() => {
-            logRef.value?.scrollTo({ position: 'bottom', silent: true })
-          })
-        }
       })
     })
 
@@ -62,6 +66,7 @@ export default defineComponent({
       logContent,
       maxLogHeight,
       logRef,
+      containerRef,
     }
   },
   render() {
@@ -73,7 +78,8 @@ export default defineComponent({
           style={{ maxHeight: `${this.maxLogHeight}px` }}
           line-height={1.8}
           log={this.logContent}
-          language="javascript"
+          language="log"
+          rows={40}
         />
       </div>
     )
