@@ -119,7 +119,6 @@ under the License.
         <common-io.version>2.7</common-io.version>
         <gson.version>2.10.1</gson.version>
         <auto-service.version>1.0.1</auto-service.version>
-        <bouncycastle.version>1.69</bouncycastle.version>
     </properties>
 
     <dependencyManagement>
@@ -227,17 +226,13 @@ under the License.
                 <groupId>com.google.auto.service</groupId>
                 <artifactId>auto-service</artifactId>
                 <version>${auto-service.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${common-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15to18</artifactId>
-                <version>${bouncycastle.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -392,6 +387,74 @@ under the License.
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>shade-paimon</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadeTestJar>true</shadeTestJar>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <!-- Filters MUST be appended; merging filters does not work properly, see MSHADE-305 -->
+                            <filters combine.children="append">
+                                <!-- Globally exclude log4j.properties from our JAR files. -->
+                                <filter>
+                                    <artifact>*</artifact>
+                                    <excludes>
+                                        <exclude>log4j.properties</exclude>
+                                        <exclude>log4j2.properties</exclude>
+                                        <exclude>log4j-test.properties</exclude>
+                                        <exclude>log4j2-test.properties</exclude>
+                                    </excludes>
+                                </filter>
+                                <!-- drop entries into META-INF and NOTICE files for the dummy artifact -->
+                                <filter>
+                                    <artifact>org.apache.flink:force-shading</artifact>
+                                    <excludes>
+                                        <exclude>**</exclude>
+                                    </excludes>
+                                </filter>
+                                <!-- io.netty:netty brings its own LICENSE.txt which we don't need -->
+                                <filter>
+                                    <artifact>io.netty:netty</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/LICENSE.txt</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <artifactSet>
+                                <includes>
+                                    <!-- Unfortunately, the next line is necessary for now to force the execution
+                                    of the Shade plugin upon all sub modules. This will generate effective poms,
+                                    i.e. poms which do not contain properties which are derived from this root pom.
+                                    In particular, the Scala version properties are defined in the root pom and without
+                                    shading, the root pom would have to be Scala suffixed and thereby all other modules.
+                                    -->
+                                    <include>org.apache.flink:force-shading</include>
+                                </includes>
+                            </artifactSet>
+                            <transformers combine.children="append">
+                                <!-- The service transformer is needed to merge META-INF/services files -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <!-- The ApacheNoticeResourceTransformer collects and aggregates NOTICE files -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                                    <projectName>Apache Paimon</projectName>
+                                    <inceptionYear>${project.inceptionYear}</inceptionYear>
+                                    <encoding>UTF-8</encoding>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -511,6 +574,13 @@ under the License.
                     <version>3.0.0-M1</version>
                 </plugin>
 
+                <!-- Pin the version of the maven shade plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+
                 <!-- configure scala style -->
                 <plugin>
                     <groupId>org.scalastyle</groupId>
@@ -544,79 +614,6 @@ under the License.
                         <execution>
                             <id>attach-descriptor</id>
                             <phase>none</phase>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>shade-paimon</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>shade</goal>
-                            </goals>
-                            <configuration>
-                                <shadeTestJar>false</shadeTestJar>
-                                <shadedArtifactAttached>false</shadedArtifactAttached>
-                                <createDependencyReducedPom>true</createDependencyReducedPom>
-                                <!-- Filters MUST be appended; merging filters does not work properly, see MSHADE-305 -->
-                                <filters combine.children="append">
-                                    <!-- Globally exclude log4j.properties from our JAR files. -->
-                                    <filter>
-                                        <artifact>*</artifact>
-                                        <excludes>
-                                            <exclude>log4j.properties</exclude>
-                                            <exclude>log4j2.properties</exclude>
-                                            <exclude>log4j-test.properties</exclude>
-                                            <exclude>log4j2-test.properties</exclude>
-                                            <!-- Do not copy the signatures in the META-INF folder.
-                                    Otherwise, this might cause SecurityExceptions when using the JAR. -->
-                                            <exclude>META-INF/*.SF</exclude>
-                                            <exclude>META-INF/*.DSA</exclude>
-                                            <exclude>META-INF/*.RSA</exclude>
-                                        </excludes>
-                                    </filter>
-                                    <!-- drop entries into META-INF and NOTICE files for the dummy artifact -->
-                                    <filter>
-                                        <artifact>org.apache.flink:force-shading</artifact>
-                                        <excludes>
-                                            <exclude>**</exclude>
-                                        </excludes>
-                                    </filter>
-                                    <!-- io.netty:netty brings its own LICENSE.txt which we don't need -->
-                                    <filter>
-                                        <artifact>io.netty:netty</artifact>
-                                        <excludes>
-                                            <exclude>META-INF/LICENSE.txt</exclude>
-                                        </excludes>
-                                    </filter>
-                                </filters>
-                                <artifactSet>
-                                    <includes>
-                                        <!-- Unfortunately, the next line is necessary for now to force the execution
-                                        of the Shade plugin upon all sub modules. This will generate effective poms,
-                                        i.e. poms which do not contain properties which are derived from this root pom.
-                                        In particular, the Scala version properties are defined in the root pom and without
-                                        shading, the root pom would have to be Scala suffixed and thereby all other modules.
-                                        -->
-                                        <include>org.apache.flink:force-shading</include>
-                                    </includes>
-                                </artifactSet>
-                                <transformers combine.children="append">
-                                    <!-- The service transformer is needed to merge META-INF/services files -->
-                                    <transformer
-                                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                    <!-- The ApacheNoticeResourceTransformer collects and aggregates NOTICE files -->
-                                    <transformer
-                                            implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
-                                        <projectName>Apache Paimon Web UI</projectName>
-                                        <inceptionYear>${project.inceptionYear}</inceptionYear>
-                                        <encoding>UTF-8</encoding>
-                                    </transformer>
-                                </transformers>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
