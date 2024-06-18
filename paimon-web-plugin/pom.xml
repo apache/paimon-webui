@@ -31,6 +31,8 @@ under the License.
 
     <artifactId>paimon-web-plugin</artifactId>
 
+    <name>Paimon : Web : Plugin</name>
+
     <packaging>pom</packaging>
 
     <modules>

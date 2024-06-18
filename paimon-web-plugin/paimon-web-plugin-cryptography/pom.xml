@@ -33,6 +33,8 @@ under the License.
 
     <artifactId>paimon-web-plugin-cryptography</artifactId>
 
+    <name>Paimon : Web : Plugin : Cryptography</name>
+
     <modules>
         <module>paimon-web-plugin-cryptography-api</module>
         <module>paimon-web-plugin-cryptography-sm</module>

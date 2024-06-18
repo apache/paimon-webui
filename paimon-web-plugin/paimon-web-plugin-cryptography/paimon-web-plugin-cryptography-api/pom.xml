@@ -32,6 +32,8 @@
 
     <artifactId>paimon-web-plugin-cryptography-api</artifactId>
 
+    <name>Paimon : Web : Plugin : Cryptography : Api</name>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.paimon</groupId>
