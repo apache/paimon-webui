@@ -92,6 +92,7 @@ under the License.
         <maven.checkstyle.version>3.1.2</maven.checkstyle.version>
         <maven.compiler.version>3.10.1</maven.compiler.version>
         <springdoc-openapi-ui.version>1.6.9</springdoc-openapi-ui.version>
+        <bouncycastle.version>1.69</bouncycastle.version>
         <spotless.version>2.13.0</spotless.version>
         <spotless.delimiter>package</spotless.delimiter>
         <spotless.license.header>
@@ -209,7 +210,11 @@ under the License.
                 <artifactId>commons-lang3</artifactId>
                 <version>${common-lang3.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15to18</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
