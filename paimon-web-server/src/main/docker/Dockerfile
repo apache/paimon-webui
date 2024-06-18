@@ -23,7 +23,8 @@ ENV PAIMON_UI_HOME /opt/paimon-webui
 
 COPY target/paimon-web-server $PAIMON_UI_HOME
 
-RUN useradd paimon && chown -R paimon:paimon $PAIMON_UI_HOME
+RUN useradd paimon && \
+    chown -R paimon:paimon $PAIMON_UI_HOME
 
 USER paimon
 
