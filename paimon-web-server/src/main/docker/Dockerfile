@@ -19,6 +19,7 @@ FROM eclipse-temurin:${java_image_tag}
 
 ENV DOCKER true
 ENV PAIMON_UI_HOME /opt/paimon-webui
+ENV PATH=$PAIMON_UI_HOME/bin:$PATH
 
 COPY target/paimon-web-server $PAIMON_UI_HOME
 
