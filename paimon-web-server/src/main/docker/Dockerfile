@@ -18,7 +18,6 @@ ARG java_image_tag=8-jdk-focal
 FROM eclipse-temurin:${java_image_tag}
 
 ENV DOCKER true
-ENV TZ Asia/Shanghai
 ENV PAIMON_UI_HOME /opt/paimon-webui
 
 COPY target/paimon-web-server $PAIMON_UI_HOME
