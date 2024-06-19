@@ -37,8 +37,6 @@ under the License.
     <properties>
         <hadoop.version>2.8.5</hadoop.version>
         <flink.version>1.18.1</flink.version>
-        <docker.build.skip>false</docker.build.skip>
-        <docker.push.skip>false</docker.push.skip>
     </properties>
 
     <dependencies>
@@ -366,5 +364,6 @@ under the License.
             </plugin>
         </plugins>
     </build>
+
 </project>
 
