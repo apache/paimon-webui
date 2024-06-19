@@ -20,7 +20,7 @@ package org.apache.paimon.web.api.action.context.factory;
 
 import org.apache.paimon.web.api.action.context.ActionContext;
 import org.apache.paimon.web.api.action.context.ActionContextUtil;
-import org.apache.paimon.web.api.action.context.MysqlSyncTableActionContext;
+import org.apache.paimon.web.api.action.context.MysqlSyncDatabaseActionContext;
 import org.apache.paimon.web.api.action.context.options.FlinkCdcOptions;
 import org.apache.paimon.web.api.enums.FlinkCdcDataSourceType;
 import org.apache.paimon.web.api.enums.FlinkCdcSyncType;
@@ -29,9 +29,7 @@ import org.apache.paimon.web.common.util.JSONUtils;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/** MysqlSyncTableActionContextFactory. */
-public class MysqlSyncTableActionContextFactory implements FlinkCdcActionContextFactory {
-
+public class MysqlSyncDatabasesActionContextFactory implements FlinkCdcActionContextFactory {
     @Override
     public String sourceType() {
         return FlinkCdcDataSourceType.MYSQL.getType();
@@ -44,18 +42,16 @@ public class MysqlSyncTableActionContextFactory implements FlinkCdcActionContext
 
     @Override
     public FlinkCdcSyncType cdcType() {
-        return FlinkCdcSyncType.SINGLE_TABLE_SYNC;
+        return FlinkCdcSyncType.ALL_DATABASES_SYNC;
     }
 
     @Override
     public ActionContext getActionContext(ObjectNode actionConfigs) {
-        return MysqlSyncTableActionContext.builder()
+        return MysqlSyncDatabaseActionContext.builder()
                 .sessionUrl(String.valueOf(actionConfigs.get(FlinkCdcOptions.SESSION_URL)))
                 .flinkJobType(FlinkJobType.SESSION)
                 .warehouse(JSONUtils.getString(actionConfigs, FlinkCdcOptions.WAREHOUSE))
                 .database(JSONUtils.getString(actionConfigs, FlinkCdcOptions.DATABASE))
-                .table(JSONUtils.getString(actionConfigs, FlinkCdcOptions.TABLE))
-                .primaryKeys(JSONUtils.getString(actionConfigs, FlinkCdcOptions.PRIMARY_KEYS))
                 .actionPath(ActionContextUtil.getActionJarPath())
                 .catalogConfList(JSONUtils.getList(actionConfigs, FlinkCdcOptions.CATALOG_CONF))
                 .mysqlConfList(JSONUtils.getList(actionConfigs, FlinkCdcOptions.MYSQL_CONF))
