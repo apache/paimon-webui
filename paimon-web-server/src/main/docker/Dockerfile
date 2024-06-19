@@ -17,14 +17,19 @@
 ARG java_image_tag=8-jdk-focal
 FROM eclipse-temurin:${java_image_tag}
 
+ARG PAIMON_UID=10088
+ARG PAIMON_GID=10088
+
 ENV DOCKER true
 ENV PAIMON_UI_HOME /opt/paimon-webui
 ENV PATH=$PAIMON_UI_HOME/bin:$PATH
 
 COPY target/paimon-web-server $PAIMON_UI_HOME
 
-RUN useradd paimon && \
-    chown -R paimon:paimon $PAIMON_UI_HOME
+RUN groupadd --gid=$PAIMON_GID paimon && \
+    useradd --uid=$PAIMON_UID --gid=${PAIMON_GID} paimon -d /home/paimon && \
+    chown -R paimon:paimon $PAIMON_UI_HOME && \
+    chmod a+x $PAIMON_UI_HOME/bin/*
 
 USER paimon
 
