@@ -118,12 +118,6 @@ under the License.
         <common-io.version>2.7</common-io.version>
         <gson.version>2.10.1</gson.version>
         <auto-service.version>1.0.1</auto-service.version>
-        <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
-        <docker.hub>apache</docker.hub>
-        <docker.repo>paimon-webui</docker.repo>
-        <docker.tag>${project.version}</docker.tag>
-        <docker.build.skip>true</docker.build.skip>
-        <docker.push.skip>true</docker.push.skip>
     </properties>
 
     <dependencyManagement>
@@ -281,7 +275,7 @@ under the License.
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin.version}</version>
+                <version>3.1.0</version>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
