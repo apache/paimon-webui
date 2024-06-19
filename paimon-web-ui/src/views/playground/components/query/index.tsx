@@ -22,9 +22,6 @@ import { onMounted } from 'vue'
 import styles from './index.module.scss'
 import MenuTree from './components/menu-tree'
 import EditorTabs from './components/tabs'
-import EditorDebugger from './components/debugger'
-import EditorConsole from './components/console'
-import MonacoEditor from '@/components/monaco-editor'
 import { useJobStore } from '@/store/job'
 import { getJobStatus, getLogs, refreshJobStatus } from '@/api/models/job'
 import { createSession } from '@/api/models/session'
@@ -247,19 +244,19 @@ export default defineComponent({
             ),
             '2': () => (
               <div class={styles['editor-area']}>
-                <n-card class={styles.card} content-style="padding: 5px 18px;display: flex;flex-direction: column;">
+                <n-card class={styles.card} content-style="padding: 5px 18px;display: flex;flex-direction: column; height:100%;">
                   <div class={styles.tabs}>
                     <EditorTabs />
                   </div>
-                  <div class={styles.debugger}>
+                  {/* <div class={styles.debugger}>
                     {
                       this.tabData.panelsList?.length > 0
                       && (
                         <EditorDebugger tabData={this.tabData} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
                       )
                     }
-                  </div>
-                  <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
+                  </div> */}
+                  {/*  <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
                     <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
                       {{
                         '1': () => (
@@ -298,7 +295,7 @@ export default defineComponent({
                         ),
                       }}
                     </n-split>
-                  </div>
+                  </div> */}
                 </n-card>
               </div>
             ),
