@@ -165,6 +165,7 @@ export default defineComponent({
       rowKey,
       onConfirm,
       handleCreateModal,
+      formType,
     }
   },
   render() {
@@ -190,7 +191,13 @@ export default defineComponent({
             />
           </n-space>
         </n-card>
-        <RoleForm modelLoading={this.modelLoading} v-model:visible={this.formVisible} v-model:formValue={this.formValue} onConfirm={this.onConfirm} />
+        <RoleForm
+          modelLoading={this.modelLoading}
+          v-model:visible={this.formVisible}
+          v-model:formValue={this.formValue}
+          onConfirm={this.onConfirm}
+          formType={this.formType}
+        />
       </n-space>
     )
   },

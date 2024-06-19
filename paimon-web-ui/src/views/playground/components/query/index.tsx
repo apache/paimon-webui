@@ -18,6 +18,7 @@ under the License. */
 import type * as monaco from 'monaco-editor'
 import { format } from 'sql-formatter'
 import { useMessage } from 'naive-ui'
+import { onMounted } from 'vue'
 import styles from './index.module.scss'
 import MenuTree from './components/menu-tree'
 import EditorTabs from './components/tabs'
@@ -25,14 +26,15 @@ import EditorDebugger from './components/debugger'
 import EditorConsole from './components/console'
 import MonacoEditor from '@/components/monaco-editor'
 import { useJobStore } from '@/store/job'
-import { getJobStatus } from '@/api/models/job'
+import { getJobStatus, getLogs, refreshJobStatus } from '@/api/models/job'
+import { createSession } from '@/api/models/session'
 
 export default defineComponent({
   name: 'QueryPage',
   setup() {
     const message = useMessage()
     const jobStore = useJobStore()
-
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const menuTreeRef = ref()
 
     const tabData = ref({}) as any
@@ -40,6 +42,7 @@ export default defineComponent({
     const elapsedTime = ref(0)
     const currentJob = computed(() => jobStore.getCurrentJob)
     const jobStatus = computed(() => jobStore.getJobStatus)
+    const editorSize = ref(0.6)
 
     const formattedTime = computed(() => formatTime(elapsedTime.value))
 
@@ -70,38 +73,79 @@ export default defineComponent({
       tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab).isSaved = false
     }
 
-    const consoleHeightType = ref('down')
-
-    const handleConsoleUp = (type: string) => {
-      consoleHeightType.value = type
+    const handleConsoleUp = () => {
+      editorSize.value = 0
+      mittBus.emit('editorResized')
     }
 
-    const handleConsoleDown = (type: string) => {
-      consoleHeightType.value = type
+    const handleConsoleDown = () => {
+      editorSize.value = 0.6
+      mittBus.emit('editorResized')
     }
 
     const showConsole = ref(true)
     const handleConsoleClose = () => {
+      editorSize.value = 0.98
       showConsole.value = false
     }
 
-    watch(
-      () => consoleHeightType.value,
-      () => {
-        if (tabData.value.panelsList?.length > 0)
-          editorVariables.editor?.layout()
-      },
-    )
+    const handleDragEnd = () => {
+      mittBus.emit('editorResized')
+      mittBus.emit('resizeLog')
+    }
 
     // mitt - handle tab choose
-    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     mittBus.on('initTabData', (data: any) => {
       tabData.value = data
     })
 
+    let getJobLogsIntervalId: number | undefined
+    const getJobLog = () => {
+      getJobLogsIntervalId = setInterval(async () => {
+        const response = await getLogs()
+        jobStore.setJobLog(response.data)
+      }, 1000)
+    }
+
+    onMounted(getJobLog)
+
+    let createSessionIntervalId: number | undefined
+    watch(currentJob, (newJob) => {
+      if (newJob && createSessionIntervalId === undefined) {
+        createSessionIntervalId = setInterval(() => {
+          createSession()
+        }, 300000)
+      }
+
+      if (!newJob && createSessionIntervalId !== undefined) {
+        clearInterval(createSessionIntervalId)
+        createSessionIntervalId = undefined
+      }
+    })
+
+    let refreshJobStatusIntervalId: number | undefined
+    watch(currentJob, (newJob) => {
+      if (newJob && refreshJobStatusIntervalId === undefined) {
+        refreshJobStatusIntervalId = setInterval(() => {
+          refreshJobStatus()
+        }, 1000)
+      }
+
+      if (!newJob && refreshJobStatusIntervalId !== undefined) {
+        clearInterval(refreshJobStatusIntervalId)
+        refreshJobStatusIntervalId = undefined
+      }
+    })
+
     const getJobStatusIntervalId = ref<number | undefined>()
 
-    onMounted(() => {
+    const stopGetJobStatus = () => {
+      if (getJobStatusIntervalId.value)
+        clearInterval(getJobStatusIntervalId.value)
+    }
+
+    const startGetJobStatus = () => {
+      stopGetJobStatus()
       getJobStatusIntervalId.value = setInterval(async () => {
         if (currentJob.value && currentJob.value.jobId) {
           const response = await getJobStatus(currentJob.value.jobId)
@@ -109,6 +153,17 @@ export default defineComponent({
             jobStore.setJobStatus(response.data.status)
         }
       }, 1000)
+    }
+
+    mittBus.on('getStatus', () => startGetJobStatus())
+    mittBus.on('reloadLayout', () => {
+      editorSize.value = 0.6
+      showConsole.value = true
+    })
+
+    watch(jobStatus, (jobStatus) => {
+      if (jobStatus === 'FINISHED' || jobStatus === 'CANCELED' || jobStatus === 'FAILED')
+        stopGetJobStatus()
     })
 
     let computeExecutionTimeIntervalId: number
@@ -148,7 +203,21 @@ export default defineComponent({
 
     watch(formattedTime, formattedTime => jobStore.setExecutionTime(formattedTime))
 
-    onUnmounted(() => jobStore.resetCurrentResult())
+    onUnmounted(() => {
+      jobStore.resetCurrentResult()
+      if (refreshJobStatusIntervalId !== undefined) {
+        clearInterval(refreshJobStatusIntervalId)
+        refreshJobStatusIntervalId = undefined
+      }
+      if (createSessionIntervalId !== undefined) {
+        clearInterval(createSessionIntervalId)
+        createSessionIntervalId = undefined
+      }
+      if (getJobLogsIntervalId !== undefined) {
+        clearInterval(getJobLogsIntervalId)
+        getJobLogsIntervalId = undefined
+      }
+    })
 
     return {
       ...toRefs(editorVariables),
@@ -162,7 +231,8 @@ export default defineComponent({
       handleConsoleDown,
       handleConsoleClose,
       showConsole,
-      consoleHeightType,
+      editorSize,
+      handleDragEnd,
     }
   },
   render() {
@@ -182,46 +252,53 @@ export default defineComponent({
                     <EditorTabs />
                   </div>
                   <div class={styles.debugger}>
-                    <EditorDebugger tabData={this.tabData} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
+                    {
+                      this.tabData.panelsList?.length > 0
+                      && (
+                        <EditorDebugger tabData={this.tabData} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
+                      )
+                    }
                   </div>
-                  <n-split direction="vertical" max={0.60} min={0.00} resize-trigger-size={0} default-size={0.6}>
-                    {{
-                      '1': () => (
-                        <div class={styles.editor}>
-                          {
-                            this.tabData.panelsList?.length > 0
-                            && (
-                              <n-card content-style="padding: 0;">
-                                <MonacoEditor
-                                  v-model={this.tabData.panelsList.find((item: any) => item.key === this.tabData.chooseTab).content}
-                                  language={this.language}
-                                  onEditorMounted={this.editorMounted}
-                                  onEditorSave={this.editorSave}
-                                  onChange={this.handleContentChange}
-                                />
-                              </n-card>
-                            )
-                          }
-                        </div>
-                      ),
-                      '2': () => (this.showConsole && (
-                        <div class={styles.console}>
-                          {
+                  <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
+                    <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
+                      {{
+                        '1': () => (
+                          <div class={styles.editor}>
+                            {
                               this.tabData.panelsList?.length > 0
                               && (
-                                <n-card content-style="padding: 0;">
-                                  <EditorConsole onConsoleDown={this.handleConsoleDown} onConsoleUp={this.handleConsoleUp} onConsoleClose={this.handleConsoleClose} />
+                                <n-card content-style="height: 100%;padding: 0;">
+                                  <MonacoEditor
+                                    v-model={this.tabData.panelsList.find((item: any) => item.key === this.tabData.chooseTab).content}
+                                    language={this.language}
+                                    onEditorMounted={this.editorMounted}
+                                    onEditorSave={this.editorSave}
+                                    onChange={this.handleContentChange}
+                                  />
                                 </n-card>
                               )
                             }
-                        </div>
-                      )
-                      ),
-                      'resize-trigger': () => (
-                        <div class={styles['console-splitter']} />
-                      ),
-                    }}
-                  </n-split>
+                          </div>
+                        ),
+                        '2': () => (this.showConsole && (
+                          <div class={styles.console}>
+                            {
+                                this.tabData.panelsList?.length > 0
+                                && (
+                                  <n-card content-style="height: 100%;padding: 0;">
+                                    <EditorConsole onConsoleDown={this.handleConsoleDown} onConsoleUp={this.handleConsoleUp} onConsoleClose={this.handleConsoleClose} />
+                                  </n-card>
+                                )
+                              }
+                          </div>
+                        )
+                        ),
+                        'resize-trigger': () => (
+                          <div class={styles['console-splitter']} />
+                        ),
+                      }}
+                    </n-split>
+                  </div>
                 </n-card>
               </div>
             ),

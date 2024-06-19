@@ -20,10 +20,12 @@ package org.apache.paimon.web.server.controller;
 
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
 import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
+import org.apache.paimon.web.server.data.dto.LoginDTO;
 import org.apache.paimon.web.server.data.model.CdcJobDefinition;
 import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
+import org.apache.paimon.web.server.data.vo.UserInfoVO;
 import org.apache.paimon.web.server.util.ObjectMapperUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -71,6 +73,7 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
     @Order(1)
     public void testCreateCdcJob() throws Exception {
         testCreateCdcJob(cdcJobDefinitionDto());
+        checkCdcJobDefinitionAndSaSession();
     }
 
     @Test
@@ -120,6 +123,7 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
         assertEquals(realRdcJobDefinition.getName(), cdcJobDefinition.getName());
         assertEquals(realRdcJobDefinition.getDescription(), cdcJobDefinition.getDescription());
         assertEquals(realRdcJobDefinition.getConfig(), cdcJobDefinition.getConfig());
+        assertEquals(realRdcJobDefinition.getCreateUser(), cdcJobDefinition.getCreateUser());
     }
 
     @Order(3)
@@ -216,5 +220,38 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn()
                 .getResponse();
+    }
+
+    private void checkCdcJobDefinitionAndSaSession() throws Exception {
+        MockHttpServletResponse getCdcJobDefinitionResponse =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.get(cdcJobDefinitionPath + "/" + 1)
+                                        .cookie(cookie)
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse();
+        R<CdcJobDefinition> getResult =
+                getR(getCdcJobDefinitionResponse, new TypeReference<R<CdcJobDefinition>>() {});
+        LoginDTO login = new LoginDTO();
+        login.setUsername("admin");
+        login.setPassword("admin");
+        MockHttpServletResponse getLoginUserResponse =
+                mockMvc.perform(
+                                MockMvcRequestBuilders.post("/api/login")
+                                        .content(ObjectMapperUtils.toJSON(login))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn()
+                        .getResponse();
+        R<UserInfoVO> getLoginuser =
+                getR(getLoginUserResponse, new TypeReference<R<UserInfoVO>>() {});
+        assertEquals(
+                getResult.getData().getCreateUser(),
+                getLoginuser.getData().getUser().getUsername());
     }
 }

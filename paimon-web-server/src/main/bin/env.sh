@@ -17,7 +17,7 @@
 #
 
 # Set the FLINK_HOME directory to execute the flink command to submit the cdc job.
-FLINK_HOME=
+FLINK_HOME=${FLINK_HOME:-""}
 
 # Set the ACTION_JAR_PATH to execute the paimon action job.
 ACTION_JAR_PATH=
@@ -26,4 +26,4 @@ JVM_ARGS="-server"
 
 JAVA_OPTS=${JAVA_OPTS:-"${JVM_ARGS}"}
 
-JAVA_HOME=
+JAVA_HOME=${JAVA_HOME:-/opt/java/openjdk}

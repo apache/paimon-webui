@@ -27,6 +27,10 @@ import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
 import org.apache.paimon.web.gateway.config.ExecutionConfig;
 import org.apache.paimon.web.gateway.enums.EngineType;
 import org.apache.paimon.web.gateway.provider.ExecutorFactoryProvider;
+import org.apache.paimon.web.server.context.LogContextHolder;
+import org.apache.paimon.web.server.context.logtool.LogEntity;
+import org.apache.paimon.web.server.context.logtool.LogReadPool;
+import org.apache.paimon.web.server.context.logtool.LogType;
 import org.apache.paimon.web.server.data.dto.JobSubmitDTO;
 import org.apache.paimon.web.server.data.dto.ResultFetchDTO;
 import org.apache.paimon.web.server.data.dto.SessionDTO;
@@ -45,6 +49,7 @@ import org.apache.paimon.web.server.service.JobService;
 import org.apache.paimon.web.server.service.SessionService;
 import org.apache.paimon.web.server.service.UserSessionManager;
 import org.apache.paimon.web.server.util.LocalDateTimeUtil;
+import org.apache.paimon.web.server.util.LogUtil;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -67,6 +72,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static cn.dev33.satoken.stp.StpUtil.getLoginIdAsString;
 
 /** The implementation of {@link JobService}. */
 @Service
@@ -100,28 +107,45 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                     addPipelineNameStatement(pipelineName, jobSubmitDTO.getStatements()));
         }
 
-        if (jobSubmitDTO.isStreaming()) {
-            jobSubmitDTO.setStatements(
-                    addExecutionModeStatement(
-                            STREAMING_MODE.toLowerCase(), jobSubmitDTO.getStatements()));
-        } else {
-            jobSubmitDTO.setStatements(
-                    addExecutionModeStatement(
-                            BATCH_MODE.toLowerCase(), jobSubmitDTO.getStatements()));
+        if (!StpUtil.isLogin()) {
+            throw new IllegalStateException("User must be logged in to access this resource");
         }
+
+        String executeMode =
+                jobSubmitDTO.isStreaming()
+                        ? STREAMING_MODE.toLowerCase()
+                        : BATCH_MODE.toLowerCase();
+
+        jobSubmitDTO.setStatements(
+                addExecutionModeStatement(executeMode, jobSubmitDTO.getStatements()));
+
+        LogEntity logWriter =
+                LogContextHolder.registerProcess(
+                        LogEntity.init(LogType.get(executeMode), getLoginIdAsString()));
+
+        logWriter.info(String.format("Initializing %s job config...", jobSubmitDTO.getTaskType()));
 
         Executor executor =
                 this.getExecutor(jobSubmitDTO.getClusterId(), jobSubmitDTO.getTaskType());
         if (executor == null) {
+            logWriter.error("No executor available for the job submission.");
             throw new RuntimeException("No executor available for the job submission.");
         }
 
         try {
+            logWriter.start();
+            logWriter.info(
+                    String.format(
+                            "Starting to submit %s %s job...",
+                            jobSubmitDTO.getTaskType(), executeMode));
             ExecutionResult executionResult = executor.executeSql(jobSubmitDTO.getStatements());
             if (StringUtils.isNotBlank(executionResult.getJobId())) {
                 JobInfo jobInfo = buildJobInfo(executionResult, jobSubmitDTO);
                 this.save(jobInfo);
             }
+            logWriter.finish(
+                    String.format(
+                            "Execution successful [Job ID: %s].", executionResult.getJobId()));
             historyService.saveHistory(
                     History.builder()
                             .name(LocalDateTimeUtil.getFormattedDateTime(LocalDateTime.now()))
@@ -133,7 +157,9 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                             .build());
             return buildJobVO(executionResult, jobSubmitDTO);
         } catch (Exception e) {
-            throw new RuntimeException("Error executing job: " + e.getMessage(), e);
+            logWriter.error(
+                    LogUtil.getError(String.format("Error executing job: %s", e.getMessage()), e));
+            throw new RuntimeException(String.format("Error executing job: %s", e.getMessage()), e);
         }
     }
 
@@ -225,11 +251,17 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     @Override
     public void stop(StopJobDTO stopJobDTO) {
+        LogEntity logWriter =
+                LogContextHolder.registerProcess(
+                        LogEntity.init(LogType.UNKNOWN, getLoginIdAsString()));
         try {
+            logWriter.info(String.format("Starting to stop %s job...", stopJobDTO.getTaskType()));
             Executor executor = getExecutor(stopJobDTO.getClusterId(), stopJobDTO.getTaskType());
             if (executor == null) {
+                logWriter.error("No executor available for job stopping.");
                 throw new RuntimeException("No executor available for job stopping.");
             }
+            logWriter.start();
             executor.stop(stopJobDTO.getJobId(), stopJobDTO.isWithSavepoint());
             boolean updateStatus =
                     updateJobStatusAndEndTime(
@@ -237,11 +269,21 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                             JobStatus.CANCELED.getValue(),
                             LocalDateTime.now());
             if (!updateStatus) {
+                logWriter.error(
+                        String.format(
+                                "Failed to update job status in the database for jobId: %s",
+                                stopJobDTO.getJobId()));
                 log.error(
                         "Failed to update job status in the database for jobId: {}",
                         stopJobDTO.getJobId());
+            } else {
+                logWriter.info(
+                        String.format(
+                                "Successfully stopped job [Job ID: %s].", stopJobDTO.getJobId()));
             }
+            logWriter.finish();
         } catch (Exception e) {
+            logWriter.error(String.format("Error stopping job: %s", e.getMessage()));
             throw new RuntimeException("Error stopping job:" + e.getMessage(), e);
         }
     }
@@ -305,6 +347,16 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                     log.error("Exception with refreshing job status.", e);
                 }
             }
+        }
+    }
+
+    @Override
+    public String getLogsByUserId(String userId) {
+        String user = userId.toString();
+        if (LogReadPool.getInstance().exist(user)) {
+            return LogReadPool.getInstance().get(user).toString();
+        } else {
+            return "";
         }
     }
 

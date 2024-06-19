@@ -29,7 +29,6 @@ const basePage: RouteRecordRaw = {
   path: '/',
   name: 'homepage',
   meta: { title: 'Home' },
-  redirect: { name: 'playground' },
   component: () => import('@/layouts/content'),
   children: [
     playground_routes,

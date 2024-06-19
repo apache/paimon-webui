@@ -93,4 +93,12 @@ public interface JobService extends IService<JobInfo> {
      * @param taskType the type of task for which the job status needs to be updated
      */
     void refreshJobStatus(String taskType);
+
+    /**
+     * Fetches log entries for a given user ID.
+     *
+     * @param userId the user's ID
+     * @return log entries as a string
+     */
+    String getLogsByUserId(String userId);
 }

@@ -16,21 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.configrue;
+package org.apache.paimon.web.server.context;
 
-import cn.dev33.satoken.interceptor.SaInterceptor;
-import cn.dev33.satoken.stp.StpUtil;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.apache.paimon.web.server.context.logtool.LogEntity;
+import org.apache.paimon.web.server.context.logtool.LogWritePool;
 
-/** Sa-Token path config. */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
-                .addPathPatterns("/**")
-                .excludePathPatterns("/api/login");
+/** Use Thread local cache log. */
+public class LogContextHolder {
+    private static final ThreadLocal<LogEntity> PROCESS_CONTEXT = new ThreadLocal<>();
+
+    public static void setProcess(LogEntity process) {
+        PROCESS_CONTEXT.set(process);
+    }
+
+    public static LogEntity getProcess() {
+        if (PROCESS_CONTEXT.get() == null) {
+            return LogEntity.NULL_PROCESS;
+        }
+        return PROCESS_CONTEXT.get();
+    }
+
+    public static LogEntity registerProcess(LogEntity process) {
+        setProcess(process);
+        LogWritePool.getInstance().push(process.getName(), process);
+        return process;
     }
 }

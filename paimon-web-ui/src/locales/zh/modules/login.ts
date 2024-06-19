@@ -23,4 +23,7 @@ export default {
   password_tips: '请输入密码',
   light: '浅色',
   dark: '暗色',
+  logout: '退出登录',
+  change_password: '修改密码',
+  modify: '修改',
 }

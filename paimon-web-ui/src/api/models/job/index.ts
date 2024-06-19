@@ -76,3 +76,10 @@ export function getRecordList(params: RecordNameParams) {
 export function createRecord(params: RecordDTO) {
   return httpRequest.post<RecordDTO, ResponseOptions<unknown>>('/statement', params)
 }
+
+/**
+ * # Get job logs
+ */
+export function getLogs() {
+  return httpRequest.get<unknown, ResponseOptions<string>>('/job/logs/get')
+}

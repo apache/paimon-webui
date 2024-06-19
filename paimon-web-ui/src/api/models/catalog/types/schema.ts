@@ -29,7 +29,7 @@ export interface SchemaField {
   id: number
   name: string
   type: string
-  comment?: string
+  description: string
 }
 
 export interface SchemaOption {

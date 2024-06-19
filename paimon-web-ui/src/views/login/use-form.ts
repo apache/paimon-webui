@@ -18,28 +18,45 @@ under the License. */
 import type { FormValidationError } from 'naive-ui'
 import type { Router } from 'vue-router'
 import { onLogin } from '@/api'
+import { useUserStore } from '@/store/user'
+import type { ResponseOptions } from '@/api/types'
+import { useConfigStore } from '@/store/config'
 
 export function useForm() {
   const router: Router = useRouter()
-
+  const userStore = useUserStore()
+  const configStore = useConfigStore()
   const state = reactive({
     loginForm: ref(),
     model: {
       username: '',
       password: '',
+
     },
   })
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     state.loginForm.validate(async (errors: Array<FormValidationError>) => {
       if (!errors) {
-        onLogin({
+        await onLogin({
           username: state.model.username,
           password: state.model.password,
           ldapLogin: false,
           rememberMe: true,
+        }).then((res: ResponseOptions<any>) => {
+          userStore.setUserId(res.data.user.id)
+          userStore.setUsername(res.data.user.username)
+          userStore.setNickname(res.data.user.nickname)
+          configStore.setCurrentNavActive(null)
+          userStore.setAdmin(res.data.user.admin)
+          userStore.setMenus(res.data.sysMenuList?.filter((e: any) => e.type === 'C')?.map((e: any) => {
+            return e.menuName
+          }) || [])
+          userStore.setDirectories(res.data.sysMenuList?.filter((e: any) => e.type === 'M')?.map((e: any) => {
+            return e.menuName
+          }) || [])
         })
-        router.push({ path: '/' })
+        router.push({ path: '/playground/query' })
       }
     })
   }
