@@ -186,8 +186,9 @@ export default defineComponent({
           type="card"
           addable
           closable
+          style={{ height: '100%' }}
           tab-style="min-width: 160px;"
-          pane-style="padding-top: 0; height: 100%"
+          pane-style="padding-top: 0;"
           on-close={this.handleClose}
           on-add={this.handleAdd}
           on-update:value={this.changeTreeChoose}
@@ -212,8 +213,8 @@ export default defineComponent({
                     <div class={styles.debugger}>
                       <EditorDebugger tabData={item} />
                     </div>,
-                    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
-                      <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} default-size={0.6} on-drag-end={this.handleDragEnd}>
+                    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)', height: '100%' }}>
+                      <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
                         {{
                           '1': () => (
                             <div class={styles.editor}>
