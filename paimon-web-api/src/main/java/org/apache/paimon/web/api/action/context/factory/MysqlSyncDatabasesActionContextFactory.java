@@ -29,7 +29,10 @@ import org.apache.paimon.web.common.util.JSONUtils;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/** A factory designed for creating {@link FlinkCdcActionContextFactory}, implementing full database synchronization with MySQL.. */
+/**
+ * A factory designed for creating {@link FlinkCdcActionContextFactory}, implementing full database
+ * synchronization with MySQL.
+ */
 public class MysqlSyncDatabasesActionContextFactory implements FlinkCdcActionContextFactory {
     @Override
     public String sourceType() {
