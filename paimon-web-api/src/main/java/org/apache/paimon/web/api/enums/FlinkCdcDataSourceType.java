@@ -20,15 +20,26 @@ package org.apache.paimon.web.api.enums;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /** FlinkCdcDataSourceType. */
 @Getter
 public enum FlinkCdcDataSourceType {
     MYSQL("MySQL"),
-    PAIMON("Paimon");
+    PAIMON("Paimon"),
+    POSTGRESQL("PostgreSQL");
 
     private final String type;
 
     FlinkCdcDataSourceType(String type) {
         this.type = type;
+    }
+
+    public static FlinkCdcDataSourceType of(String type) {
+        return Arrays.stream(values())
+                .filter(x -> Objects.equals(x.getType(), type))
+                .findFirst()
+                .orElse(null);
     }
 }

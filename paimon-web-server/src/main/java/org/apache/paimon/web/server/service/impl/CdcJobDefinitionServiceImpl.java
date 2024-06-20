@@ -25,6 +25,7 @@ import org.apache.paimon.web.api.action.context.options.FlinkCdcOptions;
 import org.apache.paimon.web.api.action.service.ActionService;
 import org.apache.paimon.web.api.action.service.FlinkCdcActionService;
 import org.apache.paimon.web.api.catalog.PaimonServiceFactory;
+import org.apache.paimon.web.api.enums.FlinkCdcDataSourceType;
 import org.apache.paimon.web.api.enums.FlinkCdcSyncType;
 import org.apache.paimon.web.common.util.JSONUtils;
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
@@ -49,6 +50,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -160,7 +162,7 @@ public class CdcJobDefinitionServiceImpl
         ClusterInfo clusterInfo = clusterService.getById(clusterId);
         actionConfigs.put(
                 FlinkCdcOptions.SESSION_URL,
-                String.format("http://%s:%s", clusterInfo.getHost(), clusterInfo.getPort()));
+                String.format("%s:%s", clusterInfo.getHost(), clusterInfo.getPort()));
         handleCdcGraphNodeData(actionConfigs, cdcGraph.getSource());
         handleCdcGraphNodeData(actionConfigs, cdcGraph.getTarget());
         ActionContext actionContext = factory.getActionContext(actionConfigs);
@@ -173,25 +175,59 @@ public class CdcJobDefinitionServiceImpl
     }
 
     private void handleCdcGraphNodeData(ObjectNode actionConfigs, CdcNode node) {
-        String type = node.getType();
-        switch (type) {
-            case "Paimon":
+        FlinkCdcDataSourceType cdcDataSourceType = FlinkCdcDataSourceType.of(node.getType());
+        Preconditions.checkNotNull(
+                cdcDataSourceType,
+                String.format("the cdc type [%s] is not supported", node.getType()));
+        switch (cdcDataSourceType) {
+            case PAIMON:
                 handlePaimonNodeData(actionConfigs, node.getData());
                 break;
-            case "MySQL":
+            case MYSQL:
                 handleMysqlNodeData(actionConfigs, node.getData());
+                break;
+            case POSTGRESQL:
+                handlePostgresNodeData(actionConfigs, node.getData());
                 break;
         }
     }
 
-    private void handleMysqlNodeData(ObjectNode actionConfigs, ObjectNode mysqlData) {
-        String otherConfigs = JSONUtils.getString(mysqlData, "other_configs");
-        List<String> mysqlConfList;
+    private List<String> getOtherConfigs(ObjectNode node) {
+        String otherConfigs = JSONUtils.getString(node, "other_configs");
+        List<String> configList;
         if (StringUtils.isBlank(otherConfigs)) {
-            mysqlConfList = new ArrayList<>();
+            configList = new ArrayList<>();
         } else {
-            mysqlConfList = new ArrayList<>(Arrays.asList(otherConfigs.split(";")));
+            configList = new ArrayList<>(Arrays.asList(otherConfigs.split(";")));
         }
+        return configList;
+    }
+
+    private void handlePostgresNodeData(ObjectNode actionConfigs, ObjectNode postgresData) {
+        List<String> postgresConfList = getOtherConfigs(postgresData);
+        postgresConfList.add(
+                buildKeyValueString("hostname", JSONUtils.getString(postgresData, "host")));
+        postgresConfList.add(
+                buildKeyValueString("port", JSONUtils.getString(postgresData, "port")));
+        postgresConfList.add(
+                buildKeyValueString("username", JSONUtils.getString(postgresData, "username")));
+        postgresConfList.add(
+                buildKeyValueString("password", JSONUtils.getString(postgresData, "password")));
+        postgresConfList.add(
+                buildKeyValueString(
+                        "database-name", JSONUtils.getString(postgresData, "database")));
+        postgresConfList.add(
+                buildKeyValueString(
+                        "schema-name", JSONUtils.getString(postgresData, "schema_name")));
+        postgresConfList.add(
+                buildKeyValueString("table-name", JSONUtils.getString(postgresData, "table_name")));
+        postgresConfList.add(
+                buildKeyValueString("slot.name", JSONUtils.getString(postgresData, "slot_name")));
+        actionConfigs.putPOJO(FlinkCdcOptions.POSTGRES_CONF, postgresConfList);
+    }
+
+    private void handleMysqlNodeData(ObjectNode actionConfigs, ObjectNode mysqlData) {
+        List<String> mysqlConfList = getOtherConfigs(mysqlData);
         mysqlConfList.add(buildKeyValueString("hostname", JSONUtils.getString(mysqlData, "host")));
         mysqlConfList.add(
                 buildKeyValueString("username", JSONUtils.getString(mysqlData, "username")));
