@@ -180,7 +180,6 @@ public class CdcJobDefinitionServiceImpl
         Preconditions.checkNotNull(
                 cdcDataSourceType,
                 String.format("the cdc type [%s] is not supported", node.getType()));
-
         switch (cdcDataSourceType) {
             case PAIMON:
                 handlePaimonNodeData(actionConfigs, node.getData(), cdcSyncType);
@@ -228,17 +227,9 @@ public class CdcJobDefinitionServiceImpl
         actionConfigs.putPOJO(FlinkCdcOptions.POSTGRES_CONF, postgresConfList);
     }
 
-
-
     private void handleMysqlNodeData(
             ObjectNode actionConfigs, ObjectNode mysqlData, FlinkCdcSyncType cdcSyncType) {
-        String otherConfigs = JSONUtils.getString(mysqlData, "other_configs");
-        List<String> mysqlConfList;
-        if (StringUtils.isBlank(otherConfigs)) {
-            mysqlConfList = new ArrayList<>();
-        } else {
-            mysqlConfList = new ArrayList<>(Arrays.asList(otherConfigs.split(";")));
-        }
+        List<String> mysqlConfList = getOtherConfigs(actionConfigs);
         mysqlConfList.add(buildKeyValueString("hostname", JSONUtils.getString(mysqlData, "host")));
         mysqlConfList.add(
                 buildKeyValueString("username", JSONUtils.getString(mysqlData, "username")));

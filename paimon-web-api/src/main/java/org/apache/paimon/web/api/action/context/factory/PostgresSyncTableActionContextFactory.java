@@ -28,10 +28,8 @@ import org.apache.paimon.web.api.enums.FlinkJobType;
 import org.apache.paimon.web.common.util.JSONUtils;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.auto.service.AutoService;
 
 /** PostgresSyncTableActionContextFactory. */
-@AutoService(FlinkCdcActionContextFactory.class)
 public class PostgresSyncTableActionContextFactory implements FlinkCdcActionContextFactory {
     @Override
     public String sourceType() {
