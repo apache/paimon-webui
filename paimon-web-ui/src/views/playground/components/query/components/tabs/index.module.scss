@@ -15,60 +15,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-.container {
+.tabs {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
+  align-items: center;
 
-  .tabs {
-    display: flex;
-    align-items: center;
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #33994A;
+    margin-right: 8px;
+  }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #33994A;
-      margin-right: 8px;
-    }
-
-    .asterisk {
-      color: #C82E2E;
-      padding-left: 10px;
-    }
+  .asterisk {
+    color: #C82E2E;
+    padding-left: 10px;
   }
 
   .debugger {
     display: flex;
-    height: 60px;
-  }
-
-  .editor {
-    height: 100%;
-    flex: 1;
-  }
-
-  .console {
-    height: 100%;
-    flex: 1;
-  }
-
-  .console-splitter {
-    position: relative;
-    height: 0;
-    background: transparent;
-    cursor: ns-resize;
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: -5px;
-      right: 0;
-      bottom: -5px;
-      left: 0;
-      background: transparent;
-      z-index: 1;
-    }
+    height: 64px;
   }
 }

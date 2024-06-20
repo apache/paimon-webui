@@ -22,9 +22,11 @@ import { onMounted } from 'vue'
 import styles from './index.module.scss'
 import MenuTree from './components/menu-tree'
 import EditorTabs from './components/tabs'
+import EditorConsole from './components/console'
 import { useJobStore } from '@/store/job'
 import { getJobStatus, getLogs, refreshJobStatus } from '@/api/models/job'
 import { createSession } from '@/api/models/session'
+import MonacoEditor from '@/components/monaco-editor'
 
 export default defineComponent({
   name: 'QueryPage',
@@ -34,11 +36,18 @@ export default defineComponent({
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const menuTreeRef = ref()
 
-    const tabData = ref({}) as any
+    const tabData = ref({
+      panelsList: [],
+      chooseTab: null,
+    }) as any
     const startTime = ref(0)
     const elapsedTime = ref(0)
-    const currentJob = computed(() => jobStore.getCurrentJob)
-    const jobStatus = computed(() => jobStore.getJobStatus)
+    const currentKey = computed(() => {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+      return currentTab ? currentTab.key : null
+    })
+    const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
+    const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
     const editorSize = ref(0.6)
 
     const formattedTime = computed(() => formatTime(elapsedTime.value))
@@ -147,7 +156,7 @@ export default defineComponent({
         if (currentJob.value && currentJob.value.jobId) {
           const response = await getJobStatus(currentJob.value.jobId)
           if (response.data)
-            jobStore.setJobStatus(response.data.status)
+            jobStore.updateJobStatus(currentKey.value, response.data.status)
         }
       }, 1000)
     }
@@ -198,10 +207,10 @@ export default defineComponent({
       return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
     }
 
-    watch(formattedTime, formattedTime => jobStore.setExecutionTime(formattedTime))
+    watch(formattedTime, formattedTime => jobStore.updateExecutionTime(currentKey.value, formattedTime))
 
     onUnmounted(() => {
-      jobStore.resetCurrentResult()
+      jobStore.resetJob(currentKey.value)
       if (refreshJobStatusIntervalId !== undefined) {
         clearInterval(refreshJobStatusIntervalId)
         refreshJobStatusIntervalId = undefined
@@ -248,15 +257,7 @@ export default defineComponent({
                   <div class={styles.tabs}>
                     <EditorTabs />
                   </div>
-                  {/* <div class={styles.debugger}>
-                    {
-                      this.tabData.panelsList?.length > 0
-                      && (
-                        <EditorDebugger tabData={this.tabData} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
-                      )
-                    }
-                  </div> */}
-                  {/*  <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
+                  <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
                     <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
                       {{
                         '1': () => (
@@ -283,7 +284,12 @@ export default defineComponent({
                                 this.tabData.panelsList?.length > 0
                                 && (
                                   <n-card content-style="height: 100%;padding: 0;">
-                                    <EditorConsole onConsoleDown={this.handleConsoleDown} onConsoleUp={this.handleConsoleUp} onConsoleClose={this.handleConsoleClose} />
+                                    <EditorConsole
+                                      onConsoleDown={this.handleConsoleDown}
+                                      onConsoleUp={this.handleConsoleUp}
+                                      onConsoleClose={this.handleConsoleClose}
+                                      tabData={this.tabData}
+                                    />
                                   </n-card>
                                 )
                               }
@@ -295,7 +301,7 @@ export default defineComponent({
                         ),
                       }}
                     </n-split>
-                  </div> */}
+                  </div>
                 </n-card>
               </div>
             ),

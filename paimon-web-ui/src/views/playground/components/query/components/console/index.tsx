@@ -25,12 +25,19 @@ import styles from './index.module.scss'
 export default defineComponent({
   name: 'EditorConsole',
   emits: ['ConsoleUp', 'ConsoleDown', 'ConsoleClose'],
+  props: {
+    tabData: {
+      type: Object as PropType<any>,
+      default: () => ({}),
+    },
+  },
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const editorConsoleRef = ref<HTMLElement | null>(null)
     const adjustedHeight = ref(0)
     const displayResult = ref(false)
+    const tabData = toRef(props.tabData)
 
     const handleUp = () => {
       emit('ConsoleUp', 'up')
@@ -74,6 +81,7 @@ export default defineComponent({
       editorConsoleRef,
       adjustedHeight,
       displayResult,
+      tabData,
     }
   },
   render() {
@@ -93,8 +101,8 @@ export default defineComponent({
             {
               this.displayResult
               && [
-                <TableActionBar />,
-                <TableResult maxHeight={this.adjustedHeight} />,
+                <TableActionBar tabData={this.tabData} />,
+                <TableResult maxHeight={this.adjustedHeight} tabData={this.tabData} />,
               ]
             }
           </n-tab-pane>

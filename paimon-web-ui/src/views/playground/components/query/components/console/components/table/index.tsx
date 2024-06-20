@@ -27,15 +27,29 @@ export default defineComponent({
       type: Number as PropType<number>,
       default: 150,
     },
+    tabData: {
+      type: Object as PropType<any>,
+      default: () => ({}),
+    },
   },
   setup(props) {
     const { t } = useLocaleHooks()
     const message = useMessage()
+    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const jobStore = useJobStore()
+    const tabData = toRef(props.tabData)
+    const currentKey = computed(() => {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+      return currentTab ? currentTab.key : null
+    })
     const scrollX = ref('100%')
     const tableContainer = ref<HTMLElement | null>(null)
     const tableRef = ref<DataTableInst | null>(null)
     const maxTableHeight = ref(0)
+
+    mittBus.on('initTabData', (data: any) => {
+      tabData.value = data
+    })
 
     interface TableColumn {
       title: string
@@ -46,8 +60,8 @@ export default defineComponent({
       render?: (row: any, index: number) => string | number | JSX.Element
     }
 
-    const initialData = computed(() => jobStore.getCurrentJob?.resultData || [])
-    const refreshedData = computed(() => jobStore.getJobResultData?.resultData || [])
+    const initialData = computed(() => jobStore.getCurrentJob(currentKey.value)?.resultData || [])
+    const refreshedData = computed(() => jobStore.getJobResultData(currentKey.value)?.resultData || [])
     const data = computed(() => refreshedData.value.length > 0 ? refreshedData.value : initialData.value)
 
     const columns = computed(() => {
@@ -56,8 +70,6 @@ export default defineComponent({
 
       return []
     })
-
-    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
 
     function generateColumns(sampleObject: any) {
       const indexColumn: TableColumn = {

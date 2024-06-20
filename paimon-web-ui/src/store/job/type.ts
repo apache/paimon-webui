@@ -15,4 +15,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
+import type { Job, JobResultData } from '@/api/models/job/types/job'
+
 export type ExecutionMode = 'Streaming' | 'Batch'
+
+export interface JobDetails {
+  executionMode: ExecutionMode
+  job: Job | null
+  jobResultData: JobResultData | null
+  jobStatus: string
+  executionTime: string
+}

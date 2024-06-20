@@ -26,7 +26,7 @@ import type { JobSubmitDTO } from '@/api/models/job/types/job'
 import { createRecord, stopJob, submitJob } from '@/api/models/job'
 import { useJobStore } from '@/store/job'
 
-import type { ExecutionMode } from '@/store/job/type'
+import type { ExecutionMode, JobDetails } from '@/store/job/type'
 import type { RecordDTO } from '@/api/models/job/types/record'
 
 export default defineComponent({
@@ -47,8 +47,12 @@ export default defineComponent({
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const statementName = ref<string>('')
     const tabData = toRef(props.tabData)
-    const currentJob = computed(() => jobStore.getCurrentJob)
-    const jobStatus = computed(() => jobStore.getJobStatus)
+    const currentKey = computed(() => {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+      return currentTab ? currentTab.key : null
+    })
+    const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
+    const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
 
     const debuggerVariables = reactive<{
       operatingConditionOptions: { label: string, key: string }[]
@@ -90,7 +94,6 @@ export default defineComponent({
 
     async function handleSave() {
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
-
       if (!currentTab)
         return
 
@@ -203,8 +206,8 @@ export default defineComponent({
         handleStopJob()
       }
       else {
-        jobStore.setExecutionMode(debuggerVariables.conditionValue3 as ExecutionMode)
-        jobStore.resetCurrentResult()
+        if (jobStore.getJobDetails(currentKey.value))
+          jobStore.resetJob(currentKey.value)
 
         const currentSQL = currentTab.content
         if (!currentSQL)
@@ -222,7 +225,14 @@ export default defineComponent({
           const response = await submitJob(jobDataDTO)
           if (response.code === 200) {
             message.success(t('playground.job_submission_successfully'))
-            jobStore.setCurrentJob(response.data)
+            const jobDetail: JobDetails = {
+              executionMode: debuggerVariables.conditionValue3 as ExecutionMode,
+              job: response.data,
+              jobResultData: null,
+              jobStatus: '',
+              executionTime: '',
+            }
+            jobStore.addJob(currentKey.value, jobDetail)
             mittBus.emit('jobResult', response.data)
             mittBus.emit('getStatus')
             mittBus.emit('displayResult')
