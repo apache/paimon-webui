@@ -157,6 +157,11 @@ export default defineComponent({
       mittBus.emit('resizeLog')
     }
 
+    mittBus.on('reloadLayout', () => {
+      editorSize.value = 0.6
+      showConsole.value = true
+    })
+
     return {
       ...toRefs(tabVariables),
       ...toRefs(editorVariables),
@@ -176,6 +181,7 @@ export default defineComponent({
       handleConsoleUp,
       handleConsoleDown,
       handleConsoleClose,
+      handleFormat,
     }
   },
   render() {
@@ -188,7 +194,7 @@ export default defineComponent({
           closable
           style={{ height: '100%' }}
           tab-style="min-width: 160px;"
-          pane-style="padding-top: 0;"
+          pane-style="padding-top: 0; height: 100%"
           on-close={this.handleClose}
           on-add={this.handleAdd}
           on-update:value={this.changeTreeChoose}
@@ -211,9 +217,9 @@ export default defineComponent({
                   ),
                   default: () => [
                     <div class={styles.debugger}>
-                      <EditorDebugger tabData={item} />
+                      <EditorDebugger tabData={this.tabVariables} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
                     </div>,
-                    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)', height: '100%' }}>
+                    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)', height: 'calc(100vh - 181px)' }}>
                       <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
                         {{
                           '1': () => (
