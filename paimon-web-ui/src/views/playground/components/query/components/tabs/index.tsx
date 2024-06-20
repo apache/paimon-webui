@@ -219,7 +219,7 @@ export default defineComponent({
                     <div class={styles.debugger}>
                       <EditorDebugger tabData={this.tabVariables} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
                     </div>,
-                    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)', height: 'calc(100vh - 181px)' }}>
+                    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 177px)', height: 'calc(100vh - 177px)' }}>
                       <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
                         {{
                           '1': () => (
