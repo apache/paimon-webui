@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.api.enums.FlinkCdcSyncType;
 import org.apache.paimon.web.server.data.dto.CdcJobDefinitionDTO;
 import org.apache.paimon.web.server.data.dto.CdcJobSubmitDTO;
 import org.apache.paimon.web.server.data.dto.LoginDTO;
@@ -54,9 +55,18 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
     private CdcJobDefinitionDTO cdcJobDefinitionDto() {
         CdcJobDefinitionDTO cdcJobDefinitionDTO = new CdcJobDefinitionDTO();
         cdcJobDefinitionDTO.setName("1");
-        cdcJobDefinitionDTO.setCdcType(0);
-        cdcJobDefinitionDTO.setConfig("d");
+        cdcJobDefinitionDTO.setCdcType(FlinkCdcSyncType.SINGLE_TABLE_SYNC.getValue());
         cdcJobDefinitionDTO.setDescription("d");
+        cdcJobDefinitionDTO.setCreateUser("admin");
+        return cdcJobDefinitionDTO;
+    }
+
+    private CdcJobDefinitionDTO cdcDatabaseSyncJobDefinitionDto() {
+        CdcJobDefinitionDTO cdcJobDefinitionDTO = new CdcJobDefinitionDTO();
+        cdcJobDefinitionDTO.setName("2");
+        cdcJobDefinitionDTO.setCdcType(FlinkCdcSyncType.ALL_DATABASES_SYNC.getValue());
+        cdcJobDefinitionDTO.setDescription("d");
+        cdcJobDefinitionDTO.setCreateUser("admin");
         return cdcJobDefinitionDTO;
     }
 
@@ -209,6 +219,43 @@ public class CdcJobDefinitionControllerTest extends ControllerTestBase {
                 .andDo(MockMvcResultHandlers.print());
         CdcJobDefinitionDTO cdcJobDefinitionDTO = cdcJobDefinitionDto();
         CdcJobSubmitDTO cdcJobSubmitDTO = new CdcJobSubmitDTO();
+        cdcJobSubmitDTO.setClusterId("1");
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get(
+                                        cdcJobDefinitionPath + "/" + cdcJobDefinitionDTO.getId())
+                                .cookie(cookie)
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                                .content(ObjectMapperUtils.toJSON(cdcJobSubmitDTO))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn()
+                .getResponse();
+    }
+
+    @Order(4)
+    @Test
+    public void submitDatabaseSyncCdcJob() throws Exception {
+        System.setProperty("FLINK_HOME", "/opt/flink");
+        System.setProperty("ACTION_JAR_PATH", "/opt/flink/jar");
+        ClusterInfo cluster = new ClusterInfo();
+        cluster.setId(2);
+        cluster.setClusterName("clusterName");
+        cluster.setHost("127.0.0.1");
+        cluster.setPort(8083);
+        cluster.setType("Flink");
+        cluster.setEnabled(true);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/cluster")
+                                .cookie(cookie)
+                                .content(ObjectMapperUtils.toJSON(cluster))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        CdcJobDefinitionDTO cdcJobDefinitionDTO = cdcDatabaseSyncJobDefinitionDto();
+        CdcJobSubmitDTO cdcJobSubmitDTO = new CdcJobSubmitDTO();
+        cdcJobSubmitDTO.setClusterId("2");
         mockMvc.perform(
                         MockMvcRequestBuilders.get(
                                         cdcJobDefinitionPath + "/" + cdcJobDefinitionDTO.getId())

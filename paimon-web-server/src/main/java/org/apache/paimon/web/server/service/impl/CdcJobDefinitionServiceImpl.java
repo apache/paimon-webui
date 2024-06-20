@@ -163,8 +163,8 @@ public class CdcJobDefinitionServiceImpl
         actionConfigs.put(
                 FlinkCdcOptions.SESSION_URL,
                 String.format("%s:%s", clusterInfo.getHost(), clusterInfo.getPort()));
-        handleCdcGraphNodeData(actionConfigs, cdcGraph.getSource());
-        handleCdcGraphNodeData(actionConfigs, cdcGraph.getTarget());
+        handleCdcGraphNodeData(actionConfigs, cdcGraph.getSource(), flinkCdcSyncType);
+        handleCdcGraphNodeData(actionConfigs, cdcGraph.getTarget(), flinkCdcSyncType);
         ActionContext actionContext = factory.getActionContext(actionConfigs);
         try {
             actionService.execute(actionContext);
@@ -174,17 +174,19 @@ public class CdcJobDefinitionServiceImpl
         return R.succeed();
     }
 
-    private void handleCdcGraphNodeData(ObjectNode actionConfigs, CdcNode node) {
+    private void handleCdcGraphNodeData(
+            ObjectNode actionConfigs, CdcNode node, FlinkCdcSyncType cdcSyncType) {
         FlinkCdcDataSourceType cdcDataSourceType = FlinkCdcDataSourceType.of(node.getType());
         Preconditions.checkNotNull(
                 cdcDataSourceType,
                 String.format("the cdc type [%s] is not supported", node.getType()));
+
         switch (cdcDataSourceType) {
             case PAIMON:
-                handlePaimonNodeData(actionConfigs, node.getData());
+                handlePaimonNodeData(actionConfigs, node.getData(), cdcSyncType);
                 break;
             case MYSQL:
-                handleMysqlNodeData(actionConfigs, node.getData());
+                handleMysqlNodeData(actionConfigs, node.getData(), cdcSyncType);
                 break;
             case POSTGRESQL:
                 handlePostgresNodeData(actionConfigs, node.getData());
@@ -226,26 +228,41 @@ public class CdcJobDefinitionServiceImpl
         actionConfigs.putPOJO(FlinkCdcOptions.POSTGRES_CONF, postgresConfList);
     }
 
-    private void handleMysqlNodeData(ObjectNode actionConfigs, ObjectNode mysqlData) {
-        List<String> mysqlConfList = getOtherConfigs(mysqlData);
+
+
+    private void handleMysqlNodeData(
+            ObjectNode actionConfigs, ObjectNode mysqlData, FlinkCdcSyncType cdcSyncType) {
+        String otherConfigs = JSONUtils.getString(mysqlData, "other_configs");
+        List<String> mysqlConfList;
+        if (StringUtils.isBlank(otherConfigs)) {
+            mysqlConfList = new ArrayList<>();
+        } else {
+            mysqlConfList = new ArrayList<>(Arrays.asList(otherConfigs.split(";")));
+        }
         mysqlConfList.add(buildKeyValueString("hostname", JSONUtils.getString(mysqlData, "host")));
         mysqlConfList.add(
                 buildKeyValueString("username", JSONUtils.getString(mysqlData, "username")));
         mysqlConfList.add(buildKeyValueString("port", JSONUtils.getString(mysqlData, "port")));
         mysqlConfList.add(
                 buildKeyValueString("database-name", JSONUtils.getString(mysqlData, "database")));
-        mysqlConfList.add(
-                buildKeyValueString("table-name", JSONUtils.getString(mysqlData, "table_name")));
+        if (cdcSyncType == FlinkCdcSyncType.SINGLE_TABLE_SYNC) {
+            mysqlConfList.add(
+                    buildKeyValueString(
+                            "table-name", JSONUtils.getString(mysqlData, "table_name")));
+        }
         mysqlConfList.add(
                 buildKeyValueString("password", JSONUtils.getString(mysqlData, "password")));
         actionConfigs.putPOJO(FlinkCdcOptions.MYSQL_CONF, mysqlConfList);
     }
 
-    private void handlePaimonNodeData(ObjectNode actionConfigs, ObjectNode paimonData) {
+    private void handlePaimonNodeData(
+            ObjectNode actionConfigs, ObjectNode paimonData, FlinkCdcSyncType cdcSyncType) {
         Integer catalog = JSONUtils.getInteger(paimonData, "catalog");
         CatalogInfo catalogInfo = catalogService.getById(catalog);
         actionConfigs.put(FlinkCdcOptions.WAREHOUSE, catalogInfo.getWarehouse());
-        actionConfigs.put(FlinkCdcOptions.TABLE, JSONUtils.getString(paimonData, "table_name"));
+        if (cdcSyncType == FlinkCdcSyncType.SINGLE_TABLE_SYNC) {
+            actionConfigs.put(FlinkCdcOptions.TABLE, JSONUtils.getString(paimonData, "table_name"));
+        }
         actionConfigs.put(FlinkCdcOptions.DATABASE, JSONUtils.getString(paimonData, "database"));
         actionConfigs.put(
                 FlinkCdcOptions.PRIMARY_KEYS, JSONUtils.getString(paimonData, "primary_key"));
