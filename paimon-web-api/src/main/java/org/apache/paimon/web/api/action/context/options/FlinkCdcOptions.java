@@ -24,6 +24,7 @@ public class FlinkCdcOptions {
     private FlinkCdcOptions() {}
 
     public static final String MYSQL_CONF = "mysql_conf";
+    public static final String POSTGRES_CONF = "postgres_conf";
 
     public static final String TABLE_CONF = "table_conf";
 
@@ -33,7 +34,11 @@ public class FlinkCdcOptions {
 
     public static final String TABLE = "table";
 
+    public static final String PARTITION_KEYS = "partition_keys";
+
     public static final String PRIMARY_KEYS = "primary_keys";
+
+    public static final String COMPUTED_COLUMN = "computed_column";
 
     public static final String SESSION_URL = "sessionUrl";
 
