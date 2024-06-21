@@ -234,7 +234,7 @@ export default defineComponent({
             }
             jobStore.addJob(currentKey.value, jobDetail)
             mittBus.emit('jobResult', response.data)
-            mittBus.emit('getStatus')
+            mittBus.emit(`getStatus_${currentKey.value}`)
             mittBus.emit('displayResult')
           }
           else {

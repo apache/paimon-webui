@@ -22,11 +22,9 @@ import { onMounted } from 'vue'
 import styles from './index.module.scss'
 import MenuTree from './components/menu-tree'
 import EditorTabs from './components/tabs'
-import EditorConsole from './components/console'
 import { useJobStore } from '@/store/job'
-import { getJobStatus, getLogs, refreshJobStatus } from '@/api/models/job'
+import { getLogs, refreshJobStatus } from '@/api/models/job'
 import { createSession } from '@/api/models/session'
-import MonacoEditor from '@/components/monaco-editor'
 
 export default defineComponent({
   name: 'QueryPage',
@@ -40,17 +38,17 @@ export default defineComponent({
       panelsList: [],
       chooseTab: null,
     }) as any
-    const startTime = ref(0)
-    const elapsedTime = ref(0)
+    /* const startTime = ref(0)
+    const elapsedTime = ref(0) */
     const currentKey = computed(() => {
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
       return currentTab ? currentTab.key : null
     })
     const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
-    const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
+    // const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
     const editorSize = ref(0.6)
 
-    const formattedTime = computed(() => formatTime(elapsedTime.value))
+    // const formattedTime = computed(() => formatTime(elapsedTime.value))
 
     const editorVariables = reactive({
       editor: {} as any,
@@ -143,7 +141,7 @@ export default defineComponent({
       }
     })
 
-    const getJobStatusIntervalId = ref<number | undefined>()
+    /* const getJobStatusIntervalId = ref<number | undefined>()
 
     const stopGetJobStatus = () => {
       if (getJobStatusIntervalId.value)
@@ -159,20 +157,20 @@ export default defineComponent({
             jobStore.updateJobStatus(currentKey.value, response.data.status)
         }
       }, 1000)
-    }
+    } */
 
-    mittBus.on('getStatus', () => startGetJobStatus())
+    /* mittBus.on('getStatus', () => startGetJobStatus()) */
     mittBus.on('reloadLayout', () => {
       editorSize.value = 0.6
       showConsole.value = true
     })
 
-    watch(jobStatus, (jobStatus) => {
+    /* watch(jobStatus, (jobStatus) => {
       if (jobStatus === 'FINISHED' || jobStatus === 'CANCELED' || jobStatus === 'FAILED')
         stopGetJobStatus()
-    })
+    }) */
 
-    let computeExecutionTimeIntervalId: number
+    /* let computeExecutionTimeIntervalId: number
     const startTimer = () => {
       if (computeExecutionTimeIntervalId)
         clearInterval(computeExecutionTimeIntervalId)
@@ -207,7 +205,7 @@ export default defineComponent({
       return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
     }
 
-    watch(formattedTime, formattedTime => jobStore.updateExecutionTime(currentKey.value, formattedTime))
+    watch(formattedTime, formattedTime => jobStore.updateExecutionTime(currentKey.value, formattedTime)) */
 
     onUnmounted(() => {
       jobStore.resetJob(currentKey.value)
@@ -257,7 +255,7 @@ export default defineComponent({
                   <div class={styles.tabs}>
                     <EditorTabs />
                   </div>
-                  <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
+                  {/* <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
                     <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
                       {{
                         '1': () => (
@@ -301,7 +299,7 @@ export default defineComponent({
                         ),
                       }}
                     </n-split>
-                  </div>
+                  </div> */}
                 </n-card>
               </div>
             ),

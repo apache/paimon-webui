@@ -95,10 +95,12 @@ export default defineComponent({
         }
         try {
           const response = await stopJob(stopJobDTO)
-          if (response.code === 200)
+          if (response.code === 200) {
             message.success(t('playground.job_stopping_successfully'))
-          else
+          }
+          else {
             message.warning(t('playground.job_stopping_failed'))
+          }
         }
         catch (error) {
           message.warning(t('playground.job_stopping_failed'))
