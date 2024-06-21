@@ -20,3 +20,4 @@
 
 org.apache.paimon.web.api.action.context.factory.MysqlSyncTableActionContextFactory
 org.apache.paimon.web.api.action.context.factory.MysqlSyncDatabasesActionContextFactory
+org.apache.paimon.web.api.action.context.factory.PostgresSyncTableActionContextFactory

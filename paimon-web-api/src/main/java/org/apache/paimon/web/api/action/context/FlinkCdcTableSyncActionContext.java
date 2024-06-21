@@ -46,6 +46,10 @@ public abstract class FlinkCdcTableSyncActionContext extends FlinkActionContext
     @Nullable
     protected String primaryKeys;
 
+    @ActionConf("computed_column")
+    @Nullable
+    protected String computedColumn;
+
     @ActionConf(value = "catalog_conf")
     @Nullable
     protected List<String> catalogConfList;
