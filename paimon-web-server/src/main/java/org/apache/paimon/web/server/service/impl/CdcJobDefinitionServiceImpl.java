@@ -179,7 +179,7 @@ public class CdcJobDefinitionServiceImpl
         FlinkCdcDataSourceType cdcDataSourceType = FlinkCdcDataSourceType.of(node.getType());
         Preconditions.checkNotNull(
                 cdcDataSourceType,
-                String.format("the cdc type [%s] is not supported", node.getType()));
+                String.format("CDC datasource type should not be null.", node.getType()));
         switch (cdcDataSourceType) {
             case PAIMON:
                 handlePaimonNodeData(actionConfigs, node.getData(), cdcSyncType);
