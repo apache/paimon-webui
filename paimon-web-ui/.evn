@@ -15,12 +15,4 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-/// <reference types="vite/client" />
-
-interface ImportMetaEnv {
-  readonly VITE_WS_URL: string
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv
-}
+VITE_WS_URL=ws://47.94.247.86:10088/ws

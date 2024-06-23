@@ -26,7 +26,6 @@ import type { JobSubmitDTO } from '@/api/models/job/types/job'
 import { createRecord, stopJob, submitJob } from '@/api/models/job'
 import { useJobStore } from '@/store/job'
 
-import type { ExecutionMode, JobDetails } from '@/store/job/type'
 import type { RecordDTO } from '@/api/models/job/types/record'
 
 export default defineComponent({
@@ -51,8 +50,14 @@ export default defineComponent({
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
       return currentTab ? currentTab.key : null
     })
+    const jobStatus = ref('')
     const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
-    const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
+    watchEffect(() => {
+      const key = currentKey.value
+      if (key !== null) {
+        jobStatus.value = jobStore.getJobStatus(key)
+      }
+    })
 
     const debuggerVariables = reactive<{
       operatingConditionOptions: { label: string, key: string }[]
@@ -185,10 +190,12 @@ export default defineComponent({
         }
         try {
           const response = await stopJob(stopJobDTO)
-          if (response.code === 200)
+          if (response.code === 200) {
             message.success(t('playground.job_stopping_successfully'))
-          else
+          }
+          else {
             message.warning(t('playground.job_stopping_failed'))
+          }
         }
         catch (error) {
           message.warning(t('playground.job_stopping_failed'))
@@ -225,16 +232,16 @@ export default defineComponent({
           const response = await submitJob(jobDataDTO)
           if (response.code === 200) {
             message.success(t('playground.job_submission_successfully'))
-            const jobDetail: JobDetails = {
+            /* const jobDetail: JobDetails = {
               executionMode: debuggerVariables.conditionValue3 as ExecutionMode,
               job: response.data,
               jobResultData: null,
               jobStatus: '',
-              executionTime: '',
+              executionTime: '0m:0s',
             }
-            jobStore.addJob(currentKey.value, jobDetail)
+            jobStore.resetJob(currentKey.value)
+            jobStore.addJob(currentKey.value, jobDetail) */
             mittBus.emit('jobResult', response.data)
-            mittBus.emit(`getStatus_${currentKey.value}`)
             mittBus.emit('displayResult')
           }
           else {

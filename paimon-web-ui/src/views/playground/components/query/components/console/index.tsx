@@ -22,7 +22,6 @@ import TableResult from './components/table'
 import LogConsole from './components/log'
 import styles from './index.module.scss'
 import { useJobStore } from '@/store/job'
-import { getJobStatus } from '@/api/models/job'
 
 export default defineComponent({
   name: 'EditorConsole',
@@ -35,21 +34,16 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
-    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const editorConsoleRef = ref<HTMLElement | null>(null)
     const adjustedHeight = ref(0)
-    const displayResult = ref(true)
-    const startTime = ref(0)
-    const elapsedTime = ref(0)
     const tabData = toRef(props.tabData)
     const currentKey = computed(() => {
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
       return currentTab ? currentTab.key : null
     })
     const jobStore = useJobStore()
-    const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
+    const displayResult = computed(() => jobStore.getJobDetails(currentKey.value)?.displayResult)
     const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
-    const formattedTime = computed(() => formatTime(elapsedTime.value))
 
     const handleUp = () => {
       emit('ConsoleUp', 'up')
@@ -63,68 +57,14 @@ export default defineComponent({
       emit('ConsoleClose', 'close')
     }
 
-    mittBus.on('displayResult', () => displayResult.value = true)
-
-    // get job status
-    const getJobStatusIntervalId = ref<number | undefined>()
-    const stopGetJobStatus = () => {
-      if (getJobStatusIntervalId.value)
-        clearInterval(getJobStatusIntervalId.value)
-    }
-
-    const startGetJobStatus = () => {
-      stopGetJobStatus()
-      getJobStatusIntervalId.value = setInterval(async () => {
-        if (currentJob.value && currentJob.value.jobId) {
-          const response = await getJobStatus(currentJob.value.jobId)
-          if (response.data)
-            jobStore.updateJobStatus(currentKey.value, response.data.status)
-        }
-      }, 1000)
-    }
-
-    mittBus.on(`getStatus_${currentKey.value}`, () => startGetJobStatus())
-    watch(jobStatus, (jobStatus) => {
-      if (jobStatus === 'FINISHED' || jobStatus === 'CANCELED' || jobStatus === 'FAILED')
-        stopGetJobStatus()
-    })
-
-    // compute execution time
-    let computeExecutionTimeIntervalId: number
-    const startTimer = () => {
-      if (computeExecutionTimeIntervalId)
-        clearInterval(computeExecutionTimeIntervalId)
-
-      elapsedTime.value = 0
-      startTime.value = Date.now()
-      computeExecutionTimeIntervalId = setInterval(() => {
-        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
-      }, 3000)
-    }
-
-    const stopTimer = () => {
-      if (computeExecutionTimeIntervalId)
-        clearInterval(computeExecutionTimeIntervalId)
-    }
-
     watch(jobStatus, (newStatus, oldStatus) => {
       if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING') {
-        startTimer()
+        jobStore.startJobTimer(currentKey.value)
       }
       else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
-        stopTimer()
-        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
+        jobStore.stopJobTimer(currentKey.value)
       }
     })
-
-    function formatTime(seconds: number): string {
-      const days = Math.floor(seconds / 86400)
-      const hours = Math.floor((seconds % 86400) / 3600)
-      const mins = Math.floor((seconds % 3600) / 60)
-      const secs = seconds % 60
-      return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
-    }
-    watch(formattedTime, formattedTime => jobStore.updateExecutionTime(currentKey.value, formattedTime))
 
     // handle resize
     const handleResize = throttle((entries) => {

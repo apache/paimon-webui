@@ -47,10 +47,6 @@ export default defineComponent({
     const tableRef = ref<DataTableInst | null>(null)
     const maxTableHeight = ref(0)
 
-    mittBus.on('initTabData', (data: any) => {
-      tabData.value = data
-    })
-
     interface TableColumn {
       title: string
       key: string

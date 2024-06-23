@@ -44,12 +44,15 @@ export default defineComponent({
       editor: {} as any,
       language: 'sql',
     })
+
     const editorMounted = (editor: monaco.editor.IStandaloneCodeEditor) => {
       editorVariables.editor = editor
     }
+
     const handleFormat = () => {
       toRaw(editorVariables.editor).setValue(format(toRaw(editorVariables.editor).getValue()))
     }
+
     const editorSave = () => {
       message.success('Save success')
       tabVariables.panelsList.find((item: any) => item.key === tabVariables.chooseTab).content = toRaw(editorVariables.editor).getValue()
@@ -57,6 +60,7 @@ export default defineComponent({
       tabVariables.panelsList.find((item: any) => item.key === tabVariables.chooseTab).isSaved = true
       menuTreeRef.value && menuTreeRef.value?.onLoadRecordData()
     }
+
     const handleContentChange = (value: string) => {
       tabVariables.panelsList.find((item: any) => item.key === tabVariables.chooseTab).content = value
       tabVariables.panelsList.find((item: any) => item.key === tabVariables.chooseTab).isSaved = false
@@ -185,9 +189,9 @@ export default defineComponent({
           type="card"
           addable
           closable
-          style={{ height: '100%' }}
+          style={{ height: '100%', width: '100%' }}
           tab-style="min-width: 160px;"
-          pane-style="padding-top: 0; height: 100%"
+          pane-style="padding-top: 0; height: 100%; width: 100%"
           on-close={this.handleClose}
           on-add={this.handleAdd}
           on-update:value={this.changeTreeChoose}
@@ -210,7 +214,7 @@ export default defineComponent({
                   ),
                   default: () => [
                     <div class={styles.debugger}>
-                      <EditorDebugger tabData={this.tabVariables} />
+                      <EditorDebugger tabData={this.tabVariables} onHandleFormat={this.handleFormat} onHandleSave={this.editorSave} />
                     </div>,
                     <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 177px)', height: 'calc(100vh - 177px)' }}>
                       <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>

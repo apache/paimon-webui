@@ -62,38 +62,5 @@ under the License. */
       height: 100%;
       width: 100%;
     }
-  
-    .debugger {
-      display: flex;
-      height: 64px;
-    }
-  
-    .editor {
-      height: 100%;
-      flex: 1;
-    }
-
-    .console {
-      height: 100%;
-      flex: 1;
-    }
-
-    .console-splitter {
-      position: relative;
-      height: 0;
-      background: transparent;
-      cursor: ns-resize;
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: -5px;
-        right: 0;
-        bottom: -5px;
-        left: 0;
-        background: transparent;
-        z-index: 1;
-      }
-    }
   }
 }

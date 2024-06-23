@@ -51,10 +51,10 @@ export const useJobStore = defineStore({
     getJobResultData(state): (key: string) => JobResultData | null {
       return key => state.jobs[key]?.jobResultData
     },
-    getExecutionTime(state): (key: string) => string {
+    getExecutionTime(state): (key: string) => number {
       return (key) => {
         if (!state.jobs[key]) {
-          return '0m:0s'
+          return 0
         }
         return state.jobs[key].executionTime
       }
@@ -62,8 +62,13 @@ export const useJobStore = defineStore({
     getColumns(state): (key: string) => number {
       return (key) => {
         const jobDetails = state.jobs[key]
-        if (jobDetails && jobDetails.jobResultData && jobDetails.jobResultData.resultData && jobDetails.jobResultData.resultData.length > 0) {
-          return Object.keys(jobDetails.jobResultData.resultData[0]).length
+        if (jobDetails) {
+          if (jobDetails.job && jobDetails.job.resultData && jobDetails.job.resultData.length > 0) {
+            return Object.keys(jobDetails.job.resultData[0]).length
+          }
+          if (jobDetails.jobResultData && jobDetails.jobResultData.resultData && jobDetails.jobResultData.resultData.length > 0) {
+            return Object.keys(jobDetails.jobResultData.resultData[0]).length
+          }
         }
         return 0
       }
@@ -71,8 +76,13 @@ export const useJobStore = defineStore({
     getRows(state): (key: string) => number {
       return (key) => {
         const jobDetails = state.jobs[key]
-        if (jobDetails && jobDetails.jobResultData && jobDetails.jobResultData.resultData) {
-          return jobDetails.jobResultData.resultData.length
+        if (jobDetails) {
+          if (jobDetails.job && jobDetails.job.resultData && jobDetails.job.resultData.length > 0) {
+            return jobDetails.job.resultData.length
+          }
+          if (jobDetails.jobResultData && jobDetails.jobResultData.resultData && jobDetails.jobResultData.resultData.length > 0) {
+            return jobDetails.jobResultData.resultData.length
+          }
         }
         return 0
       }
@@ -105,13 +115,21 @@ export const useJobStore = defineStore({
         this.jobs[key].jobResultData = jobResultData
       }
     },
-    updateExecutionTime(key: string, executionTime: string) {
-      if (this.jobs[key]) {
-        this.jobs[key].executionTime = executionTime
-      }
-    },
     setJobLog(jobLog: string) {
       this.jobLog = jobLog
+    },
+    startJobTimer(key: string) {
+      if (this.jobs[key]) {
+        this.jobs[key].timerId = window.setInterval(() => {
+          this.jobs[key].executionTime = Math.floor((Date.now() - this.jobs[key].startTime) / 1000)
+        }, 3000)
+      }
+    },
+    stopJobTimer(key: string) {
+      if (this.jobs[key] && this.jobs[key].timerId) {
+        clearInterval(this.jobs[key].timerId)
+        this.jobs[key].executionTime = Math.floor((Date.now() - this.jobs[key].startTime) / 1000)
+      }
     },
     resetJob(key: string) {
       if (this.jobs[key]) {
@@ -120,7 +138,9 @@ export const useJobStore = defineStore({
           job: null,
           jobResultData: null,
           jobStatus: '',
-          executionTime: '0m:0s',
+          executionTime: 0,
+          startTime: 0,
+          displayResult: false,
         }
       }
     },

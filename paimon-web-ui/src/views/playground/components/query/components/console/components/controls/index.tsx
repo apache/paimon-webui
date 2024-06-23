@@ -45,7 +45,7 @@ export default defineComponent({
     })
     const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
     const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
-    const executionTime = computed(() => jobStore.getExecutionTime(currentKey.value))
+    const executionTime = computed(() => formatTime(jobStore.getExecutionTime(currentKey.value)))
     const selectedInterval = ref('Disabled')
     const refreshIntervalId = ref<number | null>(null)
     const activeButton = ref('table')
@@ -189,6 +189,14 @@ export default defineComponent({
           clearRefreshInterval()
           break
       }
+    }
+
+    function formatTime(seconds: number): string {
+      const days = Math.floor(seconds / 86400)
+      const hours = Math.floor((seconds % 86400) / 3600)
+      const mins = Math.floor((seconds % 3600) / 60)
+      const secs = seconds % 60
+      return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
     }
 
     const rowCount = computed(() => jobStore.getRows(currentKey.value))

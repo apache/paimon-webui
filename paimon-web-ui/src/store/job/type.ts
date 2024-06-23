@@ -24,5 +24,8 @@ export interface JobDetails {
   job: Job | null
   jobResultData: JobResultData | null
   jobStatus: string
-  executionTime: string
+  executionTime: number
+  timerId?: number
+  startTime: number
+  displayResult: boolean
 }

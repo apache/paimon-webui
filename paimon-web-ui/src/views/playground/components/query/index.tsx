@@ -15,9 +15,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type * as monaco from 'monaco-editor'
-import { format } from 'sql-formatter'
-import { useMessage } from 'naive-ui'
 import { onMounted } from 'vue'
 import styles from './index.module.scss'
 import MenuTree from './components/menu-tree'
@@ -25,78 +22,23 @@ import EditorTabs from './components/tabs'
 import { useJobStore } from '@/store/job'
 import { getLogs, refreshJobStatus } from '@/api/models/job'
 import { createSession } from '@/api/models/session'
+import type { ExecutionMode, JobDetails } from '@/store/job/type'
 
 export default defineComponent({
   name: 'QueryPage',
   setup() {
-    const message = useMessage()
     const jobStore = useJobStore()
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
-    const menuTreeRef = ref()
 
     const tabData = ref({
       panelsList: [],
       chooseTab: null,
     }) as any
-    /* const startTime = ref(0)
-    const elapsedTime = ref(0) */
     const currentKey = computed(() => {
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
       return currentTab ? currentTab.key : null
     })
     const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
-    // const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
-    const editorSize = ref(0.6)
-
-    // const formattedTime = computed(() => formatTime(elapsedTime.value))
-
-    const editorVariables = reactive({
-      editor: {} as any,
-      language: 'sql',
-    })
-
-    const editorMounted = (editor: monaco.editor.IStandaloneCodeEditor) => {
-      editorVariables.editor = editor
-    }
-
-    const handleFormat = () => {
-      toRaw(editorVariables.editor).setValue(format(toRaw(editorVariables.editor).getValue()))
-    }
-
-    const editorSave = () => {
-      message.success('Save success')
-      tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab).content = toRaw(editorVariables.editor).getValue()
-      handleFormat()
-      tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab).isSaved = true
-
-      menuTreeRef.value && menuTreeRef.value?.onLoadRecordData()
-    }
-
-    const handleContentChange = (value: string) => {
-      tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab).content = value
-      tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab).isSaved = false
-    }
-
-    const handleConsoleUp = () => {
-      editorSize.value = 0
-      mittBus.emit('editorResized')
-    }
-
-    const handleConsoleDown = () => {
-      editorSize.value = 0.6
-      mittBus.emit('editorResized')
-    }
-
-    const showConsole = ref(true)
-    const handleConsoleClose = () => {
-      editorSize.value = 0.98
-      showConsole.value = false
-    }
-
-    const handleDragEnd = () => {
-      mittBus.emit('editorResized')
-      mittBus.emit('resizeLog')
-    }
 
     // mitt - handle tab choose
     mittBus.on('initTabData', (data: any) => {
@@ -110,8 +52,6 @@ export default defineComponent({
         jobStore.setJobLog(response.data)
       }, 1000)
     }
-
-    onMounted(getJobLog)
 
     let createSessionIntervalId: number | undefined
     watch(currentJob, (newJob) => {
@@ -141,71 +81,64 @@ export default defineComponent({
       }
     })
 
-    /* const getJobStatusIntervalId = ref<number | undefined>()
+    // get job status
+    // const wsUrl = import.meta.env.VITE_WS_URL
+    function setupGetJobStatusWebSocket() {
+      const { connect, subscribe } = useWebSocket('ws://47.94.247.86:10088/ws', {
+        onMessage: (message) => {
+          const data = JSON.parse(message.body)
+          if (data && data.jobId && data.status && data.jobName) {
+            jobStore.updateJobStatus(data.jobName, data.status)
+          }
+        },
+        onOpen: () => {
+          subscribe('/topic/jobStatus')
+        },
+        onError: (event) => {
+          console.error('WebSocket encountered an error:', event)
+        },
+        onClose: () => {
+        },
+      })
 
-    const stopGetJobStatus = () => {
-      if (getJobStatusIntervalId.value)
-        clearInterval(getJobStatusIntervalId.value)
+      connect()
     }
 
-    const startGetJobStatus = () => {
-      stopGetJobStatus()
-      getJobStatusIntervalId.value = setInterval(async () => {
-        if (currentJob.value && currentJob.value.jobId) {
-          const response = await getJobStatus(currentJob.value.jobId)
-          if (response.data)
-            jobStore.updateJobStatus(currentKey.value, response.data.status)
-        }
-      }, 1000)
-    } */
+    function setupSubmitJobWebSocket() {
+      const { connect, subscribe } = useWebSocket('ws://47.94.247.86:10088/ws', {
+        onMessage: (message) => {
+          const data = JSON.parse(message.body)
+          if (data && data.jobId && data.jobName) {
+            const jobDetail: JobDetails = {
+              executionMode: data.executeMode as ExecutionMode,
+              job: data,
+              jobResultData: null,
+              jobStatus: '',
+              executionTime: 0,
+              startTime: Date.now(),
+              displayResult: true,
+            }
+            jobStore.addJob(data.jobName, jobDetail)
+          }
+        },
+        onOpen: () => {
+          subscribe('/topic/job')
+        },
+        onError: (event) => {
+          console.error('WebSocket encountered an error:', event)
+        },
+        onClose: () => {
+        },
+      })
 
-    /* mittBus.on('getStatus', () => startGetJobStatus()) */
-    mittBus.on('reloadLayout', () => {
-      editorSize.value = 0.6
-      showConsole.value = true
+      connect()
+    }
+
+    onMounted(() => {
+      setupGetJobStatusWebSocket()
+      setupSubmitJobWebSocket()
+      getJobLog()
     })
-
-    /* watch(jobStatus, (jobStatus) => {
-      if (jobStatus === 'FINISHED' || jobStatus === 'CANCELED' || jobStatus === 'FAILED')
-        stopGetJobStatus()
-    }) */
-
-    /* let computeExecutionTimeIntervalId: number
-    const startTimer = () => {
-      if (computeExecutionTimeIntervalId)
-        clearInterval(computeExecutionTimeIntervalId)
-
-      elapsedTime.value = 0
-      startTime.value = Date.now()
-      computeExecutionTimeIntervalId = setInterval(() => {
-        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
-      }, 3000)
-    }
-
-    const stopTimer = () => {
-      if (computeExecutionTimeIntervalId)
-        clearInterval(computeExecutionTimeIntervalId)
-    }
-
-    watch(jobStatus, (newStatus, oldStatus) => {
-      if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING') {
-        startTimer()
-      }
-      else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
-        stopTimer()
-        elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
-      }
-    })
-
-    function formatTime(seconds: number): string {
-      const days = Math.floor(seconds / 86400)
-      const hours = Math.floor((seconds % 86400) / 3600)
-      const mins = Math.floor((seconds % 3600) / 60)
-      const secs = seconds % 60
-      return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
-    }
-
-    watch(formattedTime, formattedTime => jobStore.updateExecutionTime(currentKey.value, formattedTime)) */
 
     onUnmounted(() => {
       jobStore.resetJob(currentKey.value)
@@ -224,19 +157,7 @@ export default defineComponent({
     })
 
     return {
-      ...toRefs(editorVariables),
-      menuTreeRef,
-      editorMounted,
-      editorSave,
-      handleContentChange,
-      handleFormat,
       tabData,
-      handleConsoleUp,
-      handleConsoleDown,
-      handleConsoleClose,
-      showConsole,
-      editorSize,
-      handleDragEnd,
     }
   },
   render() {
@@ -255,51 +176,6 @@ export default defineComponent({
                   <div class={styles.tabs}>
                     <EditorTabs />
                   </div>
-                  {/* <div style={{ display: 'flex', flex: 1, flexDirection: 'column', maxHeight: 'calc(100vh - 181px)' }}>
-                    <n-split direction="vertical" max={0.6} min={0.00} resize-trigger-size={0} v-model:size={this.editorSize} on-drag-end={this.handleDragEnd}>
-                      {{
-                        '1': () => (
-                          <div class={styles.editor}>
-                            {
-                              this.tabData.panelsList?.length > 0
-                              && (
-                                <n-card content-style="height: 100%;padding: 0;">
-                                  <MonacoEditor
-                                    v-model={this.tabData.panelsList.find((item: any) => item.key === this.tabData.chooseTab).content}
-                                    language={this.language}
-                                    onEditorMounted={this.editorMounted}
-                                    onEditorSave={this.editorSave}
-                                    onChange={this.handleContentChange}
-                                  />
-                                </n-card>
-                              )
-                            }
-                          </div>
-                        ),
-                        '2': () => (this.showConsole && (
-                          <div class={styles.console}>
-                            {
-                                this.tabData.panelsList?.length > 0
-                                && (
-                                  <n-card content-style="height: 100%;padding: 0;">
-                                    <EditorConsole
-                                      onConsoleDown={this.handleConsoleDown}
-                                      onConsoleUp={this.handleConsoleUp}
-                                      onConsoleClose={this.handleConsoleClose}
-                                      tabData={this.tabData}
-                                    />
-                                  </n-card>
-                                )
-                              }
-                          </div>
-                        )
-                        ),
-                        'resize-trigger': () => (
-                          <div class={styles['console-splitter']} />
-                        ),
-                      }}
-                    </n-split>
-                  </div> */}
                 </n-card>
               </div>
             ),
