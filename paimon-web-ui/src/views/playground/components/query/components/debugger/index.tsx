@@ -42,6 +42,7 @@ export default defineComponent({
     const dialog = useDialog()
 
     const { t } = useLocaleHooks()
+    const isSubmitting = ref(false)
     const jobStore = useJobStore()
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const statementName = ref<string>('')
@@ -213,12 +214,15 @@ export default defineComponent({
         handleStopJob()
       }
       else {
+        isSubmitting.value = true
         if (jobStore.getJobDetails(currentKey.value))
           jobStore.resetJob(currentKey.value)
 
         const currentSQL = currentTab.content
-        if (!currentSQL)
+        if (!currentSQL) {
+          isSubmitting.value = false
           return
+        }
 
         const jobDataDTO: JobSubmitDTO = {
           jobName: currentTab.tableName,
@@ -236,14 +240,22 @@ export default defineComponent({
             mittBus.emit('jobResult', response.data)
           }
           else {
+            isSubmitting.value = false
             message.error(`${t('playground.job_submission_failed')}`)
           }
         }
         catch (error) {
+          isSubmitting.value = false
           console.error('Failed to submit job:', error)
         }
       }
     }
+
+    watch(jobStatus, (newStatus) => {
+      if (newStatus === 'RUNNING') {
+        isSubmitting.value = false
+      }
+    })
 
     return {
       t,
@@ -254,6 +266,7 @@ export default defineComponent({
       handleSubmit,
       jobStatus,
       handleReload,
+      isSubmitting,
     }
   },
   render() {
@@ -262,6 +275,7 @@ export default defineComponent({
         <n-space>
           <n-button
             type="primary"
+            loading={this.isSubmitting}
             onClick={this.handleSubmit}
             v-slots={{
               icon: () => <n-icon component={this.jobStatus === 'RUNNING' ? Pause : Play} />,
