@@ -359,9 +359,18 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     @Override
     public String getLogsByUserId(String userId) {
-        String user = userId.toString();
-        if (LogReadPool.getInstance().exist(user)) {
-            return LogReadPool.getInstance().get(user).toString();
+        if (LogReadPool.getInstance().exist(userId)) {
+            return LogReadPool.getInstance().get(userId).toString();
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public String clearLog(String userId) {
+        if (LogReadPool.getInstance().exist(userId)) {
+            LogReadPool.clear(userId);
+            return LogReadPool.getInstance().get(userId).toString();
         } else {
             return "";
         }
