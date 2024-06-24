@@ -26,7 +26,6 @@ import type { JobSubmitDTO } from '@/api/models/job/types/job'
 import { createRecord, stopJob, submitJob } from '@/api/models/job'
 import { useJobStore } from '@/store/job'
 
-import type { ExecutionMode } from '@/store/job/type'
 import type { RecordDTO } from '@/api/models/job/types/record'
 
 export default defineComponent({
@@ -47,8 +46,18 @@ export default defineComponent({
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const statementName = ref<string>('')
     const tabData = toRef(props.tabData)
-    const currentJob = computed(() => jobStore.getCurrentJob)
-    const jobStatus = computed(() => jobStore.getJobStatus)
+    const currentKey = computed(() => {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+      return currentTab ? currentTab.key : null
+    })
+    const jobStatus = ref('')
+    const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
+    watchEffect(() => {
+      const key = currentKey.value
+      if (key !== null) {
+        jobStatus.value = jobStore.getJobStatus(key)
+      }
+    })
 
     const debuggerVariables = reactive<{
       operatingConditionOptions: { label: string, key: string }[]
@@ -90,7 +99,6 @@ export default defineComponent({
 
     async function handleSave() {
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
-
       if (!currentTab)
         return
 
@@ -182,10 +190,12 @@ export default defineComponent({
         }
         try {
           const response = await stopJob(stopJobDTO)
-          if (response.code === 200)
+          if (response.code === 200) {
             message.success(t('playground.job_stopping_successfully'))
-          else
+          }
+          else {
             message.warning(t('playground.job_stopping_failed'))
+          }
         }
         catch (error) {
           message.warning(t('playground.job_stopping_failed'))
@@ -203,8 +213,8 @@ export default defineComponent({
         handleStopJob()
       }
       else {
-        jobStore.setExecutionMode(debuggerVariables.conditionValue3 as ExecutionMode)
-        jobStore.resetCurrentResult()
+        if (jobStore.getJobDetails(currentKey.value))
+          jobStore.resetJob(currentKey.value)
 
         const currentSQL = currentTab.content
         if (!currentSQL)
@@ -212,6 +222,7 @@ export default defineComponent({
 
         const jobDataDTO: JobSubmitDTO = {
           jobName: currentTab.tableName,
+          fileName: currentTab.key,
           taskType: debuggerVariables.conditionValue,
           clusterId: debuggerVariables.conditionValue2,
           statements: currentSQL,
@@ -222,10 +233,7 @@ export default defineComponent({
           const response = await submitJob(jobDataDTO)
           if (response.code === 200) {
             message.success(t('playground.job_submission_successfully'))
-            jobStore.setCurrentJob(response.data)
             mittBus.emit('jobResult', response.data)
-            mittBus.emit('getStatus')
-            mittBus.emit('displayResult')
           }
           else {
             message.error(`${t('playground.job_submission_failed')}`)

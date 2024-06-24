@@ -27,16 +27,25 @@ import { useJobStore } from '@/store/job'
 
 export default defineComponent({
   name: 'TableActionBar',
-  setup() {
+  props: {
+    tabData: {
+      type: Object as PropType<any>,
+      default: () => ({}),
+    },
+  },
+  setup(props) {
     const { t } = useLocaleHooks()
     const message = useMessage()
     const jobStore = useJobStore()
-
     const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
-
-    const currentJob = computed(() => jobStore.getCurrentJob)
-    const jobStatus = computed(() => jobStore.getJobStatus)
-    const executionTime = computed(() => jobStore.getExecutionTime)
+    const tabData = toRef(props.tabData)
+    const currentKey = computed(() => {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+      return currentTab ? currentTab.key : null
+    })
+    const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
+    const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
+    const executionTime = computed(() => formatTime(jobStore.getExecutionTime(currentKey.value)))
     const selectedInterval = ref('Disabled')
     const refreshIntervalId = ref<number | null>(null)
     const activeButton = ref('table')
@@ -59,7 +68,7 @@ export default defineComponent({
               token,
             }
             const response = await fetchResult(resultFetchDTO)
-            jobStore.setJobResultData(response.data)
+            jobStore.updateJobResultData(currentKey.value, response.data)
           }
           catch (error) {
             console.error('Error fetching result:', error)
@@ -86,10 +95,12 @@ export default defineComponent({
         }
         try {
           const response = await stopJob(stopJobDTO)
-          if (response.code === 200)
+          if (response.code === 200) {
             message.success(t('playground.job_stopping_successfully'))
-          else
+          }
+          else {
             message.warning(t('playground.job_stopping_failed'))
+          }
         }
         catch (error) {
           message.warning(t('playground.job_stopping_failed'))
@@ -104,7 +115,7 @@ export default defineComponent({
     })
 
     const isScheduleButtonDisabled = computed(() => {
-      return jobStore.getExecutionMode === 'Batch'
+      return jobStore.getExecutionMode(currentKey.value) === 'Batch'
     })
 
     const jobStatusColor = computed(() => {
@@ -180,8 +191,16 @@ export default defineComponent({
       }
     }
 
-    const rowCount = computed(() => jobStore.getRows)
-    const columnCount = computed(() => jobStore.getColumns)
+    function formatTime(seconds: number): string {
+      const days = Math.floor(seconds / 86400)
+      const hours = Math.floor((seconds % 86400) / 3600)
+      const mins = Math.floor((seconds % 3600) / 60)
+      const secs = seconds % 60
+      return `${days > 0 ? `${days}d:` : ''}${hours > 0 || days > 0 ? `${hours}h:` : ''}${mins}m:${secs}s`
+    }
+
+    const rowCount = computed(() => jobStore.getRows(currentKey.value))
+    const columnCount = computed(() => jobStore.getColumns(currentKey.value))
 
     return {
       t,

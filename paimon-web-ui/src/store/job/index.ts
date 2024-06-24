@@ -15,89 +15,137 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { ExecutionMode } from './type'
+import type { ExecutionMode, JobDetails } from './type'
 import type { Job, JobResultData } from '@/api/models/job/types/job'
 
 export interface JobState {
-  executionMode: ExecutionMode
-  currentJob: Job | null
-  jobResultData: JobResultData | null
-  jobStatus: string
-  executionTime: string
+  jobs: Record<string, JobDetails>
   jobLog?: string
 }
 
 export const useJobStore = defineStore({
   id: 'job',
   state: (): JobState => ({
-    executionMode: 'Streaming',
-    currentJob: null,
-    jobResultData: null,
-    jobStatus: '',
-    executionTime: '0m:0s',
+    jobs: {},
     jobLog: '',
   }),
   persist: false,
   getters: {
-    getExecutionMode(): ExecutionMode {
-      return this.executionMode
+    getJobDetails(state): (key: string) => JobDetails | undefined {
+      return key => state.jobs[key]
     },
-    getCurrentJob(): Job | null {
-      return this.currentJob
+    getCurrentJob(state): (key: string) => Job | null {
+      return key => state.jobs[key]?.job
     },
-    getJobResultData(): JobResultData | null {
-      return this.jobResultData
+    getExecutionMode(state): (key: string) => string | undefined {
+      return key => state.jobs[key]?.executionMode
     },
-    getColumns(): number {
-      if (this.currentJob && this.currentJob.resultData && this.currentJob.resultData.length > 0)
-        return Object.keys(this.currentJob.resultData[0]).length
-      else if (this.jobResultData && this.jobResultData.resultData && this.jobResultData.resultData.length > 0)
-        return Object.keys(this.jobResultData.resultData[0]).length
-      else
+    getJobStatus(state): (key: string) => string {
+      return (key) => {
+        if (!state.jobs[key]) {
+          return 'UNKNOWN'
+        }
+        return state.jobs[key].jobStatus
+      }
+    },
+    getJobResultData(state): (key: string) => JobResultData | null {
+      return key => state.jobs[key]?.jobResultData
+    },
+    getExecutionTime(state): (key: string) => number {
+      return (key) => {
+        if (!state.jobs[key]) {
+          return 0
+        }
+        return state.jobs[key].executionTime
+      }
+    },
+    getColumns(state): (key: string) => number {
+      return (key) => {
+        const initResultData = state.jobs[key]?.job?.resultData
+        const refreshedResultData = state.jobs[key]?.jobResultData?.resultData
+        if (initResultData && initResultData.length > 0) {
+          return Object.keys(initResultData[0]).length
+        }
+        if (refreshedResultData && refreshedResultData.length > 0) {
+          return Object.keys(refreshedResultData[0]).length
+        }
         return 0
+      }
     },
-    getRows(): number {
-      if (this.currentJob && this.currentJob.resultData && this.currentJob.resultData.length > 0)
-        return this.currentJob.resultData.length
-      else if (this.jobResultData && this.jobResultData.resultData && this.jobResultData.resultData.length > 0)
-        return this.jobResultData.resultData.length
-      else
+    getRows(state): (key: string) => number {
+      return (key) => {
+        const initResultData = state.jobs[key]?.job?.resultData
+        const refreshedResultData = state.jobs[key]?.jobResultData?.resultData
+        if (initResultData) {
+          return initResultData.length
+        }
+        if (refreshedResultData) {
+          return refreshedResultData.length
+        }
         return 0
-    },
-    getJobStatus(): string {
-      return this.jobStatus
-    },
-    getExecutionTime(): string {
-      return this.executionTime
+      }
     },
     getJobLog(): string | undefined {
       return this.jobLog
     },
   },
   actions: {
-    setExecutionMode(executionMode: ExecutionMode) {
-      this.executionMode = executionMode
+    addJob(key: string, jobDetails: JobDetails) {
+      this.jobs[key] = jobDetails
     },
-    setCurrentJob(currentJob: Job) {
-      this.currentJob = currentJob
+    updateJobStatus(key: string, jobStatus: string) {
+      if (this.jobs[key]) {
+        this.jobs[key].jobStatus = jobStatus
+      }
     },
-    setJobResultData(jobResultData: JobResultData) {
-      this.jobResultData = jobResultData
+    updateExecutionMode(key: string, executionMode: ExecutionMode) {
+      if (this.jobs[key]) {
+        this.jobs[key].executionMode = executionMode
+      }
     },
-    setJobStatus(jobStatus: string) {
-      this.jobStatus = jobStatus
+    updateJob(key: string, currentJob: Job) {
+      if (this.jobs[key]) {
+        this.jobs[key].job = currentJob
+      }
     },
-    setExecutionTime(executionTime: string) {
-      this.executionTime = executionTime
+    updateJobResultData(key: string, jobResultData: JobResultData) {
+      if (this.jobs[key]) {
+        this.jobs[key].jobResultData = jobResultData
+      }
     },
     setJobLog(jobLog: string) {
       this.jobLog = jobLog
     },
-    resetCurrentResult() {
-      this.currentJob = null
-      this.jobResultData = null
-      this.jobStatus = ''
-      this.executionTime = '0m:0s'
+    startJobTimer(key: string) {
+      if (this.jobs[key]) {
+        this.jobs[key].timerId = window.setInterval(() => {
+          this.jobs[key].executionTime = Math.floor((Date.now() - this.jobs[key].startTime) / 1000)
+        }, 3000)
+      }
+    },
+    stopJobTimer(key: string) {
+      if (this.jobs[key] && this.jobs[key].timerId) {
+        clearInterval(this.jobs[key].timerId)
+        this.jobs[key].executionTime = Math.floor((Date.now() - this.jobs[key].startTime) / 1000)
+      }
+    },
+    resetJob(key: string) {
+      if (this.jobs[key]) {
+        this.jobs[key] = {
+          executionMode: 'Streaming',
+          job: null,
+          jobResultData: null,
+          jobStatus: '',
+          executionTime: 0,
+          startTime: 0,
+          displayResult: false,
+        }
+      }
+    },
+    removeJob(key: string) {
+      if (this.jobs[key]) {
+        delete this.jobs[key]
+      }
     },
   },
 })
