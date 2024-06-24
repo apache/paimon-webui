@@ -222,6 +222,7 @@ export default defineComponent({
 
         const jobDataDTO: JobSubmitDTO = {
           jobName: currentTab.tableName,
+          fileName: currentTab.key,
           taskType: debuggerVariables.conditionValue,
           clusterId: debuggerVariables.conditionValue2,
           statements: currentSQL,
@@ -232,17 +233,7 @@ export default defineComponent({
           const response = await submitJob(jobDataDTO)
           if (response.code === 200) {
             message.success(t('playground.job_submission_successfully'))
-            /* const jobDetail: JobDetails = {
-              executionMode: debuggerVariables.conditionValue3 as ExecutionMode,
-              job: response.data,
-              jobResultData: null,
-              jobStatus: '',
-              executionTime: '0m:0s',
-            }
-            jobStore.resetJob(currentKey.value)
-            jobStore.addJob(currentKey.value, jobDetail) */
             mittBus.emit('jobResult', response.data)
-            mittBus.emit('displayResult')
           }
           else {
             message.error(`${t('playground.job_submission_failed')}`)

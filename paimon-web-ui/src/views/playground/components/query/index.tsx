@@ -82,13 +82,13 @@ export default defineComponent({
     })
 
     // get job status
-    // const wsUrl = import.meta.env.VITE_WS_URL
+    const wsUrl = import.meta.env.VITE_WS_URL
     function setupGetJobStatusWebSocket() {
-      const { connect, subscribe } = useWebSocket('ws://47.94.247.86:10088/ws', {
+      const { connect, subscribe } = useWebSocket(wsUrl, {
         onMessage: (message) => {
           const data = JSON.parse(message.body)
-          if (data && data.jobId && data.status && data.jobName) {
-            jobStore.updateJobStatus(data.jobName, data.status)
+          if (data && data.jobId && data.status && data.fileName) {
+            jobStore.updateJobStatus(data.fileName, data.status)
           }
         },
         onOpen: () => {
@@ -105,10 +105,10 @@ export default defineComponent({
     }
 
     function setupSubmitJobWebSocket() {
-      const { connect, subscribe } = useWebSocket('ws://47.94.247.86:10088/ws', {
+      const { connect, subscribe } = useWebSocket(wsUrl, {
         onMessage: (message) => {
           const data = JSON.parse(message.body)
-          if (data && data.jobId && data.jobName) {
+          if (data && data.jobId && data.fileName) {
             const jobDetail: JobDetails = {
               executionMode: data.executeMode as ExecutionMode,
               job: data,
@@ -118,7 +118,7 @@ export default defineComponent({
               startTime: Date.now(),
               displayResult: true,
             }
-            jobStore.addJob(data.jobName, jobDetail)
+            jobStore.addJob(data.fileName, jobDetail)
           }
         },
         onOpen: () => {
