@@ -140,7 +140,7 @@ export default defineComponent({
                     text
                     onClick={this.handleClear}
                     v-slots={{
-                      icon: () => <n-icon component={ClearOutlined} size="16"></n-icon>,
+                      icon: () => <n-icon component={ClearOutlined} size="15.5"></n-icon>,
                     }}
                   >
                   </n-button>
