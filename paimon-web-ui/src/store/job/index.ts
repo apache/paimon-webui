@@ -43,7 +43,7 @@ export const useJobStore = defineStore({
     getJobStatus(state): (key: string) => string {
       return (key) => {
         if (!state.jobs[key]) {
-          return ''
+          return 'UNKNOWN'
         }
         return state.jobs[key].jobStatus
       }
@@ -61,28 +61,26 @@ export const useJobStore = defineStore({
     },
     getColumns(state): (key: string) => number {
       return (key) => {
-        const jobDetails = state.jobs[key]
-        if (jobDetails) {
-          if (jobDetails.job && jobDetails.job.resultData && jobDetails.job.resultData.length > 0) {
-            return Object.keys(jobDetails.job.resultData[0]).length
-          }
-          if (jobDetails.jobResultData && jobDetails.jobResultData.resultData && jobDetails.jobResultData.resultData.length > 0) {
-            return Object.keys(jobDetails.jobResultData.resultData[0]).length
-          }
+        const initResultData = state.jobs[key]?.job?.resultData
+        const refreshedResultData = state.jobs[key]?.jobResultData?.resultData
+        if (initResultData && initResultData.length > 0) {
+          return Object.keys(initResultData[0]).length
+        }
+        if (refreshedResultData && refreshedResultData.length > 0) {
+          return Object.keys(refreshedResultData[0]).length
         }
         return 0
       }
     },
     getRows(state): (key: string) => number {
       return (key) => {
-        const jobDetails = state.jobs[key]
-        if (jobDetails) {
-          if (jobDetails.job && jobDetails.job.resultData && jobDetails.job.resultData.length > 0) {
-            return jobDetails.job.resultData.length
-          }
-          if (jobDetails.jobResultData && jobDetails.jobResultData.resultData && jobDetails.jobResultData.resultData.length > 0) {
-            return jobDetails.jobResultData.resultData.length
-          }
+        const initResultData = state.jobs[key]?.job?.resultData
+        const refreshedResultData = state.jobs[key]?.jobResultData?.resultData
+        if (initResultData) {
+          return initResultData.length
+        }
+        if (refreshedResultData) {
+          return refreshedResultData.length
         }
         return 0
       }
