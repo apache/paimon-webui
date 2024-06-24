@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.configrue;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -31,10 +32,20 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    @Value("${websocket.pool.size}")
+    private int poolSize;
+
+    @Value("${websocket.heartbeat.send}")
+    private long sendHeartbeat;
+
+    @Value("${websocket.heartbeat.receive}")
+    private long receiveHeartbeat;
+
     @Bean
     public TaskScheduler webSocketTaskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(1);
+        scheduler.setPoolSize(poolSize);
         scheduler.setThreadNamePrefix("ws-heartbeat-thread-");
         scheduler.initialize();
         return scheduler;
@@ -48,7 +59,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/topic")
-                .setHeartbeatValue(new long[] {30000, 30000})
+                .setHeartbeatValue(new long[] {sendHeartbeat, receiveHeartbeat})
                 .setTaskScheduler(webSocketTaskScheduler());
         registry.setApplicationDestinationPrefixes("/app");
     }

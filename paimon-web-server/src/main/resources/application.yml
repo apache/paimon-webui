@@ -83,4 +83,9 @@ interceptor:
     path:
       patterns: /api/login, /ui/**
 
-
+websocket:
+  pool:
+    size: 1
+  heartbeat:
+    send: 30000
+    receive: 30000
