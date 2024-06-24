@@ -83,3 +83,10 @@ export function createRecord(params: RecordDTO) {
 export function getLogs() {
   return httpRequest.get<unknown, ResponseOptions<string>>('/job/logs/get')
 }
+
+/**
+ * # Clear job logs
+ */
+export function clearLogs() {
+  return httpRequest.get<unknown, ResponseOptions<string>>('/job/logs/clear')
+}

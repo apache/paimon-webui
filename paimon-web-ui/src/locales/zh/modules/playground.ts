@@ -32,6 +32,7 @@ export default {
   reload: '恢复布局',
   save: '保存',
   close: '关闭',
+  clear: '清空日志',
   unfold: '展开',
   collapse: '折叠',
   logs: '日志',
