@@ -390,8 +390,8 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
                 ObjectMapperUtils.fromJSON(
                         getJobStatisticsResponseStr, new TypeReference<R<JobStatisticsVO>>() {});
         assertEquals(200, getJobStatisticsRes.getCode());
-        assertEquals(6, getJobStatisticsRes.getData().getTotalNum());
-        assertEquals(5, getJobStatisticsRes.getData().getRunningNum());
+        assertEquals(7, getJobStatisticsRes.getData().getTotalNum());
+        assertEquals(6, getJobStatisticsRes.getData().getRunningNum());
         assertEquals(1, getJobStatisticsRes.getData().getCanceledNum());
         assertEquals(0, getJobStatisticsRes.getData().getFinishedNum());
         assertEquals(0, getJobStatisticsRes.getData().getFailedNum());

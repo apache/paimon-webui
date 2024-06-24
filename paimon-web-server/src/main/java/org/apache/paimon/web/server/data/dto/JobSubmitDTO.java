@@ -28,6 +28,8 @@ public class JobSubmitDTO {
 
     private String jobName;
 
+    private String fileName;
+
     private String taskType;
 
     private boolean isStreaming;
