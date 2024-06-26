@@ -16,12 +16,14 @@ specific language governing permissions and limitations
 under the License. */
 
 import { CloseSharp, KeyboardDoubleArrowDownSharp, KeyboardDoubleArrowUpSharp } from '@vicons/material'
+import { ClearOutlined } from '@vicons/antd'
 import { throttle } from 'lodash'
 import TableActionBar from './components/controls'
 import TableResult from './components/table'
 import LogConsole from './components/log'
 import styles from './index.module.scss'
 import { useJobStore } from '@/store/job'
+import { clearLogs } from '@/api/models/job'
 
 export default defineComponent({
   name: 'EditorConsole',
@@ -55,6 +57,11 @@ export default defineComponent({
 
     const handleClose = () => {
       emit('ConsoleClose', 'close')
+    }
+
+    const handleClear = async () => {
+      const response = await clearLogs()
+      jobStore.setJobLog(response.data)
     }
 
     watch(jobStatus, (newStatus, oldStatus) => {
@@ -92,6 +99,7 @@ export default defineComponent({
       handleUp,
       handleDown,
       handleClose,
+      handleClear,
       editorConsoleRef,
       adjustedHeight,
       displayResult,
@@ -123,6 +131,24 @@ export default defineComponent({
         </n-tabs>
         <div class={styles.operations}>
           <n-space>
+            <n-popover
+              trigger="hover"
+              placement="bottom"
+              v-slots={{
+                trigger: () => (
+                  <n-button
+                    text
+                    onClick={this.handleClear}
+                    v-slots={{
+                      icon: () => <n-icon component={ClearOutlined} size="15.5"></n-icon>,
+                    }}
+                  >
+                  </n-button>
+                ),
+              }}
+            >
+              <span>{this.t('playground.clear')}</span>
+            </n-popover>
             <n-popover
               trigger="hover"
               placement="bottom"
