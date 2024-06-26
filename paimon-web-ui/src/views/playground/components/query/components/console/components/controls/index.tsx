@@ -58,6 +58,7 @@ export default defineComponent({
       if (currentJob.value) {
         if (currentJob.value.shouldFetchResult) {
           try {
+            jobStore.updateLoading(currentKey.value, true)
             const job = toRaw(currentJob.value)
             const { submitId, clusterId, sessionId, type: taskType, token } = job
             const resultFetchDTO = {
@@ -72,6 +73,9 @@ export default defineComponent({
           }
           catch (error) {
             console.error('Error fetching result:', error)
+          }
+          finally {
+            jobStore.updateLoading(currentKey.value, false)
           }
         }
         else {

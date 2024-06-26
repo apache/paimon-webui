@@ -42,6 +42,7 @@ export default defineComponent({
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
       return currentTab ? currentTab.key : null
     })
+    const loading = computed(() => jobStore.getLoading(currentKey.value))
     const scrollX = ref('100%')
     const tableContainer = ref<HTMLElement | null>(null)
     const tableRef = ref<DataTableInst | null>(null)
@@ -171,6 +172,7 @@ export default defineComponent({
       scrollX,
       maxHeight: props.maxHeight,
       maxTableHeight,
+      loading,
     }
   },
   render() {
@@ -182,6 +184,7 @@ export default defineComponent({
         <n-data-table
           ref={(el: any) => { this.tableRef = el }}
           class={styles.table}
+          loading={this.loading}
           columns={this.columns}
           data={this.data}
           max-height={`${this.maxTableHeight}px`}

@@ -101,4 +101,12 @@ public interface JobService extends IService<JobInfo> {
      * @return log entries as a string
      */
     String getLogsByUserId(String userId);
+
+    /**
+     * Clears the log associated with the specified user.
+     *
+     * @param userId the user's ID
+     * @return log entries as a string
+     */
+    String clearLog(String userId);
 }

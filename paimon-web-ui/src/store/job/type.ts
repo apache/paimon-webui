@@ -28,4 +28,5 @@ export interface JobDetails {
   timerId?: number
   startTime: number
   displayResult: boolean
+  loading: boolean
 }
