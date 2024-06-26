@@ -107,6 +107,12 @@ public class JobController {
         return R.succeed(jobService.getLogsByUserId(StpUtil.getLoginIdAsString()));
     }
 
+    @SaIgnore
+    @GetMapping("/logs/clear")
+    public R<String> clearLogs() {
+        return R.succeed(jobService.clearLog(StpUtil.getLoginIdAsString()));
+    }
+
     @SaCheckPermission("playground:job:stop")
     @PostMapping("/stop")
     public R<Void> stop(@RequestBody StopJobDTO stopJobDTO) {

@@ -284,7 +284,7 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         queryWrapper.eq("cluster_name", "test_cluster");
         ClusterInfo one = clusterService.getOne(queryWrapper);
         JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
-        jobSubmitDTO.setJobName("flink-job-test-get-job-status");
+        jobSubmitDTO.setJobName("flink-job-test-get-job-logs");
         jobSubmitDTO.setTaskType("Flink");
         jobSubmitDTO.setStreaming(true);
         jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
@@ -295,11 +295,11 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
         assertEquals(200, r.getCode());
 
         String logsResponseStr = getLogs();
-        R<String> getJobStatusRes =
+        R<String> getJobLogsRes =
                 ObjectMapperUtils.fromJSON(logsResponseStr, new TypeReference<R<String>>() {});
-        assertEquals(200, getJobStatusRes.getCode());
+        assertEquals(200, getJobLogsRes.getCode());
 
-        assertNotNull(getJobStatusRes.getData());
+        assertNotNull(getJobLogsRes.getData());
     }
 
     @Test
@@ -390,8 +390,8 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
                 ObjectMapperUtils.fromJSON(
                         getJobStatisticsResponseStr, new TypeReference<R<JobStatisticsVO>>() {});
         assertEquals(200, getJobStatisticsRes.getCode());
-        assertEquals(6, getJobStatisticsRes.getData().getTotalNum());
-        assertEquals(5, getJobStatisticsRes.getData().getRunningNum());
+        assertEquals(7, getJobStatisticsRes.getData().getTotalNum());
+        assertEquals(6, getJobStatisticsRes.getData().getRunningNum());
         assertEquals(1, getJobStatisticsRes.getData().getCanceledNum());
         assertEquals(0, getJobStatisticsRes.getData().getFinishedNum());
         assertEquals(0, getJobStatisticsRes.getData().getFailedNum());
@@ -402,6 +402,32 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     public void testExecutionMode() {
         History history = historyService.list().get(0);
         assertTrue(history.getStatements().contains("SET 'execution.runtime-mode' = 'streaming';"));
+    }
+
+    @Test
+    @Order(9)
+    public void testClearLogs() throws Exception {
+        QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("cluster_name", "test_cluster");
+        ClusterInfo one = clusterService.getOne(queryWrapper);
+        JobSubmitDTO jobSubmitDTO = new JobSubmitDTO();
+        jobSubmitDTO.setJobName("flink-job-test-clear-job-logs");
+        jobSubmitDTO.setTaskType("Flink");
+        jobSubmitDTO.setStreaming(true);
+        jobSubmitDTO.setClusterId(String.valueOf(one.getId()));
+        jobSubmitDTO.setStatements(StatementsConstant.selectStatement);
+
+        String responseString = submit(jobSubmitDTO);
+        R<JobVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<JobVO>>() {});
+        assertEquals(200, r.getCode());
+
+        String logsResponseStr = clearLogs();
+        R<String> getJobLogRes =
+                ObjectMapperUtils.fromJSON(logsResponseStr, new TypeReference<R<String>>() {});
+        assertEquals(200, getJobLogRes.getCode());
+
+        assertNotNull(getJobLogRes.getData());
+        assertEquals("Console:\n", getJobLogRes.getData());
     }
 
     private String submit(JobSubmitDTO jobSubmitDTO) throws Exception {
@@ -434,6 +460,19 @@ public class JobControllerTest extends FlinkSQLGatewayTestBase {
     private String getLogs() throws Exception {
         return mockMvc.perform(
                         MockMvcRequestBuilders.get(jobPath + "/logs/get")
+                                .cookie(cookie)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+    }
+
+    private String clearLogs() throws Exception {
+        return mockMvc.perform(
+                        MockMvcRequestBuilders.get(jobPath + "/logs/clear")
                                 .cookie(cookie)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE))

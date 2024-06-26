@@ -58,10 +58,6 @@ export default defineComponent({
       })
     })
 
-    onUnmounted(() => {
-      mittBus.off('resizeLog')
-    })
-
     return {
       logContent,
       maxLogHeight,
