@@ -59,6 +59,9 @@ export const useJobStore = defineStore({
         return state.jobs[key].executionTime
       }
     },
+    getLoading(state): (key: string) => boolean {
+      return key => state.jobs[key].loading
+    },
     getColumns(state): (key: string) => number {
       return (key) => {
         const initResultData = state.jobs[key]?.job?.resultData
@@ -108,6 +111,11 @@ export const useJobStore = defineStore({
         this.jobs[key].job = currentJob
       }
     },
+    updateLoading(key: string, loading: boolean) {
+      if (this.jobs[key]) {
+        this.jobs[key].loading = loading
+      }
+    },
     updateJobResultData(key: string, jobResultData: JobResultData) {
       if (this.jobs[key]) {
         this.jobs[key].jobResultData = jobResultData
@@ -139,6 +147,7 @@ export const useJobStore = defineStore({
           executionTime: 0,
           startTime: 0,
           displayResult: false,
+          loading: false,
         }
       }
     },
