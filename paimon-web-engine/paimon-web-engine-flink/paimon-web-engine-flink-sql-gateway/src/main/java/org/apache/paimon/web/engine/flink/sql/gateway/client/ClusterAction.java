@@ -16,39 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.engine.flink.sql.gateway.client;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import java.time.LocalDateTime;
+/**
+ * Using to execute cluster action
+ */
+public interface ClusterAction {
 
-/** Cluster table model. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@TableName("cluster")
-public class ClusterInfo extends BaseModel {
+    /**
+     * Execute cluster action to obtain cluster status.
+     *
+     * @return cluster heartbeat entity
+     */
+    ImmutablePair<ClusterStatus, Long> checkClusterHeartbeat() throws Exception;
 
-    private static final long serialVersionUID = 1L;
-
-    private String clusterName;
-
-    private String host;
-
-    private Integer port;
-
-    private String type;
-
-    private Boolean enabled;
-
-    private String clusterStatus;
-
-    private LocalDateTime lastHeartbeat;
+    default ImmutablePair<ClusterStatus, Long> buildClusterHeartbeatOfSuccess() {
+       return ImmutablePair.of(ClusterStatus.RUNNING,System.currentTimeMillis());
+    }
+    default ImmutablePair<ClusterStatus, Long> buildClusterHeartbeatOfError() {
+        return ImmutablePair.of(ClusterStatus.UNKNOWN,System.currentTimeMillis());
+    }
+    enum ClusterStatus {
+        RUNNING,
+        UNKNOWN,
+    }
 }

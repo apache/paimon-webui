@@ -370,7 +370,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                 if (executor == null) {
                     ExecutionConfig config =
                             ExecutionConfig.builder().sessionEntity(session).build();
-                    EngineType engineType = EngineType.fromName("FLINK");
+                    EngineType engineType = EngineType.fromName("FLINK_SQL_GATEWAY");
                     ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
                     ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
                     executor = executorFactory.createExecutor();
@@ -546,7 +546,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
             if (jobExecutorService.getExecutor(session.getSessionId()) == null) {
                 ExecutionConfig config = ExecutionConfig.builder().sessionEntity(session).build();
-                EngineType engineType = EngineType.fromName(taskType.toUpperCase());
+                EngineType engineType = EngineType.format(taskType.toUpperCase());
                 ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
                 ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
                 Executor executor = executorFactory.createExecutor();

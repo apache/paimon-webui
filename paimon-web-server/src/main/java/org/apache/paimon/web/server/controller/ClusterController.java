@@ -94,4 +94,10 @@ public class ClusterController {
     public R<Void> delete(@PathVariable Integer[] clusterIds) {
         return clusterService.deleteClusterByIds(clusterIds) > 0 ? R.succeed() : R.failed();
     }
+
+    @SaCheckPermission("system:cluster:check")
+    @PostMapping("/check")
+    public R<Void> check(@Validated @RequestBody ClusterInfo clusterInfo) {
+        return clusterService.checkClusterStatus(clusterInfo) ? R.succeed() : R.failed();
+    }
 }

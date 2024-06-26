@@ -18,6 +18,9 @@
 
 package org.apache.paimon.web.engine.flink.sql.gateway.client;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.flink.table.gateway.rest.header.util.GetInfoHeaders;
+import org.apache.flink.table.gateway.rest.message.util.GetInfoResponseBody;
 import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
 import org.apache.paimon.web.engine.flink.sql.gateway.utils.SqlGateWayRestClient;
 
@@ -55,13 +58,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
  * The client of flink sql gateway provides some operations of flink sql gateway. such as creating
  * session, execute statement, fetch result, etc.
  */
-public class SqlGatewayClient {
+public class SqlGatewayClient implements ClusterAction{
 
     private static final String DEFAULT_SESSION_NAME_PREFIX = "FLINK_SQL_GATEWAY_SESSION";
     private static final int REQUEST_WAITE_TIME = 1000;
@@ -241,5 +245,19 @@ public class SqlGatewayClient {
 
     private OperationHandle buildOperationHandleByOperationId(String operationId) {
         return new OperationHandle(UUID.fromString(operationId));
+    }
+
+    @Override
+    public ImmutablePair<ClusterStatus, Long> checkClusterHeartbeat() throws Exception {
+        GetInfoResponseBody heartbeat = restClient
+                .sendRequest(
+                        GetInfoHeaders.getInstance(),
+                        EmptyMessageParameters.getInstance(),
+                        EmptyRequestBody.getInstance())
+                .get();
+        if (Objects.nonNull(heartbeat)) {
+            return this.buildClusterHeartbeatOfSuccess();
+        }
+        return this.buildClusterHeartbeatOfError();
     }
 }

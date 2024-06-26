@@ -21,7 +21,8 @@ package org.apache.paimon.web.gateway.enums;
 /** The {@code EngineType} enum defines the types of engines that can be supported. */
 public enum EngineType {
     SPARK,
-    FLINK;
+    FLINK_SQL_GATEWAY,
+    FLINK_SESSION;
 
     public static EngineType fromName(String name) {
         for (EngineType type : values()) {
@@ -30,5 +31,12 @@ public enum EngineType {
             }
         }
         throw new IllegalArgumentException("Unknown engine type value: " + name);
+    }
+    public static EngineType format(String name) {
+        if (name == null || name.isEmpty()) {
+            throw  new IllegalArgumentException("The engine type value is null");
+        }
+        String trimmed = name.trim();
+        return fromName(trimmed.replaceAll("\\s+", "_"));
     }
 }
