@@ -300,9 +300,9 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
         }
         int userId = StpUtil.getLoginIdAsInt();
 
-        if (taskType.equals("Flink")) {
+        if (taskType.equals(EngineType.FLINK_SQL_GATEWAY.name())) {
             QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("type", "Flink");
+            queryWrapper.eq("type", EngineType.FLINK_SQL_GATEWAY.name());
             List<ClusterInfo> clusters = clusterService.list();
             for (ClusterInfo cluster : clusters) {
                 try {
