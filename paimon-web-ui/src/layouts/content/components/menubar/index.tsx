@@ -37,7 +37,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      activeKey.value = configStore.getCurrentNavActive
+      activeKey.value = configStore.getCurrentNavActive!
     })
 
     return {
