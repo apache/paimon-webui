@@ -241,7 +241,7 @@ public class ClusterControllerTest extends ControllerTestBase {
 
     @Test
     @Order(6)
-    public void testCheckClusterOfFlinkSesson() throws Exception {
+    public void testCheckClusterOfFlinkSession() throws Exception {
         ClusterInfo cluster =
                 ClusterInfo.builder()
                         .clusterName("test")
