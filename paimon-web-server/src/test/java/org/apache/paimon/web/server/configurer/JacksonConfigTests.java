@@ -18,6 +18,8 @@
 
 package org.apache.paimon.web.server.configurer;
 
+import org.apache.paimon.web.server.configrue.JacksonConfig;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/** Test for {@link JacksonConfig}. */
 @SpringBootTest
 public class JacksonConfigTests {
 
