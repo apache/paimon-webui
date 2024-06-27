@@ -16,21 +16,36 @@ specific language governing permissions and limitations
 under the License. */
 
 import { CloseSharp, KeyboardDoubleArrowDownSharp, KeyboardDoubleArrowUpSharp } from '@vicons/material'
+import { ClearOutlined } from '@vicons/antd'
 import { throttle } from 'lodash'
 import TableActionBar from './components/controls'
 import TableResult from './components/table'
 import LogConsole from './components/log'
 import styles from './index.module.scss'
+import { useJobStore } from '@/store/job'
+import { clearLogs } from '@/api/models/job'
 
 export default defineComponent({
   name: 'EditorConsole',
   emits: ['ConsoleUp', 'ConsoleDown', 'ConsoleClose'],
+  props: {
+    tabData: {
+      type: Object as PropType<any>,
+      default: () => ({}),
+    },
+  },
   setup(props, { emit }) {
     const { t } = useLocaleHooks()
-    const { mittBus } = getCurrentInstance()!.appContext.config.globalProperties
     const editorConsoleRef = ref<HTMLElement | null>(null)
     const adjustedHeight = ref(0)
-    const displayResult = ref(false)
+    const tabData = toRef(props.tabData)
+    const currentKey = computed(() => {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+      return currentTab ? currentTab.key : null
+    })
+    const jobStore = useJobStore()
+    const displayResult = computed(() => jobStore.getJobDetails(currentKey.value)?.displayResult)
+    const jobStatus = computed(() => jobStore.getJobStatus(currentKey.value))
 
     const handleUp = () => {
       emit('ConsoleUp', 'up')
@@ -44,8 +59,21 @@ export default defineComponent({
       emit('ConsoleClose', 'close')
     }
 
-    mittBus.on('displayResult', () => displayResult.value = true)
+    const handleClear = async () => {
+      const response = await clearLogs()
+      jobStore.setJobLog(response.data)
+    }
 
+    watch(jobStatus, (newStatus, oldStatus) => {
+      if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING') {
+        jobStore.startJobTimer(currentKey.value)
+      }
+      else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
+        jobStore.stopJobTimer(currentKey.value)
+      }
+    })
+
+    // handle resize
     const handleResize = throttle((entries) => {
       for (const entry of entries) {
         const { height } = entry.contentRect
@@ -71,9 +99,11 @@ export default defineComponent({
       handleUp,
       handleDown,
       handleClose,
+      handleClear,
       editorConsoleRef,
       adjustedHeight,
       displayResult,
+      tabData,
     }
   },
   render() {
@@ -93,14 +123,32 @@ export default defineComponent({
             {
               this.displayResult
               && [
-                <TableActionBar />,
-                <TableResult maxHeight={this.adjustedHeight} />,
+                <TableActionBar tabData={this.tabData} />,
+                <TableResult maxHeight={this.adjustedHeight} tabData={this.tabData} />,
               ]
             }
           </n-tab-pane>
         </n-tabs>
         <div class={styles.operations}>
           <n-space>
+            <n-popover
+              trigger="hover"
+              placement="bottom"
+              v-slots={{
+                trigger: () => (
+                  <n-button
+                    text
+                    onClick={this.handleClear}
+                    v-slots={{
+                      icon: () => <n-icon component={ClearOutlined} size="15.5"></n-icon>,
+                    }}
+                  >
+                  </n-button>
+                ),
+              }}
+            >
+              <span>{this.t('playground.clear')}</span>
+            </n-popover>
             <n-popover
               trigger="hover"
               placement="bottom"

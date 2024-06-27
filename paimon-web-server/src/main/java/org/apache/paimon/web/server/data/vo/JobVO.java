@@ -40,6 +40,8 @@ public class JobVO {
 
     private String jobName;
 
+    private String fileName;
+
     private String type;
 
     private String executeMode;

@@ -61,6 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -95,6 +96,8 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
     @Autowired private JobExecutorService jobExecutorService;
 
     @Autowired private HistoryService historyService;
+
+    @Autowired private SimpMessagingTemplate messagingTemplate;
 
     @Override
     public JobVO submitJob(JobSubmitDTO jobSubmitDTO) {
@@ -146,6 +149,8 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
             logWriter.finish(
                     String.format(
                             "Execution successful [Job ID: %s].", executionResult.getJobId()));
+            messagingTemplate.convertAndSend(
+                    "/topic/job", buildJobVO(executionResult, jobSubmitDTO));
             historyService.saveHistory(
                     History.builder()
                             .name(LocalDateTimeUtil.getFormattedDateTime(LocalDateTime.now()))
@@ -324,6 +329,8 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                         if (job != null && job.getUid().equals(userId)) {
                             String currentStatus = job.getStatus();
                             if (!jobStatus.equals(currentStatus)) {
+                                job.setStatus(jobStatus);
+                                messagingTemplate.convertAndSend("/topic/jobStatus", job);
                                 if (JobStatus.RUNNING.getValue().equals(jobStatus)) {
                                     updateJobStatusAndStartTime(jobId, jobStatus, startTime);
                                 } else if (JobStatus.FINISHED.getValue().equals(jobStatus)
@@ -352,9 +359,18 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
     @Override
     public String getLogsByUserId(String userId) {
-        String user = userId.toString();
-        if (LogReadPool.getInstance().exist(user)) {
-            return LogReadPool.getInstance().get(user).toString();
+        if (LogReadPool.getInstance().exist(userId)) {
+            return LogReadPool.getInstance().get(userId).toString();
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public String clearLog(String userId) {
+        if (LogReadPool.getInstance().exist(userId)) {
+            LogReadPool.clear(userId);
+            return LogReadPool.getInstance().get(userId).toString();
         } else {
             return "";
         }
@@ -426,6 +442,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                         .type(jobSubmitDTO.getTaskType())
                         .statements(jobSubmitDTO.getStatements())
                         .status(JobStatus.CREATED.getValue())
+                        .fileName(jobSubmitDTO.getFileName())
                         .clusterId(jobSubmitDTO.getClusterId());
 
         String jobName = jobSubmitDTO.getJobName() != null ? jobSubmitDTO.getJobName() : "";
@@ -466,6 +483,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                         .resultData(executionResult.getData())
                         .clusterId(jobSubmitDTO.getClusterId())
                         .jobName(jobSubmitDTO.getJobName())
+                        .fileName(jobSubmitDTO.getFileName())
                         .token(0L);
         String executeMode = jobSubmitDTO.isStreaming() ? STREAMING_MODE : BATCH_MODE;
         builder.executeMode(executeMode);

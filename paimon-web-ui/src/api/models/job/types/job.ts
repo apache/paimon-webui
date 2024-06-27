@@ -19,6 +19,7 @@ export interface Job {
   submitId: string
   jobId: string
   jobName: string
+  fileName: string
   type: string
   executeMode: string
   clusterId: string
@@ -34,6 +35,7 @@ export interface Job {
 
 export interface JobSubmitDTO {
   jobName: string
+  fileName: string
   taskType: string
   clusterId: string
   config?: {

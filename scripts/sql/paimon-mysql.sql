@@ -162,6 +162,7 @@ CREATE TABLE if not exists `job`
     `id`          int(11)     not null auto_increment primary key comment 'id',
     `job_id`     varchar(100)  not null comment 'job id',
     `job_name`     varchar(200) comment 'job name',
+    `file_name`     varchar(200) comment 'file name',
     `type`     varchar(100)  comment 'job type',
     `execute_mode`     varchar(50)  comment 'execute mode',
     `cluster_id`     varchar(100)  comment 'cluster id',

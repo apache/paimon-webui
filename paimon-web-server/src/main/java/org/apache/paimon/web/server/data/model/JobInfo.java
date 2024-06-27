@@ -40,6 +40,8 @@ public class JobInfo extends BaseModel {
 
     private String jobName;
 
+    private String fileName;
+
     private String type;
 
     private String executeMode;

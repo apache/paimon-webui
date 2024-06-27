@@ -32,6 +32,7 @@ export default {
   reload: 'Restore Layout',
   save: 'Save',
   close: 'Close',
+  clear: 'Clear Logs',
   unfold: 'Unfold',
   collapse: 'Collapse',
   logs: 'Logs',
