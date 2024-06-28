@@ -25,7 +25,6 @@ jobs:
         node-version: [20]
     defaults:
       run:
-        shell: bash
         working-directory: ./paimon-web-ui
 
     steps:
@@ -39,6 +38,7 @@ jobs:
       uses: actions/setup-node@v4
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
+      working-directory: ./paimon-web-ui
 
     - name: Install dependencies
       run: pnpm install
