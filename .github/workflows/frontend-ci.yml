@@ -23,11 +23,7 @@ jobs:
     strategy:
       matrix:
         node-version: [20]
-    defaults:
-      run:
-        shell: bash
-        working-directory: paimon-web-ui
-
+        
     steps:
     - name: Setup Node
       uses: actions/setup-node@v4
@@ -36,6 +32,9 @@ jobs:
 
     - name: Install dependencies
       run: npm run install
+      working-directory: paimon-web-ui
+
 
     - name: Build
       run: npm run build
+      working-directory: paimon-web-ui
