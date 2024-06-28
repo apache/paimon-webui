@@ -21,20 +21,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Install pnpm
         run: corepack enable
-
-      - name: Set node version to 20
-        uses: actions/setup-node@v3
         with:
-          node-version: '20'
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install -no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build web ui
         run: pnpm build
