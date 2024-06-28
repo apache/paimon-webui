@@ -23,6 +23,9 @@ jobs:
     strategy:
       matrix:
         node-version: [20]
+    defaults:
+      run:
+        working-directory: ./paimon-web-ui
 
     steps:
     - name: Setup Node
