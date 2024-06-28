@@ -24,13 +24,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install pnpm up JDK 8
+      - name: Install pnpm
         run: corepack enable
 
-      - name: Set node version to 18
+      - name: Set node version to 20
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'pnpm'
 
       - name: Install dependencies
