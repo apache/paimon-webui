@@ -21,15 +21,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Install pnpm
         run: corepack enable
+
+      - name: Set node version to 20
+        uses: actions/setup-node@v4
         with:
+          node-version: '20'
           cache: 'pnpm'
 
       - name: Install dependencies
