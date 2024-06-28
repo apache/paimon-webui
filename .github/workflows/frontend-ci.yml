@@ -25,6 +25,7 @@ jobs:
         node-version: [20]
     defaults:
       run:
+        shell: bash
         working-directory: paimon-web-ui
 
     steps:
