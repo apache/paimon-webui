@@ -35,7 +35,7 @@ jobs:
         node-version: '20.x'
 
     - name: Install dependencies
-      run: npm run install
+      run: npm install
       working-directory: paimon-web-ui
 
     - name: Build
