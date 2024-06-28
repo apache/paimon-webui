@@ -26,7 +26,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        folder: paimon-web-ui
+        working-directory: paimon-web-ui
 
     steps:
     - uses: actions/checkout@v4
@@ -37,8 +37,6 @@ jobs:
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
-      with:
-        folder: paimon-web-ui
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
 
