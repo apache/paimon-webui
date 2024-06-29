@@ -117,6 +117,7 @@ export default defineComponent({
               executionTime: 0,
               startTime: Date.now(),
               displayResult: true,
+              loading: false,
             }
             jobStore.addJob(data.fileName, jobDetail)
           }
