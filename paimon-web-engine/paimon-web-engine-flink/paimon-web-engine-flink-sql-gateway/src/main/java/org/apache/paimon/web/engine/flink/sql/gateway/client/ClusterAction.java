@@ -32,15 +32,14 @@ public interface ClusterAction {
     HeartbeatEntity checkClusterHeartbeat();
 
     /**
-     * Constructs a cluster heartbeat pair indicating an error state.
+     * Build a heartbeat entity representing an error based on the cluster status. This method is
+     * used to generate a heartbeat object when the cluster status is abnormal, recording the
+     * current time and the error status of the cluster.
      *
-     * <p>This method is utilized when the cluster is in an error state or its status cannot be
-     * determined, generating a heartbeat pair that includes the current timestamp to represent the
-     * uncertainty. The heartbeat pair comprises the cluster status and the timestamp, serving to
-     * mark the unknown state of the cluster and record the time of the error occurrence.
-     *
-     * @return An immutable Pair object containing the cluster status as UNKNOWN and the current
-     *     timestamp.
+     * @param status The current status of the cluster, used to set the status field of the
+     *     heartbeat entity.
+     * @return Returns a completed heartbeat entity, including the current timestamp and status
+     *     information.
      */
     default HeartbeatEntity buildClusterHeartbeatOfError(ClusterStatus status) {
         return HeartbeatEntity.builder()
