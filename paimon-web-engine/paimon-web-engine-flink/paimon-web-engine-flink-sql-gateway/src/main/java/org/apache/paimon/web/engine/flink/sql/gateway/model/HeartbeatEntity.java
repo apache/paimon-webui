@@ -16,28 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.gateway.enums;
+package org.apache.paimon.web.engine.flink.sql.gateway.model;
 
-/** The {@code EngineType} enum defines the types of engines that can be supported. */
-public enum EngineType {
-    SPARK,
-    FLINK_SQL_GATEWAY,
-    FLINK_SESSION;
+import lombok.Builder;
+import lombok.Getter;
 
-    public static EngineType fromName(String name) {
-        for (EngineType type : values()) {
-            if (type.name().equals(name)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown engine type value: " + name);
-    }
-
-    public static EngineType format(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("The engine type value is null");
-        }
-        String trimmed = name.trim();
-        return fromName(trimmed.replaceAll("\\s+", "_"));
-    }
+/** This is a heartbeat entity of the cluster. */
+@Builder
+@Getter
+public class HeartbeatEntity {
+    private String status;
+    private Long lastHeartbeat;
+    private String clusterVersion;
 }

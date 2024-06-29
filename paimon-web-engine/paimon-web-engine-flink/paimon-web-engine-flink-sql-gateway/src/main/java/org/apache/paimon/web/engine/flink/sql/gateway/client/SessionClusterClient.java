@@ -18,39 +18,63 @@
 
 package org.apache.paimon.web.engine.flink.sql.gateway.client;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.paimon.web.engine.flink.common.status.ClusterStatus;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.HeartbeatEntity;
+import org.apache.paimon.web.engine.flink.sql.gateway.utils.SqlGateWayRestClient;
+
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.runtime.rest.handler.legacy.messages.ClusterOverviewWithVersion;
 import org.apache.flink.runtime.rest.messages.ClusterOverviewHeaders;
 import org.apache.flink.runtime.rest.messages.EmptyMessageParameters;
 import org.apache.flink.runtime.rest.messages.EmptyRequestBody;
-import org.apache.paimon.web.engine.flink.sql.gateway.utils.SqlGateWayRestClient;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 /**
- * The flink session client provides some operations on the flink session cluster,
- * such as obtaining the cluster status. etc.
- * The flink client implementation of the {@link ClusterAction}.
+ * The flink session client provides some operations on the flink session cluster, such as obtaining
+ * the cluster status. etc. The flink client implementation of the {@link ClusterAction}.
  */
-public class SessionClusterClient implements ClusterAction{
+@Slf4j
+public class SessionClusterClient implements ClusterAction {
 
     private final SqlGateWayRestClient restClient;
 
-    public SessionClusterClient(String sessionClusterHost, int sessionClusterPort) throws Exception {
+    public SessionClusterClient(String sessionClusterHost, int sessionClusterPort)
+            throws Exception {
         this.restClient = new SqlGateWayRestClient(sessionClusterHost, sessionClusterPort);
     }
 
     @Override
-    public ImmutablePair<ClusterStatus, Long> checkClusterHeartbeat() throws Exception{
-        ClusterOverviewWithVersion heartbeat = restClient
-                .sendRequest(
-                        ClusterOverviewHeaders.getInstance(),
-                        EmptyMessageParameters.getInstance(),
-                        EmptyRequestBody.getInstance())
-                .get();
-        if (Objects.nonNull(heartbeat)) {
-           return this.buildClusterHeartbeatOfSuccess();
+    public HeartbeatEntity checkClusterHeartbeat() {
+        try {
+            ClusterOverviewWithVersion heartbeat =
+                    restClient
+                            .sendRequest(
+                                    ClusterOverviewHeaders.getInstance(),
+                                    EmptyMessageParameters.getInstance(),
+                                    EmptyRequestBody.getInstance())
+                            .get();
+            if (Objects.nonNull(heartbeat)) {
+                return HeartbeatEntity.builder()
+                        .lastHeartbeat(System.currentTimeMillis())
+                        .status(ClusterStatus.RUNNING.name())
+                        .clusterVersion(heartbeat.getVersion())
+                        .build();
+            }
+        } catch (InterruptedException ex) {
+            log.error(
+                    "An exception occurred while obtaining the cluster status :{}",
+                    ex.getMessage(),
+                    ex);
+            return this.buildClusterHeartbeatOfError(ClusterStatus.NETWORK_ERROR);
+        } catch (ExecutionException exec) {
+            log.error(
+                    "An exception occurred while obtaining the cluster status :{}",
+                    exec.getMessage(),
+                    exec);
+            return this.buildClusterHeartbeatOfError(ClusterStatus.EXECUTION_ERROR);
         }
-       return this.buildClusterHeartbeatOfError();
+        return this.buildClusterHeartbeatOfError(ClusterStatus.UNKNOWN);
     }
 }

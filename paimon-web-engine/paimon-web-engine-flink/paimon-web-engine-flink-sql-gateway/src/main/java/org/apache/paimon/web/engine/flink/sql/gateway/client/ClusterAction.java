@@ -18,28 +18,34 @@
 
 package org.apache.paimon.web.engine.flink.sql.gateway.client;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.paimon.web.engine.flink.common.status.ClusterStatus;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.HeartbeatEntity;
 
-/**
- * Using to execute cluster action
- */
+/** Using to execute cluster action. */
 public interface ClusterAction {
 
     /**
      * Execute cluster action to obtain cluster status.
      *
-     * @return cluster heartbeat entity
+     * @return cluster heartbeat entity.
      */
-    ImmutablePair<ClusterStatus, Long> checkClusterHeartbeat() throws Exception;
+    HeartbeatEntity checkClusterHeartbeat();
 
-    default ImmutablePair<ClusterStatus, Long> buildClusterHeartbeatOfSuccess() {
-       return ImmutablePair.of(ClusterStatus.RUNNING,System.currentTimeMillis());
-    }
-    default ImmutablePair<ClusterStatus, Long> buildClusterHeartbeatOfError() {
-        return ImmutablePair.of(ClusterStatus.UNKNOWN,System.currentTimeMillis());
-    }
-    enum ClusterStatus {
-        RUNNING,
-        UNKNOWN,
+    /**
+     * Constructs a cluster heartbeat pair indicating an error state.
+     *
+     * <p>This method is utilized when the cluster is in an error state or its status cannot be
+     * determined, generating a heartbeat pair that includes the current timestamp to represent the
+     * uncertainty. The heartbeat pair comprises the cluster status and the timestamp, serving to
+     * mark the unknown state of the cluster and record the time of the error occurrence.
+     *
+     * @return An immutable Pair object containing the cluster status as UNKNOWN and the current
+     *     timestamp.
+     */
+    default HeartbeatEntity buildClusterHeartbeatOfError(ClusterStatus status) {
+        return HeartbeatEntity.builder()
+                .lastHeartbeat(System.currentTimeMillis())
+                .status(status.name())
+                .build();
     }
 }

@@ -16,28 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.gateway.enums;
+package org.apache.paimon.web.engine.flink.common.status;
 
-/** The {@code EngineType} enum defines the types of engines that can be supported. */
-public enum EngineType {
-    SPARK,
-    FLINK_SQL_GATEWAY,
-    FLINK_SESSION;
-
-    public static EngineType fromName(String name) {
-        for (EngineType type : values()) {
-            if (type.name().equals(name)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown engine type value: " + name);
-    }
-
-    public static EngineType format(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("The engine type value is null");
-        }
-        String trimmed = name.trim();
-        return fromName(trimmed.replaceAll("\\s+", "_"));
-    }
+/** This enum represents the status of a cluster. */
+public enum ClusterStatus {
+    RUNNING,
+    UNKNOWN,
+    NETWORK_ERROR,
+    EXECUTION_ERROR;
 }

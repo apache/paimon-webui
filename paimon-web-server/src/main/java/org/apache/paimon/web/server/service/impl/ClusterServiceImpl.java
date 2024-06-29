@@ -18,9 +18,11 @@
 
 package org.apache.paimon.web.server.service.impl;
 
+import org.apache.paimon.web.engine.flink.common.status.ClusterStatus;
 import org.apache.paimon.web.engine.flink.sql.gateway.client.ClusterAction;
 import org.apache.paimon.web.engine.flink.sql.gateway.client.SessionClusterClient;
 import org.apache.paimon.web.engine.flink.sql.gateway.client.SqlGatewayClient;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.HeartbeatEntity;
 import org.apache.paimon.web.gateway.enums.EngineType;
 import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.mapper.ClusterMapper;
@@ -30,7 +32,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -70,9 +71,9 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
     @Override
     public boolean checkClusterStatus(ClusterInfo clusterInfo) {
         try {
-            ImmutablePair<ClusterAction.ClusterStatus, Long> clusterHeartbeatEntity =
+            HeartbeatEntity clusterHeartbeatEntity =
                     this.getClusterActionFactory(clusterInfo).checkClusterHeartbeat();
-            return clusterHeartbeatEntity.getLeft().equals(ClusterAction.ClusterStatus.RUNNING);
+            return clusterHeartbeatEntity.getStatus().equals(ClusterStatus.RUNNING.name());
         } catch (Exception e) {
             throw new RuntimeException("Checking cluster status error.", e);
         }
@@ -100,7 +101,7 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
                 continue;
             }
             try {
-                ImmutablePair<ClusterAction.ClusterStatus, Long> heartbeat =
+                HeartbeatEntity heartbeat =
                         this.getClusterActionFactory(clusterInfo).checkClusterHeartbeat();
                 this.buildClusterInfo(clusterInfo, heartbeat);
                 clusterMapper.updateById(clusterInfo);
@@ -113,6 +114,7 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
             }
         }
     }
+
     /**
      * Get the corresponding cluster operation instance based on the cluster information.
      *
@@ -138,14 +140,14 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
         }
     }
 
-    private void buildClusterInfo(
-            ClusterInfo clusterInfo, ImmutablePair<ClusterAction.ClusterStatus, Long> result) {
-        clusterInfo.setClusterStatus(result.getLeft().name());
+    private void buildClusterInfo(ClusterInfo clusterInfo, HeartbeatEntity result) {
+        clusterInfo.setClusterStatus(result.getStatus());
         clusterInfo.setUpdateTime(LocalDateTime.now());
-        if (ClusterAction.ClusterStatus.RUNNING.equals(result.getLeft())) {
+        if (ClusterStatus.RUNNING.name().equals(result.getStatus())) {
             LocalDateTime dateTime =
                     LocalDateTime.ofInstant(
-                            Instant.ofEpochMilli(result.getRight()), ZoneId.systemDefault());
+                            Instant.ofEpochMilli(result.getLastHeartbeat()),
+                            ZoneId.systemDefault());
             clusterInfo.setLastHeartbeat(dateTime);
         }
     }
