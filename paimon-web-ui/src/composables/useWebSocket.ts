@@ -71,12 +71,11 @@ export function useWebSocket(url: string, options?: WebSocketOptions) {
   }
 
   const sendMessage = (destination: string, body: string, headers = {}): void => {
-    if (client.value && client.value.connected) {
+    if (client.value && client.value.connected)
       client.value.publish({ destination, headers, body })
-    }
-    else {
+
+    else
       console.error('STOMP client is not connected.')
-    }
   }
 
   const closeConnection = (): void => {

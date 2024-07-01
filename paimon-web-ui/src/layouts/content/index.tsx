@@ -67,13 +67,13 @@ export default defineComponent({
             <NavBar headerMenuOptions={this.showDirectories}></NavBar>
           </n-layout-header>
           <n-layout has-sider position="absolute" style="top: 64px">
-            {this.isShowSided
-              ? (
+            {
+              this.isShowSided && (
                 <SideBar
                   sideMenuOptions={this.sideMenuOptions}
                 />
-                )
-              : null}
+              )
+            }
             <n-layout-content content-style="height: calc(100vh - 64px);">
               <router-view v-slots={{
                 default: (props: any) => {

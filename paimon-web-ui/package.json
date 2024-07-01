@@ -6,7 +6,7 @@
     "dev": "vite",
     "dev:mock": "vite --mode mock",
     "mock": "mm --config=mock/mm.config.js",
-    "build": "npm-run-all type-check build-only",
+    "build": "npm-run-all lint build-only",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
@@ -36,7 +36,7 @@
     "vue-router": "^4.2.4"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.18.1",
+    "@antfu/eslint-config": "^2.21.2",
     "@tsconfig/node18": "^18.2.2",
     "@types/lodash": "^4.14.200",
     "@types/node": "^18.17.15",

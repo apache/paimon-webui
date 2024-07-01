@@ -55,9 +55,8 @@ export default defineComponent({
     const currentJob = computed(() => jobStore.getCurrentJob(currentKey.value))
     watchEffect(() => {
       const key = currentKey.value
-      if (key !== null) {
+      if (key !== null)
         jobStatus.value = jobStore.getJobStatus(key)
-      }
     })
 
     const debuggerVariables = reactive<{
@@ -191,12 +190,11 @@ export default defineComponent({
         }
         try {
           const response = await stopJob(stopJobDTO)
-          if (response.code === 200) {
+          if (response.code === 200)
             message.success(t('playground.job_stopping_successfully'))
-          }
-          else {
+
+          else
             message.warning(t('playground.job_stopping_failed'))
-          }
         }
         catch (error) {
           message.warning(t('playground.job_stopping_failed'))
@@ -252,9 +250,8 @@ export default defineComponent({
     }
 
     watch(jobStatus, (newStatus) => {
-      if (newStatus === 'RUNNING') {
+      if (newStatus === 'RUNNING')
         isSubmitting.value = false
-      }
     })
 
     return {

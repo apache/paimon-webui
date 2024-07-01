@@ -23,11 +23,11 @@ export default defineComponent({
   props: {
     graph: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     dnd: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
   },
   setup(props) {
@@ -89,28 +89,28 @@ export default defineComponent({
               <n-space vertical size={15}>
                 <div class={styles.title}>Source</div>
                 {
-                    this.sourceList.map((item) => {
-                      return (
-                        <n-button class={styles['list-item']} onMousedown={(e: any) => this.handleNodeMove(e, item)}>
-                          {item.name}
-                        </n-button>
-                      )
-                    })
-                  }
+                  this.sourceList.map((item) => {
+                    return (
+                      <n-button class={styles['list-item']} onMousedown={(e: any) => this.handleNodeMove(e, item)}>
+                        {item.name}
+                      </n-button>
+                    )
+                  })
+                }
               </n-space>
             </div>
             <div class={styles.sink}>
               <n-space vertical size={15}>
                 <div class={styles.title}>Sink</div>
                 {
-                    this.sinkList.map((item) => {
-                      return (
-                        <n-button class={styles['list-item']} onMousedown={(e: any) => this.handleNodeMove(e, item)}>
-                          {item.name}
-                        </n-button>
-                      )
-                    })
-                  }
+                  this.sinkList.map((item) => {
+                    return (
+                      <n-button class={styles['list-item']} onMousedown={(e: any) => this.handleNodeMove(e, item)}>
+                        {item.name}
+                      </n-button>
+                    )
+                  })
+                }
               </n-space>
             </div>
           </n-space>

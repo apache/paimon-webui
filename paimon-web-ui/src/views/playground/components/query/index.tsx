@@ -87,9 +87,8 @@ export default defineComponent({
       const { connect, subscribe } = useWebSocket(wsUrl, {
         onMessage: (message) => {
           const data = JSON.parse(message.body)
-          if (data && data.jobId && data.status && data.fileName) {
+          if (data && data.jobId && data.status && data.fileName)
             jobStore.updateJobStatus(data.fileName, data.status)
-          }
         },
         onOpen: () => {
           subscribe('/topic/jobStatus')

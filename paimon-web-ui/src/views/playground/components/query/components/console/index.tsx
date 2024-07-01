@@ -65,12 +65,11 @@ export default defineComponent({
     }
 
     watch(jobStatus, (newStatus, oldStatus) => {
-      if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING') {
+      if (newStatus === 'RUNNING' && oldStatus !== 'RUNNING')
         jobStore.startJobTimer(currentKey.value)
-      }
-      else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING') {
+
+      else if (newStatus !== 'RUNNING' && oldStatus === 'RUNNING')
         jobStore.stopJobTimer(currentKey.value)
-      }
     })
 
     // handle resize
