@@ -15,7 +15,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { KeepAlive } from 'vue'
 import styles from './index.module.scss'
 import Slider from './components/slider'
 
@@ -27,17 +26,7 @@ export default defineComponent({
       <div class={styles.container}>
         <Slider />
         <div class={styles.content}>
-          <router-view v-slots={{
-            default: (props: any) => {
-              const Comp = props.Component
-              return (
-                <KeepAlive>
-                  <Comp />
-                </KeepAlive>
-              )
-            },
-          }}
-          />
+          <router-view />
         </div>
       </div>
     )
