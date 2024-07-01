@@ -6,7 +6,7 @@
     "dev": "vite",
     "dev:mock": "vite --mode mock",
     "mock": "mm --config=mock/mm.config.js",
-    "build": "npm-run-all type-check build-only",
+    "build": "npm-run-all lint build-only",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
