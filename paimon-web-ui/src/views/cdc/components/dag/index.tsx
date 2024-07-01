@@ -81,10 +81,7 @@ export default defineComponent({
                 <n-icon component={Leaf} color="#2F7BEA" size="18" />
                 <span class={styles.title} onClick={this.handleJump}>
                   {this.t('cdc.cdc_job_definition')}
-                  {' '}
-                  {
-                  this.name ? ` - ${this.name}` : ''
-                }
+                  {this.name ? ` - ${this.name}` : ''}
                 </span>
               </n-space>
               <div class={styles.operation}>

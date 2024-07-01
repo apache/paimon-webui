@@ -64,29 +64,29 @@ export default defineComponent({
       <n-spin show={this.loading}>
         <n-list hoverable clickable>
           {
-          this.rolePermissionDetail?.map(item => (
-            <n-list-item key={item.id}>
-              <n-thing title={this.t(`system.roleKey.${item.label}`)} content-style="margin-top: 10px;">
-                {
-                  item.children?.map(child => (
-                    <n-thing description={this.t(`system.roleKey.${child.label}`)} style="margin-top: 20px;">
-                      <n-space>
-                        {
-                          child.children?.map(buttonPermission => (
-                            <n-tag key={child.id} type="info">{this.t(`system.roleKey.${buttonPermission.label}`)}</n-tag>
-                          ))
-                        }
-                      </n-space>
-                    </n-thing>
-                  ))
-                }
-              </n-thing>
-            </n-list-item>
-          ))
-        }
+            this.rolePermissionDetail?.map(item => (
+              <n-list-item key={item.id}>
+                <n-thing title={this.t(`system.roleKey.${item.label}`)} content-style="margin-top: 10px;">
+                  {
+                    item.children?.map(child => (
+                      <n-thing description={this.t(`system.roleKey.${child.label}`)} style="margin-top: 20px;">
+                        <n-space>
+                          {
+                            child.children?.map(buttonPermission => (
+                              <n-tag key={child.id} type="info">{this.t(`system.roleKey.${buttonPermission.label}`)}</n-tag>
+                            ))
+                          }
+                        </n-space>
+                      </n-thing>
+                    ))
+                  }
+                </n-thing>
+              </n-list-item>
+            ))
+          }
           {
-          this.rolePermissionDetail?.length === 0 && <n-empty description={this.t('system.role.no_permission')} />
-        }
+            this.rolePermissionDetail?.length === 0 && <n-empty description={this.t('system.role.no_permission')} />
+          }
         </n-list>
       </n-spin>
     )
