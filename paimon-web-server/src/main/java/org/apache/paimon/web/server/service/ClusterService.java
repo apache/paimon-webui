@@ -34,4 +34,6 @@ public interface ClusterService extends IService<ClusterInfo> {
     boolean checkClusterNameUnique(ClusterInfo cluster);
 
     int deleteClusterByIds(Integer[] clusterIds);
+
+    boolean checkClusterStatus(ClusterInfo clusterInfo);
 }

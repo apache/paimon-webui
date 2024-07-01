@@ -25,6 +25,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /** Cluster table model. */
 @Data
 @Builder
@@ -45,4 +47,8 @@ public class ClusterInfo extends BaseModel {
     private String type;
 
     private Boolean enabled;
+
+    private String clusterStatus;
+
+    private LocalDateTime lastHeartbeat;
 }
