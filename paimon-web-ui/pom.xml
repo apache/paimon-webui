@@ -84,12 +84,12 @@ under the License.
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>npm run build</id>
+                                <id>npm run build-only</id>
                                 <goals>
                                     <goal>npm</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>run build</arguments>
+                                    <arguments>run build-only</arguments>
                                 </configuration>
                             </execution>
                         </executions>
