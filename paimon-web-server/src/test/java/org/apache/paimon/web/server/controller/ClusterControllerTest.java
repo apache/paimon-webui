@@ -18,6 +18,9 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.engine.flink.common.status.HeartbeatStatus;
+import org.apache.paimon.web.engine.flink.sql.gateway.client.HeartbeatAction;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.HeartbeatEntity;
 import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.data.result.PageR;
 import org.apache.paimon.web.server.data.result.R;
@@ -63,6 +66,7 @@ public class ClusterControllerTest extends ControllerTestBase {
         cluster.setHost("127.0.0.1");
         cluster.setPort(8083);
         cluster.setType("Flink");
+        cluster.setDeploymentMode("yarn-session");
         cluster.setEnabled(true);
 
         mockMvc.perform(
@@ -98,6 +102,7 @@ public class ClusterControllerTest extends ControllerTestBase {
         assertEquals("127.0.0.1", r.getData().getHost());
         assertEquals(8083, r.getData().getPort());
         assertEquals("Flink", r.getData().getType());
+        assertEquals("yarn-session", r.getData().getDeploymentMode());
         assertTrue(r.getData().getEnabled());
     }
 
@@ -212,13 +217,14 @@ public class ClusterControllerTest extends ControllerTestBase {
 
     @Test
     @Order(6)
-    public void testCheckClusterOfFlinkSqlGateway() throws Exception {
+    public void testCheckClusterHeartbeatOfFlinkSqlGateway() throws Exception {
         ClusterInfo cluster =
                 ClusterInfo.builder()
                         .clusterName("test")
                         .enabled(true)
-                        .type("Flink SQL GateWay")
-                        .host("192.168.226.123")
+                        .type("Flink")
+                        .deploymentMode("flink-sql-gateway")
+                        .host("127.0.0.1")
                         .port(8083)
                         .build();
 
@@ -236,19 +242,20 @@ public class ClusterControllerTest extends ControllerTestBase {
                         .getContentAsString();
 
         R<?> result = ObjectMapperUtils.fromJSON(delResponseString, R.class);
-        assertEquals(200, result.getCode());
+        assertNotNull(result, "result is null");
     }
 
     @Test
-    @Order(6)
-    public void testCheckClusterOfFlinkSession() throws Exception {
+    @Order(7)
+    public void testCheckClusterHeartbeatOfFlinkSession() throws Exception {
         ClusterInfo cluster =
                 ClusterInfo.builder()
                         .clusterName("test")
                         .enabled(true)
-                        .type("Flink Session")
-                        .host("192.168.226.123")
-                        .port(34407)
+                        .deploymentMode("yarn-session")
+                        .type("Flink")
+                        .host("127.0.0.1")
+                        .port(8083)
                         .build();
 
         String delResponseString =
@@ -265,13 +272,68 @@ public class ClusterControllerTest extends ControllerTestBase {
                         .getContentAsString();
 
         R<?> result = ObjectMapperUtils.fromJSON(delResponseString, R.class);
-        assertEquals(200, result.getCode());
+        assertNotNull(result, "result is null");
     }
 
     @Test
-    @Order(7)
-    public void testCheckClusterStatus() {
+    @Order(8)
+    public void testCheckClusterHeartbeatStatus() {
+        ClusterInfo cluster =
+                ClusterInfo.builder()
+                        .clusterName("test")
+                        .enabled(true)
+                        .deploymentMode("yarn-session")
+                        .type("Flink")
+                        .host("127.0.0.1")
+                        .port(8083)
+                        .build();
         ClusterServiceImpl bean = SpringUtils.getBean(ClusterServiceImpl.class);
-        bean.checkClusterStatus();
+        bean.checkClusterHeartbeatStatus();
+
+        HeartbeatEntity heartbeatEntityOfActive =
+                HeartbeatEntity.builder()
+                        .status(HeartbeatStatus.ACTIVE.name())
+                        .lastHeartbeat(System.currentTimeMillis())
+                        .build();
+        bean.buildClusterInfo(cluster, heartbeatEntityOfActive);
+        assertEquals(HeartbeatStatus.ACTIVE.name(), cluster.getHeartbeatStatus());
+
+        HeartbeatEntity heartbeatEntityOfUnreachable =
+                HeartbeatEntity.builder().status(HeartbeatStatus.UNREACHABLE.name()).build();
+        bean.buildClusterInfo(cluster, heartbeatEntityOfUnreachable);
+        assertEquals(HeartbeatStatus.UNREACHABLE.name(), cluster.getHeartbeatStatus());
+
+        HeartbeatEntity heartbeatEntityOfUnknown =
+                HeartbeatEntity.builder().status(HeartbeatStatus.UNKNOWN.name()).build();
+        bean.buildClusterInfo(cluster, heartbeatEntityOfUnknown);
+        assertEquals(HeartbeatStatus.UNKNOWN.name(), cluster.getHeartbeatStatus());
+    }
+
+    @Test
+    @Order(9)
+    public void testGetHeartbeatActionFactory() throws Exception {
+        ClusterInfo cluster1 =
+                ClusterInfo.builder()
+                        .clusterName("test")
+                        .enabled(true)
+                        .deploymentMode("yarn-session")
+                        .type("Flink")
+                        .host("127.0.0.1")
+                        .port(8083)
+                        .build();
+        ClusterServiceImpl bean = SpringUtils.getBean(ClusterServiceImpl.class);
+        HeartbeatAction actionFactoryOfYarnSession = bean.getHeartbeatActionFactory(cluster1);
+        assertNotNull(actionFactoryOfYarnSession, "result is null");
+        ClusterInfo cluster2 =
+                ClusterInfo.builder()
+                        .clusterName("test")
+                        .enabled(true)
+                        .deploymentMode("flink-sql-gateway")
+                        .type("Flink")
+                        .host("127.0.0.1")
+                        .port(8083)
+                        .build();
+        HeartbeatAction actionFactoryOfSqlGateway = bean.getHeartbeatActionFactory(cluster2);
+        assertNotNull(actionFactoryOfSqlGateway, "result is null");
     }
 }

@@ -35,7 +35,7 @@ public class ExecutorFactoryProviderTest {
     public void testGetExecutorFactoryWithFlink() {
         ExecutionConfig config =
                 ExecutionConfig.builder().sessionEntity(SessionEntity.builder().build()).build();
-        EngineType engineType = EngineType.fromName("FLINK_SQL_GATEWAY");
+        EngineType engineType = EngineType.fromName("FLINK");
         ExecutorFactoryProvider executorFactoryProvider = new ExecutorFactoryProvider(config);
         assertSame(
                 FlinkSqlGatewayExecutorFactory.class,

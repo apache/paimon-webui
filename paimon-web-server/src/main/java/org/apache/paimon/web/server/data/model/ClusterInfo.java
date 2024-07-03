@@ -46,9 +46,11 @@ public class ClusterInfo extends BaseModel {
 
     private String type;
 
+    private String deploymentMode;
+
     private Boolean enabled;
 
-    private String clusterStatus;
+    private String heartbeatStatus;
 
     private LocalDateTime lastHeartbeat;
 }

@@ -16,19 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.gateway.enums;
+package org.apache.paimon.web.engine.flink.common.status;
 
-/** The {@code EngineType} enum defines the types of engines that can be supported. */
-public enum EngineType {
-    SPARK,
-    FLINK;
-
-    public static EngineType fromName(String name) {
-        for (EngineType type : values()) {
-            if (type.name().equals(name)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown engine type value: " + name);
-    }
+/** This enum represents the status of a cluster heartbeat. */
+public enum HeartbeatStatus {
+    /** * The cluster is active. */
+    ACTIVE,
+    /** Unable to connect to the target machine, usually due to network anomalies. */
+    UNREACHABLE,
+    /**
+     * The cluster is in an unknown state, usually due to a cluster don't result heartbeat
+     * information, but its network is normal.
+     */
+    UNKNOWN,
+    /**
+     * The cluster is dead, usually due to a cluster don't obtain heartbeat information for a long
+     * time.
+     */
+    DEAD;
 }

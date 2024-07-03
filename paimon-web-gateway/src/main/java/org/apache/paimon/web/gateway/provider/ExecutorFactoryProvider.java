@@ -34,7 +34,7 @@ public class ExecutorFactoryProvider {
 
     public ExecutorFactory getExecutorFactory(EngineType type) {
         switch (type) {
-            case FLINK_SQL_GATEWAY:
+            case FLINK:
                 return new FlinkSqlGatewayExecutorFactory(executionConfig.getSessionEntity());
             default:
                 throw new UnsupportedOperationException(

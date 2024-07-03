@@ -135,7 +135,8 @@ CREATE TABLE if not exists `cluster`
     `port`   int(11) COMMENT 'port',
     `enabled`   tinyint(1)  NOT NULL DEFAULT 1 COMMENT 'enabled',
     `type`    varchar(100)  comment 'cluster type',
-    `cluster_status` varchar(20) DEFAULT NULL COMMENT 'cluster status',
+    `deployment_mode` varchar(100) DEFAULT NULL COMMENT 'cluster deployment mode',
+    `heartbeat_status` varchar(20) DEFAULT NULL COMMENT 'heartbeat status',
     `last_heartbeat` datetime DEFAULT NULL COMMENT 'last_heartbeat',
     `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'

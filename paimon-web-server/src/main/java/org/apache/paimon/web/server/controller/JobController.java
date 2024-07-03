@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.server.controller;
 
-import org.apache.paimon.web.gateway.enums.EngineType;
 import org.apache.paimon.web.server.data.dto.JobSubmitDTO;
 import org.apache.paimon.web.server.data.dto.ResultFetchDTO;
 import org.apache.paimon.web.server.data.dto.StopJobDTO;
@@ -129,7 +128,7 @@ public class JobController {
     @SaIgnore
     @PostMapping("/refresh")
     public R<Void> refresh() {
-        jobService.refreshJobStatus(EngineType.FLINK_SQL_GATEWAY.name());
+        jobService.refreshJobStatus("Flink");
         return R.succeed();
     }
 }

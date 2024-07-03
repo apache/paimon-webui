@@ -18,9 +18,12 @@
 
 package org.apache.paimon.web.server.service.impl;
 
-import org.apache.paimon.web.engine.flink.sql.gateway.client.ClusterAction;
+import org.apache.paimon.web.engine.flink.common.status.HeartbeatStatus;
+import org.apache.paimon.web.engine.flink.sql.gateway.client.HeartbeatAction;
 import org.apache.paimon.web.engine.flink.sql.gateway.client.SessionClusterClient;
 import org.apache.paimon.web.engine.flink.sql.gateway.client.SqlGatewayClient;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.HeartbeatEntity;
+import org.apache.paimon.web.gateway.enums.DeploymentMode;
 import org.apache.paimon.web.gateway.enums.EngineType;
 import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.mapper.ClusterMapper;
@@ -30,11 +33,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -68,13 +71,13 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
     }
 
     @Override
-    public boolean checkClusterStatus(ClusterInfo clusterInfo) {
+    public boolean checkClusterHeartbeatStatus(ClusterInfo clusterInfo) {
         try {
-            ImmutablePair<ClusterAction.ClusterStatus, Long> clusterHeartbeatEntity =
-                    this.getClusterActionFactory(clusterInfo).checkClusterHeartbeat();
-            return clusterHeartbeatEntity.getLeft().equals(ClusterAction.ClusterStatus.RUNNING);
+            HeartbeatEntity clusterHeartbeatEntity =
+                    this.getHeartbeatActionFactory(clusterInfo).checkClusterHeartbeat();
+            return HeartbeatStatus.ACTIVE.name().equals(clusterHeartbeatEntity.getStatus());
         } catch (Exception e) {
-            throw new RuntimeException("Checking cluster status error.", e);
+            throw new RuntimeException("Checking cluster heartbeat status error.", e);
         }
     }
 
@@ -86,7 +89,7 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
      * encountered during the check, record the error log.
      */
     @Scheduled(cron = "0 * * * * ?")
-    public void checkClusterStatus() {
+    public void checkClusterHeartbeatStatus() {
         QueryWrapper<ClusterInfo> queryWrapper =
                 new QueryWrapper<ClusterInfo>().eq("enabled", true);
         for (ClusterInfo clusterInfo : clusterMapper.selectList(queryWrapper)) {
@@ -100,8 +103,8 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
                 continue;
             }
             try {
-                ImmutablePair<ClusterAction.ClusterStatus, Long> heartbeat =
-                        this.getClusterActionFactory(clusterInfo).checkClusterHeartbeat();
+                HeartbeatEntity heartbeat =
+                        this.getHeartbeatActionFactory(clusterInfo).checkClusterHeartbeat();
                 this.buildClusterInfo(clusterInfo, heartbeat);
                 clusterMapper.updateById(clusterInfo);
             } catch (Exception e) {
@@ -113,40 +116,56 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
             }
         }
     }
+
     /**
      * Get the corresponding cluster operation instance based on the cluster information.
      *
      * <p>This method determines which type of cluster operation instance to create based on the
-     * engine type specified in the cluster information. Supported engine types are Flink Session
-     * cluster and Flink SQL Gateway. If the specified engine type is not supported, an
+     * deployment mode specified in the cluster information. Supported deployment modes include
+     * {@link DeploymentMode}. If the specified engine type is not supported, an
      * UnsupportedOperationException will be thrown.
      *
      * @param clusterInfo Cluster information, including type, host, and port.
      * @return Returns a cluster operation instance for interacting with a specific type of cluster.
      * @throws Exception If the specified engine type is not supported, an exception will be thrown.
      */
-    private ClusterAction getClusterActionFactory(ClusterInfo clusterInfo) throws Exception {
-        EngineType engineType = EngineType.format(clusterInfo.getType().toUpperCase());
-        switch (engineType) {
-            case FLINK_SESSION:
+    public HeartbeatAction getHeartbeatActionFactory(ClusterInfo clusterInfo) throws Exception {
+        DeploymentMode deploymentMode = DeploymentMode.fromName(clusterInfo.getDeploymentMode());
+        switch (deploymentMode) {
+            case YARN_SESSION:
                 return new SessionClusterClient(clusterInfo.getHost(), clusterInfo.getPort());
             case FLINK_SQL_GATEWAY:
                 return new SqlGatewayClient(clusterInfo.getHost(), clusterInfo.getPort());
             default:
                 throw new UnsupportedOperationException(
-                        engineType + " engine is not currently supported.");
+                        deploymentMode + " deployment mode is not currently supported.");
         }
     }
 
-    private void buildClusterInfo(
-            ClusterInfo clusterInfo, ImmutablePair<ClusterAction.ClusterStatus, Long> result) {
-        clusterInfo.setClusterStatus(result.getLeft().name());
+    public void buildClusterInfo(ClusterInfo clusterInfo, HeartbeatEntity result) {
         clusterInfo.setUpdateTime(LocalDateTime.now());
-        if (ClusterAction.ClusterStatus.RUNNING.equals(result.getLeft())) {
+        String active = HeartbeatStatus.ACTIVE.name();
+        if (active.equals(result.getStatus())) {
             LocalDateTime dateTime =
                     LocalDateTime.ofInstant(
-                            Instant.ofEpochMilli(result.getRight()), ZoneId.systemDefault());
+                            Instant.ofEpochMilli(result.getLastHeartbeat()),
+                            ZoneId.systemDefault());
+            clusterInfo.setHeartbeatStatus(active);
             clusterInfo.setLastHeartbeat(dateTime);
+        }
+        // If the status is not active, and the last heartbeat time is greater than 5 minutes, the
+        // cluster status is set to dead.
+        if (!clusterInfo.getHeartbeatStatus().equals(active)) {
+            Duration duration =
+                    Duration.between(clusterInfo.getLastHeartbeat(), LocalDateTime.now());
+            long differenceInMinutes = Math.abs(duration.toMinutes());
+            if (differenceInMinutes > 5) {
+                clusterInfo.setHeartbeatStatus(HeartbeatStatus.DEAD.name());
+            } else {
+                clusterInfo.setHeartbeatStatus(result.getStatus());
+            }
+        } else {
+            clusterInfo.setHeartbeatStatus(result.getStatus());
         }
     }
 }

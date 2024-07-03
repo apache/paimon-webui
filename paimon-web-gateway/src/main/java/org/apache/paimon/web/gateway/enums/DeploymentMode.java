@@ -16,30 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.engine.flink.sql.gateway.client;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
+package org.apache.paimon.web.gateway.enums;
 
 /**
- * Using to execute cluster action
+ * The {@code DeploymentMode} enum defines the types of cluster deployment mode that can be
+ * supported.
  */
-public interface ClusterAction {
+public enum DeploymentMode {
+    YARN_SESSION("yarn-session"),
+    FLINK_SQL_GATEWAY("flink-sql-gateway");
 
-    /**
-     * Execute cluster action to obtain cluster status.
-     *
-     * @return cluster heartbeat entity
-     */
-    ImmutablePair<ClusterStatus, Long> checkClusterHeartbeat() throws Exception;
+    private final String type;
 
-    default ImmutablePair<ClusterStatus, Long> buildClusterHeartbeatOfSuccess() {
-       return ImmutablePair.of(ClusterStatus.RUNNING,System.currentTimeMillis());
+    DeploymentMode(String type) {
+        this.type = type;
     }
-    default ImmutablePair<ClusterStatus, Long> buildClusterHeartbeatOfError() {
-        return ImmutablePair.of(ClusterStatus.UNKNOWN,System.currentTimeMillis());
+
+    public String getType() {
+        return type;
     }
-    enum ClusterStatus {
-        RUNNING,
-        UNKNOWN,
+
+    public static DeploymentMode fromName(String name) {
+        for (DeploymentMode type : values()) {
+            if (type.getType().equals(name)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown deployment mode type value: " + name);
     }
 }

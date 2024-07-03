@@ -300,9 +300,9 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
         }
         int userId = StpUtil.getLoginIdAsInt();
 
-        if (taskType.equals(EngineType.FLINK_SQL_GATEWAY.name())) {
+        if (taskType.equals("Flink")) {
             QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("type", EngineType.FLINK_SQL_GATEWAY.name());
+            queryWrapper.eq("type", "Flink");
             List<ClusterInfo> clusters = clusterService.list();
             for (ClusterInfo cluster : clusters) {
                 try {
@@ -386,7 +386,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
                 if (executor == null) {
                     ExecutionConfig config =
                             ExecutionConfig.builder().sessionEntity(session).build();
-                    EngineType engineType = EngineType.fromName("FLINK_SQL_GATEWAY");
+                    EngineType engineType = EngineType.fromName("FLINK");
                     ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
                     ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
                     executor = executorFactory.createExecutor();
@@ -564,7 +564,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobInfo> implements J
 
             if (jobExecutorService.getExecutor(session.getSessionId()) == null) {
                 ExecutionConfig config = ExecutionConfig.builder().sessionEntity(session).build();
-                EngineType engineType = EngineType.format(taskType.toUpperCase());
+                EngineType engineType = EngineType.fromName(taskType.toUpperCase());
                 ExecutorFactoryProvider provider = new ExecutorFactoryProvider(config);
                 ExecutorFactory executorFactory = provider.getExecutorFactory(engineType);
                 Executor executor = executorFactory.createExecutor();
