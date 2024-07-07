@@ -27,6 +27,7 @@ import org.apache.paimon.web.server.service.TableService;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +47,7 @@ import java.util.stream.Collectors;
 
 /** Table api controller. */
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/api/table")
 public class TableController {
@@ -62,7 +66,7 @@ public class TableController {
      */
     @SaCheckPermission("metadata:table:create")
     @PostMapping("/create")
-    public R<Void> createTable(@RequestBody TableDTO tableDTO) {
+    public R<Void> createTable(@Valid @RequestBody TableDTO tableDTO) {
         if (tableService.tableExists(tableDTO)) {
             return R.failed(Status.TABLE_NAME_IS_EXIST, tableDTO.getName());
         }

@@ -26,6 +26,7 @@ import org.apache.paimon.web.server.service.DatabaseService;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,10 +34,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import java.util.List;
 
 /** Database api controller. */
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/api/database")
 public class DatabaseController {
@@ -55,7 +59,7 @@ public class DatabaseController {
      */
     @SaCheckPermission("metadata:database:create")
     @PostMapping("/create")
-    public R<Void> createDatabase(@RequestBody DatabaseDTO databaseDTO) {
+    public R<Void> createDatabase(@Valid @RequestBody DatabaseDTO databaseDTO) {
         if (databaseService.databaseExists(databaseDTO)) {
             return R.failed(Status.DATABASE_NAME_IS_EXIST, databaseDTO.getName());
         }

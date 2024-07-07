@@ -28,16 +28,20 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import java.util.List;
 
 /** Catalog api controller. */
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/api/catalog")
 public class CatalogController {
@@ -56,7 +60,7 @@ public class CatalogController {
      */
     @SaCheckPermission("metadata:catalog:create")
     @PostMapping("/create")
-    public R<Void> createCatalog(@RequestBody CatalogDTO catalogDTO) {
+    public R<Void> createCatalog(@Valid @RequestBody CatalogDTO catalogDTO) {
         try {
             if (catalogService.checkCatalogNameUnique(catalogDTO)) {
                 return R.failed(Status.CATALOG_NAME_IS_EXIST, catalogDTO.getName());

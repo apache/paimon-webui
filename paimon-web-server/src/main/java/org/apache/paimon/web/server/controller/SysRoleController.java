@@ -41,9 +41,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import java.util.List;
 
 /** role controller. */
+@Validated
 @RestController
 @RequestMapping("/api/role")
 public class SysRoleController {
@@ -70,7 +73,7 @@ public class SysRoleController {
     /** Add new role. */
     @SaCheckPermission("system:role:add")
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysRole role) {
+    public R<Void> add(@Valid @RequestBody SysRole role) {
         if (!roleService.checkRoleNameUnique(role)) {
             return R.failed(Status.ROLE_NAME_IS_EXIST, role.getRoleName());
         } else if (!roleService.checkRoleKeyUnique(role)) {
@@ -83,7 +86,7 @@ public class SysRoleController {
     /** Update role info. */
     @SaCheckPermission("system:role:update")
     @PutMapping
-    public R<Void> update(@Validated @RequestBody SysRole role) {
+    public R<Void> update(@Valid @RequestBody SysRole role) {
         roleService.checkRoleAllowed(role);
         if (!roleService.checkRoleNameUnique(role)) {
             return R.failed(Status.ROLE_NAME_IS_EXIST, role.getRoleName());

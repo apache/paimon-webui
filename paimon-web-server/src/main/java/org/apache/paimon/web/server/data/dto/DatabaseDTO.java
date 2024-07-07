@@ -20,12 +20,16 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /** DTO of database. */
 @Data
 public class DatabaseDTO {
-
+    @NotBlank(message = "invalid.databaseName")
     private String name;
 
+    @NotNull(message = "invalid.catalogId")
     private Integer catalogId;
 
     private String catalogName;

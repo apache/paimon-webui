@@ -39,6 +39,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -208,7 +215,7 @@ public class UserControllerTest extends ControllerTestBase {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void testChangeUserStatus() throws Exception {
         User user = new User();
         user.setId(2);
@@ -254,6 +261,7 @@ public class UserControllerTest extends ControllerTestBase {
     }
 
     @Test
+    @Order(8)
     public void testChangePassword() throws Exception {
         User user = new User();
         user.setId(2);
@@ -269,6 +277,64 @@ public class UserControllerTest extends ControllerTestBase {
 
         User newUser = userMapper.selectById(2);
         assertEquals("9efab2399c7c560b34de477b9aa0a465", newUser.getPassword());
+    }
+
+    @Test
+    @Order(9)
+    public void testValidMobile() {
+        String validMobile = "13411112222";
+        User user = new User();
+        user.setUsername(username);
+        user.setMobile(validMobile);
+        user.setRoleIds(new Integer[] {1});
+        user.setEmail("test@paimon.com");
+        Set<ConstraintViolation<User>> violations = getValidator().validate(user);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    @Order(10)
+    public void testInvalidMobile() {
+        String inValidMobile = "12311112222";
+        User user = new User();
+        user.setUsername(username);
+        user.setMobile(inValidMobile);
+        user.setRoleIds(new Integer[] {1});
+        user.setEmail("test@paimon.com");
+        Set<ConstraintViolation<User>> violations = getValidator().validate(user);
+
+        assertEquals(1, violations.size());
+        ConstraintViolation<User> violation = violations.iterator().next();
+        assertEquals("invalid.phone.format", violation.getMessageTemplate());
+    }
+
+    @Test
+    @Order(11)
+    public void testValidEmail() {
+        String validEmail = "test@paimon.com";
+        User user = new User();
+        user.setUsername(username);
+        user.setMobile("13311112222");
+        user.setRoleIds(new Integer[] {1});
+        user.setEmail(validEmail);
+        Set<ConstraintViolation<User>> violations = getValidator().validate(user);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    @Order(12)
+    public void testInvalidEmail() {
+        String inValidEmail = "paimon.com";
+        User user = new User();
+        user.setUsername(username);
+        user.setMobile("13311112222");
+        user.setRoleIds(new Integer[] {1});
+        user.setEmail(inValidEmail);
+        Set<ConstraintViolation<User>> violations = getValidator().validate(user);
+
+        assertEquals(1, violations.size());
+        ConstraintViolation<User> violation = violations.iterator().next();
+        assertEquals("invalid.email.format", violation.getMessageTemplate());
     }
 
     private UserVO getUser(Integer userId) throws Exception {
@@ -287,5 +353,10 @@ public class UserControllerTest extends ControllerTestBase {
         R<UserVO> r = ObjectMapperUtils.fromJSON(responseString, new TypeReference<R<UserVO>>() {});
         assertEquals(200, r.getCode());
         return r.getData();
+    }
+
+    private Validator getValidator() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        return factory.getValidator();
     }
 }

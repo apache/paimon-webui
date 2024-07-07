@@ -25,6 +25,9 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 import java.util.Set;
 
 /** sys_role. */
@@ -32,9 +35,11 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class SysRole extends BaseModel {
     /** role name. */
+    @NotBlank(message = "invalid.roleName")
     private String roleName;
 
     /** role key. */
+    @NotBlank(message = "invalid.roleKey")
     private String roleKey;
 
     /** sort. */
@@ -55,6 +60,7 @@ public class SysRole extends BaseModel {
 
     /** menu ids. */
     @TableField(exist = false)
+    @NotEmpty(message = "invalid.menuIds")
     private Integer[] menuIds;
 
     /** Role menu permissions. */

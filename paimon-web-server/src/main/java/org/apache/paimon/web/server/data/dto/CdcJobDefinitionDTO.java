@@ -20,12 +20,15 @@ package org.apache.paimon.web.server.data.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /** DTO of cdcJobDefinition . */
 @Data
 public class CdcJobDefinitionDTO {
 
     private Integer id;
 
+    @NotBlank(message = "invalid.cdc.job.name")
     private String name;
 
     private String description;
