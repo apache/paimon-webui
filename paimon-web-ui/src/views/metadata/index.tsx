@@ -43,15 +43,15 @@ export default defineComponent({
               <div class={styles.content}>
                 {this.currentTable
                   ? (
-                      <>
-                        <Breadcrumb />
-                        <Tabs />
-                      </>
+                    <>
+                      <Breadcrumb />
+                      <Tabs />
+                    </>
                     )
                   : (
-                      <div class={styles.empty}>
-                        <n-empty description="Please choose a table."></n-empty>
-                      </div>
+                    <div class={styles.empty}>
+                      <n-empty description="Please choose a table."></n-empty>
+                    </div>
                     )}
               </div>
             ),

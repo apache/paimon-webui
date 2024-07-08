@@ -17,14 +17,15 @@ under the License. */
 
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import dayjs from 'dayjs'
-import { EditOutlined } from '@vicons/antd'
+import { EditOutlined, HeartTwotone } from '@vicons/antd'
+import { Add } from '@vicons/ionicons5'
 
 import ClusterForm from './components/cluster-form'
 import ClusterDelete from './components/cluster-delete'
 
 import styles from './index.module.scss'
 
-import { createCluster, getClusterList, updateCluster } from '@/api/models/cluster'
+import { checkClusterStatus, createCluster, getClusterList, updateCluster } from '@/api/models/cluster'
 
 import type { ClusterDTO } from '@/api/models/cluster/types'
 
@@ -39,29 +40,55 @@ export default defineComponent({
       {
         title: () => t('system.cluster.cluster_name'),
         key: 'clusterName',
+        width: 160,
       },
       {
         title: () => t('system.cluster.cluster_host'),
         key: 'host',
+        width: 150,
       },
       {
         title: () => t('system.cluster.cluster_port'),
         key: 'port',
+        width: 120,
       },
       {
         title: () => t('system.cluster.cluster_type'),
         key: 'type',
+        width: 120,
+      },
+      {
+        title: () => t('system.cluster.deployment_type'),
+        key: 'deploymentMode',
+        width: 160,
+        render: (row: ClusterDTO) => {
+          switch (row.deploymentMode) {
+            case 'flink-sql-gateway':
+              return 'Flink SQL Gateway'
+            case 'yarn-session':
+              return 'Yarn Session'
+            default:
+              return row.deploymentMode
+          }
+        },
       },
       {
         title: () => t('system.cluster.enabled'),
         key: 'enabled',
+        width: 100,
         render: (row: ClusterDTO) => {
           return row.enabled ? t('common.yes') : t('common.no')
         },
       },
       {
+        title: () => t('system.cluster.cluster_status'),
+        key: 'heartbeatStatus',
+        width: 120,
+      },
+      {
         title: () => t('common.create_time'),
         key: 'createTime',
+        width: 160,
         render: (row: ClusterDTO) => {
           return row?.createTime ? dayjs(row?.createTime).format('YYYY-MM-DD HH:mm') : '-'
         },
@@ -69,6 +96,7 @@ export default defineComponent({
       {
         title: () => t('common.update_time'),
         key: 'updateTime',
+        width: 160,
         render: (row: ClusterDTO) => {
           return row?.updateTime ? dayjs(row?.updateTime).format('YYYY-MM-DD HH:mm') : '-'
         },
@@ -76,13 +104,20 @@ export default defineComponent({
       {
         title: () => t('common.action'),
         key: 'actions',
+        fixed: 'right',
         resizable: true,
+        width: 150,
         render: (row: ClusterDTO) => {
           return (
             <n-space>
               <n-button onClick={() => handleUpdateModal(row)} strong secondary circle>
                 {{
                   icon: () => <n-icon component={EditOutlined} />,
+                }}
+              </n-button>
+              <n-button onClick={() => handleCheckClusterStatus(row)} strong secondary circle type="success">
+                {{
+                  icon: () => <n-icon component={HeartTwotone} />,
                 }}
               </n-button>
               <ClusterDelete clusterId={row?.id} onDelete={getTableData} />
@@ -104,6 +139,7 @@ export default defineComponent({
       host: '',
       port: 0,
       type: '',
+      deploymentMode: '',
       enabled: true,
     })
 
@@ -122,6 +158,22 @@ export default defineComponent({
 
       formValue.value = { ...cluster }
       formVisible.value = true
+    }
+
+    async function handleCheckClusterStatus(cluster: ClusterDTO) {
+      const [, checkStatus] = checkClusterStatus()
+
+      try {
+        await checkStatus({
+          params: cluster,
+        })
+        message.success('Cluster status checked successfully')
+        getTableData()
+      }
+      catch (error) {
+        const errorMessage = (error as Error).message
+        message.error(`Error checking cluster status: ${errorMessage}`)
+      }
     }
 
     const tableVariables = reactive({
@@ -188,7 +240,12 @@ export default defineComponent({
         <n-card>
           <n-space vertical>
             <n-space justify="space-between">
-              <n-button onClick={this.handleCreateModal} type="primary">{this.t('system.user.add')}</n-button>
+              <n-button onClick={this.handleCreateModal} type="primary">
+                {{
+                  icon: () => <n-icon component={Add} />,
+                  default: () => this.t('system.cluster.create'),
+                }}
+              </n-button>
             </n-space>
             <n-data-table
               columns={this.columns}

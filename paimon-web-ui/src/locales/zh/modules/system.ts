@@ -102,6 +102,8 @@ const roleKey = {
 const cluster = {
   cluster_name: '集群名称',
   cluster_type: '集群类型',
+  cluster_status: '集群状态',
+  deployment_type: '部署模式',
   cluster_host: '集群地址',
   cluster_port: '集群端口',
   enabled: '是否启用',

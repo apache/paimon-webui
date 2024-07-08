@@ -102,6 +102,8 @@ const roleKey = {
 const cluster = {
   cluster_name: 'Cluster Name',
   cluster_type: 'Cluster Type',
+  cluster_status: 'Cluster Status',
+  deployment_type: 'Deployment Mode',
   cluster_host: 'Cluster Host',
   cluster_port: 'Cluster Port',
   enabled: 'Enabled',
