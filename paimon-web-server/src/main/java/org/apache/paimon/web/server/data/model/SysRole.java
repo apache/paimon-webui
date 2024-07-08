@@ -63,6 +63,10 @@ public class SysRole extends BaseModel {
     @NotEmpty(message = "invalid.menuIds")
     private Integer[] menuIds;
 
+    /** indeterminate keys. */
+    @TableField(exist = false)
+    private Integer[] indeterminateKeys;
+
     /** Role menu permissions. */
     @TableField(exist = false)
     private Set<String> permissions;
