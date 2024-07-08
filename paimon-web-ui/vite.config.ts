@@ -35,7 +35,7 @@ export default defineConfig({
         changeOrigin: true,
       },
       '/api': {
-        target: 'http://47.94.247.86:10088',
+        target: 'http://127.0.0.1:10088',
         changeOrigin: true,
       },
     },
