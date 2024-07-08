@@ -26,6 +26,7 @@ import org.apache.paimon.web.server.service.ClusterService;
 import org.apache.paimon.web.server.util.PageSupport;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -96,5 +97,11 @@ public class ClusterController {
     @DeleteMapping("/{clusterIds}")
     public R<Void> delete(@PathVariable Integer[] clusterIds) {
         return clusterService.deleteClusterByIds(clusterIds) > 0 ? R.succeed() : R.failed();
+    }
+
+    @SaIgnore
+    @PostMapping("/check")
+    public R<Void> check(@Validated @RequestBody ClusterInfo clusterInfo) {
+        return clusterService.checkClusterHeartbeatStatus(clusterInfo) ? R.succeed() : R.failed();
     }
 }

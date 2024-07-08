@@ -29,6 +29,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
+import java.time.LocalDateTime;
+
 /** Cluster table model. */
 @Data
 @Builder
@@ -53,5 +55,11 @@ public class ClusterInfo extends BaseModel {
     @NotBlank(message = "invalid.clusterType")
     private String type;
 
+    private String deploymentMode;
+
     private Boolean enabled;
+
+    private String heartbeatStatus;
+
+    private LocalDateTime lastHeartbeat;
 }

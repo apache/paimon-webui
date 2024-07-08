@@ -16,25 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.controller;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
+package org.apache.paimon.web.gateway.enums;
 
 /**
- * When accessing front-end pages through the back-end server, requests to /ui/{routePath} ought to
- * be forwarded to ui/index.html to guarantee correct page rendering.
+ * The {@code DeploymentMode} enum defines the types of cluster deployment mode that can be
+ * supported.
  */
-@Controller
-public class ForwardController {
+public enum DeploymentMode {
+    YARN_SESSION("yarn-session"),
+    FLINK_SQL_GATEWAY("flink-sql-gateway");
 
-    @GetMapping(value = "/ui/{[path:[^\\.]*}")
-    public ModelAndView forwardToIndex() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setStatus(HttpStatus.OK);
-        modelAndView.setViewName("forward:/ui/index.html");
-        return modelAndView;
+    private final String type;
+
+    DeploymentMode(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public static DeploymentMode fromName(String name) {
+        for (DeploymentMode type : values()) {
+            if (type.getType().equals(name)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown deployment mode type value: " + name);
     }
 }

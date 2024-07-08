@@ -16,24 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.engine.flink.sql.gateway.model;
 
-import org.apache.paimon.web.server.data.model.ClusterInfo;
+import lombok.Builder;
+import lombok.Getter;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-
-/** Cluster Service. */
-public interface ClusterService extends IService<ClusterInfo> {
-
-    List<ClusterInfo> listUsers(IPage<ClusterInfo> page, @Param("cluster") ClusterInfo cluster);
-
-    boolean checkClusterNameUnique(ClusterInfo cluster);
-
-    int deleteClusterByIds(Integer[] clusterIds);
-
-    boolean checkClusterHeartbeatStatus(ClusterInfo clusterInfo);
+/** This is a heartbeat entity of the cluster. */
+@Builder
+@Getter
+public class HeartbeatEntity {
+    private String status;
+    private Long lastHeartbeat;
+    private String clusterVersion;
 }

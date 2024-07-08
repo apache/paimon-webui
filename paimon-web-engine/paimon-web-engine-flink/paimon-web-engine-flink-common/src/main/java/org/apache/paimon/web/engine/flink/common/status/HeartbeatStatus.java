@@ -16,24 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.service;
+package org.apache.paimon.web.engine.flink.common.status;
 
-import org.apache.paimon.web.server.data.model.ClusterInfo;
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-
-/** Cluster Service. */
-public interface ClusterService extends IService<ClusterInfo> {
-
-    List<ClusterInfo> listUsers(IPage<ClusterInfo> page, @Param("cluster") ClusterInfo cluster);
-
-    boolean checkClusterNameUnique(ClusterInfo cluster);
-
-    int deleteClusterByIds(Integer[] clusterIds);
-
-    boolean checkClusterHeartbeatStatus(ClusterInfo clusterInfo);
+/** This enum represents the status of a cluster heartbeat. */
+public enum HeartbeatStatus {
+    /** * The cluster is active. */
+    ACTIVE,
+    /** Unable to connect to the target machine, usually due to network anomalies. */
+    UNREACHABLE,
+    /**
+     * The cluster is in an unknown state, usually due to a cluster don't result heartbeat
+     * information, but its network is normal.
+     */
+    UNKNOWN,
+    /**
+     * The cluster is dead, usually due to a cluster don't obtain heartbeat information for a long
+     * time.
+     */
+    DEAD;
 }
