@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.paimon</groupId>
         <artifactId>paimon-webui</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>paimon-web-dist</artifactId>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-web-server</artifactId>
-            <version>${project.version}</version>
+            <version>0.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

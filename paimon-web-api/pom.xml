@@ -24,7 +24,7 @@ under the License.
     <parent>
         <groupId>org.apache.paimon</groupId>
         <artifactId>paimon-webui</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>paimon-web-api</artifactId>
@@ -48,7 +48,7 @@ under the License.
         <dependency>
             <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-web-common</artifactId>
-            <version>${project.version}</version>
+            <version>0.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
