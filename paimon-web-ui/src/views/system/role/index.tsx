@@ -23,7 +23,7 @@ import RoleForm from './components/role-form'
 import RoleDetail from './components/role-detail'
 import RoleDelete from './components/role-delete'
 import { createRole, getPermissionByRoleId, updateRole } from '@/api/models/role'
-import type { Role, RoleDTO } from '@/api/models/role/types'
+import type {Role, RoleDTO, RoleMenu} from '@/api/models/role/types'
 
 export default defineComponent({
   name: 'RolePage',
@@ -109,10 +109,41 @@ export default defineComponent({
       enabled: true,
       remark: '',
       menuIds: [],
+      indeterminateKeys: [],
     })
+
+    function inferIndeterminateKeys(checkedKeys: number[], allNodes: RoleMenu[]): number[] {
+      const indeterminateKeys = new Set<number>()
+
+      function checkNode(node: RoleMenu): boolean {
+        let childCheckedCount = 0
+        let childCount = node.children ? node.children.length : 0
+        if (childCount > 0) {
+          node.children.forEach(child => {
+            const childResult = checkNode(child)
+            if (checkedKeys.includes(child.id) || childResult) {
+              childCheckedCount++
+            }
+          })
+          if (childCheckedCount > 0 && childCheckedCount < childCount) {
+            indeterminateKeys.add(node.id)
+            return true
+          }
+          return childCheckedCount === childCount
+        }
+        return checkedKeys.includes(node.id)
+      }
+
+      allNodes.forEach(node => {
+        checkNode(node)
+      })
+
+      return Array.from(indeterminateKeys)
+    }
 
     async function getDetail(role: Role) {
       const res = await getPermissionByRoleId(role.id)
+      const indeterminateKeys = inferIndeterminateKeys(res?.data?.checkedKeys, res?.data?.menus)
       formValue.value = {
         id: role.id,
         roleName: role.roleName,
@@ -120,6 +151,7 @@ export default defineComponent({
         enabled: role.enabled,
         remark: role.remark,
         menuIds: res?.data?.checkedKeys,
+        indeterminateKeys: indeterminateKeys,
       }
     }
 

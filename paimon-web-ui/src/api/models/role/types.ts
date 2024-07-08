@@ -55,4 +55,5 @@ export interface RoleDTO {
   enabled: boolean
   remark?: string
   menuIds: number[]
+  indeterminateKeys?: number[]
 }
