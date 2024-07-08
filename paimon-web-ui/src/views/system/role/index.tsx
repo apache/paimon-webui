@@ -112,45 +112,59 @@ export default defineComponent({
       indeterminateKeys: [],
     })
 
-    function inferIndeterminateKeys(checkedKeys: number[], allNodes: RoleMenu[]): number[] {
+    function inferIndeterminateKeys(checkedKeys: number[], allNodes: RoleMenu[]): { updatedCheckedKeys: number[], indeterminateKeys: number[] } {
       const indeterminateKeys = new Set<number>()
+      const updatedCheckedKeys = new Set<number>(checkedKeys)
 
       function checkNode(node: RoleMenu): boolean {
         let childCheckedCount = 0
         let childCount = node.children ? node.children.length : 0
+
         if (childCount > 0) {
+          let allChildrenChecked = true
+
           node.children.forEach(child => {
-            const childResult = checkNode(child)
-            if (checkedKeys.includes(child.id) || childResult) {
+            const childIsChecked = checkNode(child)
+            if (childIsChecked) {
               childCheckedCount++
+            } else {
+              allChildrenChecked = false
             }
           })
+
           if (childCheckedCount > 0 && childCheckedCount < childCount) {
             indeterminateKeys.add(node.id)
-            return true
+            updatedCheckedKeys.delete(node.id)
           }
-          return childCheckedCount === childCount
+
+          return allChildrenChecked
         }
+
         return checkedKeys.includes(node.id)
       }
 
       allNodes.forEach(node => {
-        checkNode(node)
+        if (checkNode(node) && !checkedKeys.includes(node.id)) {
+          indeterminateKeys.add(node.id)
+        }
       })
 
-      return Array.from(indeterminateKeys)
+      return {
+        updatedCheckedKeys: Array.from(updatedCheckedKeys),
+        indeterminateKeys: Array.from(indeterminateKeys)
+      }
     }
 
     async function getDetail(role: Role) {
       const res = await getPermissionByRoleId(role.id)
-      const indeterminateKeys = inferIndeterminateKeys(res?.data?.checkedKeys, res?.data?.menus)
+      const { updatedCheckedKeys, indeterminateKeys } = inferIndeterminateKeys(res?.data?.checkedKeys, res?.data?.menus)
       formValue.value = {
         id: role.id,
         roleName: role.roleName,
         roleKey: role.roleKey,
         enabled: role.enabled,
         remark: role.remark,
-        menuIds: res?.data?.checkedKeys,
+        menuIds: updatedCheckedKeys,
         indeterminateKeys: indeterminateKeys,
       }
     }
