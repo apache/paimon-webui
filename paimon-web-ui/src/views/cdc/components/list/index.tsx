@@ -26,7 +26,9 @@ export default defineComponent({
 
     const { tableVariables, getTableData } = useTable(ctx)
     getTableData()
-
+    onActivated(() => {
+      getTableData()
+    })
     return {
       t,
       ...toRefs(tableVariables),
