@@ -17,6 +17,7 @@ under the License. */
 
 import dayjs from 'dayjs'
 import { EditOutlined } from '@vicons/antd'
+import { Add } from '@vicons/carbon'
 import styles from './index.module.scss'
 import { useTable } from './use-table'
 import RoleForm from './components/role-form'
@@ -222,7 +223,12 @@ export default defineComponent({
           <n-space vertical>
             <n-space justify="space-between">
               <n-space>
-                <n-button onClick={this.handleCreateModal} type="primary">{this.t('system.user.add')}</n-button>
+                <n-button onClick={this.handleCreateModal} type="primary">
+                  {{
+                    icon: () => <n-icon component={Add} />,
+                    default: () => this.t('system.role.create'),
+                  }}
+                </n-button>
               </n-space>
               <n-space>
                 <></>
