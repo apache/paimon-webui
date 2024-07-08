@@ -17,7 +17,7 @@ under the License. */
 
 import dayjs from 'dayjs'
 import { EditOutlined } from '@vicons/antd'
-import { Add } from '@vicons/carbon'
+import { Add } from '@vicons/ionicons5'
 import styles from './index.module.scss'
 import { useTable } from './use-table'
 import RoleForm from './components/role-form'
