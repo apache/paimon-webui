@@ -23,7 +23,7 @@ import RoleForm from './components/role-form'
 import RoleDetail from './components/role-detail'
 import RoleDelete from './components/role-delete'
 import { createRole, getPermissionByRoleId, updateRole } from '@/api/models/role'
-import type {Role, RoleDTO, RoleMenu} from '@/api/models/role/types'
+import type { Role, RoleDTO, RoleMenu } from '@/api/models/role/types'
 
 export default defineComponent({
   name: 'RolePage',
@@ -118,16 +118,17 @@ export default defineComponent({
 
       function checkNode(node: RoleMenu): boolean {
         let childCheckedCount = 0
-        let childCount = node.children ? node.children.length : 0
+        const childCount = node.children ? node.children.length : 0
 
         if (childCount > 0) {
           let allChildrenChecked = true
 
-          node.children.forEach(child => {
+          node.children.forEach((child) => {
             const childIsChecked = checkNode(child)
             if (childIsChecked) {
               childCheckedCount++
-            } else {
+            }
+            else {
               allChildrenChecked = false
             }
           })
@@ -143,7 +144,7 @@ export default defineComponent({
         return checkedKeys.includes(node.id)
       }
 
-      allNodes.forEach(node => {
+      allNodes.forEach((node) => {
         if (checkNode(node) && !checkedKeys.includes(node.id)) {
           indeterminateKeys.add(node.id)
         }
@@ -151,7 +152,7 @@ export default defineComponent({
 
       return {
         updatedCheckedKeys: Array.from(updatedCheckedKeys),
-        indeterminateKeys: Array.from(indeterminateKeys)
+        indeterminateKeys: Array.from(indeterminateKeys),
       }
     }
 
@@ -165,7 +166,7 @@ export default defineComponent({
         enabled: role.enabled,
         remark: role.remark,
         menuIds: updatedCheckedKeys,
-        indeterminateKeys: indeterminateKeys,
+        indeterminateKeys,
       }
     }
 
