@@ -101,7 +101,7 @@ public class JobController {
         return R.succeed(jobService.getJobStatistics());
     }
 
-    @SaCheckPermission("playground:job:query")
+    @SaIgnore
     @GetMapping("/logs/get")
     public R<String> getLogs() {
         return R.succeed(jobService.getLogsByUserId(StpUtil.getLoginIdAsString()));
