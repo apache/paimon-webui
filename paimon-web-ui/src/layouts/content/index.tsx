@@ -68,7 +68,7 @@ export default defineComponent({
           </n-layout-header>
           <n-layout has-sider position="absolute" style="top: 64px">
             {
-              this.isShowSided && (
+              !!this.isShowSided && (
                 <SideBar
                   sideMenuOptions={this.sideMenuOptions}
                 />
