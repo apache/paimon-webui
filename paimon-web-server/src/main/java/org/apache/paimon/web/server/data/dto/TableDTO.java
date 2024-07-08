@@ -25,6 +25,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.Map;
 
@@ -34,13 +37,15 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TableDTO {
-
+    @NotNull(message = "invalid.catalogId")
     private Integer catalogId;
 
     private String catalogName;
 
+    @NotBlank(message = "invalid.databaseName")
     private String databaseName;
 
+    @NotBlank(message = "invalid.tableName")
     private String name;
 
     private String description;

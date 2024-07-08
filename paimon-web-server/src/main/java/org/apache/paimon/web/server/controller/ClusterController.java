@@ -39,9 +39,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import java.util.List;
 
 /** Cluster api controller. */
+@Validated
 @RestController
 @RequestMapping("/api/cluster")
 public class ClusterController {
@@ -72,7 +75,7 @@ public class ClusterController {
 
     @SaCheckPermission("system:cluster:add")
     @PostMapping
-    public R<Void> add(@Validated @RequestBody ClusterInfo clusterInfo) {
+    public R<Void> add(@Valid @RequestBody ClusterInfo clusterInfo) {
         if (!clusterService.checkClusterNameUnique(clusterInfo)) {
             return R.failed(Status.CLUSTER_NAME_ALREADY_EXISTS, clusterInfo.getClusterName());
         }
@@ -82,7 +85,7 @@ public class ClusterController {
 
     @SaCheckPermission("system:cluster:update")
     @PutMapping
-    public R<Void> update(@Validated @RequestBody ClusterInfo clusterInfo) {
+    public R<Void> update(@Valid @RequestBody ClusterInfo clusterInfo) {
         if (!clusterService.checkClusterNameUnique(clusterInfo)) {
             return R.failed(Status.CLUSTER_NAME_ALREADY_EXISTS, clusterInfo.getClusterName());
         }

@@ -20,11 +20,16 @@ package org.apache.paimon.web.server.data.model;
 
 import org.apache.paimon.web.server.constant.Constants;
 import org.apache.paimon.web.server.data.enums.UserType;
+import org.apache.paimon.web.server.validator.annotation.PhoneNumber;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 /** user table model. */
 @Data
@@ -34,6 +39,7 @@ public class User extends BaseModel {
     private static final long serialVersionUID = 1L;
 
     /** username. */
+    @NotBlank(message = "invalid.username")
     private String username;
 
     /** password. */
@@ -46,9 +52,10 @@ public class User extends BaseModel {
     private UserType userType;
 
     /** mobile phone. */
-    private String mobile;
+    @PhoneNumber private String mobile;
 
     /** email. */
+    @Email(message = "invalid.email.format")
     private String email;
 
     /** is enable. */
@@ -62,6 +69,7 @@ public class User extends BaseModel {
 
     /** role ids. */
     @TableField(exist = false)
+    @NotEmpty(message = "invalid.roleIds")
     private Integer[] roleIds;
 
     public boolean isAdmin() {

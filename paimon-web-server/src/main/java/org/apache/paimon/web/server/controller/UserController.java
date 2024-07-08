@@ -40,12 +40,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import java.util.List;
 
 import static org.apache.paimon.web.server.data.result.enums.Status.USER_NOT_EXIST;
 
 /** User api controller. */
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -90,7 +93,7 @@ public class UserController {
      */
     @SaCheckPermission("system:user:add")
     @PostMapping
-    public R<Void> add(@Validated @RequestBody User user) {
+    public R<Void> add(@Valid @RequestBody User user) {
         if (!userService.checkUserNameUnique(user)) {
             return R.failed(Status.USER_NAME_ALREADY_EXISTS, user.getUsername());
         }
@@ -106,7 +109,7 @@ public class UserController {
      */
     @SaCheckPermission("system:user:update")
     @PutMapping
-    public R<Void> update(@Validated @RequestBody User user) {
+    public R<Void> update(@Valid @RequestBody User user) {
         if (!userService.checkUserNameUnique(user)) {
             return R.failed(Status.USER_NAME_ALREADY_EXISTS, user.getUsername());
         }

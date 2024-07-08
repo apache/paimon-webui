@@ -21,6 +21,8 @@ package org.apache.paimon.web.server.data.dto;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 import java.util.Map;
 
 /** DTO of catalog. */
@@ -29,10 +31,13 @@ public class CatalogDTO {
 
     private Integer id;
 
+    @NotBlank(message = "invalid.catalogType")
     private String type;
 
+    @NotBlank(message = "invalid.catalogName")
     private String name;
 
+    @NotBlank(message = "invalid.warehouseDir")
     private String warehouse;
 
     private Map<String, String> options;

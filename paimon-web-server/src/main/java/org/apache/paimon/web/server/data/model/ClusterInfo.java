@@ -25,6 +25,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 
 /** Cluster table model. */
@@ -38,12 +42,17 @@ public class ClusterInfo extends BaseModel {
 
     private static final long serialVersionUID = 1L;
 
+    @NotBlank(message = "invalid.clusterName")
     private String clusterName;
 
+    @NotBlank(message = "invalid.host")
     private String host;
 
+    @Min(value = 1, message = "invalid.min.port")
+    @Max(value = 65535, message = "invalid.max.port")
     private Integer port;
 
+    @NotBlank(message = "invalid.clusterType")
     private String type;
 
     private String deploymentMode;

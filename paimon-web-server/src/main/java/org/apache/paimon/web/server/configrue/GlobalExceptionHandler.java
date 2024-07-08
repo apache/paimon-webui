@@ -21,6 +21,7 @@ package org.apache.paimon.web.server.configrue;
 import org.apache.paimon.web.server.data.result.R;
 import org.apache.paimon.web.server.data.result.enums.Status;
 import org.apache.paimon.web.server.data.result.exception.BaseException;
+import org.apache.paimon.web.server.util.MessageUtils;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
@@ -95,7 +96,7 @@ public class GlobalExceptionHandler {
                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
                         .filter(StringUtils::isNotBlank)
                         .findFirst();
-        return msg.<R<Void>>map(s -> R.failed(Status.REQUEST_PARAMS_ERROR, s))
+        return msg.<R<Void>>map(s -> R.failed(Status.REQUEST_PARAMS_ERROR, MessageUtils.getMsg(s)))
                 .orElseGet(() -> R.failed(Status.REQUEST_PARAMS_ERROR));
     }
 
