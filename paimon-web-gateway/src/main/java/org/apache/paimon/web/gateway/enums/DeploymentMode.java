@@ -16,41 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.gateway.enums;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+/**
+ * The {@code DeploymentMode} enum defines the types of cluster deployment mode that can be
+ * supported.
+ */
+public enum DeploymentMode {
+    YARN_SESSION("yarn-session"),
+    FLINK_SQL_GATEWAY("flink-sql-gateway");
 
-import java.time.LocalDateTime;
+    private final String type;
 
-/** Cluster table model. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@TableName("cluster")
-public class ClusterInfo extends BaseModel {
+    DeploymentMode(String type) {
+        this.type = type;
+    }
 
-    private static final long serialVersionUID = 1L;
+    public String getType() {
+        return type;
+    }
 
-    private String clusterName;
-
-    private String host;
-
-    private Integer port;
-
-    private String type;
-
-    private String deploymentMode;
-
-    private Boolean enabled;
-
-    private String heartbeatStatus;
-
-    private LocalDateTime lastHeartbeat;
+    public static DeploymentMode fromName(String name) {
+        for (DeploymentMode type : values()) {
+            if (type.getType().equals(name)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown deployment mode type value: " + name);
+    }
 }

@@ -16,41 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.engine.flink.common.status;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-
-/** Cluster table model. */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@TableName("cluster")
-public class ClusterInfo extends BaseModel {
-
-    private static final long serialVersionUID = 1L;
-
-    private String clusterName;
-
-    private String host;
-
-    private Integer port;
-
-    private String type;
-
-    private String deploymentMode;
-
-    private Boolean enabled;
-
-    private String heartbeatStatus;
-
-    private LocalDateTime lastHeartbeat;
+/** This enum represents the status of a cluster heartbeat. */
+public enum HeartbeatStatus {
+    /** * The cluster is active. */
+    ACTIVE,
+    /** Unable to connect to the target machine, usually due to network anomalies. */
+    UNREACHABLE,
+    /**
+     * The cluster is in an unknown state, usually due to a cluster don't result heartbeat
+     * information, but its network is normal.
+     */
+    UNKNOWN,
+    /**
+     * The cluster is dead, usually due to a cluster don't obtain heartbeat information for a long
+     * time.
+     */
+    DEAD;
 }

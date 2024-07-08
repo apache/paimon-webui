@@ -18,9 +18,12 @@
 
 package org.apache.paimon.web.engine.flink.sql.gateway.client;
 
+import org.apache.paimon.web.engine.flink.common.status.HeartbeatStatus;
+import org.apache.paimon.web.engine.flink.sql.gateway.model.HeartbeatEntity;
 import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
 import org.apache.paimon.web.engine.flink.sql.gateway.utils.SqlGateWayRestClient;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.runtime.rest.messages.EmptyMessageParameters;
 import org.apache.flink.runtime.rest.messages.EmptyRequestBody;
@@ -38,6 +41,7 @@ import org.apache.flink.table.gateway.rest.header.session.TriggerSessionHeartbea
 import org.apache.flink.table.gateway.rest.header.statement.CompleteStatementHeaders;
 import org.apache.flink.table.gateway.rest.header.statement.ExecuteStatementHeaders;
 import org.apache.flink.table.gateway.rest.header.statement.FetchResultsHeaders;
+import org.apache.flink.table.gateway.rest.header.util.GetInfoHeaders;
 import org.apache.flink.table.gateway.rest.message.operation.OperationMessageParameters;
 import org.apache.flink.table.gateway.rest.message.session.ConfigureSessionRequestBody;
 import org.apache.flink.table.gateway.rest.message.session.GetSessionConfigResponseBody;
@@ -47,6 +51,7 @@ import org.apache.flink.table.gateway.rest.message.statement.CompleteStatementRe
 import org.apache.flink.table.gateway.rest.message.statement.ExecuteStatementRequestBody;
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsMessageParameters;
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
+import org.apache.flink.table.gateway.rest.message.util.GetInfoResponseBody;
 import org.apache.flink.table.gateway.rest.util.RowFormat;
 
 import javax.annotation.Nullable;
@@ -54,6 +59,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -61,7 +67,8 @@ import java.util.concurrent.TimeUnit;
  * The client of flink sql gateway provides some operations of flink sql gateway. such as creating
  * session, execute statement, fetch result, etc.
  */
-public class SqlGatewayClient {
+@Slf4j
+public class SqlGatewayClient implements HeartbeatAction {
 
     private static final String DEFAULT_SESSION_NAME_PREFIX = "FLINK_SQL_GATEWAY_SESSION";
     private static final int REQUEST_WAITE_TIME = 1000;
@@ -241,5 +248,32 @@ public class SqlGatewayClient {
 
     private OperationHandle buildOperationHandleByOperationId(String operationId) {
         return new OperationHandle(UUID.fromString(operationId));
+    }
+
+    @Override
+    public HeartbeatEntity checkClusterHeartbeat() {
+        try {
+            GetInfoResponseBody heartbeat =
+                    restClient
+                            .sendRequest(
+                                    GetInfoHeaders.getInstance(),
+                                    EmptyMessageParameters.getInstance(),
+                                    EmptyRequestBody.getInstance())
+                            .get();
+            if (Objects.nonNull(heartbeat)) {
+                return HeartbeatEntity.builder()
+                        .lastHeartbeat(System.currentTimeMillis())
+                        .status(HeartbeatStatus.ACTIVE.name())
+                        .clusterVersion(heartbeat.getProductVersion())
+                        .build();
+            }
+        } catch (Exception exec) {
+            log.error(
+                    "An exception occurred while obtaining the cluster status :{}",
+                    exec.getMessage(),
+                    exec);
+            return this.buildResulHeartbeatEntity(HeartbeatStatus.UNREACHABLE);
+        }
+        return this.buildResulHeartbeatEntity(HeartbeatStatus.UNKNOWN);
     }
 }

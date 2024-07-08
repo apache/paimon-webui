@@ -16,41 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.paimon.web.server.data.model;
+package org.apache.paimon.web.engine.flink.sql.gateway.model;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-import java.time.LocalDateTime;
-
-/** Cluster table model. */
-@Data
+/** This is a heartbeat entity of the cluster. */
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@TableName("cluster")
-public class ClusterInfo extends BaseModel {
-
-    private static final long serialVersionUID = 1L;
-
-    private String clusterName;
-
-    private String host;
-
-    private Integer port;
-
-    private String type;
-
-    private String deploymentMode;
-
-    private Boolean enabled;
-
-    private String heartbeatStatus;
-
-    private LocalDateTime lastHeartbeat;
+@Getter
+public class HeartbeatEntity {
+    private String status;
+    private Long lastHeartbeat;
+    private String clusterVersion;
 }
