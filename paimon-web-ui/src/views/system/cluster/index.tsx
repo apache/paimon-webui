@@ -232,6 +232,7 @@ export default defineComponent({
       formValue,
       handleCreateModal,
       onConfirm,
+      handleCheckClusterStatus,
     }
   },
   render() {
@@ -257,7 +258,14 @@ export default defineComponent({
             />
           </n-space>
         </n-card>
-        <ClusterForm modelLoading={this.modelLoading} formType={this.formType} v-model:visible={this.formVisible} v-model:formValue={this.formValue} onConfirm={this.onConfirm} />
+        <ClusterForm
+          modelLoading={this.modelLoading}
+          formType={this.formType}
+          v-model:visible={this.formVisible}
+          v-model:formValue={this.formValue}
+          onConfirm={this.onConfirm}
+          onCheckClusterStatus={this.handleCheckClusterStatus}
+        />
       </n-space>
     )
   },

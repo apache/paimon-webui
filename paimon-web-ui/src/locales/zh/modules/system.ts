@@ -106,6 +106,7 @@ const cluster = {
   deployment_type: '部署模式',
   cluster_host: '集群地址',
   cluster_port: '集群端口',
+  test_cluster: '测试集群连通性',
   enabled: '是否启用',
   create: '新增集群',
   update: '更新集群',

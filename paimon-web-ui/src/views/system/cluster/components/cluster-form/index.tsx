@@ -44,10 +44,11 @@ const props = {
   },
   'onUpdate:formValue': [Function, Object] as PropType<((value: ClusterDTO) => void) | undefined>,
   'onConfirm': Function,
+  'onCheckClusterStatus': Function as PropType<(cluster: ClusterDTO) => void>,
 }
 
 export default defineComponent({
-  name: 'UserForm',
+  name: 'ClusterForm',
   props,
   setup(props) {
     interface DeploymentOption {
@@ -191,6 +192,16 @@ export default defineComponent({
                     options={this.deploymentModeOptions}
                   />
                 </n-form-item>
+                <n-link
+                  onClick={() => {
+                    if (this.onCheckClusterStatus) {
+                      this.onCheckClusterStatus(this.formValue)
+                    }
+                  }}
+                  style="color: #007BFF; cursor: pointer; text-decoration: underline;"
+                >
+                  {this.t('system.cluster.test_cluster')}
+                </n-link>
               </n-form>
             ),
             action: () => (

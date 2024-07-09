@@ -106,6 +106,7 @@ const cluster = {
   deployment_type: 'Deployment Mode',
   cluster_host: 'Cluster Host',
   cluster_port: 'Cluster Port',
+  test_cluster: 'Testing Cluster Connectivity',
   enabled: 'Enabled',
   create: 'Create Cluster',
   update: 'Update Cluster',
