@@ -30,9 +30,9 @@ export function getClusterList() {
 }
 
 /**
- * # List Cluster by ClusterType
+ * # List Cluster by Deployment Mode
  */
-export function getClusterListByType(deploymentMode: string, pageNum: number, pageSize: number) {
+export function getClusterListByDeploymentMode(deploymentMode: string, pageNum: number, pageSize: number) {
   return httpRequest.get('/cluster/list', {
     deploymentMode,
     pageNum,
