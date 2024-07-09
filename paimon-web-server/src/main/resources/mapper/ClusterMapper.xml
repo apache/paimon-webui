@@ -34,7 +34,7 @@ under the License.
     </resultMap>
 
     <sql id="selectClusterVo">
-        select id, cluster_name, host, port, `type`, enabled, create_time, update_time from cluster
+        select id, cluster_name, host, port, `type`, deployment_mode, enabled, heartbeat_status, create_time, update_time from cluster
     </sql>
 
     <select id="listClusters" parameterType="org.apache.paimon.web.server.data.model.ClusterInfo" resultMap="SysClusterResult">
@@ -54,6 +54,9 @@ under the License.
             </if>
             <if test="cluster.type != null and cluster.type != ''">
                 AND `type` = #{cluster.type}
+            </if>
+            <if test="cluster.deploymentMode != null and cluster.deploymentMode != ''">
+                AND deployment_mode = #{cluster.deploymentMode}
             </if>
             <if test="cluster.enabled != null">
                 AND enabled = #{cluster.enabled}
