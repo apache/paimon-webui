@@ -72,9 +72,9 @@ export default defineComponent({
         { label: 'Limit 100 items', key: '100' },
         { label: 'Limit 1000 items', key: '1000' },
       ],
-      conditionValue: 'flink-sql-gateway',
+      conditionValue: 'Flink',
       bigDataOptions: [
-        { label: 'Flink', value: 'flink-sql-gateway' },
+        { label: 'Flink', value: 'Flink' },
         { label: 'Spark', value: 'Spark' },
       ],
       conditionValue2: '',
@@ -153,7 +153,8 @@ export default defineComponent({
     }
 
     function getClusterData() {
-      getClusterListByType(debuggerVariables.conditionValue, 1, Number.MAX_SAFE_INTEGER).then((response) => {
+      const deploymentMode = debuggerVariables.conditionValue === 'Flink' ? 'flink-sql-gateway' : debuggerVariables.conditionValue
+      getClusterListByType(deploymentMode, 1, Number.MAX_SAFE_INTEGER).then((response) => {
         if (response && response.data) {
           const clusterList = response.data as Cluster[]
           debuggerVariables.clusterOptions = clusterList.map(cluster => ({
