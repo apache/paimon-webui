@@ -32,9 +32,9 @@ export function getClusterList() {
 /**
  * # List Cluster by ClusterType
  */
-export function getClusterListByType(type: string, pageNum: number, pageSize: number) {
+export function getClusterListByType(deploymentMode: string, pageNum: number, pageSize: number) {
   return httpRequest.get('/cluster/list', {
-    type,
+    deploymentMode,
     pageNum,
     pageSize,
   })

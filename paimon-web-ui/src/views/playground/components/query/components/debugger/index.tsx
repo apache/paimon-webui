@@ -74,7 +74,7 @@ export default defineComponent({
       ],
       conditionValue: 'Flink',
       bigDataOptions: [
-        { label: 'Flink', value: 'Flink' },
+        { label: 'Flink', value: 'flink-sql-gateway' },
         { label: 'Spark', value: 'Spark' },
       ],
       conditionValue2: '',
