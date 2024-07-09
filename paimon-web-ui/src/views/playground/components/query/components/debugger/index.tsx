@@ -250,7 +250,7 @@ export default defineComponent({
     }
 
     watch(jobStatus, (newStatus) => {
-      if (newStatus === 'RUNNING')
+      if (newStatus === 'RUNNING' || newStatus === 'FINISHED' || newStatus === 'FAILED')
         isSubmitting.value = false
     })
 
