@@ -93,9 +93,6 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, ClusterInfo>
         QueryWrapper<ClusterInfo> queryWrapper =
                 new QueryWrapper<ClusterInfo>().eq("enabled", true);
         for (ClusterInfo clusterInfo : clusterMapper.selectList(queryWrapper)) {
-            log.info(
-                    "Starting a scheduled job to check cluster: `{}` status ...",
-                    clusterInfo.getClusterName());
             if (EngineType.SPARK.name().equals(clusterInfo.getType().toUpperCase())) {
                 log.warn(
                         "Current engine type: {} doesn't support checking Cluster status.",
