@@ -79,10 +79,10 @@ export const useJobStore = defineStore({
       return (key) => {
         const initResultData = state.jobs[key]?.job?.resultData
         const refreshedResultData = state.jobs[key]?.jobResultData?.resultData
-        if (initResultData)
+        if (initResultData && initResultData.length > 0)
           return initResultData.length
 
-        if (refreshedResultData)
+        if (refreshedResultData && refreshedResultData.length > 0)
           return refreshedResultData.length
 
         return 0
