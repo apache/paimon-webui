@@ -66,7 +66,7 @@ These changes will ensure that Paimon Web runs smoothly with your specific setup
 
 To configure the environment for your application, follow these steps:
 
-1. **Set Environment Variables**: Modify the `env.sh` script located in the `bin` directory. You'll need to configure variables such as `FLINK_HOME`, `ACTION_JAR_PATH`, and `JAVA_HOME`.
+1. **Set Environment Variables**: Modify the `env.sh` script located in the `bin` directory. You can configure variables such as `FLINK_HOME`, `ACTION_JAR_PATH`, and `JAVA_HOME`.
 2. **Optional Settings**: If you are not using the CDC (Change Data Capture) function, there is no need to configure `FLINK_HOME` and `ACTION_JAR_PATH`.
 
 This setup will prepare your system to properly run the application with the necessary configurations.
@@ -85,7 +85,7 @@ To launch the service, follow these steps:
 ```shell
 [root@paimon ~]# bin/start.sh
 ```
-2. **Access the Web Interface**: Open a web browser and enter the URL `http://{ip}:{port}` to navigate to the Paimon web page.
+2. **Access the Web Interface**: Open a web browser and enter the URL `http://{ip}:{port}/ui/login` to navigate to the Paimon web page.
 
 Ensure you replace `{ip}` and `{port}` with the actual ip address and port number where the service is running.
 
