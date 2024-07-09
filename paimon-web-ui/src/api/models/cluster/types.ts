@@ -42,6 +42,7 @@ export interface ClusterDTO {
   type: string
   deploymentMode: string
   enabled: boolean
+  heartbeatStatus?: string
   createTime?: string
   updateTime?: string
 }

@@ -110,6 +110,8 @@ const cluster = {
   enabled: '是否启用',
   create: '新增集群',
   update: '更新集群',
+  cluster_status_check_success: '集群状态检查成功',
+  cluster_status_check_error: '检查集群状态时出错：',
 }
 
 export default { user, role, roleKey, cluster }

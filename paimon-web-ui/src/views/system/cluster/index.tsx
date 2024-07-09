@@ -15,19 +15,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
+import type {TableColumns} from 'naive-ui/es/data-table/src/interface'
 import dayjs from 'dayjs'
-import { EditOutlined, HeartTwotone } from '@vicons/antd'
-import { Add } from '@vicons/ionicons5'
+import {EditOutlined, HeartTwotone} from '@vicons/antd'
+import {Add} from '@vicons/ionicons5'
 
 import ClusterForm from './components/cluster-form'
 import ClusterDelete from './components/cluster-delete'
 
 import styles from './index.module.scss'
 
-import { checkClusterStatus, createCluster, getClusterList, updateCluster } from '@/api/models/cluster'
+import {checkClusterStatus, createCluster, getClusterList, updateCluster} from '@/api/models/cluster'
 
-import type { ClusterDTO } from '@/api/models/cluster/types'
+import type {ClusterDTO} from '@/api/models/cluster/types'
 
 export default defineComponent({
   name: 'ClusterPage',
@@ -84,6 +84,10 @@ export default defineComponent({
         title: () => t('system.cluster.cluster_status'),
         key: 'heartbeatStatus',
         width: 120,
+        render: (row) => {
+          const status = String(row.heartbeatStatus).toLowerCase();
+          return status.charAt(0).toUpperCase() + status.slice(1);
+        }
       },
       {
         title: () => t('common.create_time'),
@@ -167,12 +171,12 @@ export default defineComponent({
         await checkStatus({
           params: cluster,
         })
-        message.success('Cluster status checked successfully')
+        message.success(t('system.cluster.cluster_status_check_success'))
         getTableData()
       }
       catch (error) {
         const errorMessage = (error as Error).message
-        message.error(`Error checking cluster status: ${errorMessage}`)
+        message.error(t('system.cluster.cluster_status_check_error') + errorMessage);
       }
     }
 

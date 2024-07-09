@@ -110,6 +110,8 @@ const cluster = {
   enabled: 'Enabled',
   create: 'Create Cluster',
   update: 'Update Cluster',
+  cluster_status_check_success: 'Cluster status checked successfully',
+  cluster_status_check_error: 'Error checking cluster status:',
 }
 
 export default { user, role, roleKey, cluster }
