@@ -72,7 +72,7 @@ export default defineComponent({
         { label: 'Limit 100 items', key: '100' },
         { label: 'Limit 1000 items', key: '1000' },
       ],
-      conditionValue: 'Flink',
+      conditionValue: 'flink-sql-gateway',
       bigDataOptions: [
         { label: 'Flink', value: 'flink-sql-gateway' },
         { label: 'Spark', value: 'Spark' },
