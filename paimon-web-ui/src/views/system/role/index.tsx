@@ -17,13 +17,14 @@ under the License. */
 
 import dayjs from 'dayjs'
 import { EditOutlined } from '@vicons/antd'
+import { Add } from '@vicons/ionicons5'
 import styles from './index.module.scss'
 import { useTable } from './use-table'
 import RoleForm from './components/role-form'
 import RoleDetail from './components/role-detail'
 import RoleDelete from './components/role-delete'
 import { createRole, getPermissionByRoleId, updateRole } from '@/api/models/role'
-import type { Role, RoleDTO } from '@/api/models/role/types'
+import type { Role, RoleDTO, RoleMenu } from '@/api/models/role/types'
 
 export default defineComponent({
   name: 'RolePage',
@@ -109,17 +110,64 @@ export default defineComponent({
       enabled: true,
       remark: '',
       menuIds: [],
+      indeterminateKeys: [],
     })
+
+    function inferIndeterminateKeys(checkedKeys: number[], allNodes: RoleMenu[]): { updatedCheckedKeys: number[], indeterminateKeys: number[] } {
+      const indeterminateKeys = new Set<number>()
+      const updatedCheckedKeys = new Set<number>(checkedKeys)
+
+      function checkNode(node: RoleMenu): boolean {
+        let childCheckedCount = 0
+        const childCount = node.children ? node.children.length : 0
+
+        if (childCount > 0) {
+          let allChildrenChecked = true
+
+          node.children.forEach((child) => {
+            const childIsChecked = checkNode(child)
+            if (childIsChecked) {
+              childCheckedCount++
+            }
+            else {
+              allChildrenChecked = false
+            }
+          })
+
+          if (childCheckedCount > 0 && childCheckedCount < childCount) {
+            indeterminateKeys.add(node.id)
+            updatedCheckedKeys.delete(node.id)
+          }
+
+          return allChildrenChecked
+        }
+
+        return checkedKeys.includes(node.id)
+      }
+
+      allNodes.forEach((node) => {
+        if (checkNode(node) && !checkedKeys.includes(node.id)) {
+          indeterminateKeys.add(node.id)
+        }
+      })
+
+      return {
+        updatedCheckedKeys: Array.from(updatedCheckedKeys),
+        indeterminateKeys: Array.from(indeterminateKeys),
+      }
+    }
 
     async function getDetail(role: Role) {
       const res = await getPermissionByRoleId(role.id)
+      const { updatedCheckedKeys, indeterminateKeys } = inferIndeterminateKeys(res?.data?.checkedKeys, res?.data?.menus)
       formValue.value = {
         id: role.id,
         roleName: role.roleName,
         roleKey: role.roleKey,
         enabled: role.enabled,
         remark: role.remark,
-        menuIds: res?.data?.checkedKeys,
+        menuIds: updatedCheckedKeys,
+        indeterminateKeys,
       }
     }
 
@@ -175,7 +223,12 @@ export default defineComponent({
           <n-space vertical>
             <n-space justify="space-between">
               <n-space>
-                <n-button onClick={this.handleCreateModal} type="primary">{this.t('system.user.add')}</n-button>
+                <n-button onClick={this.handleCreateModal} type="primary">
+                  {{
+                    icon: () => <n-icon component={Add} />,
+                    default: () => this.t('system.role.create'),
+                  }}
+                </n-button>
               </n-space>
               <n-space>
                 <></>
