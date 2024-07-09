@@ -123,6 +123,7 @@ public class SessionControllerTest extends FlinkSQLGatewayTestBase {
                         .port(port)
                         .enabled(true)
                         .type("Flink")
+                        .deploymentMode("flink-sql-gateway")
                         .build();
         boolean res = clusterService.save(cluster);
         assertTrue(res);

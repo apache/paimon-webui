@@ -37,6 +37,7 @@ under the License.
     <properties>
         <hadoop.version>2.8.5</hadoop.version>
         <flink.version>1.18.1</flink.version>
+        <scala.version>2.12</scala.version>
     </properties>
 
     <dependencies>
@@ -245,6 +246,13 @@ under the License.
                     <artifactId>commons-cli</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-planner_${scala.version}</artifactId>
+            <version>${flink.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
