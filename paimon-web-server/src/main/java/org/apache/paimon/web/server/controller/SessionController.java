@@ -18,6 +18,7 @@
 
 package org.apache.paimon.web.server.controller;
 
+import org.apache.paimon.web.gateway.enums.DeploymentMode;
 import org.apache.paimon.web.server.data.dto.SessionDTO;
 import org.apache.paimon.web.server.data.model.ClusterInfo;
 import org.apache.paimon.web.server.data.result.R;
@@ -59,7 +60,7 @@ public class SessionController {
         }
         int uid = StpUtil.getLoginIdAsInt();
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("type", "Flink");
+        queryWrapper.eq("deployment_mode", DeploymentMode.FLINK_SQL_GATEWAY.getType());
         List<ClusterInfo> clusterInfos = clusterService.list(queryWrapper);
         for (ClusterInfo cluster : clusterInfos) {
             SessionDTO sessionDTO = new SessionDTO();
@@ -85,7 +86,7 @@ public class SessionController {
         }
         int uid = StpUtil.getLoginIdAsInt();
         QueryWrapper<ClusterInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("type", "Flink");
+        queryWrapper.eq("deployment_mode", DeploymentMode.FLINK_SQL_GATEWAY.getType());
         List<ClusterInfo> clusterInfos = clusterService.list(queryWrapper);
         for (ClusterInfo cluster : clusterInfos) {
             SessionDTO sessionDTO = new SessionDTO();
