@@ -195,20 +195,30 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
      * @param role role info
      */
     public int insertRoleMenu(SysRole role) {
+        Integer[] mergedMenuIds = mergeMenuIds(role.getMenuIds(), role.getIndeterminateKeys());
         int rows = 1;
-        if (role.getMenuIds() != null && role.getMenuIds().length > 0) {
+        if (mergedMenuIds.length > 0) {
             List<RoleMenu> list = new ArrayList<RoleMenu>();
-            for (Integer menuId : role.getMenuIds()) {
+            for (Integer menuId : mergedMenuIds) {
                 RoleMenu rm = new RoleMenu();
                 rm.setRoleId(role.getId());
                 rm.setMenuId(menuId);
                 list.add(rm);
             }
-            if (list.size() > 0) {
-                rows = roleMenuMapper.batchRoleMenu(list);
-            }
+            rows = roleMenuMapper.batchRoleMenu(list);
         }
         return rows;
+    }
+
+    private Integer[] mergeMenuIds(Integer[] menuIds, Integer[] indeterminateKeys) {
+        Set<Integer> mergedSet = new HashSet<>();
+        if (menuIds != null) {
+            mergedSet.addAll(Arrays.asList(menuIds));
+        }
+        if (indeterminateKeys != null) {
+            mergedSet.addAll(Arrays.asList(indeterminateKeys));
+        }
+        return mergedSet.toArray(new Integer[0]);
     }
 
     /**
