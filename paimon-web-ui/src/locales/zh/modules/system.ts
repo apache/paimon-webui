@@ -102,11 +102,16 @@ const roleKey = {
 const cluster = {
   cluster_name: '集群名称',
   cluster_type: '集群类型',
+  cluster_status: '集群状态',
+  deployment_type: '部署模式',
   cluster_host: '集群地址',
   cluster_port: '集群端口',
+  test_cluster: '测试集群连通性',
   enabled: '是否启用',
   create: '新增集群',
   update: '更新集群',
+  cluster_status_check_success: '集群状态检查成功',
+  cluster_status_check_error: '检查集群状态时出错：',
 }
 
 export default { user, role, roleKey, cluster }

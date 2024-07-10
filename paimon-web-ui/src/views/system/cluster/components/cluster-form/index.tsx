@@ -39,20 +39,53 @@ const props = {
       port: 0,
       enabled: true,
       type: '',
+      deploymentMode: '',
     }),
   },
   'onUpdate:formValue': [Function, Object] as PropType<((value: ClusterDTO) => void) | undefined>,
   'onConfirm': Function,
+  'onCheckClusterStatus': Function as PropType<(cluster: ClusterDTO) => void>,
 }
 
 export default defineComponent({
-  name: 'UserForm',
+  name: 'ClusterForm',
   props,
   setup(props) {
+    interface DeploymentOption {
+      label: string
+      value: string
+    }
+
     const typeOptions = [
       { label: 'Flink', value: 'Flink' },
       { label: 'Spark', value: 'Spark' },
     ]
+
+    const deploymentModeFlink = [
+      { label: 'Yarn Session', value: 'yarn-session' },
+      { label: 'Flink SQL Gateway', value: 'flink-sql-gateway' },
+    ]
+
+    const deploymentModeSpark: DeploymentOption[] = []
+
+    const deploymentModeOptions = computed(() => {
+      if (props.formValue.type === 'Flink') {
+        return deploymentModeFlink
+      }
+      else if (props.formValue.type === 'Spark') {
+        return deploymentModeSpark
+      }
+      return []
+    })
+
+    watch(() => props.formValue.type, (newType) => {
+      if (newType === 'Spark' && deploymentModeSpark.length === 0) {
+        props['onUpdate:formValue']?.({ ...props.formValue, deploymentMode: '' })
+      }
+      else if (newType === 'Flink') {
+        props['onUpdate:formValue']?.({ ...props.formValue, deploymentMode: deploymentModeFlink[0].value })
+      }
+    })
 
     const rules = {
       clusterName: {
@@ -75,6 +108,11 @@ export default defineComponent({
         required: true,
         trigger: ['blur', 'input'],
         message: 'type required',
+      },
+      deploymentMode: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'deploymentMode required',
       },
     }
 
@@ -101,12 +139,14 @@ export default defineComponent({
         port: 0,
         enabled: true,
         type: '',
+        deploymentMode: '',
       })
     }
 
     return {
       ...toRefs(props),
       typeOptions,
+      deploymentModeOptions,
       formRef,
       rules,
       handleCloseModal,
@@ -146,6 +186,22 @@ export default defineComponent({
                     options={this.typeOptions}
                   />
                 </n-form-item>
+                <n-form-item label={this.t('system.cluster.deployment_type')} path="deploymentMode">
+                  <n-select
+                    v-model:value={this.formValue.deploymentMode}
+                    options={this.deploymentModeOptions}
+                  />
+                </n-form-item>
+                <n-link
+                  onClick={() => {
+                    if (this.onCheckClusterStatus) {
+                      this.onCheckClusterStatus(this.formValue)
+                    }
+                  }}
+                  style="color: #007BFF; cursor: pointer; text-decoration: underline;"
+                >
+                  {this.t('system.cluster.test_cluster')}
+                </n-link>
               </n-form>
             ),
             action: () => (

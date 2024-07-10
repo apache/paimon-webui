@@ -23,7 +23,9 @@ export interface Cluster {
   host: string
   port: number
   type: string
+  deploymentMode: string
   enabled: boolean
+  heartbeatStatus: string
 }
 
 export interface ClusterNameParams {
@@ -38,7 +40,9 @@ export interface ClusterDTO {
   host: string
   port: number
   type: string
+  deploymentMode: string
   enabled: boolean
+  heartbeatStatus?: string
   createTime?: string
   updateTime?: string
 }
