@@ -66,3 +66,13 @@ export function updateCluster() {
 export function deleteCluster(userId: number) {
   return httpRequest.delete!<unknown, ClusterDTO>(`/cluster/${userId}`)
 }
+
+/**
+ * # Check Cluster Status
+ */
+export function checkClusterStatus() {
+  return httpRequest.createHooks!<unknown, ClusterDTO>({
+    url: '/cluster/check',
+    method: 'post',
+  })
+}
