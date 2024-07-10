@@ -41,6 +41,7 @@ const props = {
       enabled: true,
       remark: '',
       menuIds: [],
+      indeterminateKeys: [],
     }),
   },
   'onUpdate:formValue': [Function, Object] as PropType<((value: RoleDTO) => void) | undefined>,
@@ -95,6 +96,10 @@ export default defineComponent({
       props.formValue.menuIds = checkIds
     }
 
+    const onUpdateIndeterminateKeys = (indeterminateKeys: Array<number>) => {
+      props.formValue.indeterminateKeys = indeterminateKeys
+    }
+
     const handleConfirm = async () => {
       await formRef.value.validate()
       props && props.onConfirm && props.onConfirm()
@@ -109,6 +114,7 @@ export default defineComponent({
         enabled: true,
         remark: '',
         menuIds: [],
+        indeterminateKeys: [],
       })
     }
 
@@ -120,6 +126,7 @@ export default defineComponent({
       handleCloseModal,
       renderLabel,
       onUpdateMenuIds,
+      onUpdateIndeterminateKeys,
       handleConfirm,
       t,
     }
@@ -160,11 +167,13 @@ export default defineComponent({
                 <n-form-item label={this.t('system.role.permission_setting')} path="menuIds">
                   <n-tree
                     key-field="id"
-                    default-expand-all
+                    cascade
                     block-line
                     renderLabel={this.renderLabel}
                     onUpdate:checkedKeys={this.onUpdateMenuIds}
+                    onUpdate:indeterminateKeys={this.onUpdateIndeterminateKeys}
                     checkedKeys={this.formValue.menuIds}
+                    indeterminateKeys={this.formValue.indeterminateKeys}
                     data={this.permissionTree}
                     expand-on-click
                     checkable
