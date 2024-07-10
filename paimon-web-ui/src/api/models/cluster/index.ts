@@ -41,6 +41,17 @@ export function getClusterListByDeploymentMode(deploymentMode: string, pageNum: 
 }
 
 /**
+ * # List Cluster by Type
+ */
+export function getClusterListByType(type: string, pageNum: number, pageSize: number) {
+  return httpRequest.get('/cluster/list', {
+    type,
+    pageNum,
+    pageSize,
+  })
+}
+
+/**
  * # Create Cluster
  */
 export function createCluster() {
