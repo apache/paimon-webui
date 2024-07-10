@@ -25,6 +25,7 @@ import org.apache.paimon.web.engine.flink.sql.gateway.client.SqlGatewayClient;
 import org.apache.paimon.web.engine.flink.sql.gateway.executor.FlinkSqlGatewayExecutor;
 import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
 
+import org.apache.calcite.sql.parser.SqlParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,21 +53,23 @@ public class FlinkSqlGatewayExecutorTest extends TestBase {
 
     @Test
     public void testExecuteSql() throws Exception {
-        ExecutionResult executionResult = executor.executeSql(StatementsConstant.statement);
+        ExecutionResult executionResult = executor.executeSql(StatementsConstant.statement, 0);
         assertNotNull(executionResult);
         assertNotNull(executionResult.getJobId());
     }
 
     @Test
     public void testExecuteStatementSetSql() throws Exception {
-        ExecutionResult executionResult = executor.executeSql(StatementsConstant.statementSetSql);
+        ExecutionResult executionResult =
+                executor.executeSql(StatementsConstant.statementSetSql, 0);
         assertNotNull(executionResult);
         assertNotNull(executionResult.getJobId());
     }
 
     @Test
     public void testExecutorStatementWithoutResult() throws Exception {
-        ExecutionResult executionResult = executor.executeSql(StatementsConstant.createStatement);
+        ExecutionResult executionResult =
+                executor.executeSql(StatementsConstant.createStatement, 0);
         assertNull(executionResult);
     }
 
@@ -77,7 +80,8 @@ public class FlinkSqlGatewayExecutorTest extends TestBase {
                         UnsupportedOperationException.class,
                         () -> {
                             executor.executeSql(
-                                    StatementsConstant.selectStatementWithPendingInsertStatements);
+                                    StatementsConstant.selectStatementWithPendingInsertStatements,
+                                    0);
                         });
         String expectedMessage = "Cannot execute DQL statement with pending INSERT statements.";
         String actualMessage = exception.getMessage();
@@ -88,18 +92,19 @@ public class FlinkSqlGatewayExecutorTest extends TestBase {
     public void testExecuteBadSqlStatement() {
         Exception exception =
                 assertThrows(
-                        UnsupportedOperationException.class,
+                        SqlParseException.class,
                         () -> {
-                            executor.executeSql(StatementsConstant.badStatement);
+                            executor.executeSql(StatementsConstant.badStatement, 0);
                         });
-        String expectedMessage = "Unsupported operation type: CREAT";
+        String expectedMessage = "Non-query expression encountered in illegal context";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
     public void testFetchResults() throws Exception {
-        ExecutionResult executionResult = executor.executeSql(StatementsConstant.selectStatement);
+        ExecutionResult executionResult =
+                executor.executeSql(StatementsConstant.selectStatement, 0);
         assertNotNull(executionResult);
         assertNotNull(executionResult.getJobId());
         assertNotNull(executionResult.getSubmitId());

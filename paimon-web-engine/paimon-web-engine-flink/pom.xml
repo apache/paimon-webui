@@ -41,6 +41,7 @@ under the License.
     <properties>
         <flink.version>1.18.1</flink.version>
         <scala.version>2.12</scala.version>
+        <calcite.version>1.37.0</calcite.version>
     </properties>
 
     <dependencies>
@@ -108,6 +109,12 @@ under the License.
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-sql-gateway</artifactId>
             <version>${flink.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.calcite</groupId>
+            <artifactId>calcite-core</artifactId>
+            <version>${calcite.version}</version>
         </dependency>
 
         <dependency>
