@@ -20,7 +20,7 @@ import { FormatAlignLeftOutlined } from '@vicons/material'
 import { NInput, useMessage } from 'naive-ui'
 
 import styles from './index.module.scss'
-import { getClusterListByType } from '@/api/models/cluster'
+import { getClusterListByDeploymentMode } from '@/api/models/cluster'
 import type { Cluster } from '@/api/models/cluster/types'
 import type { JobSubmitDTO } from '@/api/models/job/types/job'
 import { createRecord, stopJob, submitJob } from '@/api/models/job'
@@ -153,7 +153,8 @@ export default defineComponent({
     }
 
     function getClusterData() {
-      getClusterListByType(debuggerVariables.conditionValue, 1, Number.MAX_SAFE_INTEGER).then((response) => {
+      const deploymentMode = debuggerVariables.conditionValue === 'Flink' ? 'flink-sql-gateway' : debuggerVariables.conditionValue
+      getClusterListByDeploymentMode(deploymentMode, 1, Number.MAX_SAFE_INTEGER).then((response) => {
         if (response && response.data) {
           const clusterList = response.data as Cluster[]
           debuggerVariables.clusterOptions = clusterList.map(cluster => ({
