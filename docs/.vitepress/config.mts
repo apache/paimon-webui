@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Paimon Web",
   description: "Web UI for Apache Paimon",
+
   themeConfig: {
     logo: "/favicon_blue.svg",
     nav: [
@@ -28,6 +29,10 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/apache/paimon-webui' }
-    ]
+    ],
+
+    footer: {
+      copyright: 'Copyright © 2024 The Apache Software Foundation. Apache Paimon, Paimon, and its feather logo are trademarks of The Apache Software Foundation.'
+    }
   }
 })
