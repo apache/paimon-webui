@@ -83,7 +83,7 @@ export default defineComponent({
         props['onUpdate:formValue']?.({ ...props.formValue, deploymentMode: '' })
       }
       else if (newType === 'Flink') {
-        props['onUpdate:formValue']?.({ ...props.formValue, deploymentMode: deploymentModeFlink[0].value })
+        props['onUpdate:formValue']?.({ ...props.formValue, deploymentMode: props.formValue.deploymentMode || deploymentModeFlink[0].value })
       }
     })
 
