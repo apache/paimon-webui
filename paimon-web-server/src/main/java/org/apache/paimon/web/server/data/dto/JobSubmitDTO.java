@@ -39,4 +39,6 @@ public class JobSubmitDTO {
     private Map<String, String> config;
 
     private String statements;
+
+    private int maxRows;
 }
