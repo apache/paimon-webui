@@ -157,9 +157,6 @@ export default defineComponent({
     async function handleUpdateModal(cluster: ClusterDTO) {
       formType.value = 'update'
 
-      delete cluster.createTime
-      delete cluster.updateTime
-
       formValue.value = { ...cluster }
       formVisible.value = true
     }
