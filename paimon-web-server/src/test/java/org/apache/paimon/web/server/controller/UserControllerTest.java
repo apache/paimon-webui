@@ -73,7 +73,6 @@ public class UserControllerTest extends ControllerTestBase {
         user.setPassword("test");
         user.setUserType(UserType.LOCAL);
         user.setEnabled(true);
-        user.setIsDelete(false);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.post(userPath)
@@ -105,7 +104,6 @@ public class UserControllerTest extends ControllerTestBase {
         user.setNickname(newUserName);
         user.setUserType(UserType.LOCAL);
         user.setEnabled(true);
-        user.setIsDelete(false);
 
         mockMvc.perform(
                         MockMvcRequestBuilders.put(userPath)
@@ -142,7 +140,6 @@ public class UserControllerTest extends ControllerTestBase {
         user.setNickname(username);
         user.setUserType(UserType.LOCAL);
         user.setEnabled(true);
-        user.setIsDelete(false);
         user.setRoleIds(new Integer[] {2});
 
         mockMvc.perform(
