@@ -86,9 +86,6 @@ export default defineComponent({
       ],
     })
 
-    const handleSelect = () => {
-    }
-
     const handleFormat = () => {
       emit('handleFormat')
     }
@@ -203,6 +200,39 @@ export default defineComponent({
       }
     }
 
+    const processJobSubmission = async (currentTab: any, maxRows?: number) => {
+      if (!currentTab.content) {
+        isSubmitting.value = false
+        return
+      }
+
+      const jobDataDTO: JobSubmitDTO = {
+        jobName: currentTab.tableName,
+        fileName: currentTab.key,
+        taskType: debuggerVariables.conditionValue,
+        clusterId: debuggerVariables.conditionValue2,
+        statements: currentTab.content,
+        streaming: debuggerVariables.conditionValue3 === 'Streaming',
+        maxRows,
+      }
+
+      try {
+        const response = await submitJob(jobDataDTO)
+        if (response.code === 200) {
+          message.success(t('playground.job_submission_successfully'))
+          mittBus.emit('jobResult', response.data)
+        }
+        else {
+          isSubmitting.value = false
+          message.error(`${t('playground.job_submission_failed')}`)
+        }
+      }
+      catch (error) {
+        isSubmitting.value = false
+        console.error('Failed to submit job:', error)
+      }
+    }
+
     const handleSubmit = async () => {
       const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
 
@@ -210,43 +240,15 @@ export default defineComponent({
         return
 
       if (jobStatus.value === 'RUNNING') {
-        handleStopJob()
+        await handleStopJob()
       }
       else {
         isSubmitting.value = true
-        if (jobStore.getJobDetails(currentKey.value))
+        if (jobStore.getJobDetails(currentKey.value)) {
           jobStore.resetJob(currentKey.value)
-
-        const currentSQL = currentTab.content
-        if (!currentSQL) {
-          isSubmitting.value = false
-          return
         }
 
-        const jobDataDTO: JobSubmitDTO = {
-          jobName: currentTab.tableName,
-          fileName: currentTab.key,
-          taskType: debuggerVariables.conditionValue,
-          clusterId: debuggerVariables.conditionValue2,
-          statements: currentSQL,
-          streaming: debuggerVariables.conditionValue3 === 'Streaming',
-        }
-
-        try {
-          const response = await submitJob(jobDataDTO)
-          if (response.code === 200) {
-            message.success(t('playground.job_submission_successfully'))
-            mittBus.emit('jobResult', response.data)
-          }
-          else {
-            isSubmitting.value = false
-            message.error(`${t('playground.job_submission_failed')}`)
-          }
-        }
-        catch (error) {
-          isSubmitting.value = false
-          console.error('Failed to submit job:', error)
-        }
+        await processJobSubmission(currentTab)
       }
     }
 
@@ -254,6 +256,25 @@ export default defineComponent({
       if (newStatus === 'RUNNING' || newStatus === 'FINISHED' || newStatus === 'FAILED')
         isSubmitting.value = false
     })
+
+    const handleSelect = async (maxRows: number) => {
+      const currentTab = tabData.value.panelsList.find((item: any) => item.key === tabData.value.chooseTab)
+
+      if (!currentTab)
+        return
+
+      if (jobStatus.value === 'RUNNING') {
+        await handleStopJob()
+      }
+      else {
+        isSubmitting.value = true
+        if (jobStore.getJobDetails(currentKey.value)) {
+          jobStore.resetJob(currentKey.value)
+        }
+
+        await processJobSubmission(currentTab, maxRows)
+      }
+    }
 
     return {
       t,
