@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
         if (e.getStatus() == null) {
             return R.failed(Status.INTERNAL_SERVER_ERROR_ARGS);
         }
-        return R.failed(e.getStatus());
+        return R.failed(e.getStatus(), e.getArgs());
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
