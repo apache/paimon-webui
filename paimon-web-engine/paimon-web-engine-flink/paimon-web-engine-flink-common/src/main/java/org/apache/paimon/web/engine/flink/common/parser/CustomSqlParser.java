@@ -37,8 +37,6 @@ public class CustomSqlParser {
     private final SqlParser parser;
     private final int limit;
 
-    private static final int DEFAULT_LIMIT = 500;
-
     static {
         config =
                 SqlParser.config()
@@ -46,10 +44,6 @@ public class CustomSqlParser {
                         .withConformance(FlinkSqlConformance.DEFAULT)
                         .withLex(Lex.JAVA)
                         .withIdentifierMaxLength(256);
-    }
-
-    public CustomSqlParser(String sql) {
-        this(sql, DEFAULT_LIMIT);
     }
 
     public CustomSqlParser(String sql, int limit) {

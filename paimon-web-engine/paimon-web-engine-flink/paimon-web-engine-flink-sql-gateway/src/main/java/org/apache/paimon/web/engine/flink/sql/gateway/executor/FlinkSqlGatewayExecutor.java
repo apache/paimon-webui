@@ -56,10 +56,7 @@ public class FlinkSqlGatewayExecutor implements Executor {
 
     @Override
     public ExecutionResult executeSql(String multiStatement, int maxRows) throws Exception {
-        CustomSqlParser customSqlParser =
-                maxRows > 0
-                        ? new CustomSqlParser(multiStatement, maxRows)
-                        : new CustomSqlParser(multiStatement);
+        CustomSqlParser customSqlParser = new CustomSqlParser(multiStatement, maxRows);
         SqlNodeList sqlNodeList = customSqlParser.parseStmtList();
         List<String> insertStatements = new ArrayList<>();
         ExecutionResult executionResult = null;

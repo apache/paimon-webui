@@ -32,14 +32,14 @@ public class CustomSqlParserTest {
 
     @Test
     public void testParse() throws SqlParseException {
-        CustomSqlParser customSqlParser = new CustomSqlParser(statement1);
+        CustomSqlParser customSqlParser = new CustomSqlParser(statement1, 0);
         SqlNodeList sqlNodeList = customSqlParser.parseStmtList();
         assertThat(sqlNodeList.size()).isEqualTo(5);
     }
 
     @Test
     public void testSelectLimit() throws SqlParseException {
-        CustomSqlParser customSqlParser = new CustomSqlParser(statement2);
+        CustomSqlParser customSqlParser = new CustomSqlParser(statement2, 500);
         String actual = customSqlParser.parseStmtList().get(2).toString();
         assertThat(actual)
                 .isEqualToIgnoringWhitespace("SELECT * FROM `t_order` FETCH NEXT 500 ROWS ONLY");
@@ -47,7 +47,7 @@ public class CustomSqlParserTest {
 
     @Test
     public void testSelectWithoutLimit() throws SqlParseException {
-        CustomSqlParser customSqlParser = new CustomSqlParser(statement3);
+        CustomSqlParser customSqlParser = new CustomSqlParser(statement3, 200);
         String actual = customSqlParser.parseStmtList().get(2).toString();
         assertThat(actual).isEqualToIgnoringWhitespace("SELECT COUNT(*) FROM `t_order`");
     }

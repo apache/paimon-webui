@@ -104,7 +104,7 @@ public class FlinkSqlGatewayExecutorTest extends TestBase {
     @Test
     public void testFetchResults() throws Exception {
         ExecutionResult executionResult =
-                executor.executeSql(StatementsConstant.selectStatement, 0);
+                executor.executeSql(StatementsConstant.selectStatement, 10);
         assertNotNull(executionResult);
         assertNotNull(executionResult.getJobId());
         assertNotNull(executionResult.getSubmitId());
