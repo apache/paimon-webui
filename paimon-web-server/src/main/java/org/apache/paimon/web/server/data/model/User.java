@@ -23,7 +23,6 @@ import org.apache.paimon.web.server.data.enums.UserType;
 import org.apache.paimon.web.server.validator.annotation.PhoneNumber;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -60,9 +59,6 @@ public class User extends BaseModel {
 
     /** is enable. */
     private Boolean enabled;
-
-    /** is delete. */
-    @TableLogic private Boolean isDelete;
 
     /** avatar url. */
     private String url;
