@@ -70,7 +70,10 @@ export default defineComponent({
     }>({
       operatingConditionOptions: [
         { label: 'Limit 100 items', key: '100' },
+        { label: 'Limit 500 items', key: '500' },
         { label: 'Limit 1000 items', key: '1000' },
+        { label: 'Limit 5000 items', key: '5000' },
+        { label: 'Limit 10000 items', key: '10000' },
       ],
       conditionValue: 'Flink',
       bigDataOptions: [
@@ -200,7 +203,7 @@ export default defineComponent({
       }
     }
 
-    const processJobSubmission = async (currentTab: any, maxRows?: number) => {
+    const processJobSubmission = async (currentTab: any, maxRows: number = 500) => {
       if (!currentTab.content) {
         isSubmitting.value = false
         return
