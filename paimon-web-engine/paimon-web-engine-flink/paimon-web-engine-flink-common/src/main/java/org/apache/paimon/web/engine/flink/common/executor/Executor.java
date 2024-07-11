@@ -31,10 +31,11 @@ public interface Executor {
      * Executes an SQL statement.
      *
      * @param statement The SQL statement to be executed.
+     * @param maxRows The maximum number of rows to return in the result set.
      * @return SubmitResult containing information about the execution result.
      * @throws Exception if there is an error executing the SQL statement.
      */
-    ExecutionResult executeSql(String statement) throws Exception;
+    ExecutionResult executeSql(String statement, int maxRows) throws Exception;
 
     /**
      * Fetches the results of a previously submitted SQL statement execution.
