@@ -78,8 +78,7 @@ export default defineComponent({
       ],
       conditionValue: 'Flink',
       bigDataOptions: [
-        { label: 'Flink', value: 'Flink' },
-        { label: 'Spark', value: 'Spark', disabled: true },
+        { label: 'Flink', value: 'Flink' }
       ],
       conditionValue2: '',
       clusterOptions: [],
