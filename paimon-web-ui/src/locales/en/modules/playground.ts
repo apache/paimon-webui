@@ -58,4 +58,8 @@ export default {
   job_stopping_successfully: 'Job Stopped Successfully',
   job_stopping_failed: 'Job Stopped Failed',
   data_copied_successfully: 'Data Copied to Clipboard',
+  execution_mode: 'Execution Mode',
+  engine: 'Engine',
+  deployment_cluster: 'Deployment Cluster',
+  limit_records: 'Limit Records',
 }

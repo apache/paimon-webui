@@ -70,10 +70,10 @@ export default defineComponent({
       executionModeOptions: { label: string, value: string }[]
     }>({
       operatingConditionOptions: [
-        { label: 'Limit 500 items', value: 500 },
-        { label: 'Limit 1000 items', value: 1000 },
-        { label: 'Limit 2000 items', value: 2000 },
-        { label: 'Limit 5000 items', value: 5000 },
+        { label: '500', value: 500 },
+        { label: '1000', value: 1000 },
+        { label: '2000', value: 2000 },
+        { label: '5000', value: 5000 },
         { label: 'ALL', value: 2147483647 },
       ],
       conditionValue: 'Flink',
@@ -293,11 +293,14 @@ export default defineComponent({
             }}
           >
           </n-button>
-          <n-select style="width:160px;" v-model:value={this.conditionValue3} options={this.executionModeOptions} />
-          <n-select style="width:160px;" v-model:value={this.conditionValue} options={this.bigDataOptions} />
-          <n-select style="width:160px;" v-model:value={this.conditionValue2} options={this.clusterOptions} />
-          <span>limit:</span>
-          <n-select style="width:160px;" v-model:value={this.maxRows} options={this.operatingConditionOptions} />
+          <span>{this.t('playground.execution_mode')}</span>
+          <n-select style="width:110px;" v-model:value={this.conditionValue3} options={this.executionModeOptions} />
+          <span>{this.t('playground.engine')}</span>
+          <n-select style="width:110px;" v-model:value={this.conditionValue} options={this.bigDataOptions} />
+          <span>{this.t('playground.deployment_cluster')}</span>
+          <n-select style="width:200px;" v-model:value={this.conditionValue2} options={this.clusterOptions} />
+          <span>{this.t('playground.limit_records')}</span>
+          <n-select style="width:100px;" v-model:value={this.maxRows} options={this.operatingConditionOptions} />
         </n-space>
         <n-space align="center">
           <n-popover
