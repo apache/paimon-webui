@@ -235,7 +235,7 @@ export default defineComponent({
           clusterId: debuggerVariables.conditionValue2,
           statements: currentSQL,
           streaming: debuggerVariables.conditionValue3 === 'Streaming',
-          maxRows: debuggerVariables.maxRows ,
+          maxRows: debuggerVariables.maxRows,
         }
 
         try {
