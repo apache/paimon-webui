@@ -58,4 +58,8 @@ export default {
   job_stopping_successfully: '停止任务成功',
   job_stopping_failed: '停止任务失败',
   data_copied_successfully: '数据已复制到剪贴板',
+  execution_mode: '运行模式',
+  execution_engine: '执行引擎',
+  deployment_cluster: '部署集群',
+  limit_records: '限制行数',
 }
