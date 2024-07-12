@@ -294,7 +294,7 @@ export default defineComponent({
           </n-button>
           <span>{this.t('playground.execution_mode')}</span>
           <n-select style="width:110px;" v-model:value={this.conditionValue3} options={this.executionModeOptions} />
-          <span>{this.t('playground.engine')}</span>
+          <span>{this.t('playground. execution_engine')}</span>
           <n-select style="width:110px;" v-model:value={this.conditionValue} options={this.bigDataOptions} />
           <span>{this.t('playground.deployment_cluster')}</span>
           <n-select style="width:200px;" v-model:value={this.conditionValue2} options={this.clusterOptions} />
