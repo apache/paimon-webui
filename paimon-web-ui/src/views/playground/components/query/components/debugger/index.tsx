@@ -293,9 +293,9 @@ export default defineComponent({
             }}
           >
           </n-button>
+          <n-select style="width:160px;" v-model:value={this.conditionValue3} options={this.executionModeOptions} />
           <n-select style="width:160px;" v-model:value={this.conditionValue} options={this.bigDataOptions} />
           <n-select style="width:160px;" v-model:value={this.conditionValue2} options={this.clusterOptions} />
-          <n-select style="width:160px;" v-model:value={this.conditionValue3} options={this.executionModeOptions} />
           <span>limit:</span>
           <n-select style="width:160px;" v-model:value={this.maxRows} options={this.operatingConditionOptions} />
         </n-space>
