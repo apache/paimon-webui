@@ -43,7 +43,7 @@ export interface JobSubmitDTO {
   }
   statements: string
   streaming: boolean
-  maxRows?: number
+  maxRows?: number |null
 }
 
 export interface JobResultData {

@@ -60,7 +60,7 @@ export default defineComponent({
     })
 
     const debuggerVariables = reactive<{
-      operatingConditionOptions: { label: string, value: string }[]
+      operatingConditionOptions: { label: string, value: number }[]
       conditionValue: string
       bigDataOptions: { label: string, value: string, disabled?: boolean }[]
       conditionValue2: string
@@ -70,8 +70,11 @@ export default defineComponent({
       executionModeOptions: { label: string, value: string }[]
     }>({
       operatingConditionOptions: [
-        { label: 'Limit 100 items', value: '100' },
-        { label: 'Limit 1000 items', value: '1000' },
+        { label: 'Limit 500 items', value: 500 },
+        { label: 'Limit 1000 items', value: 1000 },
+        { label: 'Limit 2000 items', value: 2000 },
+        { label: 'Limit 5000 items', value: 5000 },
+        { label: 'ALL', value: 2147483647 },
       ],
       conditionValue: 'Flink',
       bigDataOptions: [
@@ -85,7 +88,7 @@ export default defineComponent({
         { label: 'Streaming', value: 'Streaming' },
         { label: 'Batch', value: 'Batch' },
       ],
-      maxRows: 100,
+      maxRows: 500,
     })
 
     const handleSelect = () => {
@@ -232,7 +235,7 @@ export default defineComponent({
           clusterId: debuggerVariables.conditionValue2,
           statements: currentSQL,
           streaming: debuggerVariables.conditionValue3 === 'Streaming',
-          maxRows: debuggerVariables.maxRows,
+          maxRows: debuggerVariables.maxRows ,
         }
 
         try {
