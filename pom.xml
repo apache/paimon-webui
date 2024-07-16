@@ -42,7 +42,7 @@ under the License.
     <artifactId>paimon-webui</artifactId>
     <name>Paimon : Web : Root</name>
 
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
 
     <packaging>pom</packaging>
 
@@ -64,7 +64,7 @@ under the License.
     </scm>
 
     <properties>
-        <project.version>0.1-SNAPSHOT</project.version>
+        <project.version>0.1.0</project.version>
         <java.version>8</java.version>
         <paimon.shade.version>0.8.1</paimon.shade.version>
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
