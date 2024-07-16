@@ -31,13 +31,13 @@ Download the Paimon Web installation package from paimon.apache.org and proceed 
 
 ```shell
 # Download the binary installation package of Paimon Web
-[root@paimon ~]# wget https://repository.apache.org/snapshots/org/apache/paimon/paimon-web/0.1-SNAPSHOT/apache-paimon-webui-0.1-SNAPSHOT-bin.tar.gz
+[root@paimon ~]# wget https://repository.apache.org/snapshots/org/apache/paimon/paimon-web/0.2-SNAPSHOT/apache-paimon-webui-0.2-SNAPSHOT-bin.tar.gz
 
 # Extract the installation package
-[root@paimon ~]# tar zxf apache-paimon-webui-0.1-SNAPSHOT-bin.tar.gz
+[root@paimon ~]# tar zxf apache-paimon-webui-0.2-SNAPSHOT-bin.tar.gz
     
 # Rename the directory to paimon-webui for simplicity
-[root@paimon ~]# mv apache-paimon-webui-0.1-SNAPSHOT-bin.tar.gz paimon-webui
+[root@paimon ~]# mv apache-paimon-webui-0.2-SNAPSHOT-bin.tar.gz paimon-webui
 ```
 The directory structure following the decompression is as follows:
 ```shell
