@@ -25,6 +25,7 @@ CREATE TABLE if not exists `user`
     `mobile`      varchar(20)  NULL     DEFAULT NULL COMMENT 'mobile phone',
     `email`       varchar(100) NULL     DEFAULT NULL COMMENT 'email',
     `enabled`     tinyint(1)   NOT NULL DEFAULT 1 COMMENT 'is enable',
+    `is_delete`   tinyint(1)   NOT NULL DEFAULT 0 COMMENT 'is delete',
     `create_time` datetime(0)  NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `update_time` datetime(0)  NULL     DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
     UNIQUE KEY `username` (`username`)
