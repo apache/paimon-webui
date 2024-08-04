@@ -204,12 +204,12 @@ CREATE TABLE if not exists `history`
     `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'update time'
     )  ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `user` ( id, username, password, nickname, mobile
-                   , email, enabled, is_delete)
-VALUES ( 1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', 0
-       , 'admin@paimon.com', 1, 0);
-INSERT INTO `user` (id, username, password, nickname, mobile, email, enabled, is_delete)
-VALUES (2, 'common', '21232f297a57a5a743894a0e4a801fc3', 'common', 0, 'common@paimon.com', 1, 0);
+INSERT INTO `user` (id, username, password, nickname, mobile
+                   , email, enabled)
+VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', 0
+       , 'admin@paimon.com', 1);
+INSERT INTO `user` (id, username, password, nickname, mobile, email, enabled)
+VALUES (2, 'common', '21232f297a57a5a743894a0e4a801fc3', 'common', 0, 'common@paimon.com', 1);
 
 INSERT INTO `tenant` (id, name, description)
 VALUES (1, 'DefaultTenant', 'DefaultTenant');
