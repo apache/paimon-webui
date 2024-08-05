@@ -75,12 +75,12 @@ fi
 
 if [ "$DAEMON" = true ]; then
   nohup $JAVA_HOME/bin/java $JAVA_OPTS \
-    -cp "$PAIMON_UI_HOME/conf:$PAIMON_UI_HOME/libs/*" \
+    -cp "$PAIMON_UI_HOME/config:$PAIMON_UI_HOME/libs/*" \
     org.apache.paimon.web.server.PaimonWebServerApplication \
     > /dev/null 2>&1 &
   echo "Paimon Web Server started in daemon."
 else
   $JAVA_HOME/bin/java $JAVA_OPTS \
-    -cp "$PAIMON_UI_HOME/conf:$PAIMON_UI_HOME/libs/*" \
+    -cp "$PAIMON_UI_HOME/config:$PAIMON_UI_HOME/libs/*" \
     org.apache.paimon.web.server.PaimonWebServerApplication
 fi
