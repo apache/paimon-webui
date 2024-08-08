@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License. */
 
-import { ChevronDown, Pause, Play, Reload, Save } from '@vicons/ionicons5'
+import { Pause, Play, Reload, Save } from '@vicons/ionicons5'
 import { FormatAlignLeftOutlined } from '@vicons/material'
 import { NInput, useMessage } from 'naive-ui'
 
@@ -60,22 +60,25 @@ export default defineComponent({
     })
 
     const debuggerVariables = reactive<{
-      operatingConditionOptions: { label: string, key: string }[]
+      operatingConditionOptions: { label: string, value: number }[]
       conditionValue: string
-      bigDataOptions: { label: string, value: string }[]
+      bigDataOptions: { label: string, value: string, disabled?: boolean }[]
       conditionValue2: string
       clusterOptions: { label: string, value: string }[]
       conditionValue3: string
+      maxRows: number
       executionModeOptions: { label: string, value: string }[]
     }>({
       operatingConditionOptions: [
-        { label: 'Limit 100 items', key: '100' },
-        { label: 'Limit 1000 items', key: '1000' },
+        { label: '500', value: 500 },
+        { label: '1000', value: 1000 },
+        { label: '2000', value: 2000 },
+        { label: '5000', value: 5000 },
+        { label: 'ALL', value: 2147483647 },
       ],
       conditionValue: 'Flink',
       bigDataOptions: [
         { label: 'Flink', value: 'Flink' },
-        { label: 'Spark', value: 'Spark' },
       ],
       conditionValue2: '',
       clusterOptions: [],
@@ -84,6 +87,7 @@ export default defineComponent({
         { label: 'Streaming', value: 'Streaming' },
         { label: 'Batch', value: 'Batch' },
       ],
+      maxRows: 500,
     })
 
     const handleSelect = () => {
@@ -230,6 +234,7 @@ export default defineComponent({
           clusterId: debuggerVariables.conditionValue2,
           statements: currentSQL,
           streaming: debuggerVariables.conditionValue3 === 'Streaming',
+          maxRows: debuggerVariables.maxRows,
         }
 
         try {
@@ -269,8 +274,8 @@ export default defineComponent({
   },
   render() {
     return (
-      <div class={styles.container}>
-        <n-space>
+      <n-space justify="space-between" class={styles.container} align="center">
+        <n-space align="center">
           <n-button
             type="primary"
             loading={this.isSubmitting}
@@ -281,76 +286,75 @@ export default defineComponent({
                 return (
                   <div class={styles.run}>
                     {this.jobStatus === 'RUNNING' ? this.t('playground.stop') : this.t('playground.run')}
-                    <n-divider vertical />
-                    <n-dropdown trigger="hover" show-arrow options={this.operatingConditionOptions} on-select={this.handleSelect}>
-                      <n-icon component={ChevronDown} />
-                    </n-dropdown>
                   </div>
                 )
               },
             }}
           >
           </n-button>
-          <n-select style="width:160px;" v-model:value={this.conditionValue} options={this.bigDataOptions} />
-          <n-select style="width:160px;" v-model:value={this.conditionValue2} options={this.clusterOptions} />
-          <n-select style="width:160px;" v-model:value={this.conditionValue3} options={this.executionModeOptions} />
+          <span>{this.t('playground.execution_mode')}</span>
+          <n-select style="width:110px;" v-model:value={this.conditionValue3} options={this.executionModeOptions} />
+          <span>{this.t('playground.execution_engine')}</span>
+          <n-select style="width:110px;" v-model:value={this.conditionValue} options={this.bigDataOptions} />
+          <span>{this.t('playground.deployment_cluster')}</span>
+          <n-select style="width:150px;" v-model:value={this.conditionValue2} options={this.clusterOptions} />
+          <span>{this.t('playground.limit_records')}</span>
+          <n-select style="width:100px;" v-model:value={this.maxRows} options={this.operatingConditionOptions} />
         </n-space>
-        <div class={styles.operations}>
-          <n-space>
-            <n-popover
-              trigger="hover"
-              placement="bottom"
-              v-slots={{
-                trigger: () => (
-                  <n-button
-                    onClick={this.handleFormat}
-                    v-slots={{
-                      icon: () => <n-icon component={FormatAlignLeftOutlined}></n-icon>,
-                    }}
-                  >
-                  </n-button>
-                ),
-              }}
-            >
-              <span>{this.t('playground.format')}</span>
-            </n-popover>
-            <n-popover
-              trigger="hover"
-              placement="bottom"
-              v-slots={{
-                trigger: () => (
-                  <n-button
-                    onClick={this.handleReload}
-                    v-slots={{
-                      icon: () => <n-icon component={Reload}></n-icon>,
-                    }}
-                  >
-                  </n-button>
-                ),
-              }}
-            >
-              <span>{this.t('playground.reload')}</span>
-            </n-popover>
-            <n-popover
-              trigger="hover"
-              placement="bottom"
-              v-slots={{
-                trigger: () => (
-                  <n-button
-                    onClick={this.handleSave}
-                    v-slots={{
-                      icon: () => <n-icon component={Save}></n-icon>,
-                    }}
-                  >
-                  </n-button>
-                ),
-              }}
-            >
-              <span>{this.t('playground.save')}</span>
-            </n-popover>
-          </n-space>
-        </div>
-      </div>
+        <n-space align="center">
+          <n-popover
+            trigger="hover"
+            placement="bottom"
+            v-slots={{
+              trigger: () => (
+                <n-button
+                  onClick={this.handleFormat}
+                  v-slots={{
+                    icon: () => <n-icon component={FormatAlignLeftOutlined}></n-icon>,
+                  }}
+                >
+                </n-button>
+              ),
+            }}
+          >
+            <span>{this.t('playground.format')}</span>
+          </n-popover>
+          <n-popover
+            trigger="hover"
+            placement="bottom"
+            v-slots={{
+              trigger: () => (
+                <n-button
+                  onClick={this.handleReload}
+                  v-slots={{
+                    icon: () => <n-icon component={Reload}></n-icon>,
+                  }}
+                >
+                </n-button>
+              ),
+            }}
+          >
+            <span>{this.t('playground.reload')}</span>
+          </n-popover>
+          <n-popover
+            trigger="hover"
+            placement="bottom"
+            v-slots={{
+              trigger: () => (
+                <n-button
+                  onClick={this.handleSave}
+                  v-slots={{
+                    icon: () => <n-icon component={Save}></n-icon>,
+                  }}
+                >
+                </n-button>
+              ),
+            }}
+          >
+            <span>{this.t('playground.save')}</span>
+          </n-popover>
+        </n-space>
+      </n-space>
     )
   },
 })

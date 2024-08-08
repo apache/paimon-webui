@@ -116,10 +116,6 @@ export default defineComponent({
     async function handleUpdateModal(user: UserDTO) {
       formType.value = 'update'
 
-      delete user.createTime
-      delete user.updateTime
-      delete user.roles
-
       formValue.value = { ...user }
       formVisible.value = true
     }

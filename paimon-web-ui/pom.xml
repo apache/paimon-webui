@@ -33,8 +33,8 @@ under the License.
     <name>Paimon : Web : UI</name>
 
     <properties>
-        <node.version>v18.0.0</node.version>
-        <npm.version>9.4.1</npm.version>
+        <node.version>v19.7.0</node.version>
+        <npm.version>9.5.0</npm.version>
         <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
         <build.ui.skip>false</build.ui.skip>
     </properties>
@@ -70,17 +70,7 @@ under the License.
                                 </goals>
                                 <phase>generate-resources</phase>
                                 <configuration>
-                                    <arguments>install --force</arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>npm fund</id>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-                                <phase>generate-resources</phase>
-                                <configuration>
-                                    <arguments>fund</arguments>
+                                    <arguments>install --legacy-peer-deps</arguments>
                                 </configuration>
                             </execution>
                             <execution>
