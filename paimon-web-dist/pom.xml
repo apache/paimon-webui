@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-web-server</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
