@@ -78,6 +78,16 @@ management:
     ldap:
       enabled: false
 
+paimon:
+  web:
+    cryptography:
+      digester:
+        algorithm: sm3
+      symmetric:
+        algorithm: sm4
+        properties:
+          secret-key: ${SECRET_KEY}
+
 interceptor:
   exclude:
     path:
