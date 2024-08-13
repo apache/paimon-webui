@@ -284,13 +284,6 @@ under the License.
                 </excludes>
             </resource>
             <resource>
-                <directory>${project.basedir}/../paimon-web-ui/dist/</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <targetPath>ui</targetPath>
-            </resource>
-            <resource>
                 <filtering>false</filtering>
                 <directory>src/main/resources</directory>
                 <includes>

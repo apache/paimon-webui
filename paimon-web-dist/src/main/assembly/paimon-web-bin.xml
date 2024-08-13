@@ -31,6 +31,10 @@
             <outputDirectory>.</outputDirectory>
         </fileSet>
         <fileSet>
+            <directory>${basedir}/../paimon-web-ui/dist</directory>
+            <outputDirectory>./ui</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>${basedir}/../script/sql</directory>
             <outputDirectory>conf/sql</outputDirectory>
             <fileMode>0755</fileMode>
