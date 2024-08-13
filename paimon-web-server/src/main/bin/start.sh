@@ -64,12 +64,18 @@ fi
 if [ -z "$JAVA_HOME" ]; then
       echo "JAVA_HOME is null, exit..."
       exit 1
+else
+   export JAVA_HOME=$JAVA_HOME
 fi
 if [ -z "$FLINK_HOME" ]; then
     echo "FLINK_HOME is null, CDC cannot be used normally!"
+else
+    export FLINK_HOME=$FLINK_HOME
 fi
 if [ -z "$ACTION_JAR_PATH" ]; then
     echo "ACTION_JAR_PATH is null, CDC cannot be used normally!"
+else
+    export ACTION_JAR_PATH=$ACTION_JAR_PATH
 fi
 
 
