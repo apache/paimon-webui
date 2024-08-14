@@ -73,7 +73,7 @@ This setup will prepare your system to properly run the application with the nec
 ```shell
 [root@paimon ~]# cd bin
 [root@paimon ~]# chmod 755 env.sh
-[root@paimon ~]# vim evn.sh
+[root@paimon ~]# vi env.sh
 ```
 
 ## Starting the Service
