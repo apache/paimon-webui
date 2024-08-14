@@ -20,7 +20,7 @@
 FLINK_HOME=${FLINK_HOME:-""}
 
 # Set the ACTION_JAR_PATH to execute the paimon action job.
-ACTION_JAR_PATH=
+ACTION_JAR_PATH=${ACTION_JAR_PATH:-""}
 
 JVM_ARGS="-server"
 
