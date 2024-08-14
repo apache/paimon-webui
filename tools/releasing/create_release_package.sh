@@ -63,7 +63,7 @@ mkdir ${RELEASE_DIR}
 # delete the temporary release directory on error
 trap 'rm -rf ${RELEASE_DIR}' ERR
 
-echo "Creating source package"
+echo "Creating release package"
 
 # create a temporary git clone to ensure that we have a pristine source release
 git clone ${PROJECT_ROOT} ${CLONE_DIR}
@@ -77,13 +77,16 @@ rsync -a \
   --exclude ".travis.yml" \
   . paimon-webui-${RELEASE_VERSION}
 
+tar czf ${RELEASE_DIR}/apache-paimon-webui-${RELEASE_VERSION}-bin.tgz paimon-webui-${RELEASE_VERSION}
 tar czf ${RELEASE_DIR}/apache-paimon-webui-${RELEASE_VERSION}-src.tgz paimon-webui-${RELEASE_VERSION}
+gpg --armor --detach-sig ${RELEASE_DIR}/apache-paimon-webui-${RELEASE_VERSION}-bin.tgz
 gpg --armor --detach-sig ${RELEASE_DIR}/apache-paimon-webui-${RELEASE_VERSION}-src.tgz
 cd ${RELEASE_DIR}
+${SHASUM} apache-paimon-webui-${RELEASE_VERSION}-bin.tgz > apache-paimon-webui-${RELEASE_VERSION}-bin.tgz.sha512
 ${SHASUM} apache-paimon-webui-${RELEASE_VERSION}-src.tgz > apache-paimon-webui-${RELEASE_VERSION}-src.tgz.sha512
 
 rm -rf ${CLONE_DIR}
 
-echo "Done. Source release package and signatures created under ${RELEASE_DIR}/."
+echo "Done. Release package and signatures created under ${RELEASE_DIR}/."
 
 cd ${CURR_DIR}
