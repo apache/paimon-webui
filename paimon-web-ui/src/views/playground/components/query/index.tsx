@@ -107,7 +107,19 @@ export default defineComponent({
       const { connect, subscribe } = useWebSocket(wsUrl, {
         onMessage: (message) => {
           const data = JSON.parse(message.body)
-          if (data && data.jobId && data.fileName) {
+          if (!data.jobId && !data.shouldFetchResult) {
+            const jobDetail: JobDetails = {
+              executionMode: data.executeMode as ExecutionMode,
+              job: data,
+              jobResultData: data.resultData.length > 0 ? data.resultData: null,
+              jobStatus: data.status,
+              executionTime: 0,
+              startTime: Date.now(),
+              displayResult: true,
+              loading: false,
+            }
+            jobStore.addJob(data.fileName, jobDetail)
+          } else if (data && data.jobId && data.fileName) {
             const jobDetail: JobDetails = {
               executionMode: data.executeMode as ExecutionMode,
               job: data,

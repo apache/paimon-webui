@@ -18,11 +18,13 @@
 
 package org.apache.paimon.web.engine.flink.sql.gateway.executor;
 
+import org.apache.flink.api.common.JobID;
 import org.apache.paimon.web.engine.flink.common.executor.Executor;
 import org.apache.paimon.web.engine.flink.common.operation.FlinkSqlOperationType;
 import org.apache.paimon.web.engine.flink.common.parser.CustomSqlParser;
 import org.apache.paimon.web.engine.flink.common.result.ExecutionResult;
 import org.apache.paimon.web.engine.flink.common.result.FetchResultParams;
+import org.apache.paimon.web.engine.flink.common.status.JobStatus;
 import org.apache.paimon.web.engine.flink.sql.gateway.client.SqlGatewayClient;
 import org.apache.paimon.web.engine.flink.sql.gateway.model.SessionEntity;
 import org.apache.paimon.web.engine.flink.sql.gateway.utils.CollectResultUtil;
@@ -102,6 +104,11 @@ public class FlinkSqlGatewayExecutor implements Executor {
             executionResult = executeDmlStatement(combinedStatement);
         }
 
+        if (executionResult == null) {
+            executionResult = new ExecutionResult.Builder()
+                    .shouldFetchResult(false).status(JobStatus.FINISHED.getValue()).build();
+        }
+
         return executionResult;
     }
 
@@ -113,8 +120,11 @@ public class FlinkSqlGatewayExecutor implements Executor {
         ExecutionResult.Builder builder =
                 CollectResultUtil.collectSqlGatewayResult(results.getResults())
                         .submitId(operationId);
-        if (operationType.getType().equals(FlinkSqlOperationType.SELECT.getType())) {
-            builder.jobId(getJobIdFromResults(results)).shouldFetchResult(true);
+        JobID jobId = results.getJobID();
+        if (jobId != null && operationType.getType().equals(FlinkSqlOperationType.SELECT.getType())) {
+            builder.jobId(jobId.toString()).shouldFetchResult(true);
+        } else if (jobId == null && !results.getResults().getData().isEmpty()) {
+            builder.shouldFetchResult(false).status(JobStatus.FINISHED.getValue());
         }
         return builder.build();
     }
