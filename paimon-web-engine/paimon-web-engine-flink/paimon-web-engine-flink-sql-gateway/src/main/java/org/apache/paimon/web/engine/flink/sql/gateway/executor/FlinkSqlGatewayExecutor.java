@@ -105,8 +105,11 @@ public class FlinkSqlGatewayExecutor implements Executor {
         }
 
         if (executionResult == null) {
-            executionResult = new ExecutionResult.Builder()
-                    .shouldFetchResult(false).status(JobStatus.FINISHED.getValue()).build();
+            executionResult =
+                    new ExecutionResult.Builder()
+                            .shouldFetchResult(false)
+                            .status(JobStatus.FINISHED.getValue())
+                            .build();
         }
 
         return executionResult;
@@ -121,7 +124,8 @@ public class FlinkSqlGatewayExecutor implements Executor {
                 CollectResultUtil.collectSqlGatewayResult(results.getResults())
                         .submitId(operationId);
         JobID jobId = results.getJobID();
-        if (jobId != null && operationType.getType().equals(FlinkSqlOperationType.SELECT.getType())) {
+        if (jobId != null
+                && operationType.getType().equals(FlinkSqlOperationType.SELECT.getType())) {
             builder.jobId(jobId.toString()).shouldFetchResult(true);
         } else if (jobId == null && !results.getResults().getData().isEmpty()) {
             builder.shouldFetchResult(false).status(JobStatus.FINISHED.getValue());
