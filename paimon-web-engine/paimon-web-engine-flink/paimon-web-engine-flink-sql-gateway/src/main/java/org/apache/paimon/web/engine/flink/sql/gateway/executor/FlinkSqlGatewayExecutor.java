@@ -18,7 +18,6 @@
 
 package org.apache.paimon.web.engine.flink.sql.gateway.executor;
 
-import org.apache.flink.api.common.JobID;
 import org.apache.paimon.web.engine.flink.common.executor.Executor;
 import org.apache.paimon.web.engine.flink.common.operation.FlinkSqlOperationType;
 import org.apache.paimon.web.engine.flink.common.parser.CustomSqlParser;
@@ -32,6 +31,7 @@ import org.apache.paimon.web.engine.flink.sql.gateway.utils.FlinkSqlStatementSet
 
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlNodeList;
+import org.apache.flink.api.common.JobID;
 import org.apache.flink.table.gateway.api.results.ResultSet;
 import org.apache.flink.table.gateway.rest.message.statement.FetchResultsResponseBody;
 

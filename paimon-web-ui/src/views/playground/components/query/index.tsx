@@ -111,7 +111,7 @@ export default defineComponent({
             const jobDetail: JobDetails = {
               executionMode: data.executeMode as ExecutionMode,
               job: data,
-              jobResultData: data.resultData.length > 0 ? data.resultData: null,
+              jobResultData: data.resultData.length > 0 ? data.resultData : null,
               jobStatus: data.status,
               executionTime: 0,
               startTime: Date.now(),
@@ -119,7 +119,8 @@ export default defineComponent({
               loading: false,
             }
             jobStore.addJob(data.fileName, jobDetail)
-          } else if (data && data.jobId && data.fileName) {
+          }
+          else if (data && data.jobId && data.fileName) {
             const jobDetail: JobDetails = {
               executionMode: data.executeMode as ExecutionMode,
               job: data,
