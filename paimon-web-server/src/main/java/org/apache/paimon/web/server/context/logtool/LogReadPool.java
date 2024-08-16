@@ -36,12 +36,10 @@ public class LogReadPool extends AbstractPool<StringBuilder> {
     }
 
     public static void write(String str, String userId) {
-        consoleEntityCache
-                .computeIfAbsent(userId, k -> new StringBuilder("Console:\n"))
-                .append(str);
+        consoleEntityCache.computeIfAbsent(userId, k -> new StringBuilder()).append(str);
     }
 
     public static void clear(String userId) {
-        consoleEntityCache.put(userId, new StringBuilder("Console:\n"));
+        consoleEntityCache.put(userId, new StringBuilder());
     }
 }
