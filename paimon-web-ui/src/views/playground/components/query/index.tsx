@@ -112,7 +112,7 @@ export default defineComponent({
               executionMode: data.executeMode as ExecutionMode,
               job: data,
               jobResultData: null,
-              jobStatus: data.status,
+              jobStatus: data.status == null ? '' : data.status,
               executionTime: 0,
               startTime: Date.now(),
               displayResult: true,
