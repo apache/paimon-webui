@@ -107,12 +107,12 @@ export default defineComponent({
       const { connect, subscribe } = useWebSocket(wsUrl, {
         onMessage: (message) => {
           const data = JSON.parse(message.body)
-          if (data && data.jobId && data.fileName) {
+          if (data && data.fileName) {
             const jobDetail: JobDetails = {
               executionMode: data.executeMode as ExecutionMode,
               job: data,
               jobResultData: null,
-              jobStatus: '',
+              jobStatus: data.status == null ? '' : data.status,
               executionTime: 0,
               startTime: Date.now(),
               displayResult: true,
