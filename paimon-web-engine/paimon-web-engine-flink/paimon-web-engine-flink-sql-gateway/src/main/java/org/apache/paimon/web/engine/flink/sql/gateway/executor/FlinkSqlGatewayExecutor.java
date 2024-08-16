@@ -127,7 +127,7 @@ public class FlinkSqlGatewayExecutor implements Executor {
         if (jobId != null
                 && operationType.getType().equals(FlinkSqlOperationType.SELECT.getType())) {
             builder.jobId(jobId.toString()).shouldFetchResult(true);
-        } else if (jobId == null && !results.getResults().getData().isEmpty()) {
+        } else if (jobId == null) {
             builder.shouldFetchResult(false).status(JobStatus.FINISHED.getValue());
         }
         return builder.build();
