@@ -17,6 +17,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -28,20 +29,14 @@ under the License.
         <version>0.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>paimon-web-engine</artifactId>
-    <name>Paimon : Web : Engine</name>
+    <artifactId>paimon-web-plugin</artifactId>
+
+    <name>Paimon : Web : Plugin</name>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>paimon-web-engine-flink</module>
+        <module>paimon-web-plugin-cryptography</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.paimon</groupId>
-            <artifactId>paimon-web-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 </project>
