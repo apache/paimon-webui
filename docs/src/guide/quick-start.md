@@ -48,6 +48,16 @@ scripts
 ui
 ```
 
+## Download additional dependencies(Optional)
+
+The released installation package of Paimon Web does not include some additional dependencies, such as `S3` and `OSS`. When using these dependencies to create a Catalog or as the default storage for your Paimon tables, download them from the [Apache Maven Repository](https://repo.maven.apache.org/maven2/org/apache/paimon/) and move them to the `$PAIMON_WEBUI_HOME/libs` directory.
+
+```shell
+[root@paimon ~]# wget https://repo.maven.apache.org/maven2/org/apache/paimon/paimon-oss/xxx/paimon-oss-xxx.jar
+[root@paimon ~]# wget https://repo.maven.apache.org/maven2/org/apache/paimon/paimon-s3/xxx/paimon-s3-xxx.jar
+[root@paimon ~]# mv paimon-oss-xxx.jar paimon-s3-xxx.jar $PAIMON_WEBUI_HOME/libs
+```
+
 ## Creating a Database and Executing SQL Scripts
 
 To set up your environment, create a database named `paimon`. Then, execute the `paimon-mysql.sql` script located in the `scripts` directory.
@@ -114,3 +124,4 @@ After the SQL Gateway is up and running, proceed to create a cluster instance th
 With the cluster ready, you can now execute SQL commands. Go to the SQL IDE page on the Paimon web interface, where you can write and execute your SQL queries.
 
 ![img_2.png](../../public/img/img_2.png)
+
