@@ -94,7 +94,7 @@ To launch the service, follow these steps:
 ```shell
 [root@paimon ~]# bin/start.sh
 ```
-2. **Access the Web Interface**: Open a web browser and enter the URL `http://{ip}:{port}/ui/login` to navigate to the Paimon web page.
+2. **Access the Web Interface**: Open a web browser and enter the URL `http://{ip}:{port}/ui/#/login` to navigate to the Paimon web page.
 
 Ensure you replace `{ip}` and `{port}` with the actual ip address and port number where the service is running.
 
