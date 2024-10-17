@@ -39,6 +39,8 @@ public class FlinkCdcOptions {
 
     public static final String PRIMARY_KEYS = "primary_keys";
 
+    public static final String TYPE_MAPPING = "type_mapping";
+
     public static final String COMPUTED_COLUMN = "computed_column";
 
     public static final String METADATA_COLUMN = "metadata_column";

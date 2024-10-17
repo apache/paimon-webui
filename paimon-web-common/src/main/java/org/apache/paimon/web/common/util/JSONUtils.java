@@ -131,19 +131,15 @@ public class JSONUtils {
         if (!(child instanceof ArrayNode) && !(child instanceof POJONode)) {
             return new ArrayList<>();
         }
-        List<?> childArray;
+        List<E> result = new ArrayList<>();
         if (child instanceof POJONode) {
             Object pojo = ((POJONode) child).getPojo();
-            childArray = (List<?>) pojo;
+            List<?> childArray = (List<?>) pojo;
+            childArray.forEach(e -> result.add(JSONUtils.parseObject(JSONUtils.toJsonString(e), clazz)));
         } else {
-            childArray = (List<?>) child;
+            ArrayNode arrayNode = (ArrayNode) jsonNode.get(fieldName);
+            arrayNode.forEach(e -> result.add(JSONUtils.parseObject(JSONUtils.toJsonString(e), clazz)));
         }
-
-        List<E> result = new ArrayList<>();
-        childArray.forEach(
-                e -> {
-                    result.add(JSONUtils.parseObject(JSONUtils.toJsonString(e), clazz));
-                });
         return result;
     }
 

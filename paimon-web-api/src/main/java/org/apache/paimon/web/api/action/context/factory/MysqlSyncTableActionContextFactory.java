@@ -59,6 +59,7 @@ public class MysqlSyncTableActionContextFactory implements FlinkCdcActionContext
                 .database(JSONUtils.getString(actionConfigs, FlinkCdcOptions.DATABASE))
                 .table(JSONUtils.getString(actionConfigs, FlinkCdcOptions.TABLE))
                 .primaryKeys(JSONUtils.getString(actionConfigs, FlinkCdcOptions.PRIMARY_KEYS))
+                .typeMapping(JSONUtils.getString(actionConfigs, FlinkCdcOptions.TYPE_MAPPING))
                 .actionPath(ActionContextUtil.getActionJarPath())
                 .catalogConfList(JSONUtils.getList(actionConfigs, FlinkCdcOptions.CATALOG_CONF))
                 .mysqlConfList(JSONUtils.getList(actionConfigs, FlinkCdcOptions.MYSQL_CONF))

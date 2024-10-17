@@ -59,6 +59,7 @@ public class PostgresSyncTableActionContextFactory implements FlinkCdcActionCont
                 .table(JSONUtils.getString(actionConfigs, FlinkCdcOptions.TABLE))
                 .partitionKeys(JSONUtils.getString(actionConfigs, FlinkCdcOptions.PARTITION_KEYS))
                 .primaryKeys(JSONUtils.getString(actionConfigs, FlinkCdcOptions.PRIMARY_KEYS))
+                .typeMapping(JSONUtils.getString(actionConfigs, FlinkCdcOptions.TYPE_MAPPING))
                 .computedColumnList(
                         JSONUtils.getList(actionConfigs, FlinkCdcOptions.COMPUTED_COLUMN))
                 .metaDataColumn(JSONUtils.getString(actionConfigs, FlinkCdcOptions.METADATA_COLUMN))

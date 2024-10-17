@@ -36,7 +36,32 @@ export function useMYSQL(item: any) {
     computed_column: data.computed_column || '',
   })
 
-  const TypeMappingOptions = [] as any
+  const TypeMappingOptions = [
+    {
+      label: 'tinyint1-not-bool',
+      value: 'tinyint1-not-bool',
+    },
+    {
+      label: 'to-nullable',
+      value: 'to-nullable',
+    },
+    {
+      label: 'to-string',
+      value: 'to-string',
+    },
+    {
+      label: 'char-to-string',
+      value: 'char-to-string',
+    },
+    {
+      label: 'longtext-to-bytes',
+      value: 'longtext-to-bytes',
+    },
+    {
+      label: 'bigint-unsigned-to-bigint',
+      value: 'bigint-unsigned-to-bigint',
+    }
+  ]
 
   return {
     json: [
@@ -156,6 +181,9 @@ export function useMYSQL(item: any) {
         name: t('cdc.type_mapping'),
         options: TypeMappingOptions,
         span: computed(() => tabType.value === 'synchronization_configuration' ? 24 : 0),
+        props: {
+          'multiple': true
+        }
       },
       {
         type: 'input',

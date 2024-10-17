@@ -491,6 +491,8 @@ public class CdcJobDefinitionServiceImpl
         actionConfigs.put(
                 FlinkCdcOptions.METADATA_COLUMN,
                 JSONUtils.getString(postgresData, FlinkCdcOptions.METADATA_COLUMN));
+        actionConfigs.put(
+                FlinkCdcOptions.TYPE_MAPPING, JSONUtils.getString(postgresData, "type_mapping"));
 
         List<String> postgresConfList = getByKeyToList(postgresData, "other_configs");
         postgresConfList.add(
@@ -525,6 +527,8 @@ public class CdcJobDefinitionServiceImpl
         actionConfigs.put(
                 FlinkCdcOptions.METADATA_COLUMN,
                 JSONUtils.getString(mysqlData, FlinkCdcOptions.METADATA_COLUMN));
+        String typeMapping = String.join(",", JSONUtils.getList(mysqlData, "type_mapping"));
+        actionConfigs.put(FlinkCdcOptions.TYPE_MAPPING, typeMapping);
 
         List<String> mysqlConfList = getByKeyToList(mysqlData, "other_configs");
         mysqlConfList.add(buildKeyValueString("hostname", JSONUtils.getString(mysqlData, "host")));
@@ -574,9 +578,6 @@ public class CdcJobDefinitionServiceImpl
             actionConfigs.put(FlinkCdcOptions.TABLE, JSONUtils.getString(paimonData, "table_name"));
         }
         actionConfigs.put(FlinkCdcOptions.DATABASE, JSONUtils.getString(paimonData, "database"));
-        actionConfigs.put(
-                FlinkCdcOptions.PRIMARY_KEYS, JSONUtils.getString(paimonData, "primary_key"));
-
         List<String> configList = getByKeyToList(paimonData, "other_configs2");
         actionConfigs.putPOJO(FlinkCdcOptions.TABLE_CONF, configList);
 
