@@ -135,10 +135,12 @@ public class JSONUtils {
         if (child instanceof POJONode) {
             Object pojo = ((POJONode) child).getPojo();
             List<?> childArray = (List<?>) pojo;
-            childArray.forEach(e -> result.add(JSONUtils.parseObject(JSONUtils.toJsonString(e), clazz)));
+            childArray.forEach(
+                    e -> result.add(JSONUtils.parseObject(JSONUtils.toJsonString(e), clazz)));
         } else {
             ArrayNode arrayNode = (ArrayNode) jsonNode.get(fieldName);
-            arrayNode.forEach(e -> result.add(JSONUtils.parseObject(JSONUtils.toJsonString(e), clazz)));
+            arrayNode.forEach(
+                    e -> result.add(JSONUtils.parseObject(JSONUtils.toJsonString(e), clazz)));
         }
         return result;
     }
